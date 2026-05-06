@@ -20,12 +20,9 @@ Create ONE practice question following SEE exam format. Important rules:
 - Have a definite correct answer
 
 Respond ONLY with a JSON object in this exact format:
-{
-  "question": "the question text in English here",
-  "expectedAnswer": "the correct answer here"
-}
+{"question": "the question text in English here", "expectedAnswer": "the correct answer here"}
 
-Do not include any Nepali script, devanagari, or non-English text. Only English. Only the JSON object.`;
+Do not include any Nepali script, devanagari, or non-English text. Only English. Only the JSON object. No markdown, no code blocks, just the raw JSON.`;
   } else if (action === 'evaluate') {
     prompt = `You are a friendly teacher evaluating a Grade 10 SEE student's answer in Nepal.
 
@@ -37,21 +34,14 @@ Evaluate the answer warmly and helpfully. Important rules:
 - Respond in clear, simple English only — no Nepali script
 - Use simple vocabulary that any Grade 10 Nepali student can understand
 - Be encouraging and warm
-
-Tell the student:
-1. Is the answer correct, partially correct, or incorrect?
-2. What the correct approach is
-3. One specific tip to improve
-
-Keep it short — maximum 4 short sentences total.
+- Maximum 4 short sentences
 
 Respond ONLY with a JSON object in this exact format:
-{
-  "verdict": "correct" or "partial" or "incorrect",
-  "feedback": "your warm helpful feedback in simple English here"
-}
+{"verdict": "correct", "feedback": "your warm helpful feedback in simple English here"}
 
-Do not include any Nepali script or non-English text. Only English. Only the JSON object.`;
+Verdict must be one of: "correct", "partial", or "incorrect".
+
+Do not include any Nepali script or non-English text. Only English. Only the JSON object. No markdown, no code blocks, just the raw JSON.`;
   } else {
     return res.status(400).json({ error: 'Invalid action' });
   }
@@ -65,7 +55,7 @@ Do not include any Nepali script or non-English text. Only English. Only the JSO
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'claude-haiku-4-5',
         max_tokens: 1000,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -73,21 +63,34 @@ Do not include any Nepali script or non-English text. Only English. Only the JSO
 
     const data = await response.json();
 
-    if (data.error) {
-      return res.status(500).json({ error: data.error.message });
+    if (!response.ok) {
+      console.error('API error:', data);
+      return res.status(500).json({ error: data.error?.message || 'API request failed', details: data });
+    }
+
+    if (!data.content || !data.content[0] || !data.content[0].text) {
+      console.error('Unexpected response:', data);
+      return res.status(500).json({ error: 'Unexpected AI response format', details: data });
     }
 
     const text = data.content[0].text.trim();
     const jsonMatch = text.match(/\{[\s\S]*\}/);
 
     if (!jsonMatch) {
-      return res.status(500).json({ error: 'Could not parse AI response' });
+      console.error('No JSON found in:', text);
+      return res.status(500).json({ error: 'Could not parse AI response', rawText: text });
     }
 
-    const result = JSON.parse(jsonMatch[0]);
-    return res.status(200).json(result);
+    try {
+      const result = JSON.parse(jsonMatch[0]);
+      return res.status(200).json(result);
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError, 'Text:', jsonMatch[0]);
+      return res.status(500).json({ error: 'Invalid JSON from AI', rawText: jsonMatch[0] });
+    }
 
   } catch (error) {
+    console.error('Catch error:', error);
     return res.status(500).json({ error: error.message });
   }
 }
