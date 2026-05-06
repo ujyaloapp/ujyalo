@@ -8,43 +8,50 @@ export default async function handler(req, res) {
   let prompt = '';
 
   if (action === 'generate') {
-    prompt = `You are a friendly Nepali teacher creating a practice question for a Grade 10 SEE student in Nepal.
+    prompt = `You are creating a practice question for a Grade 10 student in Nepal preparing for the SEE exam.
 
 Subject: ${subject}
 
-Create ONE practice question following SEE exam format. The question should:
+Create ONE practice question following SEE exam format. Important rules:
+- The question must be in clear, simple English only
 - Match the SEE Grade 10 syllabus for ${subject}
-- Be clear and appropriate for a Grade 10 student
+- Use Nepali context where natural — Nepali names like Rajan, Sita, Anish; NPR currency; Nepali geography and examples
+- Be appropriate difficulty for Grade 10 (not too hard, not too easy)
 - Have a definite correct answer
 
 Respond ONLY with a JSON object in this exact format:
 {
-  "question": "the question text here",
+  "question": "the question text in English here",
   "expectedAnswer": "the correct answer here"
 }
 
-Do not include any other text, explanations, or markdown. Only the JSON object.`;
+Do not include any Nepali script, devanagari, or non-English text. Only English. Only the JSON object.`;
   } else if (action === 'evaluate') {
-    prompt = `You are a friendly Nepali teacher evaluating a Grade 10 SEE student's answer.
+    prompt = `You are a friendly teacher evaluating a Grade 10 SEE student's answer in Nepal.
 
 Subject: ${subject}
 Question: ${question}
 Student's Answer: ${studentAnswer}
 
-Evaluate the answer warmly and helpfully. Tell the student:
+Evaluate the answer warmly and helpfully. Important rules:
+- Respond in clear, simple English only — no Nepali script
+- Use simple vocabulary that any Grade 10 Nepali student can understand
+- Be encouraging and warm
+
+Tell the student:
 1. Is the answer correct, partially correct, or incorrect?
 2. What the correct approach is
 3. One specific tip to improve
 
-Keep it short, encouraging, and use simple English a Nepali student can easily understand. Maximum 4 short sentences.
+Keep it short — maximum 4 short sentences total.
 
 Respond ONLY with a JSON object in this exact format:
 {
   "verdict": "correct" or "partial" or "incorrect",
-  "feedback": "your warm helpful feedback here"
+  "feedback": "your warm helpful feedback in simple English here"
 }
 
-Do not include any other text. Only the JSON object.`;
+Do not include any Nepali script or non-English text. Only English. Only the JSON object.`;
   } else {
     return res.status(400).json({ error: 'Invalid action' });
   }
