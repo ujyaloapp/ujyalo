@@ -10,58 +10,286 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   background: #FFFFFF;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  padding: 40px 20px;
+  color: #1E293B;
+}
+.container {
+  max-width: 600px;
+  margin: 0 auto;
   text-align: center;
 }
 .logo {
-  font-size: 64px;
+  font-size: 56px;
   font-weight: 700;
   color: #1E5FA8;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   letter-spacing: -1px;
 }
 .sun { color: #F59E0B; }
 .tagline {
-  font-size: 22px;
+  font-size: 20px;
   color: #1E5FA8;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   font-weight: 500;
 }
 .description {
-  font-size: 17px;
+  font-size: 16px;
   color: #64748B;
-  max-width: 500px;
   line-height: 1.6;
   margin-bottom: 40px;
 }
+.subject-label {
+  font-size: 14px;
+  color: #64748B;
+  margin-bottom: 12px;
+  text-align: left;
+}
+.subjects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.subject-btn {
+  padding: 14px 12px;
+  background: #F1F5F9;
+  border: 2px solid #F1F5F9;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #64748B;
+  transition: all 0.2s;
+}
+.subject-btn:hover { background: #E2E8F0; }
+.subject-btn.selected {
+  background: #DBEAFE;
+  border-color: #1E5FA8;
+  color: #1E5FA8;
+}
 .cta-button {
+  width: 100%;
   background: #1E5FA8;
   color: white;
   border: none;
-  padding: 16px 40px;
-  font-size: 17px;
+  padding: 16px;
+  font-size: 16px;
   font-weight: 600;
   border-radius: 12px;
   cursor: pointer;
+  margin-bottom: 16px;
 }
 .cta-button:hover { background: #154A8A; }
+.cta-button:disabled {
+  background: #94A3B8;
+  cursor: not-allowed;
+}
+.question-box {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+  text-align: left;
+  display: none;
+}
+.question-label {
+  font-size: 12px;
+  color: #94A3B8;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.question-text {
+  font-size: 16px;
+  color: #1E293B;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.answer-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+  margin-bottom: 12px;
+}
+.answer-input:focus {
+  outline: none;
+  border-color: #1E5FA8;
+}
+.feedback-box {
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  text-align: left;
+  display: none;
+}
+.feedback-box.incorrect {
+  background: #FEF2F2;
+  border-color: #FECACA;
+}
+.feedback-box.partial {
+  background: #FEFCE8;
+  border-color: #FEF08A;
+}
+.verdict {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.verdict.correct { color: #15803D; }
+.verdict.partial { color: #A16207; }
+.verdict.incorrect { color: #B91C1C; }
+.feedback-text {
+  font-size: 15px;
+  color: #1E293B;
+  line-height: 1.6;
+}
+.loading {
+  color: #64748B;
+  font-size: 14px;
+  margin: 20px 0;
+  display: none;
+}
 .footer {
-  position: absolute;
-  bottom: 24px;
+  text-align: center;
+  margin-top: 40px;
   font-size: 13px;
   color: #94A3B8;
 }
 </style>
 </head>
 <body>
-<div class="logo">ujyalo<span class="sun">☀</span></div>
-<div class="tagline">Brighten your future.</div>
-<p class="description">AI-powered exam preparation made for Nepali students. Practice questions, instant feedback, and step-by-step explanations.</p>
-<button class="cta-button">Start practising free</button>
-<div class="footer">Coming soon — made with love for Nepali students 🇳🇵</div>
+<div class="container">
+  <div class="logo">ujyalo<span class="sun">☀</span></div>
+  <div class="tagline">Brighten your future.</div>
+  <p class="description">Your AI study companion, made for Nepali students. Pick a subject and start practising.</p>
+
+  <div class="subject-label">Choose your subject:</div>
+  <div class="subjects">
+    <button class="subject-btn" onclick="selectSubject(this, 'Compulsory Maths')">Maths</button>
+    <button class="subject-btn" onclick="selectSubject(this, 'Science')">Science</button>
+    <button class="subject-btn" onclick="selectSubject(this, 'Compulsory English')">English</button>
+    <button class="subject-btn" onclick="selectSubject(this, 'Social Studies')">Social</button>
+    <button class="subject-btn" onclick="selectSubject(this, 'Compulsory Nepali')">Nepali</button>
+  </div>
+
+  <button class="cta-button" id="generateBtn" onclick="generateQuestion()" disabled>Pick a subject first</button>
+
+  <div class="loading" id="loading">⏳ Thinking...</div>
+
+  <div class="question-box" id="questionBox">
+    <div class="question-label">Question</div>
+    <div class="question-text" id="questionText"></div>
+    <textarea class="answer-input" id="answerInput" placeholder="Type your answer here..."></textarea>
+    <button class="cta-button" onclick="submitAnswer()">Check my answer</button>
+  </div>
+
+  <div class="feedback-box" id="feedbackBox">
+    <div class="verdict" id="verdict"></div>
+    <div class="feedback-text" id="feedbackText"></div>
+  </div>
+
+  <div class="footer">Made with love for Nepali students 🇳🇵</div>
+</div>
+
+<script>
+let currentSubject = '';
+let currentQuestion = '';
+
+function selectSubject(btn, subject) {
+  document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  currentSubject = subject;
+  const generateBtn = document.getElementById('generateBtn');
+  generateBtn.disabled = false;
+  generateBtn.textContent = 'Generate question';
+}
+
+async function generateQuestion() {
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('questionBox').style.display = 'none';
+  document.getElementById('feedbackBox').style.display = 'none';
+
+  try {
+    const res = await fetch('/api/practice', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'generate', subject: currentSubject })
+    });
+    const data = await res.json();
+
+    if (data.error) {
+      alert('Error: ' + data.error);
+      document.getElementById('loading').style.display = 'none';
+      return;
+    }
+
+    currentQuestion = data.question;
+    document.getElementById('questionText').textContent = data.question;
+    document.getElementById('answerInput').value = '';
+    document.getElementById('questionBox').style.display = 'block';
+    document.getElementById('loading').style.display = 'none';
+  } catch (e) {
+    alert('Something went wrong. Please try again.');
+    document.getElementById('loading').style.display = 'none';
+  }
+}
+
+async function submitAnswer() {
+  const answer = document.getElementById('answerInput').value.trim();
+  if (!answer) {
+    alert('Please type your answer first');
+    return;
+  }
+
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('feedbackBox').style.display = 'none';
+
+  try {
+    const res = await fetch('/api/practice', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'evaluate',
+        subject: currentSubject,
+        question: currentQuestion,
+        studentAnswer: answer
+      })
+    });
+    const data = await res.json();
+
+    if (data.error) {
+      alert('Error: ' + data.error);
+      document.getElementById('loading').style.display = 'none';
+      return;
+    }
+
+    const feedbackBox = document.getElementById('feedbackBox');
+    const verdict = document.getElementById('verdict');
+    const feedbackText = document.getElementById('feedbackText');
+
+    feedbackBox.className = 'feedback-box ' + data.verdict;
+    verdict.className = 'verdict ' + data.verdict;
+
+    if (data.verdict === 'correct') verdict.textContent = '✓ Correct!';
+    else if (data.verdict === 'partial') verdict.textContent = '~ Partially correct';
+    else verdict.textContent = '✗ Not quite right';
+
+    feedbackText.textContent = data.feedback;
+    feedbackBox.style.display = 'block';
+    document.getElementById('loading').style.display = 'none';
+  } catch (e) {
+    alert('Something went wrong. Please try again.');
+    document.getElementById('loading').style.display = 'none';
+  }
+}
+</script>
 </body>
 </html>
