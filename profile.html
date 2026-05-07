@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile — Ujyalo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/main.css">
+</head>
+<body style="background: var(--ink-50); min-height: 100vh;">
+
+<nav class="nav-app">
+  <div class="container nav-inner">
+    <a href="/dashboard.html" class="logo">
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="6" fill="#F59E0B"/>
+        <g stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round">
+          <line x1="16" y1="2" x2="16" y2="6"/><line x1="16" y1="26" x2="16" y2="30"/>
+          <line x1="2" y1="16" x2="6" y2="16"/><line x1="26" y1="16" x2="30" y2="16"/>
+          <line x1="6" y1="6" x2="9" y2="9"/><line x1="23" y1="23" x2="26" y2="26"/>
+          <line x1="26" y1="6" x2="23" y2="9"/><line x1="9" y1="23" x2="6" y2="26"/>
+        </g>
+      </svg>
+      ujyalo
+    </a>
+    <div class="nav-links">
+      <a href="/dashboard.html">Home</a>
+      <a href="/practice.html">Practice</a>
+      <a href="/progress.html">Progress</a>
+      <a href="/profile.html" class="active">Profile</a>
+    </div>
+    <div class="nav-actions">
+      <span class="streak-pill">🔥 7</span>
+      <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--brand); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">R</div>
+    </div>
+  </div>
+</nav>
+
+<main class="container-narrow" style="padding: 48px 24px;">
+
+  <div class="animate-up mb-8">
+    <h1 class="font-display" style="font-size: 36px; font-weight: 600; letter-spacing: -1px;">
+      Your <em style="color: var(--brand);">profile.</em>
+    </h1>
+  </div>
+
+  <!-- Profile card -->
+  <div class="card animate-up delay-1 mb-6">
+    <div class="flex items-center gap-4 mb-6">
+      <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--brand); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 24px; font-family: 'Fraunces', serif;">R</div>
+      <div>
+        <div class="font-display" style="font-size: 22px; font-weight: 600;">Rajan Sharma</div>
+        <div class="text-muted" style="font-size: 14px;">rajan@example.com · Member since Jan 2026</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Full name</label>
+      <input type="text" class="input" value="Rajan Sharma">
+    </div>
+    <div class="field">
+      <label>School</label>
+      <input type="text" class="input" value="Trinity Secondary School">
+    </div>
+    <div class="grid-2" style="gap: 12px;">
+      <div class="field">
+        <label>Grade</label>
+        <select class="select"><option>Grade 10 (SEE)</option><option>Grade 11</option><option>Grade 12</option></select>
+      </div>
+      <div class="field">
+        <label>City</label>
+        <select class="select"><option>Kathmandu</option><option>Pokhara</option></select>
+      </div>
+    </div>
+    <button class="btn btn-blue mt-4">Save changes</button>
+  </div>
+
+  <!-- Parent email -->
+  <div class="card animate-up delay-2 mb-6">
+    <h3 class="font-display" style="font-size: 18px; font-weight: 600; margin-bottom: 6px;">Parent reports</h3>
+    <p class="text-muted mb-4" style="font-size: 14px;">Weekly progress emails sent to your parent.</p>
+    <div class="checkbox-row mb-4">
+      <input type="checkbox" checked style="width: 16px; height: 16px; accent-color: var(--brand);">
+      <div>
+        <div style="font-size: 14px; font-weight: 500;">Send weekly reports</div>
+        <div class="text-tiny mt-2">Currently sending to: <strong style="color: var(--ink-700);">parent@example.com</strong></div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Parent email</label>
+      <input type="email" class="input" value="parent@example.com">
+    </div>
+    <button class="btn btn-secondary">Update</button>
+  </div>
+
+  <!-- Account -->
+  <div class="card animate-up" style="animation-delay: 0.3s;">
+    <h3 class="font-display" style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">Account</h3>
+    <div class="flex justify-between items-center" style="padding: 12px 0; border-bottom: 1px solid var(--ink-100);">
+      <div>
+        <div style="font-size: 14px; font-weight: 500;">Change password</div>
+        <div class="text-tiny mt-2">Update your login password</div>
+      </div>
+      <button class="btn btn-ghost">Change →</button>
+    </div>
+    <div class="flex justify-between items-center" style="padding: 12px 0; border-bottom: 1px solid var(--ink-100);">
+      <div>
+        <div style="font-size: 14px; font-weight: 500;">Subscription</div>
+        <div class="text-tiny mt-2">Currently on the Free plan</div>
+      </div>
+      <button class="btn btn-secondary" style="font-size: 13px;">Upgrade</button>
+    </div>
+    <div class="flex justify-between items-center" style="padding: 12px 0;">
+      <div>
+        <div style="font-size: 14px; font-weight: 500; color: var(--red);">Log out</div>
+        <div class="text-tiny mt-2">Sign out of your account</div>
+      </div>
+      <a href="/" class="btn btn-ghost" style="color: var(--red);">Log out →</a>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>
