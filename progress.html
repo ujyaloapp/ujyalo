@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Progress — Ujyalo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/main.css">
+</head>
+<body style="background: var(--ink-50); min-height: 100vh;">
+
+<!-- ═══ NAV ═══ -->
+<nav class="nav-app">
+  <div class="container nav-inner">
+    <a href="/dashboard.html" class="logo">
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="6" fill="#F59E0B"/>
+        <g stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round">
+          <line x1="16" y1="2" x2="16" y2="6"/><line x1="16" y1="26" x2="16" y2="30"/>
+          <line x1="2" y1="16" x2="6" y2="16"/><line x1="26" y1="16" x2="30" y2="16"/>
+          <line x1="6" y1="6" x2="9" y2="9"/><line x1="23" y1="23" x2="26" y2="26"/>
+          <line x1="26" y1="6" x2="23" y2="9"/><line x1="9" y1="23" x2="6" y2="26"/>
+        </g>
+      </svg>
+      ujyalo
+    </a>
+    <div class="nav-links">
+      <a href="/dashboard.html">Home</a>
+      <a href="/practice.html">Practice</a>
+      <a href="/progress.html" class="active">Progress</a>
+      <a href="/profile.html">Profile</a>
+    </div>
+    <div class="nav-actions">
+      <span class="streak-pill">🔥 7</span>
+      <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--brand); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">R</div>
+    </div>
+  </div>
+</nav>
+
+<main class="container" style="padding: 48px 24px;">
+
+  <!-- Header -->
+  <div class="animate-up mb-8">
+    <h1 class="font-display" style="font-size: 36px; font-weight: 600; letter-spacing: -1px; margin-bottom: 4px;">
+      Your <em style="color: var(--brand); font-style: italic;">progress.</em>
+    </h1>
+    <p class="text-muted" style="font-size: 16px;">Last 30 days · Across all subjects</p>
+  </div>
+
+  <!-- Big stats -->
+  <div class="grid-4 animate-up delay-1 mb-8">
+    <div class="card" style="padding: 20px;">
+      <div class="stat-num">142</div>
+      <div class="stat-label">Total questions</div>
+    </div>
+    <div class="card" style="padding: 20px;">
+      <div class="stat-num">68%</div>
+      <div class="stat-label">Accuracy</div>
+    </div>
+    <div class="card" style="padding: 20px;">
+      <div class="stat-num" style="color: var(--green);">+12%</div>
+      <div class="stat-label">vs last week</div>
+    </div>
+    <div class="card" style="padding: 20px;">
+      <div class="stat-num" style="color: #854F0B;">7 🔥</div>
+      <div class="stat-label">Day streak</div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="card animate-up delay-2 mb-8">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h3 class="font-display" style="font-size: 20px; font-weight: 600;">Accuracy over time</h3>
+        <p class="text-muted" style="font-size: 13px;">Last 4 weeks of practice</p>
+      </div>
+      <span class="badge badge-green">Improving steadily</span>
+    </div>
+    <div style="position: relative;">
+      <svg width="100%" height="200" viewBox="0 0 800 200" preserveAspectRatio="none">
+        <!-- Grid lines -->
+        <line x1="0" y1="50" x2="800" y2="50" stroke="#EDF1F7" stroke-width="1"/>
+        <line x1="0" y1="100" x2="800" y2="100" stroke="#EDF1F7" stroke-width="1"/>
+        <line x1="0" y1="150" x2="800" y2="150" stroke="#EDF1F7" stroke-width="1"/>
+
+        <!-- Area gradient -->
+        <defs>
+          <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#1E5FA8" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#1E5FA8" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+
+        <polygon points="0,160 100,150 200,130 300,140 400,110 500,100 600,80 700,70 800,60 800,200 0,200" fill="url(#areaGrad)"/>
+        <polyline points="0,160 100,150 200,130 300,140 400,110 500,100 600,80 700,70 800,60" fill="none" stroke="#1E5FA8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- Data points -->
+        <circle cx="100" cy="150" r="4" fill="#1E5FA8"/>
+        <circle cx="300" cy="140" r="4" fill="#1E5FA8"/>
+        <circle cx="500" cy="100" r="4" fill="#1E5FA8"/>
+        <circle cx="700" cy="70" r="4" fill="#1E5FA8"/>
+        <circle cx="800" cy="60" r="6" fill="#F59E0B" stroke="white" stroke-width="2"/>
+      </svg>
+      <div class="flex justify-between" style="font-size: 11px; color: var(--ink-300); padding-top: 8px;">
+        <span>Week 1</span><span>Week 2</span><span>Week 3</span><span>Week 4</span><span style="color: var(--sun); font-weight: 600;">Today</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two column: weak/strong -->
+  <div class="grid-2 animate-up delay-3 mb-8" style="gap: 16px;">
+    <div class="card">
+      <div class="flex items-center gap-2 mb-4">
+        <span style="font-size: 18px;">✓</span>
+        <h3 class="font-display" style="font-size: 18px; font-weight: 600;">Strong chapters</h3>
+      </div>
+      <div>
+        <div class="chapter-row">
+          <div>
+            <div style="font-weight: 500; font-size: 14px;">Algebra</div>
+            <div class="text-tiny">Maths · 24 questions</div>
+          </div>
+          <span class="badge badge-green">88%</span>
+        </div>
+        <div class="chapter-row">
+          <div>
+            <div style="font-weight: 500; font-size: 14px;">Geometry</div>
+            <div class="text-tiny">Maths · 18 questions</div>
+          </div>
+          <span class="badge badge-green">82%</span>
+        </div>
+        <div class="chapter-row">
+          <div>
+            <div style="font-weight: 500; font-size: 14px;">Trigonometry</div>
+            <div class="text-tiny">Maths · 12 questions</div>
+          </div>
+          <span class="badge badge-green">76%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex items-center gap-2 mb-4">
+        <span style="font-size: 18px;">⚠</span>
+        <h3 class="font-display" style="font-size: 18px; font-weight: 600;">Needs more practice</h3>
+      </div>
+      <div>
+        <div class="chapter-row">
+          <div>
+            <div style="font-weight: 500; font-size: 14px;">Statistics</div>
+            <div class="text-tiny">Maths · 8 questions</div>
+          </div>
+          <span class="badge badge-red">42%</span>
+        </div>
+        <div class="chapter-row">
+          <div>
+            <div style="font-weight: 500; font-size: 14px;">Sets & Functions</div>
+            <div class="text-tiny">Maths · 14 questions</div>
+          </div>
+          <span class="badge badge-red">51%</span>
+        </div>
+        <div class="chapter-row">
+          <div>
+            <div style="font-weight: 500; font-size: 14px;">Mensuration</div>
+            <div class="text-tiny">Maths · 10 questions</div>
+          </div>
+          <span class="badge badge-sun">58%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI tip -->
+  <div class="animate-up delay-4 mb-8">
+    <div style="background: linear-gradient(135deg, var(--sun-50) 0%, var(--sun-light) 100%); border: 1px solid var(--sun-light); border-radius: var(--radius-lg); padding: 24px;">
+      <div class="flex gap-3 items-start">
+        <span style="font-size: 24px;">💡</span>
+        <div>
+          <div class="font-display" style="font-size: 18px; font-weight: 600; color: #854F0B; margin-bottom: 6px;">
+            Personalised tip
+          </div>
+          <div style="color: #854F0B; font-size: 14px; line-height: 1.6; margin-bottom: 12px;">
+            Statistics is your weakest area at 42%. Spend 15 minutes on it tomorrow — focus on mean, median, and mode problems. You've improved Algebra by 23% in the last 2 weeks doing exactly this kind of focused practice.
+          </div>
+          <a href="/practice.html" class="btn btn-sun" style="font-size: 13px; padding: 10px 18px;">Practice Statistics now →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subject breakdown -->
+  <div class="animate-up" style="animation-delay: 0.5s;">
+    <div class="label-tiny mb-4">Subject breakdown</div>
+    <div class="card" style="padding: 24px;">
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <div style="font-weight: 500; font-size: 14px;">🧮 Compulsory Maths</div>
+          <span style="font-size: 13px; color: var(--ink-500);">68% · 84 questions</span>
+        </div>
+        <div class="progress-bar"><div class="progress-bar-fill" style="width: 68%;"></div></div>
+      </div>
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <div style="font-weight: 500; font-size: 14px;">🔬 Science</div>
+          <span style="font-size: 13px; color: var(--ink-500);">71% · 42 questions</span>
+        </div>
+        <div class="progress-bar"><div class="progress-bar-fill" style="width: 71%;"></div></div>
+      </div>
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <div style="font-weight: 500; font-size: 14px;">📖 Compulsory English</div>
+          <span style="font-size: 13px; color: var(--ink-500);">82% · 16 questions</span>
+        </div>
+        <div class="progress-bar"><div class="progress-bar-fill" style="width: 82%;"></div></div>
+      </div>
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <div style="font-weight: 500; font-size: 14px;">🌏 Social Studies</div>
+          <span style="font-size: 13px; color: var(--ink-500);">— Not started</span>
+        </div>
+        <div class="progress-bar"><div class="progress-bar-fill" style="width: 0%;"></div></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>
