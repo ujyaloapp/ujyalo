@@ -1,225 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FAQ — Ujyalo</title>
-<meta name="description" content="Frequently asked questions about Ujyalo - for students, parents, and schools">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles/main.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Frequently asked questions about Ujyalo - for students, parents, and schools" />
+  <title>FAQ — Ujyalo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
 
-<nav class="nav-public">
-  <div class="container nav-inner">
-    <a href="/" class="logo">
-      <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="6" fill="#F59E0B"/>
-        <g stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round">
-          <line x1="16" y1="2" x2="16" y2="6"/><line x1="16" y1="26" x2="16" y2="30"/>
-          <line x1="2" y1="16" x2="6" y2="16"/><line x1="26" y1="16" x2="30" y2="16"/>
-          <line x1="6" y1="6" x2="9" y2="9"/><line x1="23" y1="23" x2="26" y2="26"/>
-          <line x1="26" y1="6" x2="23" y2="9"/><line x1="9" y1="23" x2="6" y2="26"/>
-        </g>
-      </svg>
-      ujyalo
-    </a>
-    <div class="nav-links">
-      <a href="/practice.html">Practice</a>
-      <a href="/pricing.html">Pricing</a>
+  <div class="announcement-bar">
+    🎉 Ujyalo is now live! Join the waitlist for full access — <a href="signup.html">sign up free →</a>
+  </div>
+
+  <nav class="nav-public">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="index.html" class="logo">ujyalo</a>
+        <div class="nav-links">
+          <a href="practice.html">Practice</a>
+          <a href="features.html">Features</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="about.html">About</a>
+        </div>
+        <div class="nav-actions">
+          <a href="login.html" class="btn btn-ghost">Log in</a>
+          <a href="signup.html" class="btn btn-primary">Sign up free →</a>
+        </div>
+      </div>
     </div>
-    <div class="nav-actions">
-      <a href="/login.html" class="btn-ghost">Log in</a>
-      <a href="/signup.html" class="btn btn-primary">Sign up free →</a>
+  </nav>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-label">FAQ</div>
+      <h1>Frequently asked<br><em>questions.</em></h1>
+      <p>Everything students and parents commonly ask about Ujyalo. Can't find what you're looking for? Get in touch.</p>
     </div>
   </div>
-</nav>
 
-<section class="page-header">
-  <div class="container animate-up">
-    <div class="section-label-tag">FAQ</div>
-    <h1 class="page-title">Frequently asked<br><em>questions.</em></h1>
-    <p class="page-sub">Everything students and parents commonly ask about Ujyalo. Can't find what you're looking for? Get in touch.</p>
-  </div>
-</section>
-
-<section class="section">
-  <div class="container-narrow">
-
-    <div class="reveal mb-8">
-      <h2 class="font-display" style="font-size: 24px; font-weight: 600; color: var(--brand); margin-bottom: 20px;">For students</h2>
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          <span>Is Ujyalo free?</span>
-          <span class="faq-icon">+</span>
+  <!-- FOR STUDENTS -->
+  <section class="section">
+    <div class="container-narrow">
+      <span class="label-tiny">For students</span>
+      <div id="faq-students" class="mt-6">
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Is Ujyalo free?
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-answer">Yes — completely free to start. The free plan gives 10 questions per day across two subjects. Upgrade only if you want unlimited practice and all features.</div>
         </div>
-        <div class="faq-answer">Yes — completely free to start. The free plan gives 10 questions per day across two subjects. Upgrade only if you want unlimited practice and all features.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          <span>Will Ujyalo help me pass SEE?</span>
-          <span class="faq-icon">+</span>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Will Ujyalo help me pass SEE?
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-answer">Ujyalo gives you the tools — past papers, mock tests, instant feedback, progress tracking. But you have to put in the work. Students who practice 30 minutes daily for 2–3 months see major improvement.</div>
         </div>
-        <div class="faq-answer">Ujyalo gives you the tools — past papers, mock tests, instant feedback, progress tracking. But you have to put in the work. Students who practice 30 minutes daily for 2-3 months see major improvement.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          <span>What if I don't have internet always?</span>
-          <span class="faq-icon">+</span>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            What if I don't have internet always?
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-answer">Ujyalo works on slow internet — we designed it to be lightweight. You only need internet when generating new questions or submitting answers. Practice during your school's free WiFi or anywhere with mobile data.</div>
         </div>
-        <div class="faq-answer">Ujyalo works on slow internet — we designed it to be lightweight. You only need internet when generating new questions or submitting answers. Practice during your school's free WiFi or anywhere with mobile data.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          <span>Is the AI in Nepali or English?</span>
-          <span class="faq-icon">+</span>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Is the AI in Nepali or English?
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-answer">All AI responses are in clear, simple English. Why? Because Nepali AI quality isn't good enough yet. Plus, your SEE exam is mostly in English anyway. We use Nepali context (names, places, currency) but the language is English.</div>
         </div>
-        <div class="faq-answer">All AI responses are in clear, simple English. Why? Because Nepali AI quality isn't good enough yet. Plus, your SEE exam is mostly in English anyway. We use Nepali context (names, places, currency) but the language is English.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          <span>Can I use it on my phone?</span>
-          <span class="faq-icon">+</span>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Can I use it on my phone?
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-answer">Absolutely. Ujyalo works perfectly on phones, tablets, and computers. Most of our students study on their phones. No app to download — just open ujyalo.app in your browser.</div>
         </div>
-        <div class="faq-answer">Absolutely. Ujyalo works perfectly on phones, tablets, and computers. Most of our students study on their phones. No app to download — just open ujyalo.app in your browser.</div>
       </div>
     </div>
+  </section>
 
-    <div class="reveal mb-8">
-      <h2 class="font-display" style="font-size: 24px; font-weight: 600; color: var(--brand); margin-bottom: 20px;">For parents</h2>
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          <span>How will I know my child is studying?</span>
-          <span class="faq-icon">+</span>
+  <!-- FOR PARENTS -->
+  <section class="section section-bg-soft">
+    <div class="container-narrow">
+      <span class="label-tiny">For parents</span>
+      <div id="faq-parents" class="mt-6">
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            How will I know my child is studying?
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-answer">Every Sunday morning, you receive a beautiful email showing exactly what your child practised that week. How many questions, accuracy, weak chapters, and streaks. You see real progress, not just promises.</div>
         </div>
-        <div class="faq-answer">Every Sunday morning, you receive a beautiful email showing exactly what your child practised that week. How many questions, accuracy, weak chapters, and streaks. You see real progress, not just promises.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          <span>Is Rs 299/month worth it?</span>
-          <span class="faq-icon">+</span>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Is Rs 299/month worth it?
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-answer">Coaching centers cost Rs 5,000–15,000 per month. Tutors cost Rs 2,000–5,000. Ujyalo is Rs 299 per month and works 24/7. Try the free plan first — most parents see the value clearly within 2 weeks.</div>
         </div>
-        <div class="faq-answer">Coaching centers cost Rs 5,000-15,000 per month. Tutors cost Rs 2,000-5,000. Ujyalo is Rs 299 per month and works 24/7. Try the free plan first — most parents see the value clearly within 2 weeks.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          <span>Is my child's data safe?</span>
-          <span class="faq-icon">+</span>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Is my child's data safe?
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-answer">Yes. We never share data with third parties. We don't sell information. Your child's practice history is theirs alone. See our <a href="privacy.html" style="color:var(--brand);">privacy policy</a> for full details.</div>
         </div>
-        <div class="faq-answer">Yes. We never share data with third parties. We don't sell information. Your child's practice history is theirs alone. See our <a href="/privacy.html" style="color: var(--brand);">privacy policy</a> for details.</div>
       </div>
     </div>
+  </section>
 
-    <div class="reveal">
-      <h2 class="font-display" style="font-size: 24px; font-weight: 600; color: var(--brand); margin-bottom: 20px;">For schools</h2>
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          <span>Can our school use Ujyalo for all students?</span>
-          <span class="faq-icon">+</span>
+  <!-- FOR SCHOOLS -->
+  <section class="section">
+    <div class="container-narrow">
+      <span class="label-tiny">For schools</span>
+      <div id="faq-schools" class="mt-6">
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Can our school use Ujyalo for all students?
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-answer">Yes — we offer School plans starting Rs 5,000/month for up to 30 students. Includes teacher dashboard, class progress reports, and priority support. Email hello@ujyalo.app for a demo.</div>
         </div>
-        <div class="faq-answer">Yes — we offer School plans starting Rs 5,000/month for up to 30 students. Includes teacher dashboard, class progress reports, and priority support. Email hello@ujyalo.app for a demo.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          <span>Do you offer custom question banks?</span>
-          <span class="faq-icon">+</span>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Do you offer custom question banks?
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-answer">Yes — schools can upload their own question banks for students to practice. Useful for teachers who want to align practice with what they're teaching in class.</div>
         </div>
-        <div class="faq-answer">Yes — schools can upload their own question banks for students to practice. Useful for teachers who want to align practice with what they're teaching in class.</div>
       </div>
     </div>
+  </section>
 
-  </div>
-</section>
-
-<section class="section section-bg-soft">
-  <div class="container text-center">
-    <div class="reveal" style="max-width: 500px; margin: 0 auto;">
-      <h2 class="section-title">Still have questions?</h2>
-      <p class="text-muted mb-6" style="font-size: 16px;">Email us at hello@ujyalo.app — we reply within 24 hours.</p>
-      <a href="/contact.html" class="btn btn-primary">Contact us →</a>
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Still have<br><em>questions?</em></h2>
+      <p>Email us at hello@ujyalo.app — we reply within 24 hours.</p>
+      <a href="contact.html" class="btn btn-primary btn-large">Contact us →</a>
     </div>
-  </div>
-</section>
+  </section>
 
-<script>
-function toggleFaq(el) {
-  el.parentElement.classList.toggle('open');
-}
-</script>
-
-<footer class="site-footer">
-  <div class="container">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a href="/" class="logo">
-          <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-            <circle cx="16" cy="16" r="6" fill="#F59E0B"/>
-            <g stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round">
-              <line x1="16" y1="2" x2="16" y2="6"/><line x1="16" y1="26" x2="16" y2="30"/>
-              <line x1="2" y1="16" x2="6" y2="16"/><line x1="26" y1="16" x2="30" y2="16"/>
-              <line x1="6" y1="6" x2="9" y2="9"/><line x1="23" y1="23" x2="26" y2="26"/>
-              <line x1="26" y1="6" x2="23" y2="9"/><line x1="9" y1="23" x2="6" y2="26"/>
-            </g>
-          </svg>
-          ujyalo
-        </a>
-        <p>AI-powered SEE preparation made with care, in Nepal. Helping students brighten their future, one question at a time.</p>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">ujyalo</a>
+          <p>AI-powered SEE preparation made with care, in Nepal. Helping students brighten their future, one question at a time.</p>
+          <div class="footer-social mt-4">
+            <a href="#" title="Facebook">f</a>
+            <a href="#" title="Instagram">in</a>
+            <a href="#" title="TikTok">tt</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="practice.html">Practice</a></li>
+            <li><a href="features.html">Features</a></li>
+            <li><a href="how-it-works.html">How it works</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="for-schools.html">For schools</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="privacy.html">Privacy policy</a></li>
+            <li><a href="terms.html">Terms of service</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="footer-col">
-        <h4>Product</h4>
-        <ul>
-          <li><a href="/practice.html">Practice</a></li>
-          <li><a href="/features.html">Features</a></li>
-          <li><a href="/how-it-works.html">How it works</a></li>
-          <li><a href="/pricing.html">Pricing</a></li>
-          <li><a href="/for-schools.html">For schools</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <ul>
-          <li><a href="/about.html">About us</a></li>
-          <li><a href="/contact.html">Contact</a></li>
-          <li><a href="/faq.html">FAQ</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Legal</h4>
-        <ul>
-          <li><a href="/privacy.html">Privacy policy</a></li>
-          <li><a href="/terms.html">Terms of service</a></li>
-        </ul>
+      <div class="footer-bottom">
+        <span class="footer-bottom-left">© 2026 Ujyalo · Made in Nepal 🇳🇵</span>
+        <span class="footer-bottom-right">Brighten your future.</span>
       </div>
     </div>
-    <div class="footer-bottom">
-      <div class="footer-bottom-left">© 2026 Ujyalo · Made in Nepal 🇳🇵</div>
-      <div class="footer-social">
-        <a href="#" title="Facebook">f</a>
-        <a href="#" title="Instagram">@</a>
-        <a href="#" title="TikTok">▶</a>
-      </div>
-      <div class="footer-bottom-right">Brighten your future.</div>
-    </div>
-  </div>
-</footer>
+  </footer>
 
-<a href="/contact.html" class="help-bubble">
-  <span class="help-bubble-icon">?</span>
-  Need help?
-</a>
+  <a href="contact.html" class="help-bubble">
+    <div class="help-bubble-icon">?</div>
+    Need help?
+  </a>
 
-<script>
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        io.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-</script>
+  <script>
+    function toggleFaq(el) {
+      const item = el.parentElement;
+      item.classList.toggle('open');
+    }
+  </script>
 
-</body></html>
+</body>
+</html>
