@@ -8,767 +8,283 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --blue: #1E5FA8;
-      --blue-dark: #174d8a;
-      --blue-light: #e8f0fb;
-      --gold: #F59E0B;
-      --gold-light: #fef3c7;
-      --text: #111827;
-      --muted: #6B7280;
-      --border: #e5e7eb;
-      --bg: #ffffff;
-      --radius: 16px;
-    }
-
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      color: var(--text);
-      background: var(--bg);
-      line-height: 1.6;
-    }
-
-    /* ── ANNOUNCEMENT BAR ── */
-    .announcement {
-      background: var(--gold);
-      color: #111827;
-      text-align: center;
-      padding: 0.55rem 1rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-    .announcement a { color: var(--blue-dark); text-decoration: underline; }
-
-    /* ── NAV ── */
-    nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.2rem 2rem;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      background: rgba(255,255,255,0.96);
-      backdrop-filter: blur(8px);
-      z-index: 100;
-    }
-    .nav-logo {
-      font-family: 'Fraunces', serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--blue);
-      text-decoration: none;
-    }
-    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
-    .nav-links a {
-      text-decoration: none;
-      color: var(--text);
-      font-size: 0.95rem;
-      font-weight: 500;
-    }
-    .nav-links a:hover { color: var(--blue); }
-    .btn-nav {
-      background: var(--blue);
-      color: white !important;
-      padding: 0.5rem 1.2rem;
-      border-radius: 8px;
-      font-weight: 600 !important;
-    }
-    .btn-nav:hover { background: var(--blue-dark) !important; }
-
-    /* ── HERO ── */
-    .hero {
-      background: linear-gradient(160deg, #1E5FA8 0%, #174d8a 60%, #0f3d72 100%);
-      color: white;
-      padding: 5rem 2rem 4.5rem;
-      text-align: center;
+    /* Homepage-only styles */
+    .hero-home {
       position: relative;
+      padding: 90px 0 70px;
+      background:
+        radial-gradient(at 20% 0%, var(--sun-50) 0px, transparent 50%),
+        radial-gradient(at 80% 10%, var(--brand-50) 0px, transparent 50%), white;
+      text-align: center;
       overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -80px; right: -80px;
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(245,158,11,0.18) 0%, transparent 65%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-    .hero::after {
-      content: '';
-      position: absolute;
-      bottom: -100px; left: -60px;
-      width: 350px; height: 350px;
-      background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 65%);
-      border-radius: 50%;
-      pointer-events: none;
     }
     .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      background: rgba(245,158,11,0.18);
-      border: 1px solid rgba(245,158,11,0.35);
-      color: #fcd34d;
-      font-size: 0.82rem;
+      gap: 6px;
+      background: var(--brand-light);
+      border: 1px solid var(--brand);
+      color: var(--brand);
+      font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      padding: 0.4rem 1rem;
-      border-radius: 100px;
-      margin-bottom: 1.8rem;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 24px;
     }
-    .hero h1 {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2.4rem, 6vw, 4rem);
-      font-weight: 700;
-      line-height: 1.12;
-      margin-bottom: 1.4rem;
-      position: relative;
-    }
-    .hero h1 em {
-      font-style: italic;
-      color: #fcd34d;
-    }
-    .hero-sub {
-      font-size: 1.15rem;
-      color: rgba(255,255,255,0.82);
-      max-width: 580px;
-      margin: 0 auto 2.2rem;
-      line-height: 1.75;
-    }
-    .hero-cta {
+    .hero-cta-row {
       display: flex;
-      gap: 1rem;
+      gap: 12px;
       justify-content: center;
       flex-wrap: wrap;
-      margin-bottom: 3rem;
+      margin-bottom: 36px;
     }
-    .btn-primary {
-      background: var(--gold);
-      color: #111827;
-      padding: 0.9rem 2rem;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 1rem;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.2s;
-      display: inline-block;
-    }
-    .btn-primary:hover { background: #e08d00; transform: translateY(-2px); }
-    .btn-secondary {
-      background: rgba(255,255,255,0.12);
-      color: white;
-      padding: 0.9rem 2rem;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 1rem;
-      text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.25);
-      transition: background 0.2s, transform 0.2s;
-      display: inline-block;
-    }
-    .btn-secondary:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
-
-    /* ── URGENCY BAR ── */
-    .urgency-bar {
-      background: rgba(0,0,0,0.25);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 12px;
-      padding: 1rem 1.5rem;
-      max-width: 640px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
-      flex-wrap: wrap;
-      position: relative;
-    }
-    .urgency-dot {
-      width: 8px; height: 8px;
-      background: #4ade80;
-      border-radius: 50%;
-      flex-shrink: 0;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.3); }
-    }
-    .urgency-bar span {
-      font-size: 0.92rem;
-      color: rgba(255,255,255,0.9);
-    }
-    .urgency-bar strong { color: #fcd34d; }
-
-    /* ── STATS ── */
-    .stats {
+    .stats-bar {
       background: white;
-      border-bottom: 1px solid var(--border);
-      padding: 2.5rem 2rem;
+      border-top: 1px solid var(--ink-100);
+      border-bottom: 1px solid var(--ink-100);
+      padding: 28px 0;
     }
-    .stats-inner {
-      max-width: 860px;
-      margin: 0 auto;
+    .stats-bar-inner {
       display: flex;
       justify-content: center;
-      gap: 4rem;
+      gap: 56px;
       flex-wrap: wrap;
     }
-    .stat {
-      text-align: center;
-    }
-    .stat-number {
+    .stat-item { text-align: center; }
+    .stat-item .num {
       font-family: 'Fraunces', serif;
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 700;
-      color: var(--blue);
+      color: var(--brand);
       line-height: 1;
-      margin-bottom: 0.3rem;
+      margin-bottom: 4px;
     }
-    .stat-label {
-      font-size: 0.85rem;
-      color: var(--muted);
+    .stat-item .lbl {
+      font-size: 12px;
+      color: var(--ink-500);
       font-weight: 500;
     }
-
-    /* ── SECTIONS ── */
-    section { padding: 5rem 2rem; }
-    .container { max-width: 860px; margin: 0 auto; }
-    .container-wide { max-width: 1100px; margin: 0 auto; }
-    .section-label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--blue);
-      margin-bottom: 0.8rem;
-      text-align: center;
-    }
-    .section-title {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
-      font-weight: 700;
-      text-align: center;
-      line-height: 1.2;
-      margin-bottom: 0.8rem;
-    }
-    .section-title em { font-style: italic; color: var(--blue); }
-    .section-sub {
-      text-align: center;
-      color: var(--muted);
-      font-size: 1rem;
-      max-width: 520px;
-      margin: 0 auto 3rem;
-      line-height: 1.7;
-    }
-
-    /* ── PROBLEM SECTION ── */
-    .problem { background: #f9fafb; }
     .problem-box {
       background: white;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2.5rem;
-      max-width: 700px;
+      border: 1px solid var(--ink-100);
+      border-radius: var(--radius-xl);
+      padding: 48px 40px;
+      max-width: 680px;
       margin: 0 auto;
       text-align: center;
     }
-    .problem-box .emoji { font-size: 3rem; margin-bottom: 1rem; }
+    .problem-box .emoji { font-size: 3rem; margin-bottom: 16px; }
     .problem-box h3 {
       font-family: 'Fraunces', serif;
-      font-size: 1.6rem;
+      font-size: clamp(1.5rem, 3vw, 2rem);
       font-weight: 700;
-      margin-bottom: 1rem;
-      line-height: 1.3;
+      margin-bottom: 16px;
+      line-height: 1.25;
     }
-    .problem-box h3 em { font-style: italic; color: var(--blue); }
+    .problem-box h3 em { font-style: italic; color: var(--brand); }
     .problem-box p {
-      color: var(--muted);
-      font-size: 1rem;
-      line-height: 1.75;
-      margin-bottom: 0.8rem;
+      color: var(--ink-500);
+      font-size: 15px;
+      line-height: 1.8;
+      margin-bottom: 12px;
     }
-    .problem-box p:last-child { margin-bottom: 0; }
-    .problem-highlight {
-      background: var(--blue-light);
-      border-left: 4px solid var(--blue);
-      border-radius: 0 10px 10px 0;
-      padding: 1rem 1.2rem;
-      margin: 1.5rem 0;
-      text-align: left;
-      font-style: italic;
-      color: var(--blue-dark);
-      font-size: 0.98rem;
-      font-weight: 600;
-    }
-
-    /* ── FEATURES ── */
-    .features { background: white; }
-    .features-grid {
+    .home-features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
+      gap: 1px;
+      background: var(--ink-200);
+      border: 1px solid var(--ink-200);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
     }
-    .feature-card {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2rem;
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    .feature-cell {
+      background: white;
+      padding: 36px;
+      transition: background 0.2s;
     }
-    .feature-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 35px rgba(30,95,168,0.1);
-      border-color: var(--blue);
+    .feature-cell:hover { background: var(--ink-50); }
+    .feature-cell .icon {
+      width: 48px; height: 48px;
+      border-radius: var(--radius-md);
+      background: var(--brand-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 20px;
     }
-    .feature-icon { font-size: 2rem; margin-bottom: 1rem; }
-    .feature-card h3 {
-      font-size: 1.05rem;
+    .feature-cell h3 {
+      font-size: 16px;
       font-weight: 700;
-      margin-bottom: 0.5rem;
+      margin-bottom: 8px;
+      color: var(--ink-900);
     }
-    .feature-card p {
-      font-size: 0.92rem;
-      color: var(--muted);
+    .feature-cell p {
+      font-size: 14px;
+      color: var(--ink-500);
       line-height: 1.65;
     }
-    .feature-badge {
-      display: inline-block;
-      background: var(--gold-light);
-      color: #92400e;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.2rem 0.6rem;
-      border-radius: 100px;
-      margin-top: 0.6rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    /* ── HOW IT WORKS ── */
-    .how { background: #f9fafb; }
-    .steps {
+    .steps-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 2rem;
-      position: relative;
+      gap: 24px;
     }
-    .step {
-      text-align: center;
-      padding: 2rem 1.5rem;
+    .step-card {
       background: white;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
+      border: 1px solid var(--ink-100);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      text-align: center;
     }
-    .step-number {
+    .step-num-circle {
       width: 52px; height: 52px;
-      background: var(--blue);
+      background: var(--brand);
       color: white;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-family: 'Fraunces', serif;
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: 700;
-      margin: 0 auto 1.2rem;
+      margin: 0 auto 16px;
     }
-    .step h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .step p {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* ── SUBJECTS ── */
-    .subjects { background: white; }
-    .subjects-grid {
+    .step-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .step-card p { font-size: 13px; color: var(--ink-500); line-height: 1.65; }
+    .subjects-row {
       display: flex;
-      gap: 1rem;
+      gap: 12px;
       flex-wrap: wrap;
       justify-content: center;
     }
-    .subject-pill {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      background: var(--blue-light);
-      border: 2px solid transparent;
-      border-radius: 12px;
-      padding: 1rem 1.5rem;
-      text-decoration: none;
-      color: var(--blue-dark);
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: all 0.2s;
-    }
-    .subject-pill:hover {
-      background: var(--blue);
-      color: white;
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(30,95,168,0.2);
-    }
-    .subject-pill .emoji { font-size: 1.4rem; }
-    .subject-sub { font-size: 0.75rem; font-weight: 400; opacity: 0.75; display: block; }
-
-    /* ── TESTIMONIALS ── */
-    .testimonials { background: #f9fafb; }
     .testimonials-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
+      gap: 20px;
     }
-    .testimonial-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.8rem;
-    }
-    .testimonial-stars {
-      color: var(--gold);
-      font-size: 1rem;
-      margin-bottom: 0.8rem;
-      letter-spacing: 2px;
-    }
-    .testimonial-card blockquote {
-      font-size: 0.97rem;
-      color: #374151;
-      line-height: 1.75;
-      margin-bottom: 1.2rem;
-      font-style: italic;
-    }
-    .testimonial-author {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .t-avatar {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--blue-light), #dbeafe);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      flex-shrink: 0;
-    }
-    .t-info strong { display: block; font-size: 0.9rem; font-weight: 700; }
-    .t-info span { font-size: 0.82rem; color: var(--muted); }
-    .testimonials-note {
-      text-align: center;
-      margin-top: 1.5rem;
-      font-size: 0.82rem;
-      color: var(--muted);
-      font-style: italic;
-    }
-
-    /* ── PARENT SECTION ── */
-    .parents {
-      background: linear-gradient(135deg, #1E5FA8, #174d8a);
+    .parents-section {
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
       color: white;
     }
     .parents-inner {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 4rem;
+      gap: 56px;
       align-items: center;
-      max-width: 1000px;
+      max-width: 960px;
       margin: 0 auto;
+      padding: 80px 24px;
     }
-    .parents h2 {
+    @media (max-width: 767px) {
+      .parents-inner { grid-template-columns: 1fr; gap: 32px; padding: 48px 24px; }
+      .stats-bar-inner { gap: 28px; }
+      .problem-box { padding: 32px 24px; }
+    }
+    .parents-text .label-tiny { color: #fcd34d; }
+    .parents-text h2 {
       font-family: 'Fraunces', serif;
-      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
       font-weight: 700;
       line-height: 1.2;
-      margin-bottom: 1.2rem;
+      color: white;
+      margin-bottom: 16px;
     }
-    .parents h2 em { font-style: italic; color: #fcd34d; }
-    .parents p {
-      color: rgba(255,255,255,0.82);
-      font-size: 1rem;
-      line-height: 1.75;
-      margin-bottom: 1rem;
+    .parents-text h2 em { font-style: italic; color: #fcd34d; }
+    .parents-text p {
+      color: rgba(255,255,255,0.8);
+      font-size: 15px;
+      line-height: 1.8;
+      margin-bottom: 12px;
     }
-    .parents-card {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: var(--radius);
-      padding: 1.8rem;
-    }
-    .parents-card h4 {
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #fcd34d;
-      margin-bottom: 1.2rem;
-    }
-    .report-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.7rem 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      font-size: 0.9rem;
-    }
-    .report-row:last-child { border-bottom: none; }
-    .report-label { color: rgba(255,255,255,0.75); }
-    .report-value { font-weight: 700; color: white; }
-    .report-value.good { color: #4ade80; }
-    .report-value.warn { color: #fcd34d; }
-
-    /* ── PRICING TEASER ── */
-    .pricing-teaser { background: white; }
-    .pricing-cards {
+    .pricing-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
-      max-width: 860px;
+      gap: 20px;
+      max-width: 820px;
       margin: 0 auto;
-    }
-    .pricing-card {
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2rem;
-      text-align: center;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 12px 35px rgba(0,0,0,0.08); }
-    .pricing-card.popular {
-      border-color: var(--blue);
-      position: relative;
-    }
-    .popular-badge {
-      position: absolute;
-      top: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--blue);
-      color: white;
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 0.3rem 1rem;
-      border-radius: 100px;
-      white-space: nowrap;
-    }
-    .pricing-card h3 { font-weight: 700; margin-bottom: 0.5rem; }
-    .price {
-      font-family: 'Fraunces', serif;
-      font-size: 2.4rem;
-      font-weight: 700;
-      color: var(--blue);
-      margin: 0.8rem 0;
-      line-height: 1;
-    }
-    .price span { font-size: 1rem; color: var(--muted); font-family: 'Plus Jakarta Sans', sans-serif; }
-    .pricing-card ul {
-      list-style: none;
-      margin: 1.2rem 0;
-      text-align: left;
-    }
-    .pricing-card ul li {
-      font-size: 0.9rem;
-      padding: 0.3rem 0;
-      color: #374151;
-    }
-    .pricing-card ul li::before { content: "✓ "; color: var(--blue); font-weight: 700; }
-    .btn-plan {
-      display: block;
-      padding: 0.8rem;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      text-decoration: none;
-      margin-top: 0.5rem;
-      transition: all 0.2s;
-    }
-    .btn-plan-primary { background: var(--blue); color: white; }
-    .btn-plan-primary:hover { background: var(--blue-dark); }
-    .btn-plan-outline { border: 2px solid var(--border); color: var(--text); }
-    .btn-plan-outline:hover { border-color: var(--blue); color: var(--blue); }
-
-    /* ── FINAL CTA ── */
-    .final-cta {
-      background: var(--gold-light);
-      text-align: center;
-      padding: 5rem 2rem;
-    }
-    .final-cta h2 {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 700;
-      margin-bottom: 1rem;
-      line-height: 1.2;
-    }
-    .final-cta h2 em { font-style: italic; color: var(--blue); }
-    .final-cta p {
-      color: var(--muted);
-      font-size: 1.05rem;
-      margin-bottom: 2rem;
-      max-width: 480px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .final-cta .btn-primary { font-size: 1.05rem; padding: 1rem 2.2rem; }
-
-    /* ── FOOTER ── */
-    footer {
-      background: #111827;
-      color: rgba(255,255,255,0.7);
-      padding: 3rem 2rem 2rem;
-    }
-    .footer-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 2rem;
-    }
-    .footer-logo {
-      font-family: 'Fraunces', serif;
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: white;
-      text-decoration: none;
-    }
-    .footer-brand p {
-      font-size: 0.88rem;
-      line-height: 1.7;
-      margin-top: 0.8rem;
-      max-width: 240px;
-    }
-    .footer-col h4 {
-      color: white;
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 1rem;
-    }
-    .footer-col a {
-      display: block;
-      color: rgba(255,255,255,0.6);
-      text-decoration: none;
-      font-size: 0.88rem;
-      margin-bottom: 0.5rem;
-    }
-    .footer-col a:hover { color: white; }
-    .footer-bottom {
-      max-width: 1100px;
-      margin: 2rem auto 0;
-      padding-top: 1.5rem;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.82rem;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    /* ── HELP BUBBLE ── */
-    .help-bubble {
-      position: fixed;
-      bottom: 1.5rem; right: 1.5rem;
-      background: var(--blue);
-      color: white;
-      padding: 0.6rem 1.1rem;
-      border-radius: 100px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      text-decoration: none;
-      box-shadow: 0 4px 20px rgba(30,95,168,0.35);
-      z-index: 999;
-      transition: transform 0.2s;
-    }
-    .help-bubble:hover { transform: translateY(-2px); }
-
-    @media (max-width: 768px) {
-      nav { padding: 1rem; }
-      .parents-inner { grid-template-columns: 1fr; gap: 2rem; }
-      .footer-inner { grid-template-columns: 1fr 1fr; }
-      .stats-inner { gap: 2rem; }
-    }
-    @media (max-width: 480px) {
-      .footer-inner { grid-template-columns: 1fr; }
-      .nav-links .hide-mobile { display: none; }
-      .hero { padding: 3.5rem 1.5rem 3rem; }
     }
   </style>
 </head>
 <body>
 
   <!-- ANNOUNCEMENT BAR -->
-  <div class="announcement">
+  <div class="announcement-bar">
     🎉 Ujyalo is now live! Join the waitlist for full access — <a href="signup.html">sign up free →</a>
   </div>
 
   <!-- NAV -->
-  <nav>
-    <a href="index.html" class="nav-logo">ujyalo</a>
-    <div class="nav-links">
-      <a href="practice.html" class="hide-mobile">Practice</a>
-      <a href="pricing.html" class="hide-mobile">Pricing</a>
-      <a href="about.html" class="hide-mobile">About</a>
-      <a href="login.html">Log in</a>
-      <a href="signup.html" class="btn-nav">Sign up free →</a>
+  <nav class="nav-public">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="index.html" class="logo">ujyalo</a>
+        <div class="nav-links">
+          <a href="practice.html">Practice</a>
+          <a href="features.html">Features</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="about.html">About</a>
+        </div>
+        <div class="nav-actions">
+          <a href="login.html" class="btn btn-ghost">Log in</a>
+          <a href="signup.html" class="btn btn-primary">Sign up free →</a>
+        </div>
+      </div>
     </div>
   </nav>
 
   <!-- HERO -->
-  <div class="hero">
-    <div class="hero-badge">🇳🇵 Made in Nepal, for Nepali students</div>
-    <h1>SEE is coming.<br>Are you <em>ready?</em></h1>
-    <p class="hero-sub">AI-powered SEE preparation that tracks your progress, sends reports to your parents, and feels like a patient teacher — available 24 hours a day, 7 days a week.</p>
-    <div class="hero-cta">
-      <a href="signup.html" class="btn-primary">Start practising free →</a>
-      <a href="how-it-works.html" class="btn-secondary">See how it works</a>
-    </div>
-    <div class="urgency-bar">
-      <div class="urgency-dot"></div>
-      <span>Students are practising right now &nbsp;·&nbsp; <strong>Free to start</strong> &nbsp;·&nbsp; No credit card needed</span>
+  <div class="hero-home">
+    <div class="container">
+      <div class="hero-badge">🇳🇵 Made in Nepal, for Nepali students</div>
+      <h1 class="hero-title">
+        SEE is coming.<br>
+        Are you <em>ready?</em>
+      </h1>
+      <p class="hero-sub">
+        AI-powered SEE preparation that tracks your progress, sends reports to your parents,
+        and feels like a patient teacher — available 24 hours a day, 7 days a week.
+      </p>
+      <div class="hero-cta-row">
+        <a href="signup.html" class="btn btn-primary btn-large">Start practising free →</a>
+        <a href="how-it-works.html" class="btn btn-secondary btn-large">See how it works</a>
+      </div>
+      <div class="live-bar">
+        <div class="live-dot"></div>
+        <span>Students are practising right now &nbsp;·&nbsp; <strong>Free to start</strong> &nbsp;·&nbsp; No credit card needed</span>
+      </div>
     </div>
   </div>
 
-  <!-- STATS -->
-  <div class="stats">
-    <div class="stats-inner">
-      <div class="stat">
-        <div class="stat-number">10 yrs</div>
-        <div class="stat-label">SEE past papers</div>
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-bar-inner">
+      <div class="stat-item">
+        <div class="num">10 yrs</div>
+        <div class="lbl">SEE past papers</div>
       </div>
-      <div class="stat">
-        <div class="stat-number">5</div>
-        <div class="stat-label">Subjects covered</div>
+      <div class="stat-item">
+        <div class="num">5</div>
+        <div class="lbl">Subjects covered</div>
       </div>
-      <div class="stat">
-        <div class="stat-number">24/7</div>
-        <div class="stat-label">AI feedback</div>
+      <div class="stat-item">
+        <div class="num">24/7</div>
+        <div class="lbl">AI feedback</div>
       </div>
-      <div class="stat">
-        <div class="stat-number">Rs 299</div>
-        <div class="stat-label">Per month — less than one tuition class</div>
+      <div class="stat-item">
+        <div class="num">Rs 299</div>
+        <div class="lbl">Less than one tuition class</div>
       </div>
     </div>
   </div>
 
   <!-- PROBLEM -->
-  <section class="problem">
+  <section class="section section-bg-soft">
     <div class="container">
       <div class="problem-box">
         <div class="emoji">😓</div>
         <h3>The pressure is <em>real.</em><br>The tools haven't kept up.</h3>
-        <p>Every year, hundreds of thousands of Nepali students sit the SEE exam with the weight of their entire family on their shoulders. It is not just an exam — it is pride, honour, and a family's hope.</p>
-        <div class="problem-highlight">
-          "Most families sacrifice everything for tuition. But even tuition does not always work. And for those who cannot afford it at all — their child faces SEE essentially alone."
+        <p>Every year, hundreds of thousands of Nepali students sit the SEE exam carrying the weight of their entire family on their shoulders. It is not just an exam — it is pride, honour, and a family's hope.</p>
+        <div class="highlight-quote">
+          "Most families sacrifice everything for tuition. But even tuition does not always work. And for those who cannot afford it — their child faces SEE essentially alone."
         </div>
         <p>Ujyalo exists to change that. A patient, knowledgeable study companion in every student's pocket — free to start, built for Nepal, available any time of day or night.</p>
       </div>
@@ -776,41 +292,45 @@
   </section>
 
   <!-- FEATURES -->
-  <section class="features">
-    <div class="container-wide">
-      <div class="section-label">What makes Ujyalo different</div>
-      <h2 class="section-title">Built for the way <em>Nepali students learn.</em></h2>
-      <p class="section-sub">Not a generic AI tool with a Nepali sticker. Built from the ground up for the SEE syllabus.</p>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">📜</div>
+  <section class="section">
+    <div class="container">
+      <div class="text-center mb-8">
+        <span class="label-tiny">What makes Ujyalo different</span>
+        <h2 class="section-title mt-2">Built for the way <em>Nepali students learn.</em></h2>
+        <p class="text-muted mt-4" style="max-width:520px; margin-left:auto; margin-right:auto; font-size:15px; line-height:1.75;">
+          Not a generic AI tool with a Nepali sticker. Built from the ground up for the SEE syllabus.
+        </p>
+      </div>
+      <div class="home-features-grid">
+        <div class="feature-cell">
+          <div class="icon">📜</div>
           <h3>10 years of past papers</h3>
-          <p>Real SEE papers from the last decade. The exact questions that have come before — the way students actually study and the way marks are actually scored.</p>
-          <span class="feature-badge">⭐ Most popular</span>
+          <p>Real SEE papers from the last decade. The exact questions that have come before — the way marks are actually scored.</p>
+          <span class="badge badge-sun mt-4">⭐ Most popular</span>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🤖</div>
+        <div class="feature-cell">
+          <div class="icon">🤖</div>
           <h3>AI that explains, not just answers</h3>
-          <p>Get a wrong answer? Ujyalo doesn't just mark it wrong. It explains why, shows you the correct method, and asks if you want to try again.</p>
+          <p>Get a wrong answer? Ujyalo doesn't just mark it wrong. It explains why, shows the correct method, and asks if you want to try again.</p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">📈</div>
+        <div class="feature-cell">
+          <div class="icon">📈</div>
           <h3>Progress tracking + streaks</h3>
-          <p>See yourself improve every day. Weak chapters are identified automatically. Streaks keep you coming back. Your progress is always saved.</p>
+          <p>See yourself improve every day. Weak chapters identified automatically. Streaks keep you coming back. Progress always saved.</p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">📧</div>
+        <div class="feature-cell">
+          <div class="icon">📧</div>
           <h3>Weekly parent reports</h3>
-          <p>Every week, your parents get a simple email showing exactly how you are doing — which subjects improved, how many questions you practised, and what to focus on next.</p>
-          <span class="feature-badge">💛 Killer feature</span>
+          <p>Every week, your parents get a simple email showing exactly how you are doing — which subjects improved and what to focus on next.</p>
+          <span class="badge badge-sun mt-4">💛 Killer feature</span>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🏫</div>
+        <div class="feature-cell">
+          <div class="icon">🏫</div>
           <h3>School integration</h3>
           <p>Teachers and schools can track all their students in one dashboard. Class reports, custom question banks, and priority support.</p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">💸</div>
+        <div class="feature-cell">
+          <div class="icon">💸</div>
           <h3>Fraction of coaching cost</h3>
           <p>Coaching centres charge Rs 5,000–15,000 per month. Ujyalo is Rs 299. Quality education should not depend on your family's income.</p>
         </div>
@@ -819,75 +339,81 @@
   </section>
 
   <!-- HOW IT WORKS -->
-  <section class="how">
-    <div class="container-wide">
-      <div class="section-label">How it works</div>
-      <h2 class="section-title">Three steps. <em>No friction.</em></h2>
-      <p class="section-sub">Open your phone or laptop and you are practising in under a minute.</p>
-      <div class="steps">
-        <div class="step">
-          <div class="step-number">01</div>
+  <section class="section section-bg-soft">
+    <div class="container">
+      <div class="text-center mb-8">
+        <span class="label-tiny">How it works</span>
+        <h2 class="section-title mt-2">Three steps. <em>No friction.</em></h2>
+        <p class="text-muted mt-4" style="max-width:480px; margin-left:auto; margin-right:auto; font-size:15px;">
+          Open your phone or laptop and you are practising in under a minute.
+        </p>
+      </div>
+      <div class="steps-row">
+        <div class="step-card">
+          <div class="step-num-circle">01</div>
           <h3>Pick what you need</h3>
-          <p>Past papers, mock tests, or chapter practice. Pick your subject. Pick your topic. Start immediately.</p>
+          <p>Past papers, mock tests, or chapter practice. Pick your subject. Start immediately.</p>
         </div>
-        <div class="step">
-          <div class="step-number">02</div>
-          <h3>Practice & answer</h3>
-          <p>Real SEE-format questions. Take your time. Type your answer or pick from options — just like the real exam.</p>
+        <div class="step-card">
+          <div class="step-num-circle">02</div>
+          <h3>Practice &amp; answer</h3>
+          <p>Real SEE-format questions. Take your time. Type your answer — just like the real exam.</p>
         </div>
-        <div class="step">
-          <div class="step-number">03</div>
+        <div class="step-card">
+          <div class="step-num-circle">03</div>
           <h3>Learn instantly</h3>
-          <p>AI feedback arrives in seconds. Your progress is saved. Your parents are informed. You get better every day.</p>
+          <p>AI feedback in seconds. Your progress is saved. Your parents are informed. You get better every day.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- SUBJECTS -->
-  <section class="subjects">
-    <div class="container-wide">
-      <div class="section-label">Subjects</div>
-      <h2 class="section-title">All <em>five SEE</em> subjects.</h2>
-      <p class="section-sub">Every compulsory subject covered. More being added regularly.</p>
-      <div class="subjects-grid">
-        <a href="signup.html" class="subject-pill">
-          <span class="emoji">🧮</span>
-          <span>Maths<span class="subject-sub">Compulsory</span></span>
+  <section class="section">
+    <div class="container">
+      <div class="text-center mb-8">
+        <span class="label-tiny">Subjects</span>
+        <h2 class="section-title mt-2">All <em>five SEE</em> subjects.</h2>
+      </div>
+      <div class="subjects-row">
+        <a href="signup.html" class="subject-pill-link">
+          <span class="pill-emoji">🧮</span>
+          <span>Maths<span class="pill-sub">Compulsory</span></span>
         </a>
-        <a href="signup.html" class="subject-pill">
-          <span class="emoji">🔬</span>
-          <span>Science<span class="subject-sub">Physics, Chem, Bio</span></span>
+        <a href="signup.html" class="subject-pill-link">
+          <span class="pill-emoji">🔬</span>
+          <span>Science<span class="pill-sub">Physics, Chem, Bio</span></span>
         </a>
-        <a href="signup.html" class="subject-pill">
-          <span class="emoji">📖</span>
-          <span>English<span class="subject-sub">Compulsory</span></span>
+        <a href="signup.html" class="subject-pill-link">
+          <span class="pill-emoji">📖</span>
+          <span>English<span class="pill-sub">Compulsory</span></span>
         </a>
-        <a href="signup.html" class="subject-pill">
-          <span class="emoji">🌏</span>
-          <span>Social Studies<span class="subject-sub">Compulsory</span></span>
+        <a href="signup.html" class="subject-pill-link">
+          <span class="pill-emoji">🌏</span>
+          <span>Social Studies<span class="pill-sub">Compulsory</span></span>
         </a>
-        <a href="signup.html" class="subject-pill">
-          <span class="emoji">📝</span>
-          <span>Nepali<span class="subject-sub">Compulsory</span></span>
+        <a href="signup.html" class="subject-pill-link">
+          <span class="pill-emoji">📝</span>
+          <span>Nepali<span class="pill-sub">Compulsory</span></span>
         </a>
       </div>
     </div>
   </section>
 
   <!-- TESTIMONIALS -->
-  <section class="testimonials">
-    <div class="container-wide">
-      <div class="section-label">Student voices</div>
-      <h2 class="section-title">What students <em>say.</em></h2>
-      <p class="section-sub">Real students. Real pressure. Real results.</p>
+  <section class="section section-bg-soft">
+    <div class="container">
+      <div class="text-center mb-8">
+        <span class="label-tiny">Student voices</span>
+        <h2 class="section-title mt-2">What students <em>say.</em></h2>
+      </div>
       <div class="testimonials-grid">
         <div class="testimonial-card">
           <div class="testimonial-stars">★★★★★</div>
           <blockquote>"Maths was my biggest fear. I used to panic before every test. With Ujyalo I practise every night and I actually understand what I am doing now."</blockquote>
           <div class="testimonial-author">
-            <div class="t-avatar">👧</div>
-            <div class="t-info">
+            <div class="testimonial-avatar">👧</div>
+            <div class="testimonial-author-info">
               <strong>Sita Sharma</strong>
               <span>Grade 10 · Chitwan</span>
             </div>
@@ -897,8 +423,8 @@
           <div class="testimonial-stars">★★★★★</div>
           <blockquote>"My parents cannot help me study because they did not go far in school. But now they get a weekly report and feel involved. It means so much to our family."</blockquote>
           <div class="testimonial-author">
-            <div class="t-avatar">👦</div>
-            <div class="t-info">
+            <div class="testimonial-avatar">👦</div>
+            <div class="testimonial-author-info">
               <strong>Rajan Thapa</strong>
               <span>Grade 10 · Pokhara</span>
             </div>
@@ -908,8 +434,8 @@
           <div class="testimonial-stars">★★★★★</div>
           <blockquote>"No good coaching centre near my village. Ujyalo feels like having a teacher available any time. I use it every night before sleeping."</blockquote>
           <div class="testimonial-author">
-            <div class="t-avatar">👧</div>
-            <div class="t-info">
+            <div class="testimonial-avatar">👧</div>
+            <div class="testimonial-author-info">
               <strong>Priya Gurung</strong>
               <span>Grade 10 · Mustang</span>
             </div>
@@ -921,17 +447,17 @@
   </section>
 
   <!-- PARENT SECTION -->
-  <section class="parents">
+  <div class="parents-section">
     <div class="parents-inner">
-      <div>
-        <div class="section-label" style="text-align:left; color:#fcd34d;">For parents</div>
+      <div class="parents-text">
+        <span class="label-tiny">For parents</span>
         <h2>You sacrifice everything.<br><em>See it working.</em></h2>
-        <p>Most Nepali parents pay for their child's education without ever knowing if it's actually helping. Ujyalo changes that.</p>
+        <p>Most Nepali parents pay for their child's education without ever knowing if it is actually helping. Ujyalo changes that.</p>
         <p>Every week, you get a simple email showing exactly how your child is practising — which subjects are improving, which need more work, and how many questions they answered.</p>
         <p>No more guessing. No more hoping. Just clear, honest progress.</p>
       </div>
-      <div class="parents-card">
-        <h4>📧 Weekly parent report — Rajan Thapa</h4>
+      <div class="report-card">
+        <div class="report-card-title">📧 Weekly parent report — Rajan Thapa</div>
         <div class="report-row">
           <span class="report-label">Questions answered</span>
           <span class="report-value good">142 this week</span>
@@ -954,31 +480,37 @@
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
   <!-- PRICING TEASER -->
-  <section class="pricing-teaser">
-    <div class="container-wide">
-      <div class="section-label">Pricing</div>
-      <h2 class="section-title"><em>Honest</em> pricing.</h2>
-      <p class="section-sub">Start free. Upgrade when you want unlimited practice, all subjects, and parent reports.</p>
-      <div class="pricing-cards">
-        <div class="pricing-card">
-          <h3>Free</h3>
-          <div class="price">Rs 0 <span>forever</span></div>
-          <ul>
+  <section class="section">
+    <div class="container">
+      <div class="text-center mb-8">
+        <span class="label-tiny">Pricing</span>
+        <h2 class="section-title mt-2"><em>Honest</em> pricing.</h2>
+        <p class="text-muted mt-4" style="max-width:460px; margin-left:auto; margin-right:auto; font-size:15px;">
+          Start free. Upgrade when you want unlimited practice, all subjects, and parent reports.
+        </p>
+      </div>
+      <div class="pricing-row">
+        <div class="price-card">
+          <div class="price-name">Free</div>
+          <div class="price-amount">Rs 0</div>
+          <span class="price-suffix">forever, no card needed</span>
+          <ul class="price-features">
             <li>10 questions per day</li>
             <li>Two subjects of your choice</li>
             <li>Basic AI feedback</li>
             <li>No credit card needed</li>
           </ul>
-          <a href="signup.html" class="btn-plan btn-plan-outline">Get started free</a>
+          <a href="signup.html" class="btn btn-secondary btn-block">Get started free</a>
         </div>
-        <div class="pricing-card popular">
-          <div class="popular-badge">Most popular</div>
-          <h3>Student</h3>
-          <div class="price">Rs 299 <span>/ month</span></div>
-          <ul>
+        <div class="price-card featured">
+          <div class="price-tag">Most popular</div>
+          <div class="price-name">Student</div>
+          <div class="price-amount">Rs 299</div>
+          <span class="price-suffix">per month, cancel anytime</span>
+          <ul class="price-features">
             <li>Unlimited practice</li>
             <li>All five SEE subjects</li>
             <li>10 years of past papers</li>
@@ -986,54 +518,72 @@
             <li>Weekly parent reports</li>
             <li>Progress tracking + streaks</li>
           </ul>
-          <a href="signup.html" class="btn-plan btn-plan-primary">Join waitlist →</a>
+          <a href="signup.html" class="btn btn-sun btn-block">Join waitlist →</a>
         </div>
       </div>
     </div>
   </section>
 
   <!-- FINAL CTA -->
-  <section class="final-cta">
-    <h2>Your future is worth<br><em>fighting for.</em></h2>
-    <p>Free to start. No credit card. Just open your phone and begin — right now.</p>
-    <a href="signup.html" class="btn-primary">Start practising free →</a>
+  <section class="cta-section">
+    <div class="container">
+      <h2>Your future is worth<br><em>fighting for.</em></h2>
+      <p>Free to start. No credit card. Just open your phone and begin — right now.</p>
+      <a href="signup.html" class="btn btn-primary btn-large">Start practising free →</a>
+    </div>
   </section>
 
   <!-- FOOTER -->
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <a href="index.html" class="footer-logo">ujyalo</a>
-        <p>AI-powered SEE preparation made with care, in Nepal. Helping students brighten their future, one question at a time.</p>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">ujyalo</a>
+          <p>AI-powered SEE preparation made with care, in Nepal. Helping students brighten their future, one question at a time.</p>
+          <div class="footer-social mt-4">
+            <a href="#" title="Facebook">f</a>
+            <a href="#" title="Instagram">in</a>
+            <a href="#" title="TikTok">tt</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="practice.html">Practice</a></li>
+            <li><a href="features.html">Features</a></li>
+            <li><a href="how-it-works.html">How it works</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="for-schools.html">For schools</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="privacy.html">Privacy policy</a></li>
+            <li><a href="terms.html">Terms of service</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="footer-col">
-        <h4>Product</h4>
-        <a href="practice.html">Practice</a>
-        <a href="features.html">Features</a>
-        <a href="how-it-works.html">How it works</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="for-schools.html">For schools</a>
+      <div class="footer-bottom">
+        <span class="footer-bottom-left">© 2026 Ujyalo · Made in Nepal 🇳🇵</span>
+        <span class="footer-bottom-right">Brighten your future.</span>
       </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <a href="about.html">About us</a>
-        <a href="contact.html">Contact</a>
-        <a href="faq.html">FAQ</a>
-      </div>
-      <div class="footer-col">
-        <h4>Legal</h4>
-        <a href="privacy.html">Privacy policy</a>
-        <a href="terms.html">Terms of service</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 Ujyalo · Made in Nepal 🇳🇵</span>
-      <span>Brighten your future.</span>
     </div>
   </footer>
 
   <!-- HELP BUBBLE -->
-  <a href="contact.html" class="help-bubble">? Need help?</a>
+  <a href="contact.html" class="help-bubble">
+    <div class="help-bubble-icon">?</div>
+    Need help?
+  </a>
 
 </body>
 </html>
