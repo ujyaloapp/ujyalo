@@ -44,14 +44,12 @@
     <div class="card" style="padding: 32px;">
       <div class="field">
         <label>Your full name</label>
-        <input type="text" class="input" placeholder="Rajan Sharma" autocomplete="name">
+        <input type="text" class="input" placeholder="Rajan Sharma">
       </div>
-
       <div class="field">
         <label>School</label>
-        <input type="text" class="input" placeholder="Trinity Secondary School" autocomplete="organization">
+        <input type="text" class="input" placeholder="Trinity Secondary School">
       </div>
-
       <div class="grid-2" style="gap: 12px;">
         <div class="field">
           <label>Grade</label>
@@ -74,33 +72,30 @@
           </select>
         </div>
       </div>
-
       <div class="field">
         <label>Email</label>
-        <input type="email" class="input" placeholder="rajan@example.com" autocomplete="email">
+        <input type="email" class="input" placeholder="rajan@example.com">
       </div>
-
       <div class="field">
         <label>Password</label>
-        <input type="password" class="input" placeholder="At least 6 characters" autocomplete="new-password">
+        <input type="password" class="input" placeholder="At least 6 characters">
       </div>
 
-      <!-- Parent email — the secret weapon -->
       <div style="background: var(--sun-50); border: 1px solid var(--sun-light); border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px;">
         <label style="display: flex; gap: 10px; align-items: start; cursor: pointer; margin-bottom: 8px;">
-          <input type="checkbox" id="parentReportCheck" checked style="margin-top: 4px; width: 16px; height: 16px; accent-color: var(--brand);">
+          <input type="checkbox" checked style="margin-top: 4px; width: 16px; height: 16px; accent-color: var(--brand);">
           <span>
             <strong style="font-size: 14px; display: block; margin-bottom: 2px;">📧 Send weekly progress reports to my parent</strong>
-            <span style="font-size: 13px; color: #854F0B;">Optional but recommended. Parents can see your progress, weak topics, and cheer you on.</span>
+            <span style="font-size: 13px; color: #854F0B;">Optional but recommended.</span>
           </span>
         </label>
-        <input type="email" class="input" placeholder="parent@example.com" style="margin-top: 8px; background: white;" id="parentEmail">
+        <input type="email" class="input" placeholder="parent@example.com" style="margin-top: 8px; background: white;">
       </div>
 
-      <button class="btn btn-blue btn-block">Create my account →</button>
+      <a href="/dashboard.html" class="btn btn-blue btn-block">Create my account →</a>
 
       <p class="text-muted text-center mt-6" style="font-size: 12px;">
-        By signing up, you agree to our terms. We'll never share your data.
+        By signing up, you agree to our <a href="/terms.html" style="color: var(--brand);">terms</a>. We'll never share your data.
       </p>
     </div>
 
@@ -109,6 +104,11 @@
     </p>
   </div>
 </div>
+
+<a href="/contact.html" class="help-bubble">
+  <span class="help-bubble-icon">?</span>
+  Need help?
+</a>
 
 </body>
 </html>
