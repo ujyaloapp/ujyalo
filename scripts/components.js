@@ -5,20 +5,16 @@
    Want to change the footer? Change it here. Done.
    ============================================================ */
 
-// ── The announcement bar ──
-// Want to change this message? Edit the text below. One place. All pages update.
 const ANNOUNCEMENT = `
 <div class="announcement-bar">
   🎉 Ujyalo is now live! Join the waitlist for full access —
   <a href="/signup.html">sign up free →</a>
 </div>`;
 
-// ── The nav ──
-// Want to add a new link? Add it here. All pages update.
 const NAV = `
 <nav class="nav-public">
   <div class="container nav-inner">
-    <a href="/" class="logo">
+    <a href="/index.html" class="logo">
       <img src="/ujyalo-logo-transparent.png" style="height: 38px; width: auto;" alt="Ujyalo">
     </a>
     <div class="nav-links">
@@ -34,17 +30,15 @@ const NAV = `
   </div>
 </nav>`;
 
-// ── The footer ──
-// Want to add a new footer link? Add it here. All pages update.
 const FOOTER = `
 <footer class="site-footer">
   <div class="container">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="/">
+        <a href="/index.html">
           <img src="/ujyalo-logo-transparent.png" style="height: 36px; width: auto; filter: brightness(0) invert(1);" alt="Ujyalo">
         </a>
-        <p>AI-powered SEE preparation made with care, in Nepal.
+        <p>AI-powered exam preparation made with care, in Nepal.
         Helping students brighten their future, one question at a time.</p>
         <div class="footer-social mt-4">
           <a href="#" title="Facebook">f</a>
@@ -95,33 +89,26 @@ const FOOTER = `
   Need help?
 </a>`;
 
-// ── This runs automatically when the page loads ──
 document.addEventListener('DOMContentLoaded', function () {
 
-  // Add favicon
+  // Favicon
   const favicon = document.createElement('link');
   favicon.rel = 'icon';
-  favicon.href = '/favicon.png';
+  favicon.href = '/favicon.ico';
   document.head.appendChild(favicon);
 
-  // Fill the nav placeholder
+  // Nav
   const navEl = document.getElementById('site-nav');
-  if (navEl) {
-    navEl.innerHTML = ANNOUNCEMENT + NAV;
-  }
+  if (navEl) navEl.innerHTML = ANNOUNCEMENT + NAV;
 
-  // Fill the footer placeholder
+  // Footer
   const footerEl = document.getElementById('site-footer');
-  if (footerEl) {
-    footerEl.innerHTML = FOOTER;
-  }
+  if (footerEl) footerEl.innerHTML = FOOTER;
 
-  // Highlight the active nav link based on current page
+  // Active nav link
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  const navLinks = document.querySelectorAll('.nav-links a');
-  navLinks.forEach(link => {
-    const linkPage = link.getAttribute('href').split('/').pop();
-    if (linkPage === currentPage) {
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    if (link.getAttribute('href').split('/').pop() === currentPage) {
       link.classList.add('active');
     }
   });
