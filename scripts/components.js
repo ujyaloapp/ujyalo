@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Add favicon
   const favicon = document.createElement('link');
   favicon.rel = 'icon';
-  favicon.href = '/favicon.png';
+  favicon.href = '/favicon.ico';
   document.head.appendChild(favicon);
 
   // Fill the nav placeholder
