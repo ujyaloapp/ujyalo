@@ -12,61 +12,73 @@
 
 <div id="site-nav"></div>
 
-<div style="background:var(--sun-50);border-bottom:1px solid var(--sun-light);padding:12px 24px;text-align:center;">
-  <p style="font-size:13px;color:#854F0B;">🚀 <strong>Demo mode</strong> — Try Ujyalo without an account. <a href="/signup.html" style="text-decoration:underline;font-weight:600;">Join the waitlist</a> for full access.</p>
-</div>
+<div style="padding: 80px 0;">
+  <div class="container-tiny animate-up text-center">
 
-<div style="background:linear-gradient(180deg,white 0%,var(--ink-50) 100%);padding:60px 0 40px;text-align:center;">
-  <div class="container-narrow animate-up">
-    <div class="badge mb-4"><span style="width:6px;height:6px;border-radius:50%;background:var(--sun);" class="pulse-dot"></span>Live AI tutor</div>
-    <h1 class="font-display" style="font-size:clamp(36px,5vw,56px);font-weight:600;letter-spacing:-1px;line-height:1.05;margin-bottom:12px;">Let's <em>practise.</em></h1>
-    <p class="text-muted" style="font-size:16px;">Pick a subject. AI will create a fresh question just for you.</p>
-  </div>
-</div>
+    <div style="font-size: 48px; margin-bottom: 16px;">🚧</div>
 
-<main style="padding:0 0 60px;">
-  <div class="container-narrow">
-    <div class="card animate-up delay-1" style="padding:32px;">
-      <div class="mb-6">
-        <div class="label-tiny mb-4">Choose your subject</div>
-        <div class="grid-3" style="gap:8px;">
-          <button class="subject-btn" onclick="selectSubject(this,'Compulsory Maths')"><span style="font-size:18px;">🧮</span><span>Maths</span></button>
-          <button class="subject-btn" onclick="selectSubject(this,'Science')"><span style="font-size:18px;">🔬</span><span>Science</span></button>
-          <button class="subject-btn" onclick="selectSubject(this,'Compulsory English')"><span style="font-size:18px;">📖</span><span>English</span></button>
-          <button class="subject-btn" onclick="selectSubject(this,'Social Studies')"><span style="font-size:18px;">🌏</span><span>Social</span></button>
-          <button class="subject-btn" onclick="selectSubject(this,'Compulsory Nepali')"><span style="font-size:18px;">📝</span><span>Nepali</span></button>
+    <h1 class="font-display" style="font-size: 36px; font-weight: 600; letter-spacing: -1px; margin-bottom: 12px;">
+      We're building something <em style="color: var(--brand);">great.</em>
+    </h1>
+
+    <p class="text-muted mb-8" style="font-size: 16px; line-height: 1.7; max-width: 480px; margin-left: auto; margin-right: auto;">
+      Full practice is coming very soon — past papers, mock tests, chapter-wise practice, and instant AI feedback. Join the waitlist and you'll be the first to know when it goes live.
+    </p>
+
+    <div class="flex gap-3 justify-center flex-wrap mb-8">
+      <a href="/signup.html" class="btn btn-primary btn-large">Join the waitlist →</a>
+    </div>
+
+    <!-- What's coming -->
+    <div class="card" style="padding: 32px; text-align: left; max-width: 480px; margin: 0 auto;">
+      <h3 class="font-display" style="font-size: 18px; font-weight: 600; margin-bottom: 20px; text-align: center;">What's coming</h3>
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; gap: 14px; align-items: start;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--sun-light); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">📜</div>
+          <div>
+            <div style="font-weight: 700; font-size: 15px; margin-bottom: 3px;">10 years of past papers</div>
+            <div style="font-size: 13px; color: var(--ink-500);">Real SEE papers from 2070 to today</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: start;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--brand-light); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">⏱️</div>
+          <div>
+            <div style="font-weight: 700; font-size: 15px; margin-bottom: 3px;">Full mock tests</div>
+            <div style="font-size: 13px; color: var(--ink-500);">3-hour timed exams in real SEE format</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: start;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">📚</div>
+          <div>
+            <div style="font-weight: 700; font-size: 15px; margin-bottom: 3px;">Chapter-wise practice</div>
+            <div style="font-size: 13px; color: var(--ink-500);">Pick exactly the chapter you need</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: start;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--brand-light); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">⚡</div>
+          <div>
+            <div style="font-weight: 700; font-size: 15px; margin-bottom: 3px;">Instant AI feedback</div>
+            <div style="font-size: 13px; color: var(--ink-500);">Detailed explanations the moment you submit</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: start;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--sun-light); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">📧</div>
+          <div>
+            <div style="font-weight: 700; font-size: 15px; margin-bottom: 3px;">Weekly parent reports</div>
+            <div style="font-size: 13px; color: var(--ink-500);">Parents see your progress every week</div>
+          </div>
         </div>
       </div>
-      <button class="btn btn-primary btn-block" id="generateBtn" disabled onclick="generateQuestion()">Pick a subject first</button>
-      <div id="loading" class="hidden text-center" style="padding:32px 0;">
-        <div class="dot-loader"><span></span><span></span><span></span></div>
-        <div class="text-muted mt-4" style="font-size:14px;">Generating your question...</div>
-      </div>
-      <div id="questionBox" class="hidden mt-6" style="padding:24px;background:var(--ink-50);border-radius:var(--radius-md);animation:fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;">
-        <div class="label-tiny mb-4">Question</div>
-        <div id="questionText" class="font-display" style="font-size:18px;line-height:1.6;margin-bottom:20px;"></div>
-        <textarea id="answerInput" class="textarea" placeholder="Type your answer here..." style="background:white;"></textarea>
-        <button class="btn btn-blue btn-block mt-4" onclick="submitAnswer()">Check my answer</button>
-      </div>
-      <div id="feedbackBox" class="hidden mt-4" style="padding:24px;border-radius:var(--radius-md);border:2px solid;animation:fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;">
-        <div class="flex items-center gap-3 mb-4">
-          <span id="verdictIcon" style="font-size:24px;"></span>
-          <div id="verdict" class="font-display" style="font-size:20px;font-weight:600;"></div>
-        </div>
-        <div id="feedbackText" style="font-size:15px;line-height:1.7;"></div>
-        <button class="mt-6" onclick="generateQuestion()" style="background:transparent;border:none;color:var(--ink-900);font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:6px;">Try another question <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m-3-3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      </div>
     </div>
-    <div class="card mt-6 animate-up delay-2" style="background:linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%);color:white;padding:28px;border:none;text-align:center;">
-      <h3 class="font-display" style="font-size:22px;font-weight:600;margin-bottom:8px;">Like what you see?</h3>
-      <p style="font-size:14px;opacity:0.9;margin-bottom:16px;">Join the waitlist to get full access — past papers, mock tests, progress tracking, and parent reports.</p>
-      <a href="/signup.html" class="btn" style="background:white;color:var(--brand);">Join the waitlist →</a>
-    </div>
+
+    <p class="text-muted mt-8" style="font-size: 13px;">
+      Questions? Email us at <a href="mailto:hello@ujyalo.app" style="color: var(--brand); font-weight: 600;">hello@ujyalo.app</a>
+    </p>
+
   </div>
-</main>
+</div>
 
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
-<script src="/scripts/practice.js"></script>
 </body>
 </html>
