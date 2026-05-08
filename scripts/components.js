@@ -18,7 +18,7 @@ const ANNOUNCEMENT = `
 const NAV = `
 <nav class="nav-public">
   <div class="container nav-inner">
-    <a href="/index.html" class="logo">
+    <a href="/" class="logo">
       <img src="/ujyalo-logo-transparent.png" style="height: 38px; width: auto;" alt="Ujyalo">
     </a>
     <div class="nav-links">
@@ -41,7 +41,7 @@ const FOOTER = `
   <div class="container">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="/index.html">
+        <a href="/">
           <img src="/ujyalo-logo-transparent.png" style="height: 36px; width: auto; filter: brightness(0) invert(1);" alt="Ujyalo">
         </a>
         <p>AI-powered SEE preparation made with care, in Nepal.
