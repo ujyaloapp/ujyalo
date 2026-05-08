@@ -5,21 +5,6 @@
    Want to change the footer? Change it here. Done.
    ============================================================ */
 
-// ── The Sun logo SVG (used in nav and footer) ──
-const LOGO_SVG = `<svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-  <circle cx="16" cy="16" r="6" fill="#F59E0B"/>
-  <g stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round">
-    <line x1="16" y1="2" x2="16" y2="6"/>
-    <line x1="16" y1="26" x2="16" y2="30"/>
-    <line x1="2" y1="16" x2="6" y2="16"/>
-    <line x1="26" y1="16" x2="30" y2="16"/>
-    <line x1="6" y1="6" x2="9" y2="9"/>
-    <line x1="23" y1="23" x2="26" y2="26"/>
-    <line x1="26" y1="6" x2="23" y2="9"/>
-    <line x1="9" y1="23" x2="6" y2="26"/>
-  </g>
-</svg>`;
-
 // ── The announcement bar ──
 // Want to change this message? Edit the text below. One place. All pages update.
 const ANNOUNCEMENT = `
@@ -33,7 +18,9 @@ const ANNOUNCEMENT = `
 const NAV = `
 <nav class="nav-public">
   <div class="container nav-inner">
-    <a href="/index.html" class="logo">${LOGO_SVG} ujyalo</a>
+    <a href="/index.html" class="logo">
+      <img src="/ujyalo-logo-transparent.png" style="height: 38px; width: auto;" alt="Ujyalo">
+    </a>
     <div class="nav-links">
       <a href="/practice.html">Practice</a>
       <a href="/features.html">Features</a>
@@ -54,7 +41,9 @@ const FOOTER = `
   <div class="container">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="/index.html" class="logo">${LOGO_SVG} ujyalo</a>
+        <a href="/index.html">
+          <img src="/ujyalo-logo-transparent.png" style="height: 36px; width: auto; filter: brightness(0) invert(1);" alt="Ujyalo">
+        </a>
         <p>AI-powered SEE preparation made with care, in Nepal.
         Helping students brighten their future, one question at a time.</p>
         <div class="footer-social mt-4">
@@ -107,8 +96,13 @@ const FOOTER = `
 </a>`;
 
 // ── This runs automatically when the page loads ──
-// It finds the placeholders and fills them in.
 document.addEventListener('DOMContentLoaded', function () {
+
+  // Add favicon
+  const favicon = document.createElement('link');
+  favicon.rel = 'icon';
+  favicon.href = '/favicon.png';
+  document.head.appendChild(favicon);
 
   // Fill the nav placeholder
   const navEl = document.getElementById('site-nav');
@@ -133,4 +127,3 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 });
-
