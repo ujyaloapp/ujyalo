@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Practice — Ujyalo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,175 +10,63 @@
 </head>
 <body style="background: var(--ink-50);">
 
-<nav class="nav-public" style="background: white;">
-  <div class="container nav-inner">
-    <a href="/" class="logo">
-      <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="6" fill="#F59E0B"/>
-        <g stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round">
-          <line x1="16" y1="2" x2="16" y2="6"/><line x1="16" y1="26" x2="16" y2="30"/>
-          <line x1="2" y1="16" x2="6" y2="16"/><line x1="26" y1="16" x2="30" y2="16"/>
-          <line x1="6" y1="6" x2="9" y2="9"/><line x1="23" y1="23" x2="26" y2="26"/>
-          <line x1="26" y1="6" x2="23" y2="9"/><line x1="9" y1="23" x2="6" y2="26"/>
-        </g>
-      </svg>
-      ujyalo
-    </a>
-    <div class="nav-links">
-      <a href="/practice.html" class="active">Practice</a>
-      <a href="/pricing.html">Pricing</a>
-    </div>
-    <div class="nav-actions">
-      <a href="/login.html" class="btn-ghost">Log in</a>
-      <a href="/signup.html" class="btn btn-primary">Sign up free →</a>
-    </div>
-  </div>
-</nav>
+<div id="site-nav"></div>
 
-<div style="background: var(--sun-50); border-bottom: 1px solid var(--sun-light); padding: 12px 24px; text-align: center;">
-  <p style="font-size: 13px; color: #854F0B;">
-    🚀 <strong>Demo mode</strong> — Try Ujyalo without an account. <a href="/signup.html" style="text-decoration: underline; font-weight: 600;">Join the waitlist</a> for full access.
-  </p>
+<div style="background:var(--sun-50);border-bottom:1px solid var(--sun-light);padding:12px 24px;text-align:center;">
+  <p style="font-size:13px;color:#854F0B;">🚀 <strong>Demo mode</strong> — Try Ujyalo without an account. <a href="/signup.html" style="text-decoration:underline;font-weight:600;">Join the waitlist</a> for full access.</p>
 </div>
 
-<div style="background: linear-gradient(180deg, white 0%, var(--ink-50) 100%); padding: 60px 0 40px; text-align: center;">
+<div style="background:linear-gradient(180deg,white 0%,var(--ink-50) 100%);padding:60px 0 40px;text-align:center;">
   <div class="container-narrow animate-up">
-    <div class="badge mb-4">
-      <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--sun);" class="pulse-dot"></span>
-      Live AI tutor
-    </div>
-    <h1 class="font-display" style="font-size: clamp(36px, 5vw, 56px); font-weight: 600; letter-spacing: -1px; line-height: 1.05; margin-bottom: 12px;">
-      Let's <em>practise.</em>
-    </h1>
-    <p class="text-muted" style="font-size: 16px;">Pick a subject. AI will create a fresh question just for you.</p>
+    <div class="badge mb-4"><span style="width:6px;height:6px;border-radius:50%;background:var(--sun);" class="pulse-dot"></span>Live AI tutor</div>
+    <h1 class="font-display" style="font-size:clamp(36px,5vw,56px);font-weight:600;letter-spacing:-1px;line-height:1.05;margin-bottom:12px;">Let's <em>practise.</em></h1>
+    <p class="text-muted" style="font-size:16px;">Pick a subject. AI will create a fresh question just for you.</p>
   </div>
 </div>
 
-<main style="padding: 0 0 60px;">
+<main style="padding:0 0 60px;">
   <div class="container-narrow">
-
-    <div class="card animate-up delay-1" style="padding: 32px;">
+    <div class="card animate-up delay-1" style="padding:32px;">
       <div class="mb-6">
         <div class="label-tiny mb-4">Choose your subject</div>
-        <div class="grid-3" style="gap: 8px;">
-          <button class="subject-btn" onclick="selectSubject(this, 'Compulsory Maths')">
-            <span style="font-size: 18px;">🧮</span><span>Maths</span>
-          </button>
-          <button class="subject-btn" onclick="selectSubject(this, 'Science')">
-            <span style="font-size: 18px;">🔬</span><span>Science</span>
-          </button>
-          <button class="subject-btn" onclick="selectSubject(this, 'Compulsory English')">
-            <span style="font-size: 18px;">📖</span><span>English</span>
-          </button>
-          <button class="subject-btn" onclick="selectSubject(this, 'Social Studies')">
-            <span style="font-size: 18px;">🌏</span><span>Social</span>
-          </button>
-          <button class="subject-btn" onclick="selectSubject(this, 'Compulsory Nepali')">
-            <span style="font-size: 18px;">📝</span><span>Nepali</span>
-          </button>
+        <div class="grid-3" style="gap:8px;">
+          <button class="subject-btn" onclick="selectSubject(this,'Compulsory Maths')"><span style="font-size:18px;">🧮</span><span>Maths</span></button>
+          <button class="subject-btn" onclick="selectSubject(this,'Science')"><span style="font-size:18px;">🔬</span><span>Science</span></button>
+          <button class="subject-btn" onclick="selectSubject(this,'Compulsory English')"><span style="font-size:18px;">📖</span><span>English</span></button>
+          <button class="subject-btn" onclick="selectSubject(this,'Social Studies')"><span style="font-size:18px;">🌏</span><span>Social</span></button>
+          <button class="subject-btn" onclick="selectSubject(this,'Compulsory Nepali')"><span style="font-size:18px;">📝</span><span>Nepali</span></button>
         </div>
       </div>
-
-      <button class="btn btn-primary btn-block" id="generateBtn" disabled onclick="generateQuestion()">
-        Pick a subject first
-      </button>
-
-      <div id="loading" class="hidden text-center" style="padding: 32px 0;">
+      <button class="btn btn-primary btn-block" id="generateBtn" disabled onclick="generateQuestion()">Pick a subject first</button>
+      <div id="loading" class="hidden text-center" style="padding:32px 0;">
         <div class="dot-loader"><span></span><span></span><span></span></div>
-        <div class="text-muted mt-4" style="font-size: 14px;">Generating your question...</div>
+        <div class="text-muted mt-4" style="font-size:14px;">Generating your question...</div>
       </div>
-
-      <div id="questionBox" class="hidden mt-6" style="padding: 24px; background: var(--ink-50); border-radius: var(--radius-md); animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;">
+      <div id="questionBox" class="hidden mt-6" style="padding:24px;background:var(--ink-50);border-radius:var(--radius-md);animation:fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;">
         <div class="label-tiny mb-4">Question</div>
-        <div id="questionText" class="font-display" style="font-size: 18px; line-height: 1.6; margin-bottom: 20px;"></div>
-        <textarea id="answerInput" class="textarea" placeholder="Type your answer here..." style="background: white;"></textarea>
+        <div id="questionText" class="font-display" style="font-size:18px;line-height:1.6;margin-bottom:20px;"></div>
+        <textarea id="answerInput" class="textarea" placeholder="Type your answer here..." style="background:white;"></textarea>
         <button class="btn btn-blue btn-block mt-4" onclick="submitAnswer()">Check my answer</button>
       </div>
-
-      <div id="feedbackBox" class="hidden mt-4" style="padding: 24px; border-radius: var(--radius-md); border: 2px solid; animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;">
+      <div id="feedbackBox" class="hidden mt-4" style="padding:24px;border-radius:var(--radius-md);border:2px solid;animation:fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;">
         <div class="flex items-center gap-3 mb-4">
-          <span id="verdictIcon" style="font-size: 24px;"></span>
-          <div id="verdict" class="font-display" style="font-size: 20px; font-weight: 600;"></div>
+          <span id="verdictIcon" style="font-size:24px;"></span>
+          <div id="verdict" class="font-display" style="font-size:20px;font-weight:600;"></div>
         </div>
-        <div id="feedbackText" style="font-size: 15px; line-height: 1.7;"></div>
-        <button class="mt-6" onclick="generateQuestion()" style="background: transparent; border: none; color: var(--ink-900); font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
-          Try another question
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m-3-3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <div id="feedbackText" style="font-size:15px;line-height:1.7;"></div>
+        <button class="mt-6" onclick="generateQuestion()" style="background:transparent;border:none;color:var(--ink-900);font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:6px;">Try another question <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m-3-3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
-
-    <div class="card mt-6 animate-up delay-2" style="background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); color: white; padding: 28px; border: none; text-align: center;">
-      <h3 class="font-display" style="font-size: 22px; font-weight: 600; margin-bottom: 8px;">Like what you see?</h3>
-      <p style="font-size: 14px; opacity: 0.9; margin-bottom: 16px;">Join the waitlist to get full access — past papers, mock tests, progress tracking, and parent reports.</p>
-      <a href="/signup.html" class="btn" style="background: white; color: var(--brand);">Join the waitlist →</a>
+    <div class="card mt-6 animate-up delay-2" style="background:linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%);color:white;padding:28px;border:none;text-align:center;">
+      <h3 class="font-display" style="font-size:22px;font-weight:600;margin-bottom:8px;">Like what you see?</h3>
+      <p style="font-size:14px;opacity:0.9;margin-bottom:16px;">Join the waitlist to get full access — past papers, mock tests, progress tracking, and parent reports.</p>
+      <a href="/signup.html" class="btn" style="background:white;color:var(--brand);">Join the waitlist →</a>
     </div>
-
   </div>
 </main>
 
-<footer class="site-footer">
-  <div class="container">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a href="/" class="logo">
-          <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-            <circle cx="16" cy="16" r="6" fill="#F59E0B"/>
-            <g stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round">
-              <line x1="16" y1="2" x2="16" y2="6"/><line x1="16" y1="26" x2="16" y2="30"/>
-              <line x1="2" y1="16" x2="6" y2="16"/><line x1="26" y1="16" x2="30" y2="16"/>
-              <line x1="6" y1="6" x2="9" y2="9"/><line x1="23" y1="23" x2="26" y2="26"/>
-              <line x1="26" y1="6" x2="23" y2="9"/><line x1="9" y1="23" x2="6" y2="26"/>
-            </g>
-          </svg>
-          ujyalo
-        </a>
-        <p>AI-powered SEE preparation made with care, in Nepal. Helping students brighten their future, one question at a time.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Product</h4>
-        <ul>
-          <li><a href="/practice.html">Practice</a></li>
-          <li><a href="/features.html">Features</a></li>
-          <li><a href="/how-it-works.html">How it works</a></li>
-          <li><a href="/pricing.html">Pricing</a></li>
-          <li><a href="/for-schools.html">For schools</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <ul>
-          <li><a href="/about.html">About us</a></li>
-          <li><a href="/contact.html">Contact</a></li>
-          <li><a href="/faq.html">FAQ</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Legal</h4>
-        <ul>
-          <li><a href="/privacy.html">Privacy policy</a></li>
-          <li><a href="/terms.html">Terms of service</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div class="footer-bottom-left">© 2026 Ujyalo · Made in Nepal 🇳🇵</div>
-      <div class="footer-social">
-        <a href="#" title="Facebook">f</a>
-        <a href="#" title="Instagram">@</a>
-        <a href="#" title="TikTok">▶</a>
-      </div>
-      <div class="footer-bottom-right">Brighten your future.</div>
-    </div>
-  </div>
-</footer>
-
-<a href="/contact.html" class="help-bubble">
-  <span class="help-bubble-icon">?</span>
-  Need help?
-</a>
-
+<div id="site-footer"></div>
+<script src="/scripts/components.js"></script>
 <script src="/scripts/practice.js"></script>
-
 </body>
 </html>
