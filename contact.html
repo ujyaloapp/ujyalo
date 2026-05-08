@@ -1,169 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Get in touch with the Ujyalo team - questions, feedback, partnerships" />
-  <title>Contact — Ujyalo</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles/main.css" />
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Ujyalo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/main.css">
+
 </head>
 <body>
+<div id="site-nav"></div>
+<div class="page-hero"><div class="container"><div class="page-hero-label">Get in touch</div><h1>We'd love to<br><em>hear from you.</em></h1><p>Questions, feedback, partnerships, or just saying hi.</p></div></div>
 
-  <div class="announcement-bar">
-    🎉 Ujyalo is now live! Join the waitlist for full access — <a href="signup.html">sign up free →</a>
-  </div>
-
-  <nav class="nav-public">
-    <div class="container">
-      <div class="nav-inner">
-        <a href="index.html" class="logo">ujyalo</a>
-        <div class="nav-links">
-          <a href="practice.html">Practice</a>
-          <a href="features.html">Features</a>
-          <a href="pricing.html">Pricing</a>
-          <a href="about.html">About</a>
-        </div>
-        <div class="nav-actions">
-          <a href="login.html" class="btn btn-ghost">Log in</a>
-          <a href="signup.html" class="btn btn-primary">Sign up free →</a>
-        </div>
-      </div>
+<section class="section"><div class="container">
+  <div class="grid-2" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div class="card"><span class="card-icon">📧</span><h3>Email us</h3><p class="mt-2"><a href="mailto:hello@ujyalo.app" style="color:var(--brand);font-weight:600;">hello@ujyalo.app</a></p><p class="mt-2" style="font-size:13px;color:var(--ink-500);">We reply within 24 hours.</p></div>
+      <div class="card"><span class="card-icon">🏫</span><h3>For schools</h3><p class="mt-2"><a href="mailto:hello@ujyalo.app" style="color:var(--brand);font-weight:600;">hello@ujyalo.app</a></p><p class="mt-2" style="font-size:13px;color:var(--ink-500);">Special pricing and demos for schools.</p></div>
     </div>
-  </nav>
-
-  <!-- HERO -->
-  <div class="page-hero">
-    <div class="container">
-      <div class="page-hero-label">Get in touch</div>
-      <h1>We'd love to<br><em>hear from you.</em></h1>
-      <p>Questions, feedback, partnership inquiries, or just saying hi — drop us a message.</p>
+    <div class="contact-card">
+      <h3 style="font-family:Fraunces,serif;font-size:1.4rem;margin-bottom:8px;">Send us a message</h3>
+      <p style="font-size:14px;color:var(--ink-500);margin-bottom:24px;">We'll get back to you within 24 hours.</p>
+      <div class="field"><label>Your name</label><input type="text" class="input" placeholder="Rajan Thapa"></div>
+      <div class="field"><label>Email</label><input type="email" class="input" placeholder="rajan@email.com"></div>
+      <div class="field"><label>I am a...</label><select class="select"><option>Student</option><option>Parent</option><option>Teacher</option><option>School representative</option><option>Other</option></select></div>
+      <div class="field"><label>Message</label><textarea class="textarea" placeholder="Your message here..."></textarea></div>
+      <button class="btn btn-primary btn-block" onclick="document.getElementById('cs').classList.remove('hidden')">Send message →</button>
+      <div id="cs" class="hidden mt-4" style="background:var(--green-light);color:var(--green);padding:12px 16px;border-radius:var(--radius-md);font-size:14px;font-weight:600;text-align:center;">✓ Message sent! We'll reply within 24 hours.</div>
     </div>
   </div>
-
-  <!-- CONTACT -->
-  <section class="section">
-    <div class="container">
-      <div class="grid-2" style="align-items:start;">
-
-        <!-- Left: contact info -->
-        <div style="display:flex; flex-direction:column; gap:20px;">
-          <div class="card">
-            <span class="card-icon">📧</span>
-            <h3>Email us</h3>
-            <p class="mt-2"><a href="mailto:hello@ujyalo.app" style="color:var(--brand); font-weight:600;">hello@ujyalo.app</a></p>
-            <p class="mt-2" style="font-size:13px; color:var(--ink-500);">We reply within 24 hours.</p>
-          </div>
-          <div class="card">
-            <span class="card-icon">🏫</span>
-            <h3>For schools</h3>
-            <p class="mt-2"><a href="mailto:hello@ujyalo.app" style="color:var(--brand); font-weight:600;">hello@ujyalo.app</a></p>
-            <p class="mt-2" style="font-size:13px; color:var(--ink-500);">Special pricing and demos for schools. We'd love to work with you.</p>
-          </div>
-          <div class="card">
-            <span class="card-icon">📱</span>
-            <h3>Social media</h3>
-            <div class="flex gap-3 mt-4">
-              <a href="#" class="btn btn-secondary" style="font-size:13px; padding:8px 16px;">Facebook</a>
-              <a href="#" class="btn btn-secondary" style="font-size:13px; padding:8px 16px;">Instagram</a>
-              <a href="#" class="btn btn-secondary" style="font-size:13px; padding:8px 16px;">TikTok</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right: form -->
-        <div class="contact-card">
-          <h3 style="font-family:'Fraunces',serif; font-size:1.4rem; margin-bottom:8px;">Send us a message</h3>
-          <p style="font-size:14px; color:var(--ink-500); margin-bottom:24px;">We'll get back to you within 24 hours.</p>
-          <div class="field">
-            <label>Your name</label>
-            <input type="text" class="input" placeholder="Rajan Thapa" />
-          </div>
-          <div class="field">
-            <label>Email</label>
-            <input type="email" class="input" placeholder="rajan@email.com" />
-          </div>
-          <div class="field">
-            <label>I am a...</label>
-            <select class="select">
-              <option>Student</option>
-              <option>Parent</option>
-              <option>Teacher</option>
-              <option>School representative</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Message</label>
-            <textarea class="textarea" placeholder="Your message here..."></textarea>
-          </div>
-          <button class="btn btn-primary btn-block" onclick="handleContact()">Send message →</button>
-          <div id="contact-success" class="hidden mt-4" style="background:var(--green-light); color:var(--green); padding:12px 16px; border-radius:var(--radius-md); font-size:14px; font-weight:600; text-align:center;">
-            ✓ Message sent! We'll reply within 24 hours.
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <a href="index.html" class="logo">ujyalo</a>
-          <p>AI-powered SEE preparation made with care, in Nepal. Helping students brighten their future, one question at a time.</p>
-          <div class="footer-social mt-4">
-            <a href="#" title="Facebook">f</a>
-            <a href="#" title="Instagram">in</a>
-            <a href="#" title="TikTok">tt</a>
-          </div>
-        </div>
-        <div class="footer-col">
-          <h4>Product</h4>
-          <ul>
-            <li><a href="practice.html">Practice</a></li>
-            <li><a href="features.html">Features</a></li>
-            <li><a href="how-it-works.html">How it works</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
-            <li><a href="for-schools.html">For schools</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="about.html">About us</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="faq.html">FAQ</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Legal</h4>
-          <ul>
-            <li><a href="privacy.html">Privacy policy</a></li>
-            <li><a href="terms.html">Terms of service</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span class="footer-bottom-left">© 2026 Ujyalo · Made in Nepal 🇳🇵</span>
-        <span class="footer-bottom-right">Brighten your future.</span>
-      </div>
-    </div>
-  </footer>
-
-  <a href="contact.html" class="help-bubble">
-    <div class="help-bubble-icon">?</div>
-    Need help?
-  </a>
-
-  <script>
-    function handleContact() {
-      document.getElementById('contact-success').classList.remove('hidden');
-    }
-  </script>
-
-</body>
-</html>
+</div></section>
+<div id="site-footer"></div>
+<script src="/scripts/components.js"></script>
+</body></html>

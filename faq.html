@@ -1,210 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Frequently asked questions about Ujyalo - for students, parents, and schools" />
-  <title>FAQ — Ujyalo</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles/main.css" />
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ — Ujyalo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/main.css">
+
 </head>
 <body>
+<div id="site-nav"></div>
+<div class="page-hero"><div class="container"><div class="page-hero-label">FAQ</div><h1>Frequently asked<br><em>questions.</em></h1><p>Everything students and parents commonly ask. Can't find what you need? Get in touch.</p></div></div>
 
-  <div class="announcement-bar">
-    🎉 Ujyalo is now live! Join the waitlist for full access — <a href="signup.html">sign up free →</a>
+<section class="section"><div class="container-narrow">
+  <span class="label-tiny">For students</span>
+  <div class="mt-6">
+    <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Is Ujyalo free?<div class="faq-icon">+</div></div><div class="faq-answer">Yes — completely free to start. 10 questions per day across two subjects. Upgrade for unlimited practice and all features.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Will Ujyalo help me pass SEE?<div class="faq-icon">+</div></div><div class="faq-answer">Ujyalo gives you the tools. Students who practice 30 minutes daily for 2–3 months see major improvement.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')">What if I don't have internet always?<div class="faq-icon">+</div></div><div class="faq-answer">Ujyalo is designed to be lightweight and works on slow internet. No app to download — just open ujyalo.app in your browser.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Is the AI in Nepali or English?<div class="faq-icon">+</div></div><div class="faq-answer">All AI responses are in clear, simple English — matching your actual SEE exam. We use Nepali context in the questions.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Can I use it on my phone?<div class="faq-icon">+</div></div><div class="faq-answer">Absolutely. Ujyalo works perfectly on phones, tablets, and computers. Most of our students study on their phones.</div></div>
   </div>
+</div></section>
 
-  <nav class="nav-public">
-    <div class="container">
-      <div class="nav-inner">
-        <a href="index.html" class="logo">ujyalo</a>
-        <div class="nav-links">
-          <a href="practice.html">Practice</a>
-          <a href="features.html">Features</a>
-          <a href="pricing.html">Pricing</a>
-          <a href="about.html">About</a>
-        </div>
-        <div class="nav-actions">
-          <a href="login.html" class="btn btn-ghost">Log in</a>
-          <a href="signup.html" class="btn btn-primary">Sign up free →</a>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <div class="page-hero">
-    <div class="container">
-      <div class="page-hero-label">FAQ</div>
-      <h1>Frequently asked<br><em>questions.</em></h1>
-      <p>Everything students and parents commonly ask about Ujyalo. Can't find what you're looking for? Get in touch.</p>
-    </div>
+<section class="section section-bg-soft"><div class="container-narrow">
+  <span class="label-tiny">For parents</span>
+  <div class="mt-6">
+    <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')">How will I know my child is studying?<div class="faq-icon">+</div></div><div class="faq-answer">Every Sunday morning, you receive an email showing exactly what your child practised that week — questions, accuracy, weak chapters, and streaks.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Is Rs 299/month worth it?<div class="faq-icon">+</div></div><div class="faq-answer">Coaching centers cost Rs 5,000–15,000 per month. Ujyalo is Rs 299 and works 24/7. Try the free plan first — most parents see the value within 2 weeks.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Is my child's data safe?<div class="faq-icon">+</div></div><div class="faq-answer">Yes. We never sell data or share it with advertisers. See our privacy policy for full details.</div></div>
   </div>
+</div></section>
 
-  <!-- FOR STUDENTS -->
-  <section class="section">
-    <div class="container-narrow">
-      <span class="label-tiny">For students</span>
-      <div id="faq-students" class="mt-6">
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            Is Ujyalo free?
-            <div class="faq-icon">+</div>
-          </div>
-          <div class="faq-answer">Yes — completely free to start. The free plan gives 10 questions per day across two subjects. Upgrade only if you want unlimited practice and all features.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            Will Ujyalo help me pass SEE?
-            <div class="faq-icon">+</div>
-          </div>
-          <div class="faq-answer">Ujyalo gives you the tools — past papers, mock tests, instant feedback, progress tracking. But you have to put in the work. Students who practice 30 minutes daily for 2–3 months see major improvement.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            What if I don't have internet always?
-            <div class="faq-icon">+</div>
-          </div>
-          <div class="faq-answer">Ujyalo works on slow internet — we designed it to be lightweight. You only need internet when generating new questions or submitting answers. Practice during your school's free WiFi or anywhere with mobile data.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            Is the AI in Nepali or English?
-            <div class="faq-icon">+</div>
-          </div>
-          <div class="faq-answer">All AI responses are in clear, simple English. Why? Because Nepali AI quality isn't good enough yet. Plus, your SEE exam is mostly in English anyway. We use Nepali context (names, places, currency) but the language is English.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            Can I use it on my phone?
-            <div class="faq-icon">+</div>
-          </div>
-          <div class="faq-answer">Absolutely. Ujyalo works perfectly on phones, tablets, and computers. Most of our students study on their phones. No app to download — just open ujyalo.app in your browser.</div>
-        </div>
-      </div>
-    </div>
-  </section>
+<section class="section"><div class="container-narrow">
+  <span class="label-tiny">For schools</span>
+  <div class="mt-6">
+    <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Can our school use Ujyalo for all students?<div class="faq-icon">+</div></div><div class="faq-answer">Yes — School plans start at Rs 5,000/month for up to 30 students. Email hello@ujyalo.app for a demo.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')">Do you offer custom question banks?<div class="faq-icon">+</div></div><div class="faq-answer">Yes — schools can upload their own questions to align practice with what's being taught in class.</div></div>
+  </div>
+</div></section>
 
-  <!-- FOR PARENTS -->
-  <section class="section section-bg-soft">
-    <div class="container-narrow">
-      <span class="label-tiny">For parents</span>
-      <div id="faq-parents" class="mt-6">
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            How will I know my child is studying?
-            <div class="faq-icon">+</div>
-          </div>
-          <div class="faq-answer">Every Sunday morning, you receive a beautiful email showing exactly what your child practised that week. How many questions, accuracy, weak chapters, and streaks. You see real progress, not just promises.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            Is Rs 299/month worth it?
-            <div class="faq-icon">+</div>
-          </div>
-          <div class="faq-answer">Coaching centers cost Rs 5,000–15,000 per month. Tutors cost Rs 2,000–5,000. Ujyalo is Rs 299 per month and works 24/7. Try the free plan first — most parents see the value clearly within 2 weeks.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            Is my child's data safe?
-            <div class="faq-icon">+</div>
-          </div>
-          <div class="faq-answer">Yes. We never share data with third parties. We don't sell information. Your child's practice history is theirs alone. See our <a href="privacy.html" style="color:var(--brand);">privacy policy</a> for full details.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOR SCHOOLS -->
-  <section class="section">
-    <div class="container-narrow">
-      <span class="label-tiny">For schools</span>
-      <div id="faq-schools" class="mt-6">
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            Can our school use Ujyalo for all students?
-            <div class="faq-icon">+</div>
-          </div>
-          <div class="faq-answer">Yes — we offer School plans starting Rs 5,000/month for up to 30 students. Includes teacher dashboard, class progress reports, and priority support. Email hello@ujyalo.app for a demo.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            Do you offer custom question banks?
-            <div class="faq-icon">+</div>
-          </div>
-          <div class="faq-answer">Yes — schools can upload their own question banks for students to practice. Useful for teachers who want to align practice with what they're teaching in class.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="cta-section">
-    <div class="container">
-      <h2>Still have<br><em>questions?</em></h2>
-      <p>Email us at hello@ujyalo.app — we reply within 24 hours.</p>
-      <a href="contact.html" class="btn btn-primary btn-large">Contact us →</a>
-    </div>
-  </section>
-
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <a href="index.html" class="logo">ujyalo</a>
-          <p>AI-powered SEE preparation made with care, in Nepal. Helping students brighten their future, one question at a time.</p>
-          <div class="footer-social mt-4">
-            <a href="#" title="Facebook">f</a>
-            <a href="#" title="Instagram">in</a>
-            <a href="#" title="TikTok">tt</a>
-          </div>
-        </div>
-        <div class="footer-col">
-          <h4>Product</h4>
-          <ul>
-            <li><a href="practice.html">Practice</a></li>
-            <li><a href="features.html">Features</a></li>
-            <li><a href="how-it-works.html">How it works</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
-            <li><a href="for-schools.html">For schools</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="about.html">About us</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="faq.html">FAQ</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Legal</h4>
-          <ul>
-            <li><a href="privacy.html">Privacy policy</a></li>
-            <li><a href="terms.html">Terms of service</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span class="footer-bottom-left">© 2026 Ujyalo · Made in Nepal 🇳🇵</span>
-        <span class="footer-bottom-right">Brighten your future.</span>
-      </div>
-    </div>
-  </footer>
-
-  <a href="contact.html" class="help-bubble">
-    <div class="help-bubble-icon">?</div>
-    Need help?
-  </a>
-
-  <script>
-    function toggleFaq(el) {
-      const item = el.parentElement;
-      item.classList.toggle('open');
-    }
-  </script>
-
-</body>
-</html>
+<section class="cta-section"><div class="container"><h2>Still have<br><em>questions?</em></h2><p>Email us at hello@ujyalo.app — we reply within 24 hours.</p><a href="/contact.html" class="btn btn-primary btn-large">Contact us →</a></div></section>
+<div id="site-footer"></div>
+<script src="/scripts/components.js"></script>
+</body></html>
