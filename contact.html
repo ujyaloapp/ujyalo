@@ -7,30 +7,140 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.css">
-
+<style>
+  .required { color: #B91C1C; margin-left: 2px; }
+</style>
 </head>
 <body>
 <div id="site-nav"></div>
-<div class="page-hero"><div class="container"><div class="page-hero-label">Get in touch</div><h1>We'd love to<br><em>hear from you.</em></h1><p>Questions, feedback, partnerships, or just saying hi.</p></div></div>
 
-<section class="section"><div class="container">
-  <div class="grid-2" style="align-items:start;">
-    <div style="display:flex;flex-direction:column;gap:20px;">
-      <div class="card"><span class="card-icon">📧</span><h3>Email us</h3><p class="mt-2"><a href="mailto:hello@ujyalo.app" style="color:var(--brand);font-weight:600;">hello@ujyalo.app</a></p><p class="mt-2" style="font-size:13px;color:var(--ink-500);">We reply within 24 hours.</p></div>
-      <div class="card"><span class="card-icon">🏫</span><h3>For schools</h3><p class="mt-2"><a href="mailto:hello@ujyalo.app" style="color:var(--brand);font-weight:600;">hello@ujyalo.app</a></p><p class="mt-2" style="font-size:13px;color:var(--ink-500);">Special pricing and demos for schools.</p></div>
-    </div>
-    <div class="contact-card">
-      <h3 style="font-family:Fraunces,serif;font-size:1.4rem;margin-bottom:8px;">Send us a message</h3>
-      <p style="font-size:14px;color:var(--ink-500);margin-bottom:24px;">We'll get back to you within 24 hours.</p>
-      <div class="field"><label>Your name</label><input type="text" class="input" placeholder="Rajan Thapa"></div>
-      <div class="field"><label>Email</label><input type="email" class="input" placeholder="rajan@email.com"></div>
-      <div class="field"><label>I am a...</label><select class="select"><option>Student</option><option>Parent</option><option>Teacher</option><option>School representative</option><option>Other</option></select></div>
-      <div class="field"><label>Message</label><textarea class="textarea" placeholder="Your message here..."></textarea></div>
-      <button class="btn btn-primary btn-block" onclick="document.getElementById('cs').classList.remove('hidden')">Send message →</button>
-      <div id="cs" class="hidden mt-4" style="background:var(--green-light);color:var(--green);padding:12px 16px;border-radius:var(--radius-md);font-size:14px;font-weight:600;text-align:center;">✓ Message sent! We'll reply within 24 hours.</div>
+<div class="page-hero">
+  <div class="container">
+    <div class="page-hero-label">Get in touch</div>
+    <h1>We'd love to<br><em>hear from you.</em></h1>
+    <p>Questions, feedback, partnerships, or just saying hi.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="grid-2" style="align-items:start;">
+
+      <!-- Left: contact info -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="card">
+          <span class="card-icon">📧</span>
+          <h3>Email us</h3>
+          <p class="mt-2"><a href="mailto:hello@ujyalo.app" style="color:var(--brand);font-weight:600;">hello@ujyalo.app</a></p>
+          <p class="mt-2" style="font-size:13px;color:var(--ink-500);">We reply within 24 hours.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">🏫</span>
+          <h3>For schools</h3>
+          <p class="mt-2"><a href="mailto:hello@ujyalo.app" style="color:var(--brand);font-weight:600;">hello@ujyalo.app</a></p>
+          <p class="mt-2" style="font-size:13px;color:var(--ink-500);">Special pricing and demos for schools.</p>
+        </div>
+      </div>
+
+      <!-- Right: contact form -->
+      <div class="contact-card">
+
+        <!-- Success state -->
+        <div id="success-box" class="hidden" style="background:linear-gradient(135deg,#D1FAE5 0%,#A7F3D0 100%);border:1px solid #6EE7B7;border-radius:var(--radius-lg);padding:28px;text-align:center;">
+          <div style="font-size:40px;margin-bottom:10px;">✓</div>
+          <h3 style="font-family:Fraunces,serif;font-size:18px;font-weight:600;color:#065F46;margin-bottom:6px;">Message sent!</h3>
+          <p style="font-size:14px;color:#047857;line-height:1.6;">We'll reply within 24 hours at hello@ujyalo.app</p>
+        </div>
+
+        <!-- Form state -->
+        <div id="form-box">
+          <h3 style="font-family:Fraunces,serif;font-size:1.4rem;margin-bottom:8px;">Send us a message</h3>
+          <p style="font-size:14px;color:var(--ink-500);margin-bottom:24px;">We'll get back to you within 24 hours.</p>
+
+          <!-- Error message -->
+          <div id="error-msg" class="hidden" style="background:#FEE2E2;border:1px solid #FECACA;border-radius:var(--radius-md);padding:12px 16px;margin-bottom:16px;font-size:14px;color:#B91C1C;"></div>
+
+          <div class="field">
+            <label>Your name <span class="required">*</span></label>
+            <input type="text" class="input" id="input-name" placeholder="Rajan Thapa">
+          </div>
+          <div class="field">
+            <label>Email <span class="required">*</span></label>
+            <input type="email" class="input" id="input-email" placeholder="rajan@email.com">
+          </div>
+          <div class="field">
+            <label>I am a... <span class="required">*</span></label>
+            <select class="select" id="input-role">
+              <option value="Student">Student</option>
+              <option value="Parent">Parent</option>
+              <option value="Teacher">Teacher</option>
+              <option value="School representative">School representative</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Message <span class="required">*</span></label>
+            <textarea class="textarea" id="input-message" placeholder="Your message here..."></textarea>
+          </div>
+
+          <p style="font-size:11px;color:var(--ink-300);margin-bottom:16px;"><span class="required">*</span> Required fields</p>
+
+          <button class="btn btn-primary btn-block" id="submit-btn" onclick="submitContact()">
+            Send message →
+          </button>
+        </div>
+
+      </div>
     </div>
   </div>
-</div></section>
+</section>
+
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
-</body></html>
+<script>
+async function submitContact() {
+  const name    = document.getElementById('input-name').value.trim();
+  const email   = document.getElementById('input-email').value.trim();
+  const role    = document.getElementById('input-role').value;
+  const message = document.getElementById('input-message').value.trim();
+  const btn     = document.getElementById('submit-btn');
+  hideError();
+
+  // Validation
+  if (!name)    { showError('Please enter your name.'); return; }
+  if (!email)   { showError('Please enter your email address.'); return; }
+  if (!message) { showError('Please enter a message.'); return; }
+
+  // Loading state
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ full_name: name, email, role, message })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('form-box').classList.add('hidden');
+      document.getElementById('success-box').classList.remove('hidden');
+    } else {
+      showError(data.error || 'Something went wrong. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Send message →';
+    }
+  } catch (e) {
+    showError('Something went wrong. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Send message →';
+  }
+}
+
+function showError(msg) { const e = document.getElementById('error-msg'); e.textContent = msg; e.classList.remove('hidden'); }
+function hideError() { document.getElementById('error-msg').classList.add('hidden'); }
+</script>
+</body>
+</html>
