@@ -7,30 +7,89 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.css">
-
+<style>
+  .required { color: #B91C1C; margin-left: 2px; }
+</style>
 </head>
 <body>
 <div id="site-nav"></div>
-<div style="padding:80px 0;background:var(--ink-50);">
-  <div class="container-tiny animate-up text-center">
-    <div style="font-size:48px;margin-bottom:16px;">🚀</div>
-    <h1 class="font-display" style="font-size:36px;font-weight:600;letter-spacing:-1px;margin-bottom:12px;">Coming <em style="color:var(--brand);">soon.</em></h1>
-    <p class="text-muted mb-8" style="font-size:16px;line-height:1.6;">We're putting the finishing touches on Ujyalo accounts. Join the waitlist and we'll email you the moment login goes live.</p>
-    <div class="flex gap-3 justify-center flex-wrap mb-8">
-      <a href="/signup.html" class="btn btn-primary">Join the waitlist →</a>
-      <a href="/practice.html" class="btn btn-secondary">Try the demo</a>
+
+<div style="padding:60px 0 80px;background:var(--ink-50);">
+  <div class="container-tiny animate-up">
+
+    <div class="card" style="padding:32px;">
+      <h3 class="font-display" style="font-size:22px;font-weight:600;margin-bottom:6px;">Welcome back 👋</h3>
+      <p class="text-muted mb-6" style="font-size:14px;">Log in to continue your practice.</p>
+
+      <!-- Error message -->
+      <div id="error-msg" class="hidden" style="background:#FEE2E2;border:1px solid #FECACA;border-radius:var(--radius-md);padding:12px 16px;margin-bottom:16px;font-size:14px;color:#B91C1C;"></div>
+
+      <div class="field">
+        <label>Email <span class="required">*</span></label>
+        <input type="email" class="input" id="input-email" placeholder="rajan@example.com">
+      </div>
+      <div class="field">
+        <label>Password <span class="required">*</span></label>
+        <input type="password" class="input" id="input-password" placeholder="Your password">
+      </div>
+
+      <button class="btn btn-blue btn-block" id="submit-btn" onclick="submitLogin()">
+        Log in →
+      </button>
+
+      <p class="text-muted text-center mt-6" style="font-size:13px;">
+        Don't have an account? <a href="/signup.html" style="color:var(--brand);font-weight:600;">Sign up free →</a>
+      </p>
     </div>
-    <div class="card" style="padding:24px;text-align:left;">
-      <h3 class="font-display" style="font-size:16px;font-weight:600;margin-bottom:12px;text-align:center;">What's coming</h3>
-      <ul style="list-style:none;padding:0;">
-        <li style="padding:6px 0;font-size:14px;color:var(--ink-700);display:flex;gap:8px;"><span style="color:var(--brand);font-weight:700;">✓</span><span>Save your practice progress across sessions</span></li>
-        <li style="padding:6px 0;font-size:14px;color:var(--ink-700);display:flex;gap:8px;"><span style="color:var(--brand);font-weight:700;">✓</span><span>Track improvement over time with charts</span></li>
-        <li style="padding:6px 0;font-size:14px;color:var(--ink-700);display:flex;gap:8px;"><span style="color:var(--brand);font-weight:700;">✓</span><span>Daily streaks to keep you motivated</span></li>
-        <li style="padding:6px 0;font-size:14px;color:var(--ink-700);display:flex;gap:8px;"><span style="color:var(--brand);font-weight:700;">✓</span><span>Weekly progress emails to your parents</span></li>
-      </ul>
-    </div>
+
   </div>
 </div>
+
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
-</body></html>
+<script>
+async function submitLogin() {
+  const email    = document.getElementById('input-email').value.trim();
+  const password = document.getElementById('input-password').value;
+  const btn      = document.getElementById('submit-btn');
+  hideError();
+
+  if (!email)    { showError('Please enter your email address.'); return; }
+  if (!password) { showError('Please enter your password.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Logging in...';
+
+  try {
+    const res = await fetch('/api/auth-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      // Save session to localStorage
+      localStorage.setItem('ujyalo_token', data.access_token);
+      localStorage.setItem('ujyalo_user', JSON.stringify(data.user));
+
+      // Redirect to dashboard
+      window.location.href = '/dashboard.html';
+    } else {
+      showError(data.error || 'Something went wrong. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Log in →';
+    }
+  } catch (e) {
+    showError('Something went wrong. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Log in →';
+  }
+}
+
+function showError(msg) { const e = document.getElementById('error-msg'); e.textContent = msg; e.classList.remove('hidden'); }
+function hideError() { document.getElementById('error-msg').classList.add('hidden'); }
+</script>
+</body>
+</html>
