@@ -235,6 +235,7 @@ async function saveProfile() {
       },
       body: JSON.stringify({
         user_id:    user.id,
+        email:        user.email,
         full_name:  document.getElementById('input-fullname').value.trim(),
         school:     document.getElementById('input-school').value.trim(),
         grade:      document.getElementById('input-grade').value,
