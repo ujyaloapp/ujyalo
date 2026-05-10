@@ -494,9 +494,8 @@ tr:hover td { background: var(--ink-50); }
             <tr>
               <th>Name</th>
               <th>Email</th>
-              <th>School</th>
-              <th>Grade</th>
-              <th>City</th>
+              <th>Status</th>
+              <th>Last login</th>
               <th>Joined</th>
             </tr>
           </thead>
@@ -881,33 +880,44 @@ function showModalAlert(msg) {
 
 // ── Students ──
 async function loadStudents() {
-  const loading  = document.getElementById('students-loading');
-  const tableWrap= document.getElementById('students-table-wrap');
-  const empty    = document.getElementById('students-empty');
-  const tbody    = document.getElementById('students-tbody');
+  const loading   = document.getElementById('students-loading');
+  const tableWrap = document.getElementById('students-table-wrap');
+  const empty     = document.getElementById('students-empty');
+  const tbody     = document.getElementById('students-tbody');
 
   loading.style.display = 'block';
   tableWrap.classList.add('hidden');
   empty.classList.add('hidden');
 
   try {
-    const data = await sbFetch('users', 'select=*&order=created_at.desc');
+    const res  = await fetch('/api/admin-users', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+
     loading.style.display = 'none';
 
-    if (!Array.isArray(data) || data.length === 0) { empty.classList.remove('hidden'); return; }
+    if (!data.success || !data.users || data.users.length === 0) {
+      empty.classList.remove('hidden');
+      return;
+    }
+
+    // Update count
+    document.getElementById('count-students').textContent = data.users.length;
+    document.getElementById('ov-students').textContent    = data.users.length;
 
     tbody.innerHTML = '';
-    data.forEach(s => {
+    data.users.forEach(u => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${s.full_name || '—'}</td>
-        <td>${s.email || '—'}</td>
-        <td>${s.school || '—'}</td>
-        <td>${s.grade || '—'}</td>
-        <td>${s.city || '—'}</td>
-        <td>${formatDate(s.created_at)}</td>`;
+        <td>${u.full_name || '—'}</td>
+        <td>${u.email || '—'}</td>
+        <td><span class="badge ${u.confirmed ? 'badge-green' : 'badge-gold'}">${u.confirmed ? 'Verified' : 'Unverified'}</span></td>
+        <td>${formatDate(u.last_sign_in)}</td>
+        <td>${formatDate(u.created_at)}</td>`;
       tbody.appendChild(tr);
     });
+
     tableWrap.classList.remove('hidden');
   } catch (e) {
     loading.style.display = 'none';
