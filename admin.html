@@ -677,17 +677,17 @@ async function sbFetch(table, params = '') {
 // ── Overview ──
 async function loadOverview() {
   try {
-    const [questions, students, waitlist, messages] = await Promise.all([
+    const [questions, waitlist, messages, studentsRes] = await Promise.all([
       sbFetch('questions', 'select=id'),
-      sbFetch('users', 'select=id'),
       sbFetch('waitlist', 'select=id'),
       sbFetch('contact_messages', 'select=id'),
+      fetch('/api/admin-users', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.json()),
     ]);
 
-    const qCount  = Array.isArray(questions) ? questions.length : 0;
-    const sCount  = Array.isArray(students)  ? students.length  : 0;
-    const wCount  = Array.isArray(waitlist)  ? waitlist.length  : 0;
-    const mCount  = Array.isArray(messages)  ? messages.length  : 0;
+    const qCount = Array.isArray(questions) ? questions.length : 0;
+    const sCount = studentsRes.success ? studentsRes.users.length : 0;
+    const wCount = Array.isArray(waitlist) ? waitlist.length : 0;
+    const mCount = Array.isArray(messages) ? messages.length : 0;
 
     document.getElementById('ov-questions').textContent = qCount;
     document.getElementById('ov-students').textContent  = sCount;
