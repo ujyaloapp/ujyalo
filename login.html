@@ -47,6 +47,14 @@
 
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
+  <script>
+  // If already logged in — go straight to dashboard
+  const user = localStorage.getItem('ujyalo_user');
+  const token = localStorage.getItem('ujyalo_token');
+  if (user && token) {
+    window.location.href = '/dashboard.html';
+  }
+</script>
 <script>
 async function submitLogin() {
   const email    = document.getElementById('input-email').value.trim();
