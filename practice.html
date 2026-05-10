@@ -351,9 +351,7 @@
 <div class="prac-screen active" id="ps-home">
   <div style="background:white;border-bottom:1px solid var(--ink-100);padding:18px 24px 14px;flex-shrink:0;">
     <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;margin-bottom:14px;line-height:1.2;">
-      <div id="practice-greeting" style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;margin-bottom:14px;line-height:1.2;">
-  Good morning. <em style="font-style:italic;color:var(--brand);font-weight:400;">Let's practise.</em>
-</div>
+      Good morning. <em style="font-style:italic;color:var(--brand);font-weight:400;">Let's practise.</em>
     </div>
     <div class="subj-toggle" id="home-subj-toggle"></div>
   </div>
@@ -852,12 +850,8 @@ const PP = {
       this.updateProgress();
 
       if (ST.ans >= CONFIG.sessionLength) {
-        $('prac-btn-next').textContent = 'Create free account to continue →';
-        $('prac-btn-next').onclick = () => {
-          $('wall-correct').textContent = `${ST.ok}/${ST.ans}`;
-          $('wall-pct').textContent = `${Math.round(ST.ok/ST.ans*100)}%`;
-          showScreen('signup');
-        };
+        $('prac-btn-next').textContent = 'Next question →';
+        $('prac-btn-next').onclick = () => PP.next();
       }
     } catch(e) {
       $('prac-loading').classList.add('hidden');
@@ -964,12 +958,8 @@ const CP = {
       this.updateProgress();
 
       if (this.ans >= CONFIG.sessionLength) {
-        $('ch-btn-next').textContent = 'Sign up free to continue →';
-        $('ch-btn-next').onclick = () => {
-          $('wall-correct').textContent = `${this.ok}/${this.ans}`;
-          $('wall-pct').textContent = `${Math.round(this.ok/this.ans*100)}%`;
-          showScreen('signup');
-        };
+        $('ch-btn-next').textContent = 'Next question →';
+        $('ch-btn-next').onclick = () => CP.next();
       }
     } catch(e) {
       $('ch-loading').classList.add('hidden');
@@ -986,9 +976,6 @@ const CP = {
 };
 
 // Boot
-const _h = new Date().getHours();
-const _g = _h < 12 ? 'Good morning' : _h < 17 ? 'Good afternoon' : 'Good evening';
-document.getElementById('practice-greeting').innerHTML = `${_g}. <em style="font-style:italic;color:var(--brand);font-weight:400;">Let's practise.</em>`;
 renderHome();
 </script>
 </body>
