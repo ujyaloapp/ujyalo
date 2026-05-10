@@ -23,7 +23,7 @@ const NAV = `
       <a href="/pricing.html">Pricing</a>
       <a href="/about.html">About</a>
     </div>
-    <div class="nav-actions">
+    <div class="nav-actions" id="nav-actions">
       <a href="/login.html" class="btn btn-ghost">Log in</a>
       <a href="/signup.html" class="btn btn-primary">Sign up free →</a>
     </div>
@@ -89,6 +89,13 @@ const FOOTER = `
   Need help?
 </a>`;
 
+// Global logout function — available on every page
+function ujyaloLogout() {
+  localStorage.removeItem('ujyalo_token');
+  localStorage.removeItem('ujyalo_user');
+  window.location.href = '/index.html';
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 
   // Favicon
@@ -112,5 +119,24 @@ document.addEventListener('DOMContentLoaded', function () {
       link.classList.add('active');
     }
   });
+
+  // Check if logged in — update nav buttons
+  const user = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
+  const token = localStorage.getItem('ujyalo_token');
+  const navActions = document.getElementById('nav-actions');
+
+  if (user && token && navActions) {
+    const firstName = user.full_name
+      ? user.full_name.split(' ')[0]
+      : user.email.split('@')[0];
+    const initials = firstName.charAt(0).toUpperCase();
+
+    navActions.innerHTML = `
+      <a href="/dashboard.html" class="btn btn-ghost">Dashboard</a>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">${initials}</div>
+        <button onclick="ujyaloLogout()" style="font-size:13px;color:var(--ink-500);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:500;">Log out</button>
+      </div>`;
+  }
 
 });
