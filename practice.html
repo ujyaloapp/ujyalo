@@ -540,9 +540,9 @@ const CONFIG = {
     { key:'science', label:'Science', icon:'🔬' },
   ],
   years: {
-    free:    [2079, 2078],
-    account: [2077, 2076, 2075],
-    paid:    [2074, 2073, 2072, 2071, 2070],
+    free:    [2079, 2078, 2077, 2076, 2075, 2074, 2073, 2072, 2071, 2070],
+    account: [],
+    paid:    [],
   },
   modes: [
     { key:'papers',  title:'Past Papers',      desc:'Practice real SEE questions from past years. The closest thing to the actual exam.',    icon:'📜', bg:'blue', tag:{txt:'✓ Free — 2 years, no signup',    cls:'badge-sun'}, on:true },
@@ -699,24 +699,15 @@ function renderYears() {
   const s = CONFIG.subjects.find(x => x.key === ST.subj);
   $('years-subtitle').textContent = `${s.label} · Choose a year`;
   const body = $('years-body'); body.innerHTML = '';
-  const groups = [
-    { lbl:'Free — no account needed', years:CONFIG.years.free, tag:'tag-free-sm', tagTxt:'FREE', cls:'' },
-    { lbl:`Free account — <a href="/signup.html">sign up in 30 seconds</a>`, years:CONFIG.years.account, tag:'tag-acct-sm', tagTxt:'Sign up free', cls:'soft-lock' },
-    { lbl:'Student plan · Rs 299/month', years:CONFIG.years.paid, tag:'tag-paid-sm', tagTxt:'Rs 299', cls:'locked' },
-  ];
-  groups.forEach(g => {
-    if (!g.years.length) return;
-    const lbl = mk('div','years-group-lbl'); lbl.innerHTML = g.lbl; body.appendChild(lbl);
-    g.years.forEach(y => {
-      const row = mk('button', `year-row ${g.cls}`);
-      row.innerHTML = `<div class="year-row-left"><div class="year-row-ico">📄</div><div><div class="year-row-name">SEE ${y}</div><div class="year-row-sub">${y===Math.max(...CONFIG.years.free)?'Most recent · ':''}40 questions</div></div></div><div class="year-row-right"><div class="${g.tag}">${g.tagTxt}</div>${g.cls?'<span class="lock-ico">🔒</span>':'<span style="color:var(--ink-300);font-size:18px">›</span>'}</div>`;
-      if (!g.cls) {
-        row.onclick = () => { ST.year = y; startPractice(); };
-      } else if (g.cls === 'soft-lock') {
-        row.onclick = () => window.location.href = '/signup.html';
-      }
-      body.appendChild(row);
-    });
+
+  const lbl = mk('div','years-group-lbl'); lbl.innerHTML = 'All years — free'; body.appendChild(lbl);
+
+  const allYears = [...CONFIG.years.free, ...CONFIG.years.account, ...CONFIG.years.paid];
+  allYears.forEach(y => {
+    const row = mk('button', 'year-row');
+    row.innerHTML = `<div class="year-row-left"><div class="year-row-ico">📄</div><div><div class="year-row-name">SEE ${y}</div><div class="year-row-sub">${y===Math.max(...allYears)?'Most recent · ':''}40 questions</div></div></div><div class="year-row-right"><div class="tag-free-sm">FREE</div><span style="color:var(--ink-300);font-size:18px">›</span></div>`;
+    row.onclick = () => { ST.year = y; startPractice(); };
+    body.appendChild(row);
   });
 }
 
@@ -758,12 +749,11 @@ function renderChapterList() {
   const list = $('ch-list'); list.innerHTML = '<div class="ch-list-lbl">Chapters</div>';
   const chs = CONTENT[ST.subj]?.chapters || [];
   chs.forEach((ch, i) => {
-    const free = i < 2;
+    const free = true;
     const b = mk('button', 'ch-item');
-    b.innerHTML = `<span>${ch.name}</span>${free?'':`<span class="ch-item-lock">🔒</span>`}`;
+    b.innerHTML = `<span>${ch.name}</span>`;
     b.dataset.name = ch.name;
     b.onclick = () => {
-      if (!free) { window.location.href = '/signup.html'; return; }
       ST.chapter = ch.name;
       list.querySelectorAll('.ch-item').forEach(x => x.classList.remove('on'));
       b.classList.add('on');
