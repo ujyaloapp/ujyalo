@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Ujyalo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   UJYALO ADMIN PANEL
+   Only accessible to hello@ujyalo.app
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue:      #1E5FA8;
+  --blue-dark: #154A8A;
+  --gold:      #F59E0B;
+  --green:     #15803D;
+  --green-bg:  #DCFCE7;
+  --red:       #B91C1C;
+  --red-bg:    #FEE2E2;
+  --ink-900:   #0A1628;
+  --ink-700:   #1F2D44;
+  --ink-500:   #5C6B82;
+  --ink-300:   #B5C0D0;
+  --ink-200:   #D9E1EC;
+  --ink-100:   #EDF1F7;
+  --ink-50:    #F6F8FB;
+  --r:         10px;
+  --pill:      999px;
+}
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--ink-50);
+  color: var(--ink-900);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NAV ── */
+.nav {
+  background: var(--ink-900);
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-logo {
+  font-family: 'Fraunces', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.admin-badge {
+  background: var(--red);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--pill);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--ink-300);
+}
+.btn-logout {
+  background: none;
+  border: 1px solid var(--ink-500);
+  color: var(--ink-300);
+  padding: 5px 14px;
+  border-radius: var(--pill);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+/* ── TABS ── */
+.tabs {
+  background: white;
+  border-bottom: 1px solid var(--ink-100);
+  display: flex;
+  padding: 0 24px;
+  gap: 2px;
+}
+.tab {
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-500);
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  font-family: inherit;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tab:hover { color: var(--ink-900); }
+.tab.on { color: var(--blue); border-bottom-color: var(--blue); }
+.tab-count {
+  background: var(--ink-100);
+  color: var(--ink-500);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--pill);
+}
+.tab.on .tab-count { background: var(--blue); color: white; }
+
+/* ── PANELS ── */
+.panel { display: none; padding: 24px; max-width: 1100px; margin: 0 auto; }
+.panel.on { display: block; }
+
+/* ── CARDS ── */
+.card {
+  background: white;
+  border-radius: var(--r);
+  border: 1px solid var(--ink-100);
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: var(--pill);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary { background: var(--blue); color: white; }
+.btn-primary:hover { background: var(--blue-dark); }
+.btn-danger { background: var(--red-bg); color: var(--red); }
+.btn-danger:hover { background: var(--red); color: white; }
+.btn-ghost { background: none; color: var(--ink-500); border: 1px solid var(--ink-200); }
+.btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-success { background: var(--green-bg); color: var(--green); }
+
+/* ── FORM ── */
+.field { margin-bottom: 14px; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-700);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.field input, .field select, .field textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--ink-200);
+  border-radius: var(--r);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink-900);
+  background: white;
+  transition: all 0.2s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(30,95,168,0.08);
+}
+.field textarea { min-height: 90px; resize: vertical; line-height: 1.65; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+/* ── TABLE ── */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  background: var(--ink-50);
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-500);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--ink-100);
+}
+td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--ink-100);
+  color: var(--ink-700);
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--ink-50); }
+.td-wrap { max-width: 280px; word-break: break-word; }
+
+/* ── BADGES ── */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--pill);
+  font-size: 11px;
+  font-weight: 700;
+}
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-blue  { background: #DBEAFE; color: var(--blue); }
+.badge-gold  { background: #FEF3C7; color: #92400e; }
+.badge-red   { background: var(--red-bg); color: var(--red); }
+
+/* ── STATS ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: white;
+  border: 1px solid var(--ink-100);
+  border-radius: var(--r);
+  padding: 20px;
+  text-align: center;
+}
+.stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--blue);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-lbl { font-size: 12px; color: var(--ink-500); font-weight: 500; }
+
+/* ── ALERTS ── */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--r);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: none;
+}
+.alert-success { background: var(--green-bg); color: var(--green); }
+.alert-error   { background: var(--red-bg);   color: var(--red); }
+
+/* ── LOADING ── */
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--ink-300);
+  font-size: 14px;
+}
+.spinner {
+  width: 28px; height: 28px;
+  border: 2.5px solid var(--ink-100);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 10px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,22,40,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 24px;
+}
+.modal {
+  background: white;
+  border-radius: 16px;
+  padding: 28px;
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-title {
+  font-family: 'Fraunces', serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.hidden { display: none !important; }
+
+/* ── ACCESS DENIED ── */
+.access-denied {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+}
+.access-card {
+  background: white;
+  border-radius: 16px;
+  padding: 48px 40px;
+  max-width: 400px;
+  box-shadow: 0 4px 24px rgba(10,22,40,0.08);
+}
+</style>
+</head>
+<body>
+
+<!-- ACCESS DENIED STATE -->
+<div id="access-denied" class="hidden">
+  <div class="access-denied">
+    <div class="access-card">
+      <div style="font-size:48px;margin-bottom:16px;">🔒</div>
+      <h2 style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;margin-bottom:8px;">Access denied</h2>
+      <p style="font-size:14px;color:var(--ink-500);line-height:1.6;margin-bottom:20px;">This page is only accessible to Ujyalo administrators.</p>
+      <a href="/login.html" style="display:inline-block;background:var(--blue);color:white;padding:10px 22px;border-radius:var(--pill);font-weight:700;font-size:14px;text-decoration:none;">Go to login →</a>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN ADMIN APP -->
+<div id="admin-app" class="hidden">
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-logo">
+      ⚡ ujyalo
+      <span class="admin-badge">Admin</span>
+    </div>
+    <div class="nav-right">
+      <span id="admin-email">—</span>
+      <button class="btn-logout" onclick="logout()">Log out</button>
+    </div>
+  </nav>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('overview')" id="tab-overview">📊 Overview</button>
+    <button class="tab" onclick="switchTab('questions')" id="tab-questions">📚 Questions <span class="tab-count" id="count-questions">—</span></button>
+    <button class="tab" onclick="switchTab('students')" id="tab-students">👩‍🎓 Students <span class="tab-count" id="count-students">—</span></button>
+    <button class="tab" onclick="switchTab('waitlist')" id="tab-waitlist">📋 Waitlist <span class="tab-count" id="count-waitlist">—</span></button>
+    <button class="tab" onclick="switchTab('messages')" id="tab-messages">✉️ Messages <span class="tab-count" id="count-messages">—</span></button>
+  </div>
+
+  <!-- ── OVERVIEW PANEL ── -->
+  <div class="panel on" id="panel-overview">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="ov-questions">—</div>
+        <div class="stat-lbl">Total questions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="ov-students">—</div>
+        <div class="stat-lbl">Signed up students</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="ov-waitlist">—</div>
+        <div class="stat-lbl">On waitlist</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="ov-messages">—</div>
+        <div class="stat-lbl">Contact messages</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Quick actions</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="switchTab('questions');openAddQuestion()">+ Add question</button>
+        <button class="btn btn-ghost" onclick="switchTab('students')">View students</button>
+        <button class="btn btn-ghost" onclick="switchTab('waitlist')">View waitlist</button>
+        <button class="btn btn-ghost" onclick="switchTab('messages')">View messages</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Security reminders 🔒</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--ink-500);">
+        <div>□ Turn ON Row Level Security on all Supabase tables before launch</div>
+        <div>□ Set up Resend for branded emails from hello@ujyalo.app</div>
+        <div>□ Rotate Anthropic API key</div>
+        <div>□ Enable 2FA on Vercel, GitHub, Supabase</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── QUESTIONS PANEL ── -->
+  <div class="panel" id="panel-questions">
+    <div class="card">
+      <div class="card-title">
+        Questions
+        <button class="btn btn-primary btn-sm" onclick="openAddQuestion()">+ Add question</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="grid-3" style="margin-bottom:16px;">
+        <div class="field" style="margin:0;">
+          <select id="filter-subject" onchange="loadQuestions()">
+            <option value="">All subjects</option>
+            <option value="maths">Maths</option>
+            <option value="science">Science</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0;">
+          <select id="filter-chapter" onchange="loadQuestions()">
+            <option value="">All chapters</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0;">
+          <select id="filter-year" onchange="loadQuestions()">
+            <option value="">All years</option>
+            <option value="2079">2079</option>
+            <option value="2078">2078</option>
+            <option value="2077">2077</option>
+            <option value="2076">2076</option>
+            <option value="2075">2075</option>
+            <option value="2074">2074</option>
+            <option value="2073">2073</option>
+            <option value="2072">2072</option>
+            <option value="2071">2071</option>
+            <option value="2070">2070</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="questions-alert" class="alert"></div>
+      <div id="questions-loading" class="loading"><div class="spinner"></div>Loading questions...</div>
+      <div class="table-wrap hidden" id="questions-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Subject</th>
+              <th>Chapter</th>
+              <th>Year</th>
+              <th>Marks</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="questions-tbody"></tbody>
+        </table>
+      </div>
+      <div id="questions-empty" class="hidden" style="text-align:center;padding:40px;color:var(--ink-300);font-size:14px;">
+        No questions yet. Click "+ Add question" to get started.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STUDENTS PANEL ── -->
+  <div class="panel" id="panel-students">
+    <div class="card">
+      <div class="card-title">Signed up students</div>
+      <div id="students-loading" class="loading"><div class="spinner"></div>Loading students...</div>
+      <div class="table-wrap hidden" id="students-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>School</th>
+              <th>Grade</th>
+              <th>City</th>
+              <th>Joined</th>
+            </tr>
+          </thead>
+          <tbody id="students-tbody"></tbody>
+        </table>
+      </div>
+      <div id="students-empty" class="hidden" style="text-align:center;padding:40px;color:var(--ink-300);font-size:14px;">No students yet.</div>
+    </div>
+  </div>
+
+  <!-- ── WAITLIST PANEL ── -->
+  <div class="panel" id="panel-waitlist">
+    <div class="card">
+      <div class="card-title">Waitlist</div>
+      <div id="waitlist-loading" class="loading"><div class="spinner"></div>Loading waitlist...</div>
+      <div class="table-wrap hidden" id="waitlist-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Joined</th>
+            </tr>
+          </thead>
+          <tbody id="waitlist-tbody"></tbody>
+        </table>
+      </div>
+      <div id="waitlist-empty" class="hidden" style="text-align:center;padding:40px;color:var(--ink-300);font-size:14px;">No waitlist entries yet.</div>
+    </div>
+  </div>
+
+  <!-- ── MESSAGES PANEL ── -->
+  <div class="panel" id="panel-messages">
+    <div class="card">
+      <div class="card-title">Contact messages</div>
+      <div id="messages-loading" class="loading"><div class="spinner"></div>Loading messages...</div>
+      <div class="table-wrap hidden" id="messages-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Message</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="messages-tbody"></tbody>
+        </table>
+      </div>
+      <div id="messages-empty" class="hidden" style="text-align:center;padding:40px;color:var(--ink-300);font-size:14px;">No messages yet.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── ADD/EDIT QUESTION MODAL ── -->
+<div class="modal-overlay hidden" id="q-modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Add question</div>
+    <div id="modal-alert" class="alert"></div>
+    <input type="hidden" id="q-id">
+    <div class="grid-2">
+      <div class="field">
+        <label>Subject *</label>
+        <select id="q-subject">
+          <option value="maths">Maths</option>
+          <option value="science">Science</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Year *</label>
+        <select id="q-year">
+          <option value="2079">SEE 2079</option>
+          <option value="2078">SEE 2078</option>
+          <option value="2077">SEE 2077</option>
+          <option value="2076">SEE 2076</option>
+          <option value="2075">SEE 2075</option>
+          <option value="2074">SEE 2074</option>
+          <option value="2073">SEE 2073</option>
+          <option value="2072">SEE 2072</option>
+          <option value="2071">SEE 2071</option>
+          <option value="2070">SEE 2070</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Chapter *</label>
+      <input type="text" id="q-chapter" placeholder="e.g. Algebra">
+    </div>
+    <div class="field">
+      <label>Question *</label>
+      <textarea id="q-text" placeholder="Type the full question here..."></textarea>
+    </div>
+    <div class="field">
+      <label>Model answer</label>
+      <textarea id="q-answer" placeholder="The correct answer or solution steps..."></textarea>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label>Marks *</label>
+        <select id="q-marks">
+          <option value="1">1 mark</option>
+          <option value="2">2 marks</option>
+          <option value="3">3 marks</option>
+          <option value="4">4 marks</option>
+          <option value="5">5 marks</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Difficulty</label>
+        <select id="q-difficulty">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" id="modal-save-btn" onclick="saveQuestion()">Save question</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──
+// Only this email can access the admin panel
+const ADMIN_EMAIL = 'hello@ujyalo.app';
+const SUPABASE_URL = 'https://uigausnyrlxxyosxjgvi.supabase.co';
+
+// ── Session ──
+const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
+const token = localStorage.getItem('ujyalo_token');
+
+// ── Access check ──
+function checkAccess() {
+  if (!user || !token) {
+    window.location.href = '/login.html';
+    return false;
+  }
+  if (user.email !== ADMIN_EMAIL) {
+    document.getElementById('access-denied').classList.remove('hidden');
+    return false;
+  }
+  document.getElementById('admin-app').classList.remove('hidden');
+  document.getElementById('admin-email').textContent = user.email;
+  return true;
+}
+
+// ── Tabs ──
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.getElementById('panel-' + name).classList.add('on');
+  document.getElementById('tab-' + name).classList.add('on');
+
+  if (name === 'questions') loadQuestions();
+  if (name === 'students')  loadStudents();
+  if (name === 'waitlist')  loadWaitlist();
+  if (name === 'messages')  loadMessages();
+}
+
+// ── Supabase fetch helper ──
+async function sbFetch(table, params = '') {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/${table}?${params}`,
+    {
+      headers: {
+        'apikey': window._sbKey,
+        'Authorization': `Bearer ${token}`,
+      }
+    }
+  );
+  return res.json();
+}
+
+// ── Overview ──
+async function loadOverview() {
+  try {
+    const [questions, students, waitlist, messages] = await Promise.all([
+      sbFetch('questions', 'select=id'),
+      sbFetch('users', 'select=id'),
+      sbFetch('waitlist', 'select=id'),
+      sbFetch('contact_messages', 'select=id'),
+    ]);
+
+    const qCount  = Array.isArray(questions) ? questions.length : 0;
+    const sCount  = Array.isArray(students)  ? students.length  : 0;
+    const wCount  = Array.isArray(waitlist)  ? waitlist.length  : 0;
+    const mCount  = Array.isArray(messages)  ? messages.length  : 0;
+
+    document.getElementById('ov-questions').textContent = qCount;
+    document.getElementById('ov-students').textContent  = sCount;
+    document.getElementById('ov-waitlist').textContent  = wCount;
+    document.getElementById('ov-messages').textContent  = mCount;
+
+    document.getElementById('count-questions').textContent = qCount;
+    document.getElementById('count-students').textContent  = sCount;
+    document.getElementById('count-waitlist').textContent  = wCount;
+    document.getElementById('count-messages').textContent  = mCount;
+  } catch (e) {
+    console.error('Overview error:', e);
+  }
+}
+
+// ── Questions ──
+async function loadQuestions() {
+  const loading  = document.getElementById('questions-loading');
+  const tableWrap= document.getElementById('questions-table-wrap');
+  const empty    = document.getElementById('questions-empty');
+  const tbody    = document.getElementById('questions-tbody');
+
+  loading.style.display  = 'block';
+  tableWrap.classList.add('hidden');
+  empty.classList.add('hidden');
+
+  try {
+    let params = 'select=*&order=created_at.desc';
+    const subj = document.getElementById('filter-subject').value;
+    const ch   = document.getElementById('filter-chapter').value;
+    const yr   = document.getElementById('filter-year').value;
+    if (subj) params += `&subject=eq.${subj}`;
+    if (ch)   params += `&chapter=eq.${ch}`;
+    if (yr)   params += `&year=eq.${yr}`;
+
+    const data = await sbFetch('questions', params);
+
+    loading.style.display = 'none';
+
+    if (!Array.isArray(data) || data.length === 0) {
+      empty.classList.remove('hidden');
+      return;
+    }
+
+    tbody.innerHTML = '';
+    data.forEach(q => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="td-wrap">${q.question_text || '—'}</td>
+        <td><span class="badge badge-blue">${q.subject || '—'}</span></td>
+        <td>${q.chapter || '—'}</td>
+        <td>${q.year || '—'}</td>
+        <td>${q.marks || '—'}</td>
+        <td style="display:flex;gap:6px;">
+          <button class="btn btn-ghost btn-sm" onclick="editQuestion(${JSON.stringify(q).replace(/"/g, '&quot;')})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteQuestion('${q.id}')">Delete</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+
+    tableWrap.classList.remove('hidden');
+  } catch (e) {
+    loading.style.display = 'none';
+    console.error('Questions error:', e);
+  }
+}
+
+// ── Add question modal ──
+function openAddQuestion() {
+  document.getElementById('modal-title').textContent = 'Add question';
+  document.getElementById('modal-save-btn').textContent = 'Save question';
+  document.getElementById('q-id').value      = '';
+  document.getElementById('q-subject').value = 'maths';
+  document.getElementById('q-year').value    = '2079';
+  document.getElementById('q-chapter').value = '';
+  document.getElementById('q-text').value    = '';
+  document.getElementById('q-answer').value  = '';
+  document.getElementById('q-marks').value   = '2';
+  document.getElementById('q-difficulty').value = 'medium';
+  document.getElementById('modal-alert').style.display = 'none';
+  document.getElementById('q-modal').classList.remove('hidden');
+}
+
+function editQuestion(q) {
+  document.getElementById('modal-title').textContent = 'Edit question';
+  document.getElementById('modal-save-btn').textContent = 'Update question';
+  document.getElementById('q-id').value      = q.id;
+  document.getElementById('q-subject').value = q.subject || 'maths';
+  document.getElementById('q-year').value    = q.year || '2079';
+  document.getElementById('q-chapter').value = q.chapter || '';
+  document.getElementById('q-text').value    = q.question_text || '';
+  document.getElementById('q-answer').value  = q.model_answer || '';
+  document.getElementById('q-marks').value   = q.marks || '2';
+  document.getElementById('q-difficulty').value = q.difficulty || 'medium';
+  document.getElementById('modal-alert').style.display = 'none';
+  document.getElementById('q-modal').classList.remove('hidden');
+}
+
+function closeModal() {
+  document.getElementById('q-modal').classList.add('hidden');
+}
+
+async function saveQuestion() {
+  const id      = document.getElementById('q-id').value;
+  const subject = document.getElementById('q-subject').value;
+  const year    = document.getElementById('q-year').value;
+  const chapter = document.getElementById('q-chapter').value.trim();
+  const text    = document.getElementById('q-text').value.trim();
+  const answer  = document.getElementById('q-answer').value.trim();
+  const marks   = document.getElementById('q-marks').value;
+  const difficulty = document.getElementById('q-difficulty').value;
+
+  if (!chapter) { showModalAlert('Please enter the chapter name.'); return; }
+  if (!text)    { showModalAlert('Please enter the question.'); return; }
+
+  const btn = document.getElementById('modal-save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  const payload = { subject, year: parseInt(year), chapter, question_text: text, model_answer: answer, marks: parseInt(marks), difficulty };
+
+  try {
+    let res;
+    if (id) {
+      // Update
+      res = await fetch(`${SUPABASE_URL}/rest/v1/questions?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': window._sbKey,
+          'Authorization': `Bearer ${token}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+    } else {
+      // Insert
+      res = await fetch(`${SUPABASE_URL}/rest/v1/questions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': window._sbKey,
+          'Authorization': `Bearer ${token}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+    }
+
+    if (res.ok) {
+      closeModal();
+      loadQuestions();
+      loadOverview();
+    } else {
+      const err = await res.text();
+      showModalAlert('Error saving question. Please try again.');
+      console.error(err);
+    }
+  } catch (e) {
+    showModalAlert('Something went wrong. Please try again.');
+  }
+
+  btn.disabled = false;
+  btn.textContent = id ? 'Update question' : 'Save question';
+}
+
+async function deleteQuestion(id) {
+  if (!confirm('Delete this question? This cannot be undone.')) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/questions?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': window._sbKey,
+        'Authorization': `Bearer ${token}`,
+      }
+    });
+    loadQuestions();
+    loadOverview();
+  } catch (e) {
+    alert('Could not delete. Please try again.');
+  }
+}
+
+function showModalAlert(msg) {
+  const a = document.getElementById('modal-alert');
+  a.textContent = msg;
+  a.className = 'alert alert-error';
+  a.style.display = 'block';
+}
+
+// ── Students ──
+async function loadStudents() {
+  const loading  = document.getElementById('students-loading');
+  const tableWrap= document.getElementById('students-table-wrap');
+  const empty    = document.getElementById('students-empty');
+  const tbody    = document.getElementById('students-tbody');
+
+  loading.style.display = 'block';
+  tableWrap.classList.add('hidden');
+  empty.classList.add('hidden');
+
+  try {
+    const data = await sbFetch('users', 'select=*&order=created_at.desc');
+    loading.style.display = 'none';
+
+    if (!Array.isArray(data) || data.length === 0) { empty.classList.remove('hidden'); return; }
+
+    tbody.innerHTML = '';
+    data.forEach(s => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${s.full_name || '—'}</td>
+        <td>${s.email || '—'}</td>
+        <td>${s.school || '—'}</td>
+        <td>${s.grade || '—'}</td>
+        <td>${s.city || '—'}</td>
+        <td>${formatDate(s.created_at)}</td>`;
+      tbody.appendChild(tr);
+    });
+    tableWrap.classList.remove('hidden');
+  } catch (e) {
+    loading.style.display = 'none';
+    console.error('Students error:', e);
+  }
+}
+
+// ── Waitlist ──
+async function loadWaitlist() {
+  const loading  = document.getElementById('waitlist-loading');
+  const tableWrap= document.getElementById('waitlist-table-wrap');
+  const empty    = document.getElementById('waitlist-empty');
+  const tbody    = document.getElementById('waitlist-tbody');
+
+  loading.style.display = 'block';
+  tableWrap.classList.add('hidden');
+  empty.classList.add('hidden');
+
+  try {
+    const data = await sbFetch('waitlist', 'select=*&order=created_at.desc');
+    loading.style.display = 'none';
+
+    if (!Array.isArray(data) || data.length === 0) { empty.classList.remove('hidden'); return; }
+
+    tbody.innerHTML = '';
+    data.forEach(w => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${w.full_name || '—'}</td>
+        <td>${w.email || '—'}</td>
+        <td><span class="badge badge-gold">${w.role || '—'}</span></td>
+        <td>${formatDate(w.created_at)}</td>`;
+      tbody.appendChild(tr);
+    });
+    tableWrap.classList.remove('hidden');
+  } catch (e) {
+    loading.style.display = 'none';
+    console.error('Waitlist error:', e);
+  }
+}
+
+// ── Messages ──
+async function loadMessages() {
+  const loading  = document.getElementById('messages-loading');
+  const tableWrap= document.getElementById('messages-table-wrap');
+  const empty    = document.getElementById('messages-empty');
+  const tbody    = document.getElementById('messages-tbody');
+
+  loading.style.display = 'block';
+  tableWrap.classList.add('hidden');
+  empty.classList.add('hidden');
+
+  try {
+    const data = await sbFetch('contact_messages', 'select=*&order=created_at.desc');
+    loading.style.display = 'none';
+
+    if (!Array.isArray(data) || data.length === 0) { empty.classList.remove('hidden'); return; }
+
+    tbody.innerHTML = '';
+    data.forEach(m => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${m.full_name || '—'}</td>
+        <td>${m.email || '—'}</td>
+        <td><span class="badge badge-blue">${m.role || '—'}</span></td>
+        <td class="td-wrap">${m.message || '—'}</td>
+        <td>${formatDate(m.created_at)}</td>`;
+      tbody.appendChild(tr);
+    });
+    tableWrap.classList.remove('hidden');
+  } catch (e) {
+    loading.style.display = 'none';
+    console.error('Messages error:', e);
+  }
+}
+
+// ── Helpers ──
+function formatDate(str) {
+  if (!str) return '—';
+  return new Date(str).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function logout() {
+  localStorage.removeItem('ujyalo_token');
+  localStorage.removeItem('ujyalo_user');
+  window.location.href = '/index.html';
+}
+
+// ── Boot ──
+async function init() {
+  if (!checkAccess()) return;
+
+  // Get anon key
+  try {
+    const res  = await fetch('/api/auth-config');
+    const data = await res.json();
+    window._sbKey = data.anon_key;
+  } catch (e) {
+    console.error('Config error:', e);
+  }
+
+  loadOverview();
+}
+
+init();
+</script>
+</body>
+</html>
