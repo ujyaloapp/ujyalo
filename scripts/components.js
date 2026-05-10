@@ -7,8 +7,7 @@
 
 const ANNOUNCEMENT = `
 <div class="announcement-bar">
-  🎉 Ujyalo is now live! Join the waitlist for full access —
-  <a href="/signup.html">sign up free →</a>
+  🎉 Ujyalo is completely free during beta — all past papers, all subjects, AI feedback. <a href="/signup.html">Join free →</a>
 </div>`;
 
 const NAV = `
