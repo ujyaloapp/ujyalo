@@ -34,7 +34,9 @@ export default async function handler(req, res) {
     }
 
     // Return simplified user list
-    const users = (data.users || []).map(u => ({
+    const users = (data.users || [])
+  .filter(u => u.email !== 'hello@ujyalo.app')
+  .map(u => ({
       id:         u.id,
       email:      u.email,
       full_name:  u.user_metadata?.full_name || '—',
