@@ -82,7 +82,9 @@ async function submitSignup() {
   if (!name)               { showError('Please enter your full name.'); return; }
   if (!email)              { showError('Please enter your email address.'); return; }
   if (!password)           { showError('Please enter a password.'); return; }
-  if (password.length < 6) { showError('Password must be at least 6 characters.'); return; }
+  if (password.length < 8) { showError('Password must be at least 8 characters.'); return; }
+  if (!/[0-9]/.test(password)) { showError('Password must contain at least one number.'); return; }
+  if (!/[a-zA-Z]/.test(password)) { showError('Password must contain at least one letter.'); return; }
 
   btn.disabled = true;
   btn.textContent = 'Creating account...';
