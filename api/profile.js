@@ -69,7 +69,7 @@ export default async function handler(req, res) {
               'Authorization': `Bearer ${token}`,
               'Prefer': 'return=minimal'
             },
-            body: JSON.stringify({ full_name, school, grade, city, parent_email })
+            body: JSON.stringify({ full_name, school, grade, city, parent_email, email: req.body.email })
           }
         );
         if (!updateRes.ok) throw new Error('Update failed');
@@ -85,7 +85,7 @@ export default async function handler(req, res) {
               'Authorization': `Bearer ${token}`,
               'Prefer': 'return=minimal'
             },
-            body: JSON.stringify({ id: user_id, full_name, school, grade, city, parent_email })
+            body: JSON.stringify({ id: user_id, full_name, school, grade, city, parent_email, email: req.body.email })
           }
         );
         if (!insertRes.ok) throw new Error('Insert failed');
