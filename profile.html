@@ -17,7 +17,7 @@
 
 <nav class="nav-app">
   <div class="container nav-inner">
-    <a href="/index.html" class="logo">
+    <a href="/dashboard.html" class="logo">
       <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
         <circle cx="16" cy="16" r="6" fill="#F59E0B"/>
         <g stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round">
@@ -38,6 +38,7 @@
     <div class="nav-actions">
       <span class="streak-pill">🔥 <span id="nav-streak">0</span></span>
       <div id="nav-avatar" style="width:32px;height:32px;border-radius:50%;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;">?</div>
+      <button onclick="logout()" style="font-size:13px;color:var(--ink-500);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:500;padding:0 4px;">Log out</button>
     </div>
   </div>
 </nav>
@@ -119,12 +120,43 @@
   <!-- Account -->
   <div class="card animate-up" style="animation-delay:0.3s;">
     <h3 class="font-display" style="font-size:18px;font-weight:600;margin-bottom:16px;">Account</h3>
+
+    <!-- Email -->
     <div class="flex justify-between items-center" style="padding:12px 0;border-bottom:1px solid var(--ink-100);">
       <div>
         <div style="font-size:14px;font-weight:500;">Email address</div>
         <div class="text-tiny mt-2" id="account-email">—</div>
       </div>
     </div>
+
+    <!-- Change password -->
+    <div style="padding:12px 0;border-bottom:1px solid var(--ink-100);">
+      <div class="flex justify-between items-center">
+        <div>
+          <div style="font-size:14px;font-weight:500;">Password</div>
+          <div class="text-tiny mt-2">Change your account password</div>
+        </div>
+        <button class="btn btn-secondary" style="font-size:13px;" onclick="togglePasswordForm()">Change →</button>
+      </div>
+
+      <!-- Password change form — hidden by default -->
+      <div id="password-form" style="display:none;margin-top:16px;">
+        <div class="field">
+          <label>New password</label>
+          <input type="password" class="input" id="input-new-password" placeholder="At least 8 characters">
+        </div>
+        <div class="field">
+          <label>Confirm new password</label>
+          <input type="password" class="input" id="input-confirm-password" placeholder="Same password again">
+        </div>
+        <button class="btn btn-blue" id="change-pw-btn" onclick="changePassword()">Save new password</button>
+        <button class="btn btn-ghost" style="margin-left:8px;" onclick="togglePasswordForm()">Cancel</button>
+        <div class="success-msg" id="pw-success">✓ Password updated successfully!</div>
+        <div class="error-msg"   id="pw-error"></div>
+      </div>
+    </div>
+
+    <!-- Subscription -->
     <div class="flex justify-between items-center" style="padding:12px 0;border-bottom:1px solid var(--ink-100);">
       <div>
         <div style="font-size:14px;font-weight:500;">Subscription</div>
@@ -132,6 +164,8 @@
       </div>
       <button class="btn btn-secondary" style="font-size:13px;">Upgrade</button>
     </div>
+
+    <!-- Logout -->
     <div class="flex justify-between items-center" style="padding:12px 0;">
       <div>
         <div style="font-size:14px;font-weight:500;color:var(--red);">Log out</div>
@@ -171,12 +205,10 @@ async function loadProfile() {
     if (data.success && data.profile) {
       const p = data.profile;
 
-      // Fill in the form fields
-      document.getElementById('input-fullname').value    = p.full_name    || user.full_name || '';
-      document.getElementById('input-school').value      = p.school       || '';
-      document.getElementById('input-parent-email').value = p.parent_email || '';
+      document.getElementById('input-fullname').value      = p.full_name    || user.full_name || '';
+      document.getElementById('input-school').value        = p.school       || '';
+      document.getElementById('input-parent-email').value  = p.parent_email || '';
 
-      // Set grade dropdown
       if (p.grade) {
         const gradeSelect = document.getElementById('input-grade');
         for (let option of gradeSelect.options) {
@@ -184,7 +216,6 @@ async function loadProfile() {
         }
       }
 
-      // Set city dropdown
       if (p.city) {
         const citySelect = document.getElementById('input-city');
         for (let option of citySelect.options) {
@@ -192,7 +223,6 @@ async function loadProfile() {
         }
       }
 
-      // Update profile header
       const name = p.full_name || user.full_name || user.email;
       document.getElementById('profile-name').textContent    = name;
       document.getElementById('profile-avatar').textContent  = name.charAt(0).toUpperCase();
@@ -200,7 +230,6 @@ async function loadProfile() {
       document.getElementById('account-email').textContent   = user.email;
 
     } else {
-      // No profile yet — just show what we have from auth
       const name = user.full_name || user.email;
       document.getElementById('input-fullname').value        = user.full_name || '';
       document.getElementById('profile-name').textContent    = name;
@@ -209,8 +238,6 @@ async function loadProfile() {
       document.getElementById('account-email').textContent   = user.email;
     }
   } catch (e) {
-    console.error('Load profile error:', e);
-    // Still show basic info
     const name = user.full_name || user.email;
     document.getElementById('input-fullname').value       = user.full_name || '';
     document.getElementById('profile-name').textContent   = name;
@@ -234,12 +261,12 @@ async function saveProfile() {
         'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({
-        user_id:    user.id,
+        user_id:      user.id,
         email:        user.email,
-        full_name:  document.getElementById('input-fullname').value.trim(),
-        school:     document.getElementById('input-school').value.trim(),
-        grade:      document.getElementById('input-grade').value,
-        city:       document.getElementById('input-city').value,
+        full_name:    document.getElementById('input-fullname').value.trim(),
+        school:       document.getElementById('input-school').value.trim(),
+        grade:        document.getElementById('input-grade').value,
+        city:         document.getElementById('input-city').value,
         parent_email: document.getElementById('input-parent-email').value.trim(),
       })
     });
@@ -247,7 +274,6 @@ async function saveProfile() {
     const data = await res.json();
 
     if (data.success) {
-      // Update localStorage with new name
       const newName = document.getElementById('input-fullname').value.trim();
       if (newName) {
         user.full_name = newName;
@@ -306,6 +332,62 @@ async function saveParentEmail() {
   btn.textContent = 'Update';
 }
 
+/* ── Change password ── */
+function togglePasswordForm() {
+  const form = document.getElementById('password-form');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  // Clear fields when toggling
+  document.getElementById('input-new-password').value = '';
+  document.getElementById('input-confirm-password').value = '';
+  hideMessages('pw');
+}
+
+async function changePassword() {
+  const newPw    = document.getElementById('input-new-password').value;
+  const confirmPw = document.getElementById('input-confirm-password').value;
+  const btn      = document.getElementById('change-pw-btn');
+  hideMessages('pw');
+
+  if (!newPw)              { showPwError('Please enter a new password.'); return; }
+  if (newPw.length < 8)    { showPwError('Password must be at least 8 characters.'); return; }
+  if (newPw !== confirmPw) { showPwError('Passwords do not match.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  try {
+    const res = await fetch('/api/auth-change-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ password: newPw })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      show('pw-success');
+      document.getElementById('input-new-password').value = '';
+      document.getElementById('input-confirm-password').value = '';
+    } else {
+      showPwError(data.error || 'Something went wrong. Please try again.');
+    }
+  } catch (e) {
+    showPwError('Something went wrong. Please try again.');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Save new password';
+}
+
+function showPwError(msg) {
+  const el = document.getElementById('pw-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
 /* ── Logout ── */
 function logout() {
   localStorage.removeItem('ujyalo_token');
@@ -324,7 +406,6 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 }
 
-// Load profile on page open
 loadProfile();
 </script>
 </body>
