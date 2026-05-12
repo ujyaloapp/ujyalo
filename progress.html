@@ -33,8 +33,9 @@
       <a href="/profile.html">Profile</a>
     </div>
     <div class="nav-actions">
-      <span class="streak-pill">🔥 7</span>
-      <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--brand); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">R</div>
+      <span class="streak-pill">🔥 <span id="nav-streak">7</span></span>
+      <div id="nav-avatar" style="width:32px;height:32px;border-radius:50%;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;">S</div>
+      <button onclick="logout()" style="font-size:13px;color:var(--ink-500);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:500;padding:0 4px;">Log out</button>
     </div>
   </div>
 </nav>
@@ -80,23 +81,17 @@
     </div>
     <div style="position: relative;">
       <svg width="100%" height="200" viewBox="0 0 800 200" preserveAspectRatio="none">
-        <!-- Grid lines -->
         <line x1="0" y1="50" x2="800" y2="50" stroke="#EDF1F7" stroke-width="1"/>
         <line x1="0" y1="100" x2="800" y2="100" stroke="#EDF1F7" stroke-width="1"/>
         <line x1="0" y1="150" x2="800" y2="150" stroke="#EDF1F7" stroke-width="1"/>
-
-        <!-- Area gradient -->
         <defs>
           <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stop-color="#1E5FA8" stop-opacity="0.2"/>
             <stop offset="100%" stop-color="#1E5FA8" stop-opacity="0"/>
           </linearGradient>
         </defs>
-
         <polygon points="0,160 100,150 200,130 300,140 400,110 500,100 600,80 700,70 800,60 800,200 0,200" fill="url(#areaGrad)"/>
         <polyline points="0,160 100,150 200,130 300,140 400,110 500,100 600,80 700,70 800,60" fill="none" stroke="#1E5FA8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-
-        <!-- Data points -->
         <circle cx="100" cy="150" r="4" fill="#1E5FA8"/>
         <circle cx="300" cy="140" r="4" fill="#1E5FA8"/>
         <circle cx="500" cy="100" r="4" fill="#1E5FA8"/>
@@ -228,5 +223,28 @@
 </main>
 
 <a href="/contact.html" class="help-bubble"><span class="help-bubble-icon">?</span>Need help?</a>
+
+<script>
+/* ── Session check ── */
+const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
+const token = localStorage.getItem('ujyalo_token');
+
+if (!user || !token) {
+  window.location.href = '/login.html';
+}
+
+/* ── Populate nav ── */
+if (user) {
+  const firstName = user.full_name ? user.full_name.split(' ')[0] : user.email.split('@')[0];
+  document.getElementById('nav-avatar').textContent = firstName.charAt(0).toUpperCase();
+}
+
+/* ── Logout ── */
+function logout() {
+  localStorage.removeItem('ujyalo_token');
+  localStorage.removeItem('ujyalo_user');
+  window.location.href = '/index.html';
+}
+</script>
 </body>
 </html>
