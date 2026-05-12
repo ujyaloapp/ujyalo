@@ -13,41 +13,36 @@
 </head>
 <body>
 <div id="site-nav"></div>
-
 <div style="padding:60px 0 80px;background:var(--ink-50);">
   <div class="container-tiny animate-up">
-
     <div class="card" style="padding:32px;">
       <h3 class="font-display" style="font-size:22px;font-weight:600;margin-bottom:6px;">Welcome back 👋</h3>
       <p class="text-muted mb-6" style="font-size:14px;">Log in to continue your practice.</p>
-
       <!-- Error message -->
       <div id="error-msg" class="hidden" style="background:#FEE2E2;border:1px solid #FECACA;border-radius:var(--radius-md);padding:12px 16px;margin-bottom:16px;font-size:14px;color:#B91C1C;"></div>
-
       <div class="field">
         <label>Email <span class="required">*</span></label>
         <input type="email" class="input" id="input-email" placeholder="rajan@example.com">
       </div>
       <div class="field">
-        <label>Password <span class="required">*</span></label>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <label style="margin-bottom:0;">Password <span class="required">*</span></label>
+          <a href="/forgot-password.html" style="font-size:12px;color:var(--brand);font-weight:500;">Forgot password?</a>
+        </div>
         <input type="password" class="input" id="input-password" placeholder="Your password">
       </div>
-
       <button class="btn btn-blue btn-block" id="submit-btn" onclick="submitLogin()">
         Log in →
       </button>
-
       <p class="text-muted text-center mt-6" style="font-size:13px;">
         Don't have an account? <a href="/signup.html" style="color:var(--brand);font-weight:600;">Sign up free →</a>
       </p>
     </div>
-
   </div>
 </div>
-
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
-  <script>
+<script>
   // If already logged in — go straight to dashboard
   const user = localStorage.getItem('ujyalo_user');
   const token = localStorage.getItem('ujyalo_token');
@@ -61,28 +56,20 @@ async function submitLogin() {
   const password = document.getElementById('input-password').value;
   const btn      = document.getElementById('submit-btn');
   hideError();
-
   if (!email)    { showError('Please enter your email address.'); return; }
   if (!password) { showError('Please enter your password.'); return; }
-
   btn.disabled = true;
   btn.textContent = 'Logging in...';
-
   try {
     const res = await fetch('/api/auth-login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
-
     const data = await res.json();
-
     if (data.success) {
-      // Save session to localStorage
       localStorage.setItem('ujyalo_token', data.access_token);
       localStorage.setItem('ujyalo_user', JSON.stringify(data.user));
-
-      // Redirect to dashboard
       window.location.href = '/dashboard.html';
     } else {
       showError(data.error || 'Something went wrong. Please try again.');
@@ -95,7 +82,6 @@ async function submitLogin() {
     btn.textContent = 'Log in →';
   }
 }
-
 function showError(msg) { const e = document.getElementById('error-msg'); e.textContent = msg; e.classList.remove('hidden'); }
 function hideError() { document.getElementById('error-msg').classList.add('hidden'); }
 </script>
