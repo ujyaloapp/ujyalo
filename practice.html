@@ -7,337 +7,251 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles/main.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="/styles/main.css">
 <style>
-.prac-screen { display:none; flex-direction:column; min-height:calc(100vh - 56px); }
-.prac-screen.active { display:flex; }
-.prac-bc { display:flex; align-items:center; gap:6px; padding:9px 24px; background:white; border-bottom:1px solid var(--ink-100); font-size:13px; flex-shrink:0; }
-.prac-bc-btn { color:var(--ink-500); background:none; border:none; font-family:inherit; font-size:13px; font-weight:500; cursor:pointer; padding:0; transition:color 0.2s; }
-.prac-bc-btn:hover { color:var(--brand); }
-.prac-bc-btn.on { color:var(--ink-900); font-weight:700; cursor:default; }
-.prac-bc-sep { color:var(--ink-200); }
-.subj-toggle { display:inline-flex; background:var(--ink-50); border-radius:999px; padding:3px; gap:2px; }
-.subj-btn-toggle { padding:7px 18px; border-radius:999px; border:none; background:none; font-family:inherit; font-size:14px; font-weight:700; color:var(--ink-500); cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px; }
-.subj-btn-toggle.on { background:white; color:var(--ink-900); box-shadow:0 2px 8px rgba(10,22,40,0.08); }
-.mode-grid { padding:24px; display:grid; grid-template-columns:1fr 1fr; gap:14px; max-width:900px; margin:0 auto; width:100%; }
-.mode-card { background:white; border:2px solid var(--ink-100); border-radius:18px; padding:20px; display:flex; flex-direction:column; gap:14px; cursor:pointer; transition:all 0.22s cubic-bezier(0.16,1,0.3,1); width:100%; text-align:left; font-family:inherit; }
-.mode-card:hover { border-color:var(--brand); transform:translateY(-3px); box-shadow:0 10px 30px rgba(30,95,168,0.1); }
-.mode-card.disabled { opacity:0.55; cursor:default; }
-.mode-card.disabled:hover { transform:none; box-shadow:none; border-color:var(--ink-100); }
-.mode-card-top { display:flex; align-items:flex-start; gap:14px; }
-@media(max-width:600px){ .mode-grid{grid-template-columns:1fr;} }
-.mode-icon { width:52px; height:52px; border-radius:13px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
-.mode-icon.blue { background:var(--brand-light); }
-.mode-icon.gold { background:var(--sun-light); }
-.mode-icon.soft { background:var(--ink-100); }
-.mode-info { flex:1; min-width:0; }
-.mode-title { font-family:'Fraunces',serif; font-size:17px; font-weight:600; color:var(--ink-900); margin-bottom:3px; }
-.mode-desc { font-size:13px; color:var(--ink-500); line-height:1.5; margin-bottom:6px; }
-.year-pills { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; padding-top:10px; border-top:1px solid var(--ink-100); }
-.yr-pill { font-size:12px; font-weight:600; padding:5px 12px; border-radius:8px; background:var(--brand-light); color:var(--brand); border:1.5px solid var(--brand-light); cursor:pointer; transition:all 0.2s; font-family:inherit; }
-.yr-pill:hover { background:var(--brand); color:white; border-color:var(--brand); }
-.yr-pill.locked { background:var(--ink-50); color:var(--ink-300); border-color:var(--ink-100); cursor:default; font-size:11px; }
-.yr-pill.locked:hover { background:var(--ink-50); color:var(--ink-300); border-color:var(--ink-100); }
+/* ============================================================
+   UJYALO — EXAM PICKER PAGE
+   To add a new exam → add one object to EXAMS array in CONFIG
+   To unlock an exam → change status from 'soon' to 'live'
+   To change colours/icons → edit the exam object
+   ============================================================ */
 
-/* ── Card picker selector ── */
-.picker-wrap { background:white; border-bottom:1px solid var(--ink-100); padding:14px 20px; flex-shrink:0; }
-.picker-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-.picker-row:last-child { margin-bottom:0; }
-.picker-section-lbl { font-size:10px; text-transform:uppercase; letter-spacing:0.08em; font-weight:700; color:var(--ink-400); min-width:52px; display:flex; align-items:center; gap:4px; }
-.picker-section-lbl i { font-size:13px; }
-.subj-cards { display:flex; gap:7px; flex-wrap:wrap; }
-.subj-card-btn { display:flex; align-items:center; gap:8px; padding:8px 14px; border-radius:10px; border:1.5px solid var(--ink-100); background:white; cursor:pointer; font-family:inherit; transition:all 0.2s; }
-.subj-card-btn:hover { border-color:var(--brand); transform:translateY(-1px); }
-.subj-card-btn.active { border-color:transparent; transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,0,0,0.1); }
-.subj-card-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
-.subj-card-name { font-size:13px; font-weight:700; }
-.yr-cards { display:flex; gap:7px; overflow-x:auto; padding-bottom:3px; flex:1; }
-.yr-cards::-webkit-scrollbar { display:none; }
-.yr-card-btn { flex-shrink:0; display:flex; flex-direction:column; align-items:center; padding:7px 12px; border-radius:10px; border:1.5px solid var(--ink-100); background:white; cursor:pointer; font-family:inherit; transition:all 0.2s; min-width:64px; }
-.yr-card-btn:hover:not(.locked) { border-color:var(--brand); transform:translateY(-1px); }
-.yr-card-btn.active { background:var(--brand); border-color:var(--brand); transform:translateY(-1px); box-shadow:0 4px 14px rgba(30,95,168,0.25); }
-.yr-card-btn.locked { opacity:0.4; cursor:default; }
-.yr-card-yr { font-size:13px; font-weight:700; color:var(--ink-900); }
-.yr-card-btn.active .yr-card-yr { color:white; }
-.yr-card-btn.locked .yr-card-yr { color:var(--ink-400); }
-.yr-card-tag { font-size:9px; font-weight:600; margin-top:2px; color:var(--ink-400); }
-.yr-card-btn.active .yr-card-tag { color:rgba(255,255,255,0.75); }
-.picker-divider { height:1px; background:var(--ink-100); margin:10px 0; }
-.picker-actions { display:flex; justify-content:flex-end; }
-.paper-topbar { background:white; border-bottom:1px solid var(--ink-100); padding:11px 24px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
-.paper-selectors { display:flex; align-items:center; gap:8px; }
-.selector { display:flex; align-items:center; gap:8px; padding:7px 12px; border-radius:8px; border:1px solid var(--ink-100); background:var(--ink-50); cursor:pointer; transition:all 0.15s; font-family:inherit; position:relative; }
-.selector:hover { border-color:var(--brand); background:var(--brand-light); }
-.selector.open { border-color:var(--brand); background:var(--brand-light); }
-.sel-label { font-size:9px; color:var(--ink-400); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; display:block; }
-.sel-value { font-size:13px; font-weight:700; color:var(--ink-900); }
-.sel-caret { font-size:10px; color:var(--ink-400); }
-.sel-divider { width:1px; height:32px; background:var(--ink-200); flex-shrink:0; }
-.dd-menu { position:absolute; top:calc(100% + 6px); left:0; min-width:170px; background:white; border:1px solid var(--ink-100); border-radius:12px; padding:6px; z-index:100; box-shadow:0 8px 24px rgba(10,22,40,0.12); }
-.dd-section { font-size:9px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-300); font-weight:700; padding:6px 8px 3px; }
-.dd-item { display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border-radius:8px; cursor:pointer; gap:8px; transition:background 0.15s; }
-.dd-item:hover { background:var(--ink-50); }
-.dd-item.on { background:var(--brand-light); }
-.dd-item.locked { cursor:default; opacity:0.45; }
-.dd-name { font-size:13px; font-weight:500; color:var(--ink-900); }
-.dd-free { font-size:9px; background:var(--green-light); color:var(--green); padding:2px 6px; border-radius:6px; font-weight:700; }
-.dd-soon { font-size:9px; background:var(--ink-100); color:var(--ink-400); padding:2px 6px; border-radius:6px; font-weight:600; }
-.dd-check { color:var(--brand); font-size:13px; font-weight:700; }
-.paper-body { flex:1; overflow-y:auto; padding:24px; max-width:720px; margin:0 auto; width:100%; }
-.paper-hdr-card { background:white; border:1px solid var(--ink-100); border-radius:16px; padding:20px 24px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
-.paper-hdr-card h2 { font-family:'Fraunces',serif; font-size:22px; font-weight:700; color:var(--ink-900); margin-bottom:4px; }
-.paper-hdr-card p { font-size:13px; color:var(--ink-500); }
-.paper-meta { display:flex; gap:12px; }
-.meta-box { text-align:center; background:var(--ink-50); border-radius:10px; padding:10px 16px; }
-.meta-val { font-family:'Fraunces',serif; font-size:22px; font-weight:700; color:var(--brand); line-height:1; }
-.meta-lbl { font-size:10px; color:var(--ink-400); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; margin-top:2px; }
-.group-block { background:white; border:1px solid var(--ink-100); border-radius:16px; margin-bottom:12px; overflow:hidden; }
-.group-hdr { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; background:var(--ink-50); border-bottom:1px solid var(--ink-100); }
-.group-hdr-left { display:flex; align-items:center; gap:10px; }
-.group-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
-.group-hdr-name { font-family:'Fraunces',serif; font-size:16px; font-weight:700; color:var(--ink-900); }
-.group-hdr-desc { font-size:12px; color:var(--ink-500); margin-top:1px; }
-.group-marks-badge { font-size:12px; font-weight:700; color:var(--brand); background:var(--brand-light); padding:4px 12px; border-radius:999px; }
-.q-list { padding:12px 16px; display:flex; flex-direction:column; gap:8px; }
-.q-row { display:flex; align-items:flex-start; gap:12px; padding:12px 14px; border-radius:10px; border:1px solid var(--ink-100); background:white; }
-.q-row:hover { background:var(--ink-50); }
-.q-row-num { font-size:12px; font-weight:700; color:var(--ink-300); min-width:28px; padding-top:2px; flex-shrink:0; }
-.q-row-text { font-size:14px; color:var(--ink-900); line-height:1.6; flex:1; }
-.q-row-mark { font-size:10px; font-weight:700; background:var(--sun-light); color:#854F0B; padding:3px 8px; border-radius:6px; flex-shrink:0; white-space:nowrap; margin-top:2px; }
-.show-group-btn { width:100%; padding:14px; border:2px dashed var(--ink-100); border-radius:14px; background:none; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:12px; transition:all 0.2s; }
-.show-group-btn:hover { border-color:var(--brand); background:var(--brand-light); }
-.show-group-btn:hover .sgb-txt { color:var(--brand); }
-.show-group-btn:hover .sgb-icon { background:var(--brand); color:white; }
-.sgb-icon { width:26px; height:26px; border-radius:50%; background:var(--ink-100); color:var(--ink-500); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; transition:all 0.2s; flex-shrink:0; }
-.sgb-content { text-align:left; }
-.sgb-txt { font-size:13px; font-weight:700; color:var(--ink-700); transition:color 0.2s; }
-.sgb-sub { font-size:11px; color:var(--ink-400); margin-top:1px; }
-.practice-cta { background:white; border:1px solid var(--ink-100); border-radius:16px; padding:20px 24px; margin-bottom:24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-.practice-cta h3 { font-family:'Fraunces',serif; font-size:18px; font-weight:700; color:var(--ink-900); margin-bottom:4px; }
-.practice-cta p { font-size:13px; color:var(--ink-500); }
-.btn-practice-paper { background:var(--brand); color:white; border:none; padding:13px 24px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
-.btn-practice-paper:hover { background:var(--brand-dark); transform:translateY(-1px); box-shadow:0 6px 20px rgba(30,95,168,0.25); }
-.prac-topbar { background:white; border-bottom:1px solid var(--ink-100); padding:10px 20px; flex-shrink:0; }
-.prac-topbar-row1 { display:flex; align-items:center; justify-content:space-between; gap:12px; }
-.back-btn { font-size:13px; color:var(--brand); background:none; border:none; cursor:pointer; font-family:inherit; font-weight:600; padding:0; }
-.prog-wrap { display:flex; align-items:center; gap:8px; }
-.prog-bar { width:100px; height:6px; background:var(--ink-100); border-radius:999px; overflow:hidden; }
-.prog-fill { height:100%; background:linear-gradient(90deg,var(--brand),var(--sun)); border-radius:999px; transition:width 0.5s cubic-bezier(0.16,1,0.3,1); }
-.prog-txt { font-size:12px; font-weight:700; color:var(--ink-500); min-width:36px; text-align:right; }
-.prac-topbar-row2 { display:flex; align-items:center; gap:8px; }
-.q-outer { flex:1; padding:20px 24px; display:flex; flex-direction:column; gap:14px; max-width:680px; margin:0 auto; width:100%; overflow-y:auto; }
-.q-card { background:white; border-radius:20px; border:1px solid var(--ink-100); padding:24px; box-shadow:0 2px 16px rgba(10,22,40,0.06); animation:prac-up 0.4s cubic-bezier(0.16,1,0.3,1) both; }
-@keyframes prac-up { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-.q-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:6px; }
-.q-src-tag { font-size:11px; font-weight:700; color:var(--ink-300); text-transform:uppercase; letter-spacing:0.08em; }
-.q-group-tag { font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; }
-.marks-tag { background:var(--sun-light); color:#92400e; font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; }
-.q-text { font-family:'Fraunces',serif; font-size:20px; line-height:1.55; color:var(--ink-900); margin-bottom:20px; }
-.ans-area { width:100%; min-height:110px; padding:14px 16px; border:2px solid var(--ink-100); border-radius:14px; font-family:inherit; font-size:15px; color:var(--ink-900); background:var(--ink-50); resize:none; line-height:1.65; transition:all 0.2s; }
-.ans-area:focus { outline:none; border-color:var(--brand); background:white; box-shadow:0 0 0 3px rgba(30,95,168,0.08); }
-.ans-area::placeholder { color:var(--ink-300); }
-.q-actions { display:flex; align-items:center; justify-content:space-between; margin-top:16px; flex-wrap:wrap; gap:8px; }
-.btn-skip-q { font-size:13px; color:var(--ink-300); background:none; border:none; cursor:pointer; font-family:inherit; font-weight:500; }
-.btn-skip-q:hover { color:var(--ink-500); }
-.btn-show-ans { font-size:13px; color:var(--brand); background:var(--brand-light); border:none; padding:10px 20px; border-radius:999px; cursor:pointer; font-family:inherit; font-weight:700; transition:all 0.2s; }
-.btn-show-ans:hover { background:var(--brand); color:white; }
-.btn-next-q { background:var(--ink-900); color:white; border:none; padding:11px 22px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; }
-.btn-next-q:hover { background:var(--brand); }
-.ans-reveal { background:var(--brand-light); border:2px solid var(--brand); border-radius:16px; padding:18px 20px; animation:prac-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
-.ans-reveal-title { font-size:12px; font-weight:700; color:var(--brand); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; }
-.ans-reveal-body { font-size:15px; color:var(--ink-900); line-height:1.7; white-space:pre-line; }
-.gc-a { background:#EAF3DE; color:#3B6D11; }
-.gc-b { background:var(--brand-light); color:var(--brand); }
-.gc-c { background:var(--sun-light); color:#854F0B; }
-.gc-d { background:var(--red-light); color:var(--red); }
-.dot-loader { display:inline-flex; gap:4px; }
-.dot-loader span { width:6px; height:6px; background:var(--ink-500); border-radius:50%; animation:dotB 1.4s ease-in-out infinite both; }
-.dot-loader span:nth-child(1){animation-delay:-0.32s;}
-.dot-loader span:nth-child(2){animation-delay:-0.16s;}
-@keyframes dotB { 0%,80%,100%{transform:scale(.6);opacity:.5} 40%{transform:scale(1);opacity:1} }
-.ai-dot { width:6px; height:6px; background:#22c55e; border-radius:50%; animation:aipulse 2s infinite; }
-@keyframes aipulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.5)} }
-.ch-body { display:grid; grid-template-columns:244px 1fr; flex:1; overflow:hidden; }
-.ch-sidebar { background:white; border-right:1px solid var(--ink-100); display:flex; flex-direction:column; overflow:hidden; }
-.ch-sidebar-top { padding:14px 12px 10px; border-bottom:1px solid var(--ink-100); flex-shrink:0; }
-.ch-sidebar-lbl { font-size:10px; text-transform:uppercase; letter-spacing:0.1em; font-weight:700; color:var(--ink-300); margin-bottom:10px; }
-.ch-subj-btns { display:flex; gap:5px; }
-.ch-subj-btn { flex:1; padding:9px 4px; border-radius:10px; border:2px solid var(--ink-100); background:white; cursor:pointer; font-family:inherit; font-size:12px; font-weight:700; color:var(--ink-500); text-align:center; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:4px; }
-.ch-subj-btn .si { font-size:18px; line-height:1; }
-.ch-subj-btn.on { background:var(--brand); border-color:var(--brand); color:white; }
-.ch-subj-btn:hover:not(.on) { border-color:var(--brand); color:var(--brand); }
-.ch-list { flex:1; overflow-y:auto; padding:6px 8px 16px; }
-.ch-list::-webkit-scrollbar{width:3px;}
-.ch-list::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:2px;}
-.ch-list-lbl { font-size:10px; text-transform:uppercase; letter-spacing:0.1em; font-weight:700; color:var(--ink-300); padding:10px 6px 6px; }
-.ch-item { width:100%; display:flex; align-items:center; justify-content:space-between; padding:9px 8px; border-radius:8px; border:none; background:none; cursor:pointer; font-family:inherit; font-size:13px; font-weight:500; color:var(--ink-700); text-align:left; transition:all 0.15s; position:relative; }
-.ch-item:hover { background:var(--ink-50); color:var(--ink-900); }
-.ch-item.on { background:var(--brand-light); color:var(--brand); font-weight:700; }
-.ch-item.on::before { content:''; position:absolute; left:0; top:20%; bottom:20%; width:3px; background:var(--brand); border-radius:2px; }
-.ch-main { display:flex; flex-direction:column; overflow:hidden; }
-.ch-topbar { background:white; border-bottom:1px solid var(--ink-100); padding:11px 20px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
-.ch-ctx { font-size:13px; color:var(--ink-500); display:flex; align-items:center; gap:6px; }
-.ch-ctx strong { color:var(--ink-900); font-weight:700; }
-.ch-q-area { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:14px; }
-.ch-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:var(--ink-300); gap:12px; padding:40px; }
-.ch-empty-icon { font-size:48px; }
-.ch-empty-title { font-family:'Fraunces',serif; font-size:18px; font-weight:600; color:var(--ink-500); }
-.ch-empty-sub { font-size:13px; line-height:1.6; max-width:240px; }
-.fb-card { background:white; border-radius:18px; padding:20px 22px; border:2px solid; animation:prac-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
-.fb-card.correct { background:var(--green-light); border-color:#86efac; }
-.fb-card.partial { background:var(--sun-light); border-color:#fde68a; }
-.fb-card.wrong { background:var(--red-light); border-color:#fca5a5; }
-.fb-verdict { font-family:'Fraunces',serif; font-size:19px; font-weight:600; margin-bottom:10px; }
-.fb-card.correct .fb-verdict { color:var(--green); }
-.fb-card.partial .fb-verdict { color:#92400e; }
-.fb-card.wrong .fb-verdict { color:var(--red); }
-.fb-body { font-size:14px; line-height:1.8; color:var(--ink-700); margin-bottom:16px; }
-.btn-check-q { background:var(--brand); color:white; border:none; padding:12px 24px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; }
-.btn-check-q:hover { background:var(--brand-dark); }
-@media(max-width:700px){
-  .ch-body{grid-template-columns:1fr;grid-template-rows:auto 1fr;}
-  .ch-sidebar{max-height:220px;border-right:none;border-bottom:1px solid var(--ink-100);}
-  .ch-list{max-height:130px;}
-  .paper-hdr-card{flex-direction:column;}
-  .practice-cta{flex-direction:column;text-align:center;}
+.picker-page {
+  min-height: calc(100vh - 56px);
+  background: var(--ink-50);
+  padding: 48px 24px 80px;
+}
+
+.picker-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.picker-heading {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.picker-heading h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--ink-900);
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.picker-heading h1 em {
+  font-style: italic;
+  color: var(--brand);
+  font-weight: 400;
+}
+
+.picker-heading p {
+  font-size: 16px;
+  color: var(--ink-500);
+  line-height: 1.6;
+}
+
+/* Exam grid — 2 columns, wraps to 1 on mobile */
+.exam-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* Exam card */
+.exam-card {
+  background: white;
+  border: 2px solid var(--ink-100);
+  border-radius: 20px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+  font-family: inherit;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.exam-card.live:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+.exam-card.locked {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.exam-card.locked:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Card top row — icon + badge */
+.exam-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.exam-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.exam-icon i {
+  font-size: 26px;
+}
+
+.exam-badge-live {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--green-light);
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.exam-badge-live::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.4); }
+}
+
+.exam-badge-soon {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--ink-100);
+  color: var(--ink-400);
+}
+
+/* Card content */
+.exam-card-name {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink-900);
+  margin-bottom: 3px;
+  line-height: 1.2;
+}
+
+.exam-card-sub {
+  font-size: 13px;
+  color: var(--ink-500);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.exam-card-subjects {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.subj-chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.subj-chip i {
+  font-size: 12px;
+}
+
+/* Card footer — arrow for live, lock for soon */
+.exam-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.exam-card-cta {
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: gap 0.2s;
+}
+
+.exam-card.live:hover .exam-card-cta {
+  gap: 10px;
+}
+
+.exam-card-locked-msg {
+  font-size: 12px;
+  color: var(--ink-300);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Decorative corner accent on live cards */
+.exam-card.live::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 0 20px 0 100%;
+  opacity: 0.06;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .exam-grid { grid-template-columns: 1fr; }
+  .picker-heading h1 { font-size: 28px; }
 }
 </style>
 </head>
-<body style="background:var(--ink-50);">
+<body>
 <div id="site-nav"></div>
 
-<!-- HOME -->
-<div class="prac-screen active" id="ps-home">
-  <div style="background:white;border-bottom:1px solid var(--ink-100);padding:18px 24px 16px;flex-shrink:0;">
-    <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;line-height:1.2;">
-      Good morning. <em style="font-style:italic;color:var(--brand);font-weight:400;">Let's practise.</em>
-    </div>
-    <div style="font-size:13px;color:var(--ink-400);margin-top:4px;">Choose a mode to get started.</div>
-  </div>
-  <div class="mode-grid" id="mode-grid"></div>
-</div>
+<div class="picker-page">
+  <div class="picker-inner">
 
-<!-- PAPER VIEW -->
-<div class="prac-screen" id="ps-paper">
-  <div class="prac-bc">
-    <button class="prac-bc-btn" onclick="showScreen('home')">🏠 Home</button>
-    <span class="prac-bc-sep">›</span>
-    <span class="prac-bc-btn on" id="paper-bc-label">Past Papers</span>
-  </div>
-  <div class="picker-wrap">
-    <!-- Subject cards -->
-    <div class="picker-row">
-      <div class="picker-section-lbl"><i class="ti ti-books" aria-hidden="true"></i> Subject</div>
-      <div class="subj-cards" id="picker-subj-cards"></div>
+    <div class="picker-heading">
+      <h1>What are you <em>preparing for?</em></h1>
+      <p>Choose your exam and we'll show you the right practice papers, chapters and past questions.</p>
     </div>
-    <div class="picker-divider"></div>
-    <!-- Year cards -->
-    <div class="picker-row" style="margin-bottom:0;">
-      <div class="picker-section-lbl"><i class="ti ti-calendar-event" aria-hidden="true"></i> Year</div>
-      <div class="yr-cards" id="picker-yr-cards"></div>
-    </div>
-  </div>
-  <div class="paper-body" id="paper-body"></div>
-</div>
 
-<!-- PRACTICE MODE -->
-<div class="prac-screen" id="ps-practice">
-  <div class="prac-topbar">
-    <div class="prac-topbar-row1">
-      <button class="back-btn" onclick="showScreen('paper')">‹ Back to paper</button>
-      <div style="font-size:13px;font-weight:600;color:var(--ink-700);" id="prac-paper-label">SEE 2081 · Maths</div>
-      <div class="prog-wrap">
-        <div class="prog-bar"><div class="prog-fill" id="prac-prog-fill" style="width:0%"></div></div>
-        <div class="prog-txt" id="prac-prog-txt">0 / 0</div>
-      </div>
+    <div class="exam-grid" id="exam-grid">
+      <!-- Rendered by JS from CONFIG below -->
     </div>
-  </div>
-  <div class="q-outer">
-    <div class="q-card hidden" id="prac-q-card">
-      <div class="q-meta">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="q-src-tag" id="prac-q-src"></span>
-          <span class="q-group-tag" id="prac-q-group"></span>
-        </div>
-        <div class="marks-tag" id="prac-q-marks"></div>
-      </div>
-      <div class="q-text" id="prac-q-text"></div>
-      <textarea class="ans-area" id="prac-ans" placeholder="Write your answer here...&#10;&#10;Show your working — just like in the real SEE exam."></textarea>
-      <div class="q-actions">
-        <button class="btn-skip-q" onclick="PRAC.skip()">Skip →</button>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <button class="btn-show-ans" id="prac-show-btn" onclick="PRAC.showAnswer()">Show answer</button>
-          <button class="btn-next-q hidden" id="prac-next-btn" onclick="PRAC.next()">Next →</button>
-        </div>
-      </div>
-    </div>
-    <div class="ans-reveal hidden" id="prac-reveal">
-      <div class="ans-reveal-title">✓ Correct answer</div>
-      <div class="ans-reveal-body" id="prac-reveal-body"></div>
-    </div>
-    <div class="hidden" id="prac-no-qs" style="text-align:center;padding:48px 24px;background:white;border-radius:16px;border:1px solid var(--ink-100);">
-      <div style="font-size:48px;margin-bottom:16px;">📋</div>
-      <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:8px;">Questions coming soon</div>
-      <p style="font-size:14px;color:var(--ink-500);margin-bottom:20px;">This paper is being prepared. Try another year or subject.</p>
-      <button class="btn btn-blue" onclick="showScreen('home')">← Back to practice</button>
-    </div>
-  </div>
-</div>
 
-<!-- CHAPTER PRACTICE -->
-<div class="prac-screen" id="ps-chapters" style="flex:1;overflow:hidden;">
-  <div class="prac-bc">
-    <button class="prac-bc-btn" onclick="showScreen('home')">🏠 Home</button>
-    <span class="prac-bc-sep">›</span>
-    <span class="prac-bc-btn on">Chapter Practice</span>
-  </div>
-  <div class="ch-body" style="flex:1;overflow:hidden;">
-    <aside class="ch-sidebar">
-      <div class="ch-sidebar-top">
-        <div class="ch-sidebar-lbl">Subject</div>
-        <div class="ch-subj-btns" id="ch-subj-btns"></div>
-      </div>
-      <div class="ch-list" id="ch-list"><div class="ch-list-lbl">Chapters</div></div>
-    </aside>
-    <div class="ch-main">
-      <div class="ch-topbar">
-        <div class="ch-ctx"><span id="ch-ctx-subj">Maths</span><span style="color:var(--ink-200);">›</span><strong id="ch-ctx-ch">Choose a chapter</strong></div>
-        <div class="prog-wrap">
-          <div class="prog-bar"><div class="prog-fill" id="ch-prog-fill" style="width:0%"></div></div>
-          <div class="prog-txt" id="ch-prog-txt">0 / 5</div>
-        </div>
-      </div>
-      <div class="ch-q-area" id="ch-q-area">
-        <div class="ch-empty" id="ch-empty">
-          <div class="ch-empty-icon">📚</div>
-          <div class="ch-empty-title">Pick a chapter</div>
-          <div class="ch-empty-sub">Choose a chapter from the left — your first question will appear here instantly.</div>
-        </div>
-        <div id="ch-loading" class="hidden" style="text-align:center;padding:40px 0;">
-          <div class="dot-loader"><span></span><span></span><span></span></div>
-          <div style="font-size:14px;color:var(--ink-500);margin-top:12px;">Checking your answer...</div>
-        </div>
-        <div class="q-card hidden" id="ch-q-card">
-          <div class="q-meta">
-            <div style="display:flex;align-items:center;gap:6px;"><div class="ai-dot"></div><span class="q-src-tag" id="ch-q-src"></span></div>
-            <div class="marks-tag" id="ch-q-marks"></div>
-          </div>
-          <div class="q-text" id="ch-q-text"></div>
-          <textarea class="ans-area" id="ch-ans" placeholder="Write your answer here...&#10;&#10;Show your working — just like in the real SEE exam."></textarea>
-          <div class="q-actions">
-            <button class="btn-skip-q" onclick="CP.skip()">Skip →</button>
-            <button class="btn-check-q" onclick="CP.check()">Check answer →</button>
-          </div>
-        </div>
-        <div class="fb-card hidden" id="ch-fb-card">
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;"><div class="ai-dot"></div><span style="font-size:11px;font-weight:700;color:var(--ink-300);text-transform:uppercase;letter-spacing:0.08em;">AI Feedback</span></div>
-          <div class="fb-verdict" id="ch-fb-verdict"></div>
-          <div class="fb-body" id="ch-fb-body"></div>
-          <button class="btn-next-q" id="ch-btn-next" onclick="CP.next()">Next question →</button>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -345,478 +259,161 @@
 <script src="/scripts/components.js"></script>
 <script>
 /* ============================================================
-   CONFIG — change availableYears to unlock a year
-   Move year from lockedYears to availableYears when approved
+   CONFIG — Edit here to add or unlock exams
+   
+   status: 'live'  → clickable, goes to url
+   status: 'soon'  → locked, shows coming soon
+
+   subjects: shown as chips on the card
+   color: hex used for icon bg, border, text, accent
+   icon: any Tabler icon name (ti-xxx)
+   url: where to go when student clicks (for live exams)
    ============================================================ */
-const CONFIG = {
-  sessionLength: 5,
-  subjects: [
-    { key:'maths',   label:'Maths',   icon:'🧮' },
-    { key:'science', label:'Science', icon:'🔬' },
-  ],
-  availableYears: [2081],
-  lockedYears:    [2080, 2079, 2078, 2077, 2076, 2075],
-  modes: [
-    { key:'papers',  title:'Past Papers',      desc:'Practice real SEE questions from past years. The closest thing to the actual exam.', icon:'📜', bg:'blue', tag:{txt:'✓ SEE 2081 available', cls:'badge-sun'}, on:true },
-    { key:'chapter', title:'Chapter Practice', desc:'Pick a chapter and drill it. Perfect for targeted revision before a test.',           icon:'📚', bg:'gold', tag:{txt:'Coming soon',  cls:'badge-blue'}, on:false },
-    { key:'mock',    title:'Mock Test',        desc:'Full 3-hour SEE simulation. Timed. Marked. Just like the real exam day.',           icon:'⏱️', bg:'soft', tag:{txt:'Coming soon',             cls:'badge-blue'}, on:false },
-  ],
-  groups: {
-    A: { label:'Group A', color:'#639922', tagClass:'gc-a', desc:'Very short answers' },
-    B: { label:'Group B', color:'#1E5FA8', tagClass:'gc-b', desc:'Short answers with working' },
-    C: { label:'Group C', color:'#BA7517', tagClass:'gc-c', desc:'Full working required' },
-    D: { label:'Group D', color:'#A32D2D', tagClass:'gc-d', desc:'Hardest — full solutions' },
+const EXAMS = [
+  {
+    key:      'see',
+    name:     'SEE Grade 10',
+    sub:      'Secondary Education Examination · Nepal',
+    icon:     'ti-school',
+    color:    '#1E5FA8',
+    colorBg:  '#EFF6FF',
+    status:   'live',
+    url:      '/see-practice.html',
+    subjects: [
+      { label:'Maths',   icon:'ti-math-function', bg:'#EFF6FF', color:'#1E5FA8' },
+      { label:'Science', icon:'ti-microscope',    bg:'#F0FDF4', color:'#16A34A' },
+    ],
+    cta: 'Start practising →',
   },
-};
-
-/* ============================================================
-   PAPERS — Hardcoded SEE 2081 Maths + Science
-   Replace with database fetch when ready
-   ============================================================ */
-const PAPERS = {
-  maths: {
-    2081: {
-      title:'Compulsory Mathematics', totalMarks:75, duration:'3 hrs',
-      groups: [
-        { key:'A', totalMarks:11, questions:[
-          {n:1,  q:'Write the formula to find the curved surface area of a cylinder.',                                         a:'Curved Surface Area = 2πrh\n(r = radius, h = height)', m:1},
-          {n:2,  q:'If A = {2,4,6} and B = {4,6,8}, find A ∩ B.',                                                            a:'A ∩ B = {4, 6}', m:1},
-          {n:3,  q:'What is the value of sin 30°?',                                                                           a:'sin 30° = 1/2 = 0.5', m:1},
-          {n:4,  q:'Write the quadratic formula for solving ax² + bx + c = 0.',                                               a:'x = (−b ± √(b²−4ac)) / 2a', m:1},
-          {n:5,  q:'What is the probability of getting a head when a fair coin is tossed?',                                   a:'P(Head) = 1/2', m:1},
-          {n:6,  q:'Find the mean of: 4, 8, 12, 16, 20.',                                                                    a:'Mean = (4+8+12+16+20)/5 = 60/5 = 12', m:1},
-          {n:7,  q:'Write the slope-intercept form of a straight line.',                                                      a:'y = mx + c\n(m = slope, c = y-intercept)', m:1},
-          {n:8,  q:'Find the determinant of matrix A = [[3,1],[2,4]].',                                                       a:'det(A) = (3×4) − (1×2) = 12 − 2 = 10', m:1},
-          {n:9,  q:'State the Pythagoras theorem.',                                                                           a:'In a right-angled triangle: c² = a² + b²\n(c = hypotenuse)', m:1},
-          {n:10, q:'Write the formula for the area of a triangle using base and height.',                                     a:'Area = ½ × base × height', m:1},
-          {n:11, q:'What is the sum of interior angles of a quadrilateral?',                                                  a:'360°', m:1},
-        ]},
-        { key:'B', totalMarks:16, questions:[
-          {n:12, q:'Solve: 3x + 7 = 22. Show your working.',                                                                  a:'3x + 7 = 22\n3x = 15\nx = 5', m:2},
-          {n:13, q:'Find the area of a circle with radius 14 cm. (Use π = 22/7)',                                             a:'Area = πr² = (22/7) × 14² = (22/7) × 196 = 616 cm²', m:2},
-          {n:14, q:'Factorise: x² − 7x + 12',                                                                                a:'x² − 7x + 12 = (x − 3)(x − 4)', m:2},
-          {n:15, q:'If P = {1,2,3,4,5} and Q = {3,4,5,6,7}, find P ∪ Q and P ∩ Q.',                                         a:'P ∪ Q = {1,2,3,4,5,6,7}\nP ∩ Q = {3,4,5}', m:2},
-          {n:16, q:'Find the simple interest on Rs 8,000 at 10% per annum for 2 years.',                                     a:'SI = (P × R × T)/100 = (8000 × 10 × 2)/100 = Rs 1,600', m:2},
-          {n:17, q:'The angles of a triangle are in ratio 2:3:4. Find each angle.',                                          a:'2x+3x+4x = 180°\n9x = 180°, x = 20°\nAngles: 40°, 60°, 80°', m:2},
-          {n:18, q:'Find the distance between points A(1,2) and B(4,6).',                                                    a:'d = √[(4−1)² + (6−2)²] = √[9+16] = √25 = 5 units', m:2},
-          {n:19, q:'A bag has 5 red and 3 blue balls. What is the probability of picking a blue ball?',                      a:'P(blue) = 3/(5+3) = 3/8', m:2},
-        ]},
-        { key:'C', totalMarks:20, questions:[
-          {n:20, q:'A shopkeeper bought a bicycle for Rs 12,000 and spent Rs 500 on repairs. He sold it for Rs 15,000. Find his profit percentage.',
-                                                                                                                              a:'Cost price = 12,000 + 500 = Rs 12,500\nProfit = 15,000 − 12,500 = Rs 2,500\nProfit% = (2,500/12,500) × 100 = 20%', m:4},
-          {n:21, q:'Solve the quadratic equation: x² − 5x + 6 = 0 using factorisation.',                                    a:'x² − 5x + 6 = 0\n(x − 2)(x − 3) = 0\nx = 2 or x = 3', m:4},
-          {n:22, q:'The diameter of a cylinder is 10 cm and height is 14 cm. Find total surface area and volume. (π = 22/7)',a:'r = 5 cm, h = 14 cm\nTSA = 2πr(r+h) = 2×(22/7)×5×19 ≈ 597 cm²\nVolume = πr²h = (22/7)×25×14 = 1,100 cm³', m:4},
-          {n:23, q:'In a survey of 100 students, 60 like Maths, 50 like Science, 30 like both. Find how many like neither.',  a:'n(M∪S) = 60+50−30 = 80\nNeither = 100−80 = 20 students', m:4},
-          {n:24, q:'Find the mean, median and mode of: 3, 7, 5, 3, 9, 7, 3, 5, 7, 3',                                       a:'Sorted: 3,3,3,3,5,5,7,7,7,9\nMean = 52/10 = 5.2\nMedian = (5+5)/2 = 5\nMode = 3 (appears 4 times)', m:4},
-        ]},
-        { key:'D', totalMarks:10, questions:[
-          {n:25, q:'Prove that the angle subtended by an arc at the centre is double the angle subtended at any point on the remaining part of the circle.',
-                                                                                                                              a:'Given: Arc PQ, centre O, point R on major arc.\nTo prove: ∠POQ = 2∠PRQ\nProof: Join RO and extend to A.\nIn △OPR: OP=OR (radii), ∠OPR=∠ORP\n∠POR = 2∠ORP (exterior angle)\nSimilarly ∠QOR = 2∠ORQ\n∴ ∠POQ = ∠POR+∠QOR = 2∠ORP+2∠ORQ = 2∠PRQ ✓', m:5},
-          {n:26, q:'A ladder 13m leans against a wall. Foot is 5m from wall. (a) Find height reached. (b) Foot pulled 3m further — find new height. (c) How far does top slide down?',
-                                                                                                                              a:'(a) h² + 5² = 13² → h² = 144 → h = 12m\n(b) New base = 8m\nh² = 169−64 = 105 → h = √105 ≈ 10.25m\n(c) Slide = 12−10.25 = 1.75m', m:5},
-        ]},
-      ]
-    }
+  {
+    key:      'neb11',
+    name:     'NEB Grade 11',
+    sub:      'Plus Two — First Year · Science & Management',
+    icon:     'ti-certificate',
+    color:    '#16A34A',
+    colorBg:  '#F0FDF4',
+    status:   'soon',
+    url:      '/neb11-practice.html',
+    subjects: [
+      { label:'Physics',   icon:'ti-atom',      bg:'#EFF6FF', color:'#1E5FA8' },
+      { label:'Chemistry', icon:'ti-flask',     bg:'#FDF4FF', color:'#9333EA' },
+      { label:'Maths',     icon:'ti-math-function', bg:'#FFF7ED', color:'#C2410C' },
+    ],
+    cta: 'Start practising →',
   },
-  science: {
-    2081: {
-      title:'Compulsory Science', totalMarks:75, duration:'3 hrs',
-      groups: [
-        { key:'A', totalMarks:11, questions:[
-          {n:1,  q:"State Ohm's Law.",                                                                                        a:'The current through a conductor is directly proportional to the voltage across it (at constant temperature). V = IR', m:1},
-          {n:2,  q:'What is the SI unit of electric current?',                                                                a:'Ampere (A)', m:1},
-          {n:3,  q:'Write the word equation for photosynthesis.',                                                             a:'Carbon dioxide + Water → (sunlight/chlorophyll) → Glucose + Oxygen', m:1},
-          {n:4,  q:"State Newton's First Law of Motion.",                                                                     a:'An object stays at rest or in uniform motion unless acted on by an external force (Law of Inertia).', m:1},
-          {n:5,  q:'Name the four chambers of the human heart.',                                                              a:'Right Atrium, Left Atrium, Right Ventricle, Left Ventricle', m:1},
-          {n:6,  q:'What is the chemical formula of water?',                                                                  a:'H₂O', m:1},
-          {n:7,  q:'Define refraction of light.',                                                                             a:'Refraction is the bending of light as it passes from one medium to another of different optical density.', m:1},
-          {n:8,  q:'What is an acid? Give one example.',                                                                      a:'An acid produces H⁺ ions in water. Example: Hydrochloric acid (HCl)', m:1},
-          {n:9,  q:'Name the planet closest to the Sun.',                                                                     a:'Mercury', m:1},
-          {n:10, q:'What is the function of stomata in plants?',                                                              a:'Stomata allow gaseous exchange (CO₂ in, O₂ out) and release water vapour during transpiration.', m:1},
-          {n:11, q:'Define ecosystem.',                                                                                       a:'An ecosystem is a community of living organisms interacting with each other and their non-living environment in a specific area.', m:1},
-        ]},
-        { key:'B', totalMarks:16, questions:[
-          {n:12, q:'State the two laws of reflection of light.',                                                              a:'1st Law: Incident ray, reflected ray and normal are in the same plane.\n2nd Law: Angle of incidence = Angle of reflection (∠i = ∠r)', m:2},
-          {n:13, q:'Three resistors 4Ω, 6Ω and 12Ω are connected in parallel. Find total resistance.',                      a:'1/R = 1/4 + 1/6 + 1/12 = 3/12 + 2/12 + 1/12 = 6/12\nR = 2Ω', m:2},
-          {n:14, q:'Differentiate between exothermic and endothermic reactions with one example each.',                      a:'Exothermic: Releases heat. Example: Combustion (burning wood).\nEndothermic: Absorbs heat. Example: Photosynthesis.', m:2},
-          {n:15, q:'What is the difference between speed and velocity?',                                                     a:'Speed: Distance/time — scalar (no direction).\nVelocity: Displacement/time — vector (has direction).', m:2},
-          {n:16, q:'Explain neutralisation with an example.',                                                                 a:'Acid + Base → Salt + Water\nExample: HCl + NaOH → NaCl + H₂O', m:2},
-          {n:17, q:'What is transpiration? Give two reasons why it is important.',                                           a:'Transpiration: Loss of water vapour through stomata.\nImportance: (1) Helps water move up the plant. (2) Cools the plant.', m:2},
-          {n:18, q:'Name the parts of the human respiratory system in order from nose to lungs.',                            a:'Nose → Nasal cavity → Pharynx → Larynx → Trachea → Bronchi → Bronchioles → Alveoli', m:2},
-          {n:19, q:'What is biodiversity? Give two reasons why it is important.',                                            a:'Biodiversity: variety of living organisms in an area.\nImportance: (1) Maintains ecological balance. (2) Source of food and medicine.', m:2},
-        ]},
-        { key:'C', totalMarks:20, questions:[
-          {n:20, q:'A current of 2A flows through a wire of resistance 15Ω. (a) Find voltage. (b) Find power. (c) Find energy in 2 hours.',
-                                                                                                                              a:'(a) V = IR = 2×15 = 30V\n(b) P = VI = 30×2 = 60W\n(c) E = P×t = 60×7200 = 432,000 J = 432 kJ', m:4},
-          {n:21, q:'Explain digestion in the human stomach. Name the enzymes involved.',                                     a:'Gastric glands secrete gastric juice (HCl + enzymes).\nHCl: kills bacteria, creates acid environment.\nPepsin: breaks proteins into peptides.\nRennin (children): curdles milk.\nResult: chyme passed to small intestine.', m:4},
-          {n:22, q:'What is the greenhouse effect? Name four greenhouse gases and explain how human activities increase global warming.',
-                                                                                                                              a:'Greenhouse effect: Atmospheric gases trap heat, keeping Earth warm.\nGases: CO₂, CH₄, N₂O, water vapour\nHuman causes:\n1. Burning fossil fuels → more CO₂\n2. Deforestation → less CO₂ absorbed\n3. Industry → greenhouse gas emissions\n4. Agriculture → methane from livestock', m:4},
-          {n:23, q:'Draw and label a diagram of the human eye. Explain how we see near and distant objects.',                a:'Diagram: cornea, iris, pupil, lens, retina, optic nerve.\n\nDistant objects: Ciliary muscles relax → lens thins → longer focal length → image on retina.\n\nNear objects: Ciliary muscles contract → lens thickens → shorter focal length → image on retina.\n\nThis adjustment is called accommodation.', m:4},
-          {n:24, q:'A body of mass 5 kg moves at 10 m/s. (a) Find momentum. (b) A 20N force acts for 3s — find new velocity. (c) Find impulse.',
-                                                                                                                              a:'(a) p = mv = 5×10 = 50 kg m/s\n(b) a = F/m = 20/5 = 4 m/s²\nv = u+at = 10+(4×3) = 22 m/s\n(c) Impulse = F×t = 20×3 = 60 Ns', m:4},
-        ]},
-        { key:'D', totalMarks:10, questions:[
-          {n:25, q:'Explain the carbon cycle with a labelled diagram. How do human activities disturb it?',                  a:'Carbon Cycle:\nAtmosphere → photosynthesis → plants → respiration → animals → decomposition → soil → fossil fuels → combustion → atmosphere.\n\nHuman disturbances:\n1. Burning fossil fuels — releases stored carbon\n2. Deforestation — reduces CO₂ absorption\n3. Industrial emissions — excess CO₂\nResult: Increased greenhouse effect and global warming.', m:5},
-          {n:26, q:'Explain the structure and function of DNA. Why is it called the blueprint of life? How does DNA replication occur?',
-                                                                                                                              a:'Structure: Double helix. Made of nucleotides (sugar + phosphate + base). Bases: A-T, G-C pairs.\n\nFunction: Carries genetic info. Controls protein synthesis. Determines organism traits.\n\nBlueprint of life: Contains all instructions to build and maintain an organism.\n\nReplication:\n1. Helix unwinds\n2. Strands separate\n3. Each strand acts as template\n4. New complementary bases attach\n5. Two identical DNA molecules formed (semi-conservative replication)', m:5},
-        ]},
-      ]
+  {
+    key:      'neb12',
+    name:     'NEB Grade 12',
+    sub:      'Plus Two — Final Year · Board Exam',
+    icon:     'ti-award',
+    color:    '#9333EA',
+    colorBg:  '#FDF4FF',
+    status:   'soon',
+    url:      '/neb12-practice.html',
+    subjects: [
+      { label:'Physics',   icon:'ti-atom',         bg:'#EFF6FF', color:'#1E5FA8' },
+      { label:'Chemistry', icon:'ti-flask',         bg:'#FDF4FF', color:'#9333EA' },
+      { label:'Biology',   icon:'ti-dna',           bg:'#F0FDF4', color:'#16A34A' },
+      { label:'Maths',     icon:'ti-math-function', bg:'#FFF7ED', color:'#C2410C' },
+    ],
+    cta: 'Start practising →',
+  },
+  {
+    key:      'ioe',
+    name:     'IOE Entrance',
+    sub:      'Engineering Entrance Exam · Tribhuvan University',
+    icon:     'ti-building',
+    color:    '#C2410C',
+    colorBg:  '#FFF7ED',
+    status:   'soon',
+    url:      '/ioe-practice.html',
+    subjects: [
+      { label:'Physics',   icon:'ti-atom',         bg:'#EFF6FF', color:'#1E5FA8' },
+      { label:'Maths',     icon:'ti-math-function', bg:'#FFF7ED', color:'#C2410C' },
+      { label:'Chemistry', icon:'ti-flask',         bg:'#FDF4FF', color:'#9333EA' },
+    ],
+    cta: 'Start practising →',
+  },
+  {
+    key:      'cmat',
+    name:     'CMAT',
+    sub:      'Management Entrance Exam · Nepal',
+    icon:     'ti-chart-bar',
+    color:    '#0891B2',
+    colorBg:  '#ECFEFF',
+    status:   'soon',
+    url:      '/cmat-practice.html',
+    subjects: [
+      { label:'Maths',   icon:'ti-math-function', bg:'#FFF7ED', color:'#C2410C' },
+      { label:'English', icon:'ti-abc',           bg:'#EFF6FF', color:'#1E5FA8' },
+    ],
+    cta: 'Start practising →',
+  },
+];
+
+/* ── Render ── */
+function renderExams() {
+  const grid = document.getElementById('exam-grid');
+  grid.innerHTML = '';
+
+  EXAMS.forEach(exam => {
+    const isLive = exam.status === 'live';
+
+    const card = document.createElement('button');
+    card.className = `exam-card ${isLive ? 'live' : 'locked'}`;
+
+    if (isLive) {
+      card.style.borderColor = exam.color;
+      card.style.boxShadow = `0 0 0 0 ${exam.color}22`;
+      card.addEventListener('mouseenter', () => {
+        card.style.borderColor = exam.color;
+        card.style.boxShadow = `0 12px 32px ${exam.color}22`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.boxShadow = `0 0 0 0 ${exam.color}22`;
+      });
+      card.onclick = () => { window.location.href = exam.url; };
     }
-  }
-};
 
-/* CHAPTER CONTENT */
-const CONTENT = {
-  maths: { chapters: [
-    {name:'Algebra',qs:[{q:'If 2x+3=11, find x.',m:2},{q:'Factorise: x²−5x+6',m:2},{q:'Solve: 5x−3=2x+9',m:2}]},
-    {name:'Mensuration',qs:[{q:'Find the area of a circle with radius 7 cm. (π=22/7)',m:2},{q:'Volume of cylinder: r=5cm, h=10cm.',m:2}]},
-    {name:'Trigonometry',qs:[{q:'If sin θ=3/5, find cos θ and tan θ.',m:2},{q:'Find sin 30°+cos 60°−tan 45°.',m:1}]},
-    {name:'Statistics',qs:[{q:'Mean of 5 numbers is 12. Four are 10,14,8,16. Find fifth.',m:2},{q:'Median of: 4,7,2,9,3,8,5',m:1}]},
-    {name:'Probability',qs:[{q:'Bag: 3 red, 5 blue. P(red)?',m:1},{q:'Die rolled. P(even number)?',m:1}]},
-    {name:'Arithmetic',qs:[{q:'Bought for Rs 250, sold Rs 300. Profit %?',m:2},{q:'SI on Rs 5,000 at 8% for 3 years.',m:2}]},
-    {name:'Geometry',qs:[{q:'Two angles 60° and 70°. Find third.',m:1},{q:'Trapezium parallel sides 12cm,8cm, height 5cm. Area?',m:2}]},
-    {name:'Sets',qs:[{q:'A={1,2,3,4}, B={3,4,5,6}. Find A∪B and A∩B.',m:2},{q:'30 students: 18 cricket,15 football,8 both. Neither?',m:2}]},
-    {name:'Coordinate Geometry',qs:[{q:'Distance between A(3,4) and B(0,0).',m:2},{q:'Midpoint of (2,6) and (8,4).',m:1}]},
-    {name:'Matrices',qs:[{q:'Determinant of [[2,3],[1,4]].',m:1},{q:'Add [[1,2],[3,4]] and [[5,6],[7,8]].',m:1}]},
-  ]},
-  science: { chapters: [
-    {name:'Light & Reflection',qs:[{q:'Ray from water to air — towards or away from normal?',m:2},{q:'State laws of reflection.',m:2}]},
-    {name:'Electricity',qs:[{q:"State Ohm's Law and write its formula.",m:2},{q:'Resistors 2Ω,3Ω,6Ω in parallel. Total resistance?',m:3}]},
-    {name:'Force & Motion',qs:[{q:'Difference between speed and velocity?',m:2},{q:"Newton's second law — state and formula.",m:2}]},
-    {name:'Chemical Reactions',qs:[{q:'What is a chemical reaction? One example.',m:2},{q:'Exothermic vs endothermic — one example each.',m:2}]},
-    {name:'Acids & Bases',qs:[{q:'Two indicators for acids and bases.',m:2},{q:'What happens when acid meets base?',m:1}]},
-    {name:'Human Biology',qs:[{q:'Four chambers of the heart.',m:2},{q:'Role of the kidney.',m:1}]},
-    {name:'Plant Biology',qs:[{q:'Photosynthesis word equation.',m:2},{q:'Explain transpiration.',m:2}]},
-    {name:'Environment',qs:[{q:'Greenhouse effect — two gases.',m:2},{q:'Define biodiversity and why it matters.',m:2}]},
-  ]},
-};
-
-/* ENGINE */
-const $ = id => document.getElementById(id);
-const mk = (tag,cls,html) => { const e=document.createElement(tag); if(cls)e.className=cls; if(html!==undefined)e.innerHTML=html; return e; };
-const ST = { subj:'maths', year:2081 };
-
-document.addEventListener('click', e => {
-  if (!e.target.closest('.selector')) {
-    document.querySelectorAll('.dd-menu').forEach(d => d.classList.add('hidden'));
-    document.querySelectorAll('.selector').forEach(s => s.classList.remove('open'));
-  }
-});
-
-function showScreen(name) {
-  document.querySelectorAll('.prac-screen').forEach(s => s.classList.remove('active'));
-  $('ps-'+name).classList.add('active');
-  window.scrollTo(0,0);
-}
-
-function toggleDD(which, e) {
-  e.stopPropagation();
-  const dd = $('dd-'+which);
-  const isOpen = !dd.classList.contains('hidden');
-  document.querySelectorAll('.dd-menu').forEach(d => d.classList.add('hidden'));
-  document.querySelectorAll('.selector').forEach(s => s.classList.remove('open'));
-  if (!isOpen) { dd.classList.remove('hidden'); dd.closest('.selector').classList.add('open'); }
-}
-
-function buildSubjDD(ddId, onSelect) {
-  const dd = $(ddId); dd.innerHTML = '';
-  CONFIG.subjects.forEach(s => {
-    const item = mk('div', `dd-item${s.key===ST.subj?' on':''}`);
-    item.innerHTML = `<span class="dd-name">${s.icon} ${s.label}</span>${s.key===ST.subj?'<span class="dd-check">✓</span>':''}`;
-    item.onclick = e => { e.stopPropagation(); ST.subj=s.key; closeAllDD(); onSelect(s); };
-    dd.appendChild(item);
-  });
-}
-
-function buildYearDD(ddId, onSelect) {
-  const dd = $(ddId); dd.innerHTML = '';
-  if (CONFIG.availableYears.length) {
-    dd.appendChild(mk('div','dd-section','Available now'));
-    CONFIG.availableYears.forEach(y => {
-      const item = mk('div', `dd-item${y===ST.year?' on':''}`);
-      item.innerHTML = `<span class="dd-name">SEE ${y}</span>${y===ST.year?'<span class="dd-check">✓</span>':'<span class="dd-free">FREE</span>'}`;
-      item.onclick = e => { e.stopPropagation(); ST.year=y; closeAllDD(); onSelect(y); };
-      dd.appendChild(item);
-    });
-  }
-  if (CONFIG.lockedYears.length) {
-    dd.appendChild(mk('div','dd-section','Coming soon'));
-    CONFIG.lockedYears.forEach(y => {
-      const item = mk('div','dd-item locked');
-      item.innerHTML = `<span class="dd-name">🔒 SEE ${y}</span><span class="dd-soon">Soon</span>`;
-      dd.appendChild(item);
-    });
-  }
-}
-
-function closeAllDD() {
-  document.querySelectorAll('.dd-menu').forEach(d => d.classList.add('hidden'));
-  document.querySelectorAll('.selector').forEach(s => s.classList.remove('open'));
-}
-
-/* HOME */
-function renderHome() {
-  const grid = $('mode-grid'); grid.innerHTML = '';
-  CONFIG.modes.forEach(m => {
-    const c = mk('button', `mode-card${m.on?'':' disabled'}`);
-    let extra = '';
-    if (m.key==='papers') {
-      const pills = CONFIG.availableYears.map(y =>
-        `<button class="yr-pill" onclick="event.stopPropagation();ST.year=${y};openPaper()">${y}</button>`
-      ).join('') + CONFIG.lockedYears.map(y =>
-        `<span class="yr-pill locked">🔒 ${y}</span>`
-      ).join('');
-      extra = `<div class="year-pills">${pills}</div>`;
+    // Accent corner
+    if (isLive) {
+      card.style.setProperty('--accent', exam.colorBg);
     }
-    c.innerHTML = `
-      <div class="mode-card-top">
-        <div class="mode-icon ${m.bg}">${m.icon}</div>
-        <div class="mode-info">
-          <div class="mode-title">${m.title}</div>
-          <div class="mode-desc">${m.desc}</div>
-          <span class="badge ${m.tag.cls}" style="margin-top:6px;">${m.tag.txt}</span>
+
+    // Subject chips HTML
+    const chipsHTML = exam.subjects.map(s =>
+      `<span class="subj-chip" style="background:${s.bg};color:${s.color};">
+        <i class="ti ${s.icon}" aria-hidden="true"></i>${s.label}
+      </span>`
+    ).join('');
+
+    // Footer HTML
+    const footerHTML = isLive
+      ? `<span class="exam-card-cta" style="color:${exam.color};">${exam.cta} <i class="ti ti-arrow-right" aria-hidden="true"></i></span>`
+      : `<span class="exam-card-locked-msg"><i class="ti ti-lock" aria-hidden="true"></i> Coming soon</span>`;
+
+    card.innerHTML = `
+      <div class="exam-card-top">
+        <div class="exam-icon" style="background:${exam.colorBg};">
+          <i class="ti ${exam.icon}" style="color:${exam.color};" aria-hidden="true"></i>
         </div>
+        ${isLive
+          ? `<span class="exam-badge-live">Live now</span>`
+          : `<span class="exam-badge-soon">Coming soon</span>`
+        }
       </div>
-      ${extra}`;
-    if (m.on) {
-      if (m.key==='chapter') c.onclick = () => { renderChapters(); showScreen('chapters'); };
-      if (m.key==='papers')  c.onclick = () => { if(CONFIG.availableYears.length) openPaper(); };
-    }
-    grid.appendChild(c);
+      <div>
+        <div class="exam-card-name">${exam.name}</div>
+        <div class="exam-card-sub">${exam.sub}</div>
+        <div class="exam-card-subjects">${chipsHTML}</div>
+      </div>
+      <div class="exam-card-footer">${footerHTML}</div>`;
+
+    grid.appendChild(card);
   });
 }
 
-function openPaper() {
-  renderPaperView();
-  showScreen('paper');
-}
-
-/* PAPER VIEW */
-function renderPaperView() {
-  buildSubjCards();
-  buildYearCards();
-  renderPaperBody();
-}
-
-function buildSubjCards() {
-  const wrap = $('picker-subj-cards'); wrap.innerHTML = '';
-  const subjStyles = {
-    maths:   { icon:'ti-math-function', bg:'#EFF6FF', color:'#1E5FA8', shadow:'rgba(30,95,168,0.15)' },
-    science: { icon:'ti-microscope',    bg:'#F0FDF4', color:'#16A34A', shadow:'rgba(22,163,74,0.15)' },
-    english: { icon:'ti-abc',           bg:'#FFF7ED', color:'#C2410C', shadow:'rgba(194,65,12,0.15)' },
-    social:  { icon:'ti-world',         bg:'#FDF4FF', color:'#9333EA', shadow:'rgba(147,51,234,0.15)' },
-    nepali:  { icon:'ti-language',      bg:'#FFF1F2', color:'#E11D48', shadow:'rgba(225,29,72,0.15)' },
-  };
-  CONFIG.subjects.forEach(s => {
-    const style = subjStyles[s.key] || { icon:'ti-book', bg:'#F8FAFC', color:'#475569', shadow:'rgba(0,0,0,0.1)' };
-    const btn = mk('button', `subj-card-btn${s.key===ST.subj?' active':''}`);
-    if (s.key===ST.subj) {
-      btn.style.cssText = `background:${style.bg};border-color:${style.color};box-shadow:0 4px 14px ${style.shadow};`;
-    }
-    btn.innerHTML = `<div class="subj-card-icon" style="background:${style.bg};"><i class="ti ${style.icon}" style="color:${style.color};font-size:17px;" aria-hidden="true"></i></div><span class="subj-card-name" style="color:${s.key===ST.subj?style.color:'var(--ink-700)'};">${s.label}</span>`;
-    btn.onclick = () => {
-      ST.subj = s.key;
-      buildSubjCards();
-      buildYearCards();
-      renderPaperBody();
-    };
-    wrap.appendChild(btn);
-  });
-}
-
-function buildYearCards() {
-  const wrap = $('picker-yr-cards'); wrap.innerHTML = '';
-  $('paper-bc-label').textContent = `SEE ${ST.year} · ${CONFIG.subjects.find(x=>x.key===ST.subj).label}`;
-
-  CONFIG.availableYears.forEach((y,i) => {
-    const btn = mk('button', `yr-card-btn${y===ST.year?' active':''}`);
-    btn.innerHTML = `<span class="yr-card-yr">${y}</span><span class="yr-card-tag">${i===0?'Latest':'Free'}</span>`;
-    btn.onclick = () => { ST.year=y; buildYearCards(); renderPaperBody(); };
-    wrap.appendChild(btn);
-  });
-  CONFIG.lockedYears.forEach(y => {
-    const btn = mk('button','yr-card-btn locked');
-    btn.innerHTML = `<i class="ti ti-lock" style="font-size:11px;color:var(--ink-300);" aria-hidden="true"></i><span class="yr-card-yr">${y}</span><span class="yr-card-tag">Soon</span>`;
-    wrap.appendChild(btn);
-  });
-}
-
-function renderPaperBody() {
-  const body = $('paper-body'); body.innerHTML = '';
-  const paper = PAPERS[ST.subj]?.[ST.year];
-  const s = CONFIG.subjects.find(x => x.key===ST.subj);
-  $('paper-bc-label').textContent = `SEE ${ST.year} · ${s.label}`;
-
-  if (!paper) {
-    body.innerHTML = `<div style="text-align:center;padding:48px 24px;background:white;border-radius:16px;border:1px solid var(--ink-100);">
-      <div style="font-size:48px;margin-bottom:16px;">📋</div>
-      <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:8px;">Coming soon</div>
-      <p style="font-size:14px;color:var(--ink-500);">This paper is being prepared. Choose another year or subject.</p>
-    </div>`; return;
-  }
-
-  // Header
-  const hdr = mk('div','paper-hdr-card');
-  hdr.innerHTML = `<div><h2>SEE ${ST.year} — ${paper.title}</h2><p>Secondary Education Examination · Nepal</p></div>
-    <div class="paper-meta">
-      <div class="meta-box"><div class="meta-val">${paper.totalMarks}</div><div class="meta-lbl">Marks</div></div>
-      <div class="meta-box"><div class="meta-val">${paper.duration}</div><div class="meta-lbl">Duration</div></div>
-      <div class="meta-box"><div class="meta-val">${paper.groups.length}</div><div class="meta-lbl">Groups</div></div>
-    </div>`;
-  body.appendChild(hdr);
-
-  // Groups
-  paper.groups.forEach((grp, gi) => {
-    const cfg = CONFIG.groups[grp.key] || { label:`Group ${grp.key}`, color:'#6B7280', tagClass:'gc-b', desc:'' };
-
-    if (gi > 0) {
-      const btn = mk('button','show-group-btn');
-      btn.innerHTML = `<div class="sgb-icon">+</div><div class="sgb-content"><div class="sgb-txt">Show ${cfg.label}</div><div class="sgb-sub">${grp.questions.length} questions · ${grp.totalMarks} marks · ${cfg.desc}</div></div>`;
-      btn.onclick = () => { btn.style.display='none'; const el=$(`grp-${grp.key}`); el.classList.remove('hidden'); el.scrollIntoView({behavior:'smooth',block:'start'}); };
-      body.appendChild(btn);
-    }
-
-    const block = mk('div', `group-block${gi>0?' hidden':''}`);
-    block.id = `grp-${grp.key}`;
-    const qRows = grp.questions.map(q => `<div class="q-row"><div class="q-row-num">Q${q.n}.</div><div class="q-row-text">${q.q}</div><div class="q-row-mark">${q.m} mark${q.m>1?'s':''}</div></div>`).join('');
-    block.innerHTML = `<div class="group-hdr"><div class="group-hdr-left"><div class="group-dot" style="background:${cfg.color}"></div><div><div class="group-hdr-name">${cfg.label}</div><div class="group-hdr-desc">${grp.questions.length} questions · ${cfg.desc}</div></div></div><div class="group-marks-badge">${grp.totalMarks} marks</div></div><div class="q-list">${qRows}</div>`;
-    body.appendChild(block);
-  });
-
-  // Practice CTA
-  const cta = mk('div','practice-cta');
-  cta.innerHTML = `<div><h3>Ready to attempt this paper?</h3><p>Answer each question one by one and check your answers.</p></div><button class="btn-practice-paper" onclick="startPracticeMode()">Practice this paper →</button>`;
-  body.appendChild(cta);
-}
-
-/* PRACTICE MODE */
-const PRAC = {
-  qs:[], qi:0,
-  init() {
-    const paper = PAPERS[ST.subj]?.[ST.year];
-    this.qs = paper ? paper.groups.flatMap(g => g.questions.map(q => ({...q, group:g.key}))) : [];
-    this.qi = 0;
-  },
-  load() {
-    $('prac-reveal').classList.add('hidden');
-    if (!this.qs.length) { $('prac-no-qs').classList.remove('hidden'); $('prac-q-card').classList.add('hidden'); return; }
-    $('prac-no-qs').classList.add('hidden');
-    const q = this.qs[this.qi % this.qs.length];
-    const s = CONFIG.subjects.find(x => x.key===ST.subj);
-    const cfg = CONFIG.groups[q.group] || { label:`Group ${q.group}`, tagClass:'gc-b' };
-    $('prac-q-src').textContent = `SEE ${ST.year} · ${s.label}`;
-    $('prac-q-group').textContent = cfg.label;
-    $('prac-q-group').className = `q-group-tag ${cfg.tagClass}`;
-    $('prac-q-marks').textContent = `${q.m} mark${q.m>1?'s':''}`;
-    $('prac-q-text').textContent = `Q${q.n}. ${q.q}`;
-    $('prac-ans').value = '';
-    $('prac-show-btn').classList.remove('hidden');
-    $('prac-next-btn').classList.add('hidden');
-    $('prac-reveal').classList.add('hidden');
-    const card = $('prac-q-card');
-    card.classList.remove('hidden');
-    card.style.animation='none'; card.offsetHeight; card.style.animation='';
-    $('prac-subj-val').textContent = s.label;
-    $('prac-year-val').textContent = `SEE ${ST.year}`;
-    this.updateProg();
-  },
-  showAnswer() {
-    const q = this.qs[this.qi % this.qs.length];
-    $('prac-reveal-body').textContent = q.a;
-    $('prac-reveal').classList.remove('hidden');
-    $('prac-show-btn').classList.add('hidden');
-    $('prac-next-btn').classList.remove('hidden');
-    $('prac-reveal').scrollIntoView({behavior:'smooth',block:'nearest'});
-  },
-  next() { this.qi++; this.load(); window.scrollTo({top:0,behavior:'smooth'}); },
-  skip() { this.qi++; this.load(); window.scrollTo({top:0,behavior:'smooth'}); },
-  updateProg() {
-    const total = this.qs.length;
-    const done = this.qi % (total||1);
-    $('prac-prog-fill').style.width = `${(done/total)*100}%`;
-    $('prac-prog-txt').textContent = `${done} / ${total}`;
-  },
-};
-
-function startPracticeMode() {
-  PRAC.init();
-  showScreen('practice');
-  const s = CONFIG.subjects.find(x => x.key===ST.subj);
-  const label = $('prac-paper-label');
-  if (label) label.textContent = `SEE ${ST.year} · ${s.label}`;
-  PRAC.load();
-}
-
-/* CHAPTER PRACTICE */
-function renderChapters() {
-  const sb = $('ch-subj-btns'); sb.innerHTML = '';
-  CONFIG.subjects.forEach(sub => {
-    const b = mk('button', `ch-subj-btn${sub.key===ST.subj?' on':''}`);
-    b.innerHTML = `<span class="si">${sub.icon}</span>${sub.label}`;
-    b.onclick = () => { ST.subj=sub.key; sb.querySelectorAll('.ch-subj-btn').forEach(x=>x.classList.remove('on')); b.classList.add('on'); $('ch-ctx-subj').textContent=CONFIG.subjects.find(x=>x.key===ST.subj).label; renderChapterList(); CP.reset(); };
-    sb.appendChild(b);
-  });
-  $('ch-ctx-subj').textContent = CONFIG.subjects.find(x=>x.key===ST.subj).label;
-  renderChapterList(); CP.reset();
-}
-
-function renderChapterList() {
-  const list = $('ch-list'); list.innerHTML = '<div class="ch-list-lbl">Chapters</div>';
-  (CONTENT[ST.subj]?.chapters||[]).forEach(ch => {
-    const b = mk('button','ch-item'); b.innerHTML = `<span>${ch.name}</span>`;
-    b.onclick = () => { list.querySelectorAll('.ch-item').forEach(x=>x.classList.remove('on')); b.classList.add('on'); CP.start(ch); };
-    list.appendChild(b);
-  });
-}
-
-const CP = {
-  qi:0, ans:0,
-  reset() {
-    this.qi=0; this.ans=0;
-    $('ch-empty').classList.remove('hidden');
-    $('ch-q-card').classList.add('hidden'); $('ch-fb-card').classList.add('hidden'); $('ch-loading').classList.add('hidden');
-    $('ch-ctx-ch').textContent='Choose a chapter';
-    $('ch-prog-fill').style.width='0%'; $('ch-prog-txt').textContent=`0 / ${CONFIG.sessionLength}`;
-  },
-  start(ch) {
-    this.qi=0; this.ans=0; ST.chapter=ch.name;
-    $('ch-ctx-ch').textContent=ch.name;
-    $('ch-empty').classList.add('hidden'); $('ch-fb-card').classList.add('hidden');
-    this.loadQ();
-  },
-  loadQ() {
-    const ch = (CONTENT[ST.subj]?.chapters||[]).find(x=>x.name===ST.chapter); if(!ch) return;
-    const q = ch.qs[this.qi%ch.qs.length];
-    $('ch-q-card').classList.add('hidden'); $('ch-fb-card').classList.add('hidden');
-    $('ch-q-src').textContent = `${ST.chapter} · ${CONFIG.subjects.find(x=>x.key===ST.subj).label}`;
-    $('ch-q-marks').textContent = `${q.m} mark${q.m>1?'s':''}`;
-    $('ch-q-text').textContent = q.q; $('ch-ans').value='';
-    const card = $('ch-q-card'); card.classList.remove('hidden');
-    card.style.animation='none'; card.offsetHeight; card.style.animation='';
-    this.updateProg();
-  },
-  async check() {
-    const answer = $('ch-ans').value.trim(); if(!answer){$('ch-ans').focus();return;}
-    const ch = (CONTENT[ST.subj]?.chapters||[]).find(x=>x.name===ST.chapter);
-    const q = ch.qs[this.qi%ch.qs.length];
-    $('ch-loading').classList.remove('hidden'); $('ch-q-card').classList.add('hidden'); $('ch-fb-card').classList.add('hidden');
-    try {
-      const res = await fetch('/api/practice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'evaluate',subject:ST.subj,question:q.q,studentAnswer:answer})});
-      const data = await res.json();
-      $('ch-loading').classList.add('hidden'); this.ans++;
-      const card = $('ch-fb-card');
-      card.className = `fb-card ${data.verdict==='correct'?'correct':data.verdict==='partial'?'partial':'wrong'}`;
-      $('ch-fb-verdict').textContent = data.verdict==='correct'?'✅ Correct!':data.verdict==='partial'?'~ Partially correct':'❌ Not quite right';
-      $('ch-fb-body').textContent = data.feedback;
-      $('ch-q-card').classList.remove('hidden'); card.classList.remove('hidden');
-      card.scrollIntoView({behavior:'smooth',block:'nearest'}); this.updateProg();
-    } catch(e) { $('ch-loading').classList.add('hidden'); $('ch-q-card').classList.remove('hidden'); alert('Something went wrong. Please try again.'); }
-  },
-  next(){this.qi++;this.loadQ();}, skip(){this.qi++;this.loadQ();},
-  updateProg(){$('ch-prog-fill').style.width=`${Math.min(this.ans/CONFIG.sessionLength*100,100)}%`;$('ch-prog-txt').textContent=`${this.ans}/${CONFIG.sessionLength}`;}
-};
-
-renderHome();
+renderExams();
 </script>
 </body>
 </html>
