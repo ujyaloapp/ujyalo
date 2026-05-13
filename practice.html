@@ -9,181 +9,126 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.css">
 <style>
-/* ============================================================
-   UJYALO PRACTICE PAGE
-   Edit CONFIG    → settings
-   Edit PAPERS_CONTENT → past paper questions + answers
-   Edit CONTENT   → chapter practice questions
-   To unlock a year: change status from 'draft' to 'live'
-   ============================================================ */
-
 .prac-screen { display:none; flex-direction:column; min-height:calc(100vh - 56px); }
 .prac-screen.active { display:flex; }
-
-/* Breadcrumb */
 .prac-bc { display:flex; align-items:center; gap:6px; padding:9px 24px; background:white; border-bottom:1px solid var(--ink-100); font-size:13px; flex-shrink:0; }
 .prac-bc-btn { color:var(--ink-500); background:none; border:none; font-family:inherit; font-size:13px; font-weight:500; cursor:pointer; padding:0; transition:color 0.2s; }
 .prac-bc-btn:hover { color:var(--brand); }
 .prac-bc-btn.on { color:var(--ink-900); font-weight:700; cursor:default; }
 .prac-bc-sep { color:var(--ink-200); }
-
-/* Subject toggle */
 .subj-toggle { display:inline-flex; background:var(--ink-50); border-radius:999px; padding:3px; gap:2px; }
 .subj-btn-toggle { padding:7px 18px; border-radius:999px; border:none; background:none; font-family:inherit; font-size:14px; font-weight:700; color:var(--ink-500); cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px; }
 .subj-btn-toggle.on { background:white; color:var(--ink-900); box-shadow:0 2px 8px rgba(10,22,40,0.08); }
-
-/* Mode cards */
 .mode-grid { padding:20px 24px; display:flex; flex-direction:column; gap:10px; max-width:580px; margin:0 auto; width:100%; }
-.mode-card { background:white; border:2px solid var(--ink-100); border-radius:18px; padding:18px 20px; display:flex; align-items:flex-start; gap:16px; transition:all 0.22s cubic-bezier(0.16,1,0.3,1); width:100%; text-align:left; font-family:inherit; position:relative; }
-.mode-card.clickable { cursor:pointer; }
-.mode-card.clickable:hover { border-color:var(--brand); transform:translateY(-2px); box-shadow:0 10px 30px rgba(30,95,168,0.1); }
+.mode-card { background:white; border:2px solid var(--ink-100); border-radius:18px; padding:18px 20px; display:flex; align-items:flex-start; gap:16px; cursor:pointer; transition:all 0.22s cubic-bezier(0.16,1,0.3,1); width:100%; text-align:left; font-family:inherit; }
+.mode-card:hover { border-color:var(--brand); transform:translateY(-3px); box-shadow:0 10px 30px rgba(30,95,168,0.1); }
 .mode-card.disabled { opacity:0.55; cursor:default; }
+.mode-card.disabled:hover { transform:none; box-shadow:none; border-color:var(--ink-100); }
 .mode-icon { width:52px; height:52px; border-radius:13px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
 .mode-icon.blue { background:var(--brand-light); }
 .mode-icon.gold { background:var(--sun-light); }
 .mode-icon.soft { background:var(--ink-100); }
 .mode-info { flex:1; min-width:0; }
 .mode-title { font-family:'Fraunces',serif; font-size:17px; font-weight:600; color:var(--ink-900); margin-bottom:3px; }
-.mode-desc { font-size:13px; color:var(--ink-500); line-height:1.5; margin-bottom:8px; }
-
-/* Year pills */
-.year-pills-row { display:flex; gap:6px; flex-wrap:wrap; padding-top:10px; border-top:1px solid var(--ink-100); }
-.year-pill { padding:5px 12px; border-radius:8px; font-size:12px; font-weight:700; border:none; font-family:inherit; transition:all 0.18s; }
-.year-pill.available { background:var(--brand-light); color:var(--brand); border:1.5px solid var(--brand); cursor:pointer; }
-.year-pill.available:hover { background:var(--brand); color:white; transform:translateY(-1px); }
-.year-pill.locked { background:var(--ink-50); color:var(--ink-300); border:1.5px solid var(--ink-100); cursor:default; font-size:11px; }
-
-/* Paper view */
-.paper-view-body { flex:1; overflow-y:auto; padding:20px 24px 80px; max-width:720px; margin:0 auto; width:100%; }
-.paper-header-card { background:white; border-radius:16px; border:1px solid var(--ink-100); padding:20px 24px; margin-bottom:20px; text-align:center; box-shadow:0 2px 12px rgba(10,22,40,0.05); }
-.paper-header-title { font-family:'Fraunces',serif; font-size:22px; font-weight:700; color:var(--ink-900); margin-bottom:4px; }
-.paper-header-sub { font-size:13px; color:var(--ink-500); margin-bottom:16px; }
-.paper-stats { display:flex; justify-content:center; gap:24px; flex-wrap:wrap; }
-.paper-stat { text-align:center; }
-.paper-stat-num { font-family:'Fraunces',serif; font-size:24px; font-weight:700; color:var(--brand); line-height:1; }
-.paper-stat-lbl { font-size:11px; color:var(--ink-400); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; margin-top:2px; }
-
-.group-block { margin-bottom:16px; }
-.group-header { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-radius:10px 10px 0 0; }
-.grp-a .group-header { background:#F0FDF4; border:1px solid #86EFAC; border-bottom:none; }
-.grp-b .group-header { background:#EFF6FF; border:1px solid #93C5FD; border-bottom:none; }
-.grp-c .group-header { background:#FFFBEB; border:1px solid #FCD34D; border-bottom:none; }
-.grp-d .group-header { background:#FEF2F2; border:1px solid #FCA5A5; border-bottom:none; }
-.grp-x .group-header { background:var(--ink-50); border:1px solid var(--ink-200); border-bottom:none; }
-.group-name-badge { font-family:'Fraunces',serif; font-size:15px; font-weight:700; }
-.grp-a .group-name-badge { color:#15803D; }
-.grp-b .group-name-badge { color:#1D4ED8; }
-.grp-c .group-name-badge { color:#92400E; }
-.grp-d .group-name-badge { color:#B91C1C; }
-.grp-x .group-name-badge { color:var(--ink-700); }
-.group-desc-txt { font-size:12px; color:var(--ink-500); margin-top:2px; }
-.group-marks-badge { font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px; }
-.grp-a .group-marks-badge { background:#DCFCE7; color:#15803D; }
-.grp-b .group-marks-badge { background:#DBEAFE; color:#1D4ED8; }
-.grp-c .group-marks-badge { background:#FEF3C7; color:#92400E; }
-.grp-d .group-marks-badge { background:#FEE2E2; color:#B91C1C; }
-.grp-x .group-marks-badge { background:var(--ink-100); color:var(--ink-600); }
-.group-questions { background:white; border-radius:0 0 10px 10px; }
-.grp-a .group-questions { border:1px solid #86EFAC; border-top:none; }
-.grp-b .group-questions { border:1px solid #93C5FD; border-top:none; }
-.grp-c .group-questions { border:1px solid #FCD34D; border-top:none; }
-.grp-d .group-questions { border:1px solid #FCA5A5; border-top:none; }
-.grp-x .group-questions { border:1px solid var(--ink-200); border-top:none; }
-.paper-q-row { display:flex; align-items:flex-start; gap:12px; padding:14px 18px; border-bottom:1px solid var(--ink-50); transition:background 0.15s; }
-.paper-q-row:last-child { border-bottom:none; }
-.paper-q-row:hover { background:var(--ink-50); }
-.paper-q-num { font-size:12px; font-weight:700; color:var(--ink-400); min-width:28px; padding-top:2px; flex-shrink:0; }
-.paper-q-text { font-size:14px; color:var(--ink-900); line-height:1.6; flex:1; }
-.paper-q-mark { font-size:11px; font-weight:700; background:var(--sun-light); color:#92400e; padding:2px 8px; border-radius:999px; flex-shrink:0; white-space:nowrap; }
-
-.show-group-btn { width:100%; padding:14px; border:2px dashed var(--ink-200); border-radius:12px; background:none; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:16px; transition:all 0.2s; color:var(--ink-500); font-size:13px; font-weight:600; }
-.show-group-btn:hover { border-color:var(--brand); color:var(--brand); background:var(--brand-light); }
-
-.practice-paper-btn-wrap { position:sticky; bottom:0; background:linear-gradient(to top,white 70%,transparent); padding:20px 0 8px; }
-.practice-paper-btn { width:100%; padding:16px; background:var(--brand); color:white; border:none; border-radius:14px; font-family:'Fraunces',serif; font-size:18px; font-weight:600; cursor:pointer; transition:all 0.2s; }
-.practice-paper-btn:hover { background:var(--brand-dark); transform:translateY(-2px); box-shadow:0 8px 24px rgba(30,95,168,0.3); }
-
-/* Paper practice topbar */
-.pp-topbar { background:white; border-bottom:1px solid var(--ink-100); padding:10px 20px; flex-shrink:0; }
-.pp-topbar-row1 { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-.pp-back { font-size:13px; color:var(--brand); background:none; border:none; cursor:pointer; font-family:inherit; font-weight:600; padding:0; }
-.pp-prog-wrap { display:flex; align-items:center; gap:8px; }
-.pp-prog-bar { width:80px; height:6px; background:var(--ink-100); border-radius:999px; overflow:hidden; }
-.pp-prog-fill { height:100%; background:linear-gradient(90deg,var(--brand),var(--sun)); border-radius:999px; transition:width 0.5s cubic-bezier(0.16,1,0.3,1); }
-.pp-prog-txt { font-size:12px; font-weight:700; color:var(--ink-500); }
-.pp-topbar-row2 { display:flex; align-items:center; gap:8px; }
-.pp-selector { display:flex; align-items:center; gap:6px; padding:7px 12px; border-radius:9px; border:1.5px solid var(--ink-100); background:var(--ink-50); cursor:pointer; font-family:inherit; transition:all 0.15s; flex:1; position:relative; }
-.pp-selector:hover,.pp-selector.open { border-color:var(--brand); background:var(--brand-light); }
-.pp-sel-icon { font-size:14px; }
-.pp-sel-body { flex:1; text-align:left; }
-.pp-sel-label { font-size:9px; color:var(--ink-400); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; line-height:1; }
-.pp-sel-value { font-size:13px; font-weight:700; color:var(--ink-900); line-height:1.3; }
-.pp-sel-caret { font-size:10px; color:var(--ink-400); }
-.pp-divider { width:1px; height:36px; background:var(--ink-200); flex-shrink:0; }
-.pp-dropdown { position:absolute; top:calc(100% + 6px); left:0; min-width:180px; background:white; border:1.5px solid var(--ink-100); border-radius:12px; padding:6px; z-index:100; box-shadow:0 8px 32px rgba(10,22,40,0.12); }
-.pp-dd-section { font-size:9px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-300); font-weight:700; padding:6px 8px 4px; }
-.pp-dd-item { display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border-radius:8px; cursor:pointer; transition:background 0.12s; gap:8px; }
-.pp-dd-item:hover { background:var(--ink-50); }
-.pp-dd-item.on { background:var(--brand-light); }
-.pp-dd-item.locked-item { opacity:0.45; cursor:default; }
-.pp-dd-name { font-size:13px; font-weight:600; color:var(--ink-900); }
-.pp-dd-badge { font-size:10px; font-weight:700; padding:2px 7px; border-radius:999px; }
-.pp-dd-badge.free { background:var(--green-light); color:var(--green); }
-.pp-dd-badge.soon { background:var(--ink-100); color:var(--ink-400); }
-.pp-dd-check { color:var(--brand); font-size:14px; font-weight:700; }
-
-/* Question card */
+.mode-desc { font-size:13px; color:var(--ink-500); line-height:1.5; margin-bottom:6px; }
+.year-pills { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; padding-top:10px; border-top:1px solid var(--ink-100); }
+.yr-pill { font-size:12px; font-weight:600; padding:5px 12px; border-radius:8px; background:var(--brand-light); color:var(--brand); border:1.5px solid var(--brand-light); cursor:pointer; transition:all 0.2s; font-family:inherit; }
+.yr-pill:hover { background:var(--brand); color:white; border-color:var(--brand); }
+.yr-pill.locked { background:var(--ink-50); color:var(--ink-300); border-color:var(--ink-100); cursor:default; font-size:11px; }
+.yr-pill.locked:hover { background:var(--ink-50); color:var(--ink-300); border-color:var(--ink-100); }
+.paper-topbar { background:white; border-bottom:1px solid var(--ink-100); padding:11px 24px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+.paper-selectors { display:flex; align-items:center; gap:8px; }
+.selector { display:flex; align-items:center; gap:8px; padding:7px 12px; border-radius:8px; border:1px solid var(--ink-100); background:var(--ink-50); cursor:pointer; transition:all 0.15s; font-family:inherit; position:relative; }
+.selector:hover { border-color:var(--brand); background:var(--brand-light); }
+.selector.open { border-color:var(--brand); background:var(--brand-light); }
+.sel-label { font-size:9px; color:var(--ink-400); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; display:block; }
+.sel-value { font-size:13px; font-weight:700; color:var(--ink-900); }
+.sel-caret { font-size:10px; color:var(--ink-400); }
+.sel-divider { width:1px; height:32px; background:var(--ink-200); flex-shrink:0; }
+.dd-menu { position:absolute; top:calc(100% + 6px); left:0; min-width:170px; background:white; border:1px solid var(--ink-100); border-radius:12px; padding:6px; z-index:100; box-shadow:0 8px 24px rgba(10,22,40,0.12); }
+.dd-section { font-size:9px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-300); font-weight:700; padding:6px 8px 3px; }
+.dd-item { display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border-radius:8px; cursor:pointer; gap:8px; transition:background 0.15s; }
+.dd-item:hover { background:var(--ink-50); }
+.dd-item.on { background:var(--brand-light); }
+.dd-item.locked { cursor:default; opacity:0.45; }
+.dd-name { font-size:13px; font-weight:500; color:var(--ink-900); }
+.dd-free { font-size:9px; background:var(--green-light); color:var(--green); padding:2px 6px; border-radius:6px; font-weight:700; }
+.dd-soon { font-size:9px; background:var(--ink-100); color:var(--ink-400); padding:2px 6px; border-radius:6px; font-weight:600; }
+.dd-check { color:var(--brand); font-size:13px; font-weight:700; }
+.paper-body { flex:1; overflow-y:auto; padding:24px; max-width:720px; margin:0 auto; width:100%; }
+.paper-hdr-card { background:white; border:1px solid var(--ink-100); border-radius:16px; padding:20px 24px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+.paper-hdr-card h2 { font-family:'Fraunces',serif; font-size:22px; font-weight:700; color:var(--ink-900); margin-bottom:4px; }
+.paper-hdr-card p { font-size:13px; color:var(--ink-500); }
+.paper-meta { display:flex; gap:12px; }
+.meta-box { text-align:center; background:var(--ink-50); border-radius:10px; padding:10px 16px; }
+.meta-val { font-family:'Fraunces',serif; font-size:22px; font-weight:700; color:var(--brand); line-height:1; }
+.meta-lbl { font-size:10px; color:var(--ink-400); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; margin-top:2px; }
+.group-block { background:white; border:1px solid var(--ink-100); border-radius:16px; margin-bottom:12px; overflow:hidden; }
+.group-hdr { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; background:var(--ink-50); border-bottom:1px solid var(--ink-100); }
+.group-hdr-left { display:flex; align-items:center; gap:10px; }
+.group-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.group-hdr-name { font-family:'Fraunces',serif; font-size:16px; font-weight:700; color:var(--ink-900); }
+.group-hdr-desc { font-size:12px; color:var(--ink-500); margin-top:1px; }
+.group-marks-badge { font-size:12px; font-weight:700; color:var(--brand); background:var(--brand-light); padding:4px 12px; border-radius:999px; }
+.q-list { padding:12px 16px; display:flex; flex-direction:column; gap:8px; }
+.q-row { display:flex; align-items:flex-start; gap:12px; padding:12px 14px; border-radius:10px; border:1px solid var(--ink-100); background:white; }
+.q-row:hover { background:var(--ink-50); }
+.q-row-num { font-size:12px; font-weight:700; color:var(--ink-300); min-width:28px; padding-top:2px; flex-shrink:0; }
+.q-row-text { font-size:14px; color:var(--ink-900); line-height:1.6; flex:1; }
+.q-row-mark { font-size:10px; font-weight:700; background:var(--sun-light); color:#854F0B; padding:3px 8px; border-radius:6px; flex-shrink:0; white-space:nowrap; margin-top:2px; }
+.show-group-btn { width:100%; padding:14px; border:2px dashed var(--ink-100); border-radius:14px; background:none; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:12px; transition:all 0.2s; }
+.show-group-btn:hover { border-color:var(--brand); background:var(--brand-light); }
+.show-group-btn:hover .sgb-txt { color:var(--brand); }
+.show-group-btn:hover .sgb-icon { background:var(--brand); color:white; }
+.sgb-icon { width:26px; height:26px; border-radius:50%; background:var(--ink-100); color:var(--ink-500); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; transition:all 0.2s; flex-shrink:0; }
+.sgb-content { text-align:left; }
+.sgb-txt { font-size:13px; font-weight:700; color:var(--ink-700); transition:color 0.2s; }
+.sgb-sub { font-size:11px; color:var(--ink-400); margin-top:1px; }
+.practice-cta { background:white; border:1px solid var(--ink-100); border-radius:16px; padding:20px 24px; margin-bottom:24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.practice-cta h3 { font-family:'Fraunces',serif; font-size:18px; font-weight:700; color:var(--ink-900); margin-bottom:4px; }
+.practice-cta p { font-size:13px; color:var(--ink-500); }
+.btn-practice-paper { background:var(--brand); color:white; border:none; padding:13px 24px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+.btn-practice-paper:hover { background:var(--brand-dark); transform:translateY(-1px); box-shadow:0 6px 20px rgba(30,95,168,0.25); }
+.prac-topbar { background:white; border-bottom:1px solid var(--ink-100); padding:10px 20px; flex-shrink:0; }
+.prac-topbar-row1 { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.back-btn { font-size:13px; color:var(--brand); background:none; border:none; cursor:pointer; font-family:inherit; font-weight:600; padding:0; }
+.prog-wrap { display:flex; align-items:center; gap:8px; }
+.prog-bar { width:100px; height:6px; background:var(--ink-100); border-radius:999px; overflow:hidden; }
+.prog-fill { height:100%; background:linear-gradient(90deg,var(--brand),var(--sun)); border-radius:999px; transition:width 0.5s cubic-bezier(0.16,1,0.3,1); }
+.prog-txt { font-size:12px; font-weight:700; color:var(--ink-500); min-width:36px; text-align:right; }
+.prac-topbar-row2 { display:flex; align-items:center; gap:8px; }
 .q-outer { flex:1; padding:20px 24px; display:flex; flex-direction:column; gap:14px; max-width:680px; margin:0 auto; width:100%; overflow-y:auto; }
 .q-card { background:white; border-radius:20px; border:1px solid var(--ink-100); padding:24px; box-shadow:0 2px 16px rgba(10,22,40,0.06); animation:prac-up 0.4s cubic-bezier(0.16,1,0.3,1) both; }
 @keyframes prac-up { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 .q-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:6px; }
-.q-src-tag { font-size:11px; font-weight:700; color:var(--ink-300); text-transform:uppercase; letter-spacing:0.08em; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.q-group-tag { font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; }
-.marks-tag { background:var(--sun-light); color:#92400e; font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap; }
+.q-src-tag { font-size:11px; font-weight:700; color:var(--ink-300); text-transform:uppercase; letter-spacing:0.08em; }
+.q-group-tag { font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; }
+.marks-tag { background:var(--sun-light); color:#92400e; font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; }
 .q-text { font-family:'Fraunces',serif; font-size:20px; line-height:1.55; color:var(--ink-900); margin-bottom:20px; }
 .ans-area { width:100%; min-height:110px; padding:14px 16px; border:2px solid var(--ink-100); border-radius:14px; font-family:inherit; font-size:15px; color:var(--ink-900); background:var(--ink-50); resize:none; line-height:1.65; transition:all 0.2s; }
 .ans-area:focus { outline:none; border-color:var(--brand); background:white; box-shadow:0 0 0 3px rgba(30,95,168,0.08); }
 .ans-area::placeholder { color:var(--ink-300); }
-.q-actions { display:flex; align-items:center; justify-content:space-between; margin-top:16px; gap:8px; flex-wrap:wrap; }
+.q-actions { display:flex; align-items:center; justify-content:space-between; margin-top:16px; flex-wrap:wrap; gap:8px; }
 .btn-skip-q { font-size:13px; color:var(--ink-300); background:none; border:none; cursor:pointer; font-family:inherit; font-weight:500; }
 .btn-skip-q:hover { color:var(--ink-500); }
-.btn-show-ans { background:var(--ink-50); color:var(--ink-700); border:1.5px solid var(--ink-200); padding:10px 18px; border-radius:999px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
-.btn-show-ans:hover { background:var(--ink-100); }
-.btn-check-q { background:var(--brand); color:white; border:none; padding:12px 24px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:8px; }
-.btn-check-q:hover { background:var(--brand-dark); transform:translateY(-1px); box-shadow:0 6px 20px rgba(30,95,168,0.25); }
-
-/* Answer reveal */
-.ans-reveal-card { background:#F0FDF4; border:2px solid #86EFAC; border-radius:18px; padding:20px 22px; animation:prac-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
-.ans-reveal-title { font-family:'Fraunces',serif; font-size:16px; font-weight:600; color:#15803D; margin-bottom:10px; }
-.ans-reveal-body { font-size:14px; line-height:1.8; color:#166534; white-space:pre-line; }
-.btn-next-q { background:var(--ink-900); color:white; border:none; padding:11px 22px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; margin-top:14px; display:inline-block; }
+.btn-show-ans { font-size:13px; color:var(--brand); background:var(--brand-light); border:none; padding:10px 20px; border-radius:999px; cursor:pointer; font-family:inherit; font-weight:700; transition:all 0.2s; }
+.btn-show-ans:hover { background:var(--brand); color:white; }
+.btn-next-q { background:var(--ink-900); color:white; border:none; padding:11px 22px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; }
 .btn-next-q:hover { background:var(--brand); }
-
-/* AI feedback */
-.fb-card { background:white; border-radius:18px; padding:20px 22px; border:2px solid; animation:prac-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
-.fb-card.correct { background:var(--green-light); border-color:#86efac; }
-.fb-card.partial { background:var(--sun-light); border-color:#fde68a; }
-.fb-card.wrong { background:var(--red-light); border-color:#fca5a5; }
-.fb-verdict { font-family:'Fraunces',serif; font-size:19px; font-weight:600; margin-bottom:10px; }
-.fb-card.correct .fb-verdict { color:var(--green); }
-.fb-card.partial .fb-verdict { color:#92400e; }
-.fb-card.wrong .fb-verdict { color:var(--red); }
-.fb-body { font-size:14px; line-height:1.8; color:var(--ink-700); margin-bottom:16px; }
-
-/* Loading */
+.ans-reveal { background:var(--brand-light); border:2px solid var(--brand); border-radius:16px; padding:18px 20px; animation:prac-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.ans-reveal-title { font-size:12px; font-weight:700; color:var(--brand); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; }
+.ans-reveal-body { font-size:15px; color:var(--ink-900); line-height:1.7; white-space:pre-line; }
+.gc-a { background:#EAF3DE; color:#3B6D11; }
+.gc-b { background:var(--brand-light); color:var(--brand); }
+.gc-c { background:var(--sun-light); color:#854F0B; }
+.gc-d { background:var(--red-light); color:var(--red); }
 .dot-loader { display:inline-flex; gap:4px; }
 .dot-loader span { width:6px; height:6px; background:var(--ink-500); border-radius:50%; animation:dotB 1.4s ease-in-out infinite both; }
-.dot-loader span:nth-child(1){animation-delay:-0.32s}
-.dot-loader span:nth-child(2){animation-delay:-0.16s}
-@keyframes dotB{0%,80%,100%{transform:scale(.6);opacity:.5}40%{transform:scale(1);opacity:1}}
-
-/* No questions */
-.no-qs-card { background:white; border-radius:20px; border:1px solid var(--ink-100); padding:40px 24px; text-align:center; }
-.no-qs-card .icon { font-size:48px; margin-bottom:16px; }
-.no-qs-card h3 { font-family:'Fraunces',serif; font-size:22px; font-weight:600; margin-bottom:8px; }
-.no-qs-card p { font-size:14px; color:var(--ink-500); line-height:1.6; margin-bottom:20px; }
-
-/* Chapter practice */
+.dot-loader span:nth-child(1){animation-delay:-0.32s;}
+.dot-loader span:nth-child(2){animation-delay:-0.16s;}
+@keyframes dotB { 0%,80%,100%{transform:scale(.6);opacity:.5} 40%{transform:scale(1);opacity:1} }
+.ai-dot { width:6px; height:6px; background:#22c55e; border-radius:50%; animation:aipulse 2s infinite; }
+@keyframes aipulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.5)} }
 .ch-body { display:grid; grid-template-columns:244px 1fr; flex:1; overflow:hidden; }
 .ch-sidebar { background:white; border-right:1px solid var(--ink-100); display:flex; flex-direction:column; overflow:hidden; }
 .ch-sidebar-top { padding:14px 12px 10px; border-bottom:1px solid var(--ink-100); flex-shrink:0; }
@@ -194,8 +139,8 @@
 .ch-subj-btn.on { background:var(--brand); border-color:var(--brand); color:white; }
 .ch-subj-btn:hover:not(.on) { border-color:var(--brand); color:var(--brand); }
 .ch-list { flex:1; overflow-y:auto; padding:6px 8px 16px; }
-.ch-list::-webkit-scrollbar { width:3px; }
-.ch-list::-webkit-scrollbar-thumb { background:var(--ink-200); border-radius:2px; }
+.ch-list::-webkit-scrollbar{width:3px;}
+.ch-list::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:2px;}
 .ch-list-lbl { font-size:10px; text-transform:uppercase; letter-spacing:0.1em; font-weight:700; color:var(--ink-300); padding:10px 6px 6px; }
 .ch-item { width:100%; display:flex; align-items:center; justify-content:space-between; padding:9px 8px; border-radius:8px; border:none; background:none; cursor:pointer; font-family:inherit; font-size:13px; font-weight:500; color:var(--ink-700); text-align:left; transition:all 0.15s; position:relative; }
 .ch-item:hover { background:var(--ink-50); color:var(--ink-900); }
@@ -206,38 +151,27 @@
 .ch-ctx { font-size:13px; color:var(--ink-500); display:flex; align-items:center; gap:6px; }
 .ch-ctx strong { color:var(--ink-900); font-weight:700; }
 .ch-q-area { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:14px; }
-.ch-q-area::-webkit-scrollbar { width:4px; }
-.ch-q-area::-webkit-scrollbar-thumb { background:var(--ink-200); border-radius:2px; }
 .ch-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:var(--ink-300); gap:12px; padding:40px; }
 .ch-empty-icon { font-size:48px; }
 .ch-empty-title { font-family:'Fraunces',serif; font-size:18px; font-weight:600; color:var(--ink-500); }
 .ch-empty-sub { font-size:13px; line-height:1.6; max-width:240px; }
-.ai-dot { width:6px; height:6px; background:#22c55e; border-radius:50%; animation:aipulse 2s infinite; }
-@keyframes aipulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
-
-/* Signup wall */
-.signup-wall { background:white; flex:1; display:flex; align-items:center; justify-content:center; padding:32px 24px; }
-.signup-inner { max-width:420px; width:100%; }
-.celebrate { text-align:center; margin-bottom:24px; }
-.confetti { font-size:52px; display:block; margin-bottom:12px; animation:pop 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
-@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
-.celebrate h2 { font-family:'Fraunces',serif; font-size:26px; font-weight:700; line-height:1.2; margin-bottom:8px; }
-.celebrate h2 em { font-style:italic; color:var(--brand); }
-.perks-list { background:var(--ink-50); border-radius:14px; padding:16px; margin-bottom:18px; display:flex; flex-direction:column; gap:10px; }
-.perk { display:flex; align-items:center; gap:10px; font-size:14px; color:var(--ink-700); font-weight:500; }
-.perk span:first-child { font-size:18px; flex-shrink:0; }
-.form-box { border:1.5px solid var(--ink-100); border-radius:18px; padding:24px; background:white; }
-.form-box h3 { font-family:'Fraunces',serif; font-size:18px; font-weight:700; margin-bottom:4px; }
-.form-box>p { font-size:13px; color:var(--ink-500); margin-bottom:20px; }
-.form-foot { text-align:center; margin-top:12px; font-size:11px; color:var(--ink-300); }
-.btn-continue { display:block; text-align:center; margin-top:12px; font-size:13px; color:var(--ink-300); cursor:pointer; background:none; border:none; font-family:inherit; font-weight:500; width:100%; }
-.btn-continue:hover { color:var(--ink-500); }
-
-@media (max-width:700px) {
-  .ch-body { grid-template-columns:1fr; grid-template-rows:auto 1fr; }
-  .ch-sidebar { max-height:220px; border-right:none; border-bottom:1px solid var(--ink-100); }
-  .ch-list { max-height:130px; }
-  .pp-topbar-row2 { gap:4px; }
+.fb-card { background:white; border-radius:18px; padding:20px 22px; border:2px solid; animation:prac-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.fb-card.correct { background:var(--green-light); border-color:#86efac; }
+.fb-card.partial { background:var(--sun-light); border-color:#fde68a; }
+.fb-card.wrong { background:var(--red-light); border-color:#fca5a5; }
+.fb-verdict { font-family:'Fraunces',serif; font-size:19px; font-weight:600; margin-bottom:10px; }
+.fb-card.correct .fb-verdict { color:var(--green); }
+.fb-card.partial .fb-verdict { color:#92400e; }
+.fb-card.wrong .fb-verdict { color:var(--red); }
+.fb-body { font-size:14px; line-height:1.8; color:var(--ink-700); margin-bottom:16px; }
+.btn-check-q { background:var(--brand); color:white; border:none; padding:12px 24px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.btn-check-q:hover { background:var(--brand-dark); }
+@media(max-width:700px){
+  .ch-body{grid-template-columns:1fr;grid-template-rows:auto 1fr;}
+  .ch-sidebar{max-height:220px;border-right:none;border-bottom:1px solid var(--ink-100);}
+  .ch-list{max-height:130px;}
+  .paper-hdr-card{flex-direction:column;}
+  .practice-cta{flex-direction:column;text-align:center;}
 }
 </style>
 </head>
@@ -247,59 +181,92 @@
 <!-- HOME -->
 <div class="prac-screen active" id="ps-home">
   <div style="background:white;border-bottom:1px solid var(--ink-100);padding:18px 24px 14px;flex-shrink:0;">
-    <div id="home-greeting" style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;margin-bottom:14px;line-height:1.2;">Good morning. <em style="font-style:italic;color:var(--brand);font-weight:400;">Let's practise.</em></div>
+    <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;margin-bottom:14px;line-height:1.2;">
+      Good morning. <em style="font-style:italic;color:var(--brand);font-weight:400;">Let's practise.</em>
+    </div>
     <div class="subj-toggle" id="home-subj-toggle"></div>
   </div>
   <div class="mode-grid" id="mode-grid"></div>
 </div>
 
 <!-- PAPER VIEW -->
-<div class="prac-screen" id="ps-paper-view">
-  <div class="prac-bc" id="pv-bc"></div>
-  <div class="paper-view-body" id="paper-view-body"></div>
+<div class="prac-screen" id="ps-paper">
+  <div class="prac-bc">
+    <button class="prac-bc-btn" onclick="showScreen('home')">🏠 Home</button>
+    <span class="prac-bc-sep">›</span>
+    <span class="prac-bc-btn on" id="paper-bc-label">Past Papers</span>
+  </div>
+  <div class="paper-topbar">
+    <div class="paper-selectors">
+      <div class="selector" id="sel-subj" onclick="toggleDD('subj',event)">
+        <div><span class="sel-label">Subject</span><span class="sel-value" id="sel-subj-val">Maths</span></div>
+        <span class="sel-caret">▾</span>
+        <div class="dd-menu hidden" id="dd-subj"></div>
+      </div>
+      <div class="sel-divider"></div>
+      <div class="selector" id="sel-year" onclick="toggleDD('year',event)">
+        <div><span class="sel-label">Year</span><span class="sel-value" id="sel-year-val">SEE 2081</span></div>
+        <span class="sel-caret">▾</span>
+        <div class="dd-menu hidden" id="dd-year"></div>
+      </div>
+    </div>
+    <button class="btn-practice-paper" onclick="startPracticeMode()">Practice this paper →</button>
+  </div>
+  <div class="paper-body" id="paper-body"></div>
 </div>
 
-<!-- PAPER PRACTICE (one by one) -->
-<div class="prac-screen" id="ps-pp">
-  <div class="pp-topbar">
-    <div class="pp-topbar-row1">
-      <button class="pp-back" onclick="showScreen('paper-view')">‹ Back to paper</button>
-      <div class="pp-prog-wrap">
-        <div class="pp-prog-bar"><div class="pp-prog-fill" id="pp-prog-fill" style="width:0%"></div></div>
-        <div class="pp-prog-txt" id="pp-prog-txt">0 / 0</div>
+<!-- PRACTICE MODE -->
+<div class="prac-screen" id="ps-practice">
+  <div class="prac-topbar">
+    <div class="prac-topbar-row1">
+      <button class="back-btn" onclick="showScreen('paper')">‹ Back to paper</button>
+      <div class="prog-wrap">
+        <div class="prog-bar"><div class="prog-fill" id="prac-prog-fill" style="width:0%"></div></div>
+        <div class="prog-txt" id="prac-prog-txt">0 / 0</div>
       </div>
     </div>
-    <div class="pp-topbar-row2" id="pp-selectors"></div>
+    <div class="prac-topbar-row2">
+      <div class="selector" onclick="toggleDD('prac-subj',event)" style="flex:1;">
+        <div><span class="sel-label">Subject</span><span class="sel-value" id="prac-subj-val">Maths</span></div>
+        <span class="sel-caret">▾</span>
+        <div class="dd-menu hidden" id="dd-prac-subj"></div>
+      </div>
+      <div class="sel-divider"></div>
+      <div class="selector" onclick="toggleDD('prac-year',event)" style="flex:1;">
+        <div><span class="sel-label">Year</span><span class="sel-value" id="prac-year-val">SEE 2081</span></div>
+        <span class="sel-caret">▾</span>
+        <div class="dd-menu hidden" id="dd-prac-year"></div>
+      </div>
+    </div>
   </div>
-  <div class="q-outer" id="pp-q-outer">
-    <div id="pp-loading" class="hidden" style="text-align:center;padding:40px 0;">
-      <div class="dot-loader"><span></span><span></span><span></span></div>
-      <div style="font-size:14px;color:var(--ink-500);margin-top:12px;">Checking your answer...</div>
-    </div>
-    <div class="q-card hidden" id="pp-q-card">
+  <div class="q-outer">
+    <div class="q-card hidden" id="prac-q-card">
       <div class="q-meta">
-        <div class="q-src-tag">
-          <span id="pp-q-group-tag" class="q-group-tag"></span>
-          <span id="pp-q-src"></span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="q-src-tag" id="prac-q-src"></span>
+          <span class="q-group-tag" id="prac-q-group"></span>
         </div>
-        <div class="marks-tag" id="pp-q-marks">2 marks</div>
+        <div class="marks-tag" id="prac-q-marks"></div>
       </div>
-      <div class="q-text" id="pp-q-text"></div>
+      <div class="q-text" id="prac-q-text"></div>
+      <textarea class="ans-area" id="prac-ans" placeholder="Write your answer here...&#10;&#10;Show your working — just like in the real SEE exam."></textarea>
       <div class="q-actions">
-        <button class="btn-skip-q" onclick="PPQ.skip()">Skip →</button>
-        <button class="btn-show-ans" onclick="PPQ.showAnswer()">Show answer</button>
+        <button class="btn-skip-q" onclick="PRAC.skip()">Skip →</button>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn-show-ans" id="prac-show-btn" onclick="PRAC.showAnswer()">Show answer</button>
+          <button class="btn-next-q hidden" id="prac-next-btn" onclick="PRAC.next()">Next →</button>
+        </div>
       </div>
     </div>
-    <div class="ans-reveal-card hidden" id="pp-ans-card">
-      <div class="ans-reveal-title">✅ Model answer</div>
-      <div class="ans-reveal-body" id="pp-ans-body"></div>
-      <button class="btn-next-q" onclick="PPQ.next()">Next question →</button>
+    <div class="ans-reveal hidden" id="prac-reveal">
+      <div class="ans-reveal-title">✓ Correct answer</div>
+      <div class="ans-reveal-body" id="prac-reveal-body"></div>
     </div>
-    <div class="no-qs-card hidden" id="pp-no-qs">
-      <div class="icon">📋</div>
-      <h3>Questions coming soon</h3>
-      <p>We're adding real SEE past paper questions. Check back soon, or try Chapter Practice.</p>
-      <button class="btn btn-blue" onclick="showScreen('home')">← Back to home</button>
+    <div class="hidden" id="prac-no-qs" style="text-align:center;padding:48px 24px;background:white;border-radius:16px;border:1px solid var(--ink-100);">
+      <div style="font-size:48px;margin-bottom:16px;">📋</div>
+      <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:8px;">Questions coming soon</div>
+      <p style="font-size:14px;color:var(--ink-500);margin-bottom:20px;">This paper is being prepared. Try another year or subject.</p>
+      <button class="btn btn-blue" onclick="showScreen('home')">← Back to practice</button>
     </div>
   </div>
 </div>
@@ -322,9 +289,9 @@
     <div class="ch-main">
       <div class="ch-topbar">
         <div class="ch-ctx"><span id="ch-ctx-subj">Maths</span><span style="color:var(--ink-200);">›</span><strong id="ch-ctx-ch">Choose a chapter</strong></div>
-        <div class="pp-prog-wrap">
-          <div class="pp-prog-bar" style="width:80px;"><div class="pp-prog-fill" id="ch-prog-fill" style="width:0%"></div></div>
-          <div class="pp-prog-txt" id="ch-prog-txt">0 / 5</div>
+        <div class="prog-wrap">
+          <div class="prog-bar"><div class="prog-fill" id="ch-prog-fill" style="width:0%"></div></div>
+          <div class="prog-txt" id="ch-prog-txt">0 / 5</div>
         </div>
       </div>
       <div class="ch-q-area" id="ch-q-area">
@@ -339,18 +306,18 @@
         </div>
         <div class="q-card hidden" id="ch-q-card">
           <div class="q-meta">
-            <div class="q-src-tag"><span id="ch-q-src">Algebra · Maths</span></div>
-            <div class="marks-tag" id="ch-q-marks">2 marks</div>
+            <div style="display:flex;align-items:center;gap:6px;"><div class="ai-dot"></div><span class="q-src-tag" id="ch-q-src"></span></div>
+            <div class="marks-tag" id="ch-q-marks"></div>
           </div>
           <div class="q-text" id="ch-q-text"></div>
           <textarea class="ans-area" id="ch-ans" placeholder="Write your answer here...&#10;&#10;Show your working — just like in the real SEE exam."></textarea>
           <div class="q-actions">
             <button class="btn-skip-q" onclick="CP.skip()">Skip →</button>
-            <button class="btn-check-q" onclick="CP.check()">Check answer <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m-3-3 3 3-3 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="btn-check-q" onclick="CP.check()">Check answer →</button>
           </div>
         </div>
         <div class="fb-card hidden" id="ch-fb-card">
-          <div class="q-src-tag" style="margin-bottom:10px;"><div class="ai-dot"></div><span style="font-size:11px;font-weight:700;color:var(--ink-300);text-transform:uppercase;letter-spacing:0.08em;">AI Feedback</span></div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;"><div class="ai-dot"></div><span style="font-size:11px;font-weight:700;color:var(--ink-300);text-transform:uppercase;letter-spacing:0.08em;">AI Feedback</span></div>
           <div class="fb-verdict" id="ch-fb-verdict"></div>
           <div class="fb-body" id="ch-fb-body"></div>
           <button class="btn-next-q" id="ch-btn-next" onclick="CP.next()">Next question →</button>
@@ -360,30 +327,12 @@
   </div>
 </div>
 
-<!-- SIGNUP WALL -->
-<div class="prac-screen" id="ps-signup">
-  <div class="signup-wall">
-    <div class="signup-inner">
-      <div class="celebrate"><span class="confetti">🎉</span><h2>You're doing great!<br><em>Keep going.</em></h2><p style="margin-top:8px;">Sign up free to unlock more questions and save your progress.</p></div>
-      <div class="perks-list" id="perks-list"></div>
-      <div class="form-box">
-        <h3>Create your free account</h3><p>30 seconds. No credit card. No spam.</p>
-        <div class="field"><label>Your full name</label><input type="text" class="input" placeholder="Sita Sharma"></div>
-        <div class="field"><label>Email</label><input type="email" class="input" placeholder="sita@gmail.com"></div>
-        <div class="field"><label>Parent email <span style="font-size:11px;color:var(--ink-300);font-weight:400;">optional</span></label><input type="email" class="input" placeholder="mum@gmail.com"></div>
-        <button class="btn btn-blue btn-block" style="margin-top:4px;" onclick="showScreen('home')">Create free account →</button>
-        <div class="form-foot">No credit card · No spam · Cancel anytime</div>
-      </div>
-      <button class="btn-continue" onclick="showScreen('home')">Continue without account →</button>
-    </div>
-  </div>
-</div>
-
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
 <script>
 /* ============================================================
-   ① CONFIG — change settings here only
+   CONFIG — change availableYears to unlock a year
+   Move year from lockedYears to availableYears when approved
    ============================================================ */
 const CONFIG = {
   sessionLength: 5,
@@ -391,555 +340,423 @@ const CONFIG = {
     { key:'maths',   label:'Maths',   icon:'🧮' },
     { key:'science', label:'Science', icon:'🔬' },
   ],
+  availableYears: [2081],
+  lockedYears:    [2080, 2079, 2078, 2077, 2076, 2075],
   modes: [
-    { key:'papers',  title:'Past Papers',      desc:'Practice real SEE questions from past years. The closest thing to the actual exam.',  icon:'📜', bg:'blue', tag:'✓ Free — no signup needed', on:true  },
-    { key:'chapter', title:'Chapter Practice', desc:'Pick a chapter and drill it. Perfect for targeted revision before a test.',           icon:'📚', bg:'gold', tag:'✓ Free — all chapters',       on:true  },
-    { key:'mock',    title:'Mock Test',        desc:'Full 3-hour SEE simulation. Timed. Marked. Just like the real exam day.',            icon:'⏱️', bg:'soft', tag:'Coming soon',                  on:false },
+    { key:'papers',  title:'Past Papers',      desc:'Practice real SEE questions from past years. The closest thing to the actual exam.', icon:'📜', bg:'blue', tag:{txt:'✓ SEE 2081 available', cls:'badge-sun'}, on:true },
+    { key:'chapter', title:'Chapter Practice', desc:'Pick a chapter and drill it. Perfect for targeted revision before a test.',           icon:'📚', bg:'gold', tag:{txt:'Coming soon',  cls:'badge-blue'}, on:false },
+    { key:'mock',    title:'Mock Test',        desc:'Full 3-hour SEE simulation. Timed. Marked. Just like the real exam day.',           icon:'⏱️', bg:'soft', tag:{txt:'Coming soon',             cls:'badge-blue'}, on:false },
   ],
-  perks:[
-    {icon:'📄',txt:'Real SEE past paper questions — completely free'},
-    {icon:'📈',txt:'Save your progress and see improvement over time'},
-    {icon:'📧',txt:'Weekly progress report sent to your parents'},
-    {icon:'🔥',txt:'Daily streak to keep you motivated'},
-  ],
+  groups: {
+    A: { label:'Group A', color:'#639922', tagClass:'gc-a', desc:'Very short answers' },
+    B: { label:'Group B', color:'#1E5FA8', tagClass:'gc-b', desc:'Short answers with working' },
+    C: { label:'Group C', color:'#BA7517', tagClass:'gc-c', desc:'Full working required' },
+    D: { label:'Group D', color:'#A32D2D', tagClass:'gc-d', desc:'Hardest — full solutions' },
+  },
 };
 
 /* ============================================================
-   ② PAPERS_CONTENT
-   status: 'live' = visible | 'draft' = locked (coming soon)
-   groups: add as many as the real paper has — fully dynamic
-   Each question: n=number, q=question text, a=model answer, m=marks
-   group color classes: grp-a (green) grp-b (blue) grp-c (amber) grp-d (red) grp-x (gray)
+   PAPERS — Hardcoded SEE 2081 Maths + Science
+   Replace with database fetch when ready
    ============================================================ */
-const PAPERS_CONTENT = [
-  {
-    subj:'maths', year:2081, status:'live', totalMarks:75, duration:'3 hours',
-    groups:[
-      { name:'Group A', desc:'11 questions · 1 mark each', marks:11, color:'grp-a', qs:[
-        {n:1,  q:'Write the formula for finding the volume of a cylinder.',                                                             a:'V = πr²h\nwhere r = radius, h = height of the cylinder.',                                                                                                                                                                m:1},
-        {n:2,  q:'If A = {1,2,3} and B = {3,4,5}, write A ∩ B.',                                                                       a:'A ∩ B = {3}',                                                                                                                                                                                                            m:1},
-        {n:3,  q:'What is the value of sin 30°?',                                                                                       a:'sin 30° = 1/2 = 0.5',                                                                                                                                                                                                    m:1},
-        {n:4,  q:'Write the quadratic formula.',                                                                                        a:'x = (−b ± √(b²−4ac)) / 2a',                                                                                                                                                                                             m:1},
-        {n:5,  q:'If the mean of 4 numbers is 10, what is their sum?',                                                                  a:'Sum = Mean × Count = 10 × 4 = 40',                                                                                                                                                                                      m:1},
-        {n:6,  q:'What is the probability of getting a head when a fair coin is tossed?',                                               a:'P(head) = 1/2',                                                                                                                                                                                                          m:1},
-        {n:7,  q:'Write the slope-intercept form of a straight line.',                                                                  a:'y = mx + c\nwhere m = slope, c = y-intercept.',                                                                                                                                                                          m:1},
-        {n:8,  q:'What is the determinant of the matrix [[3,1],[2,4]]?',                                                                a:'det = (3×4) − (1×2) = 12 − 2 = 10',                                                                                                                                                                                     m:1},
-        {n:9,  q:'The sum of interior angles of a triangle is ___°.',                                                                   a:'180°',                                                                                                                                                                                                                   m:1},
-        {n:10, q:'Factorise: x² − 9.',                                                                                                  a:'x² − 9 = (x + 3)(x − 3)',                                                                                                                                                                                               m:1},
-        {n:11, q:'Write the distance formula between two points (x₁,y₁) and (x₂,y₂).',                                                 a:'d = √[(x₂−x₁)² + (y₂−y₁)²]',                                                                                                                                                                                           m:1},
-      ]},
-      { name:'Group B', desc:'8 questions · 2 marks each', marks:16, color:'grp-b', qs:[
-        {n:12, q:'Solve: 5x − 3 = 2x + 9. Show your working.',                                                                         a:'5x − 2x = 9 + 3\n3x = 12\nx = 4',                                                                                                                                                                                      m:2},
-        {n:13, q:'Find the area of a circle with radius 7 cm. (Use π = 22/7)',                                                          a:'Area = πr² = (22/7) × 7 × 7 = 22 × 7 = 154 cm²',                                                                                                                                                                       m:2},
-        {n:14, q:'If sin θ = 3/5, find cos θ.',                                                                                         a:'sin²θ + cos²θ = 1\n(3/5)² + cos²θ = 1\ncos²θ = 1 − 9/25 = 16/25\ncos θ = 4/5',                                                                                                                                        m:2},
-        {n:15, q:'The mean of 5 numbers is 12. Four of the numbers are 10, 14, 8 and 16. Find the fifth number.',                       a:'Sum of 5 numbers = 5 × 12 = 60\nSum of 4 known = 10+14+8+16 = 48\nFifth number = 60 − 48 = 12',                                                                                                                         m:2},
-        {n:16, q:'Find the midpoint of the line joining A(2,6) and B(8,4).',                                                            a:'Midpoint = ((2+8)/2, (6+4)/2) = (10/2, 10/2) = (5, 5)',                                                                                                                                                                 m:2},
-        {n:17, q:'A shopkeeper bought a book for Rs 250 and sold it for Rs 300. Find the profit percentage.',                           a:'Profit = 300 − 250 = Rs 50\nProfit% = (Profit/CP) × 100 = (50/250) × 100 = 20%',                                                                                                                                        m:2},
-        {n:18, q:'In a class of 30 students, 18 play cricket and 15 play football. 8 play both. How many play neither?',                a:'n(C ∪ F) = n(C) + n(F) − n(C ∩ F) = 18 + 15 − 8 = 25\nStudents playing neither = 30 − 25 = 5',                                                                                                                          m:2},
-        {n:19, q:'Add the matrices A = [[1,2],[3,4]] and B = [[5,6],[7,8]].',                                                           a:'A + B = [[1+5, 2+6],[3+7, 4+8]] = [[6, 8],[10, 12]]',                                                                                                                                                                   m:2},
-      ]},
-      { name:'Group C', desc:'5 questions · 4 marks each', marks:20, color:'grp-c', qs:[
-        {n:20, q:'A shopkeeper bought 50 kg of rice at Rs 60 per kg and sold it at Rs 75 per kg. Find his profit percentage and total profit amount.',
-                                                                                                                                        a:'Cost price = 50 × 60 = Rs 3,000\nSelling price = 50 × 75 = Rs 3,750\nProfit = 3,750 − 3,000 = Rs 750\nProfit% = (750 / 3000) × 100 = 25%',                                                                               m:4},
-        {n:21, q:'Find the volume and total surface area of a cylinder with radius 5 cm and height 10 cm. (Use π = 3.14)',              a:'Volume = πr²h = 3.14 × 25 × 10 = 785 cm³\nTotal Surface Area = 2πr(r + h) = 2 × 3.14 × 5 × (5+10) = 31.4 × 15 = 471 cm²',                                                                                           m:4},
-        {n:22, q:'Solve the quadratic equation x² − 5x + 6 = 0 using factorisation. Verify your answer.',                              a:'x² − 5x + 6 = 0\n(x − 2)(x − 3) = 0\nx = 2 or x = 3\nVerification:\nFor x=2: (2)²−5(2)+6 = 4−10+6 = 0 ✓\nFor x=3: (3)²−5(3)+6 = 9−15+6 = 0 ✓',                                                                      m:4},
-        {n:23, q:'Find the compound interest on Rs 8,000 at 10% per annum for 2 years, compounded annually.',                          a:'Year 1 interest = 8000 × 10/100 = Rs 800\nAmount after Year 1 = Rs 8,800\nYear 2 interest = 8800 × 10/100 = Rs 880\nTotal CI = 800 + 880 = Rs 1,680',                                                                   m:4},
-        {n:24, q:'In triangle ABC, angle A = 60° and angle B = 70°. Find angle C. Also verify that the exterior angle of a triangle equals the sum of the two non-adjacent interior angles.',
-                                                                                                                                        a:'Angle C = 180° − 60° − 70° = 50°\nExterior angle at C = 180° − 50° = 130°\nSum of non-adjacent angles = A + B = 60° + 70° = 130° ✓',                                                                                   m:4},
-      ]},
-      { name:'Group D', desc:'2 questions · 5 marks each', marks:10, color:'grp-d', qs:[
-        {n:25, q:'Prove that the angle subtended by an arc at the centre of a circle is double the angle subtended by it at any point on the remaining part of the circle. Support with a neat figure description.',
-                                                                                                                                        a:'Given: Circle with centre O. Arc PQ subtends ∠POQ at centre and ∠PRQ at point R on major arc.\nTo prove: ∠POQ = 2∠PRQ\nConstruction: Join RO and extend to S.\nProof:\nIn △OPR: OP = OR (radii) → ∠OPR = ∠ORP\nExterior angle ∠POS = ∠OPR + ∠ORP = 2∠ORP\nSimilarly, ∠QOS = 2∠ORQ\n∴ ∠POQ = ∠POS + ∠QOS = 2(∠ORP + ∠ORQ) = 2∠PRQ [Proved]',                                                          m:5},
-        {n:26, q:'A survey of 100 students found: 60 like Maths, 50 like Science, 30 like both. Draw a Venn diagram and find: (a) students who like only Maths, (b) only Science, (c) neither subject.',
-                                                                                                                                        a:'Using Venn diagram with two overlapping circles:\nOnly Maths = 60 − 30 = 30\nOnly Science = 50 − 30 = 20\nBoth = 30\nTotal = 30 + 20 + 30 = 80\n(a) Only Maths = 30\n(b) Only Science = 20\n(c) Neither = 100 − 80 = 20',                                                                                   m:5},
-      ]},
-    ]
+const PAPERS = {
+  maths: {
+    2081: {
+      title:'Compulsory Mathematics', totalMarks:75, duration:'3 hrs',
+      groups: [
+        { key:'A', totalMarks:11, questions:[
+          {n:1,  q:'Write the formula to find the curved surface area of a cylinder.',                                         a:'Curved Surface Area = 2πrh\n(r = radius, h = height)', m:1},
+          {n:2,  q:'If A = {2,4,6} and B = {4,6,8}, find A ∩ B.',                                                            a:'A ∩ B = {4, 6}', m:1},
+          {n:3,  q:'What is the value of sin 30°?',                                                                           a:'sin 30° = 1/2 = 0.5', m:1},
+          {n:4,  q:'Write the quadratic formula for solving ax² + bx + c = 0.',                                               a:'x = (−b ± √(b²−4ac)) / 2a', m:1},
+          {n:5,  q:'What is the probability of getting a head when a fair coin is tossed?',                                   a:'P(Head) = 1/2', m:1},
+          {n:6,  q:'Find the mean of: 4, 8, 12, 16, 20.',                                                                    a:'Mean = (4+8+12+16+20)/5 = 60/5 = 12', m:1},
+          {n:7,  q:'Write the slope-intercept form of a straight line.',                                                      a:'y = mx + c\n(m = slope, c = y-intercept)', m:1},
+          {n:8,  q:'Find the determinant of matrix A = [[3,1],[2,4]].',                                                       a:'det(A) = (3×4) − (1×2) = 12 − 2 = 10', m:1},
+          {n:9,  q:'State the Pythagoras theorem.',                                                                           a:'In a right-angled triangle: c² = a² + b²\n(c = hypotenuse)', m:1},
+          {n:10, q:'Write the formula for the area of a triangle using base and height.',                                     a:'Area = ½ × base × height', m:1},
+          {n:11, q:'What is the sum of interior angles of a quadrilateral?',                                                  a:'360°', m:1},
+        ]},
+        { key:'B', totalMarks:16, questions:[
+          {n:12, q:'Solve: 3x + 7 = 22. Show your working.',                                                                  a:'3x + 7 = 22\n3x = 15\nx = 5', m:2},
+          {n:13, q:'Find the area of a circle with radius 14 cm. (Use π = 22/7)',                                             a:'Area = πr² = (22/7) × 14² = (22/7) × 196 = 616 cm²', m:2},
+          {n:14, q:'Factorise: x² − 7x + 12',                                                                                a:'x² − 7x + 12 = (x − 3)(x − 4)', m:2},
+          {n:15, q:'If P = {1,2,3,4,5} and Q = {3,4,5,6,7}, find P ∪ Q and P ∩ Q.',                                         a:'P ∪ Q = {1,2,3,4,5,6,7}\nP ∩ Q = {3,4,5}', m:2},
+          {n:16, q:'Find the simple interest on Rs 8,000 at 10% per annum for 2 years.',                                     a:'SI = (P × R × T)/100 = (8000 × 10 × 2)/100 = Rs 1,600', m:2},
+          {n:17, q:'The angles of a triangle are in ratio 2:3:4. Find each angle.',                                          a:'2x+3x+4x = 180°\n9x = 180°, x = 20°\nAngles: 40°, 60°, 80°', m:2},
+          {n:18, q:'Find the distance between points A(1,2) and B(4,6).',                                                    a:'d = √[(4−1)² + (6−2)²] = √[9+16] = √25 = 5 units', m:2},
+          {n:19, q:'A bag has 5 red and 3 blue balls. What is the probability of picking a blue ball?',                      a:'P(blue) = 3/(5+3) = 3/8', m:2},
+        ]},
+        { key:'C', totalMarks:20, questions:[
+          {n:20, q:'A shopkeeper bought a bicycle for Rs 12,000 and spent Rs 500 on repairs. He sold it for Rs 15,000. Find his profit percentage.',
+                                                                                                                              a:'Cost price = 12,000 + 500 = Rs 12,500\nProfit = 15,000 − 12,500 = Rs 2,500\nProfit% = (2,500/12,500) × 100 = 20%', m:4},
+          {n:21, q:'Solve the quadratic equation: x² − 5x + 6 = 0 using factorisation.',                                    a:'x² − 5x + 6 = 0\n(x − 2)(x − 3) = 0\nx = 2 or x = 3', m:4},
+          {n:22, q:'The diameter of a cylinder is 10 cm and height is 14 cm. Find total surface area and volume. (π = 22/7)',a:'r = 5 cm, h = 14 cm\nTSA = 2πr(r+h) = 2×(22/7)×5×19 ≈ 597 cm²\nVolume = πr²h = (22/7)×25×14 = 1,100 cm³', m:4},
+          {n:23, q:'In a survey of 100 students, 60 like Maths, 50 like Science, 30 like both. Find how many like neither.',  a:'n(M∪S) = 60+50−30 = 80\nNeither = 100−80 = 20 students', m:4},
+          {n:24, q:'Find the mean, median and mode of: 3, 7, 5, 3, 9, 7, 3, 5, 7, 3',                                       a:'Sorted: 3,3,3,3,5,5,7,7,7,9\nMean = 52/10 = 5.2\nMedian = (5+5)/2 = 5\nMode = 3 (appears 4 times)', m:4},
+        ]},
+        { key:'D', totalMarks:10, questions:[
+          {n:25, q:'Prove that the angle subtended by an arc at the centre is double the angle subtended at any point on the remaining part of the circle.',
+                                                                                                                              a:'Given: Arc PQ, centre O, point R on major arc.\nTo prove: ∠POQ = 2∠PRQ\nProof: Join RO and extend to A.\nIn △OPR: OP=OR (radii), ∠OPR=∠ORP\n∠POR = 2∠ORP (exterior angle)\nSimilarly ∠QOR = 2∠ORQ\n∴ ∠POQ = ∠POR+∠QOR = 2∠ORP+2∠ORQ = 2∠PRQ ✓', m:5},
+          {n:26, q:'A ladder 13m leans against a wall. Foot is 5m from wall. (a) Find height reached. (b) Foot pulled 3m further — find new height. (c) How far does top slide down?',
+                                                                                                                              a:'(a) h² + 5² = 13² → h² = 144 → h = 12m\n(b) New base = 8m\nh² = 169−64 = 105 → h = √105 ≈ 10.25m\n(c) Slide = 12−10.25 = 1.75m', m:5},
+        ]},
+      ]
+    }
   },
-  {
-    subj:'science', year:2081, status:'live', totalMarks:75, duration:'3 hours',
-    groups:[
-      { name:'Group A', desc:'11 questions · 1 mark each', marks:11, color:'grp-a', qs:[
-        {n:1,  q:"Write Ohm's Law.",                                                                                                    a:'V = IR\nV = voltage (volts), I = current (amperes), R = resistance (ohms).',                                                                                                                                                   m:1},
-        {n:2,  q:'Name the process by which plants make their own food.',                                                               a:'Photosynthesis',                                                                                                                                                                                                         m:1},
-        {n:3,  q:'What is the SI unit of force?',                                                                                       a:'Newton (N)',                                                                                                                                                                                                              m:1},
-        {n:4,  q:'Name the acid found in the human stomach.',                                                                           a:'Hydrochloric acid (HCl)',                                                                                                                                                                                                m:1},
-        {n:5,  q:'What does DNA stand for?',                                                                                            a:'Deoxyribonucleic Acid',                                                                                                                                                                                                  m:1},
-        {n:6,  q:'Write the chemical formula for water.',                                                                               a:'H₂O',                                                                                                                                                                                                                    m:1},
-        {n:7,  q:'What is the approximate speed of light in vacuum?',                                                                   a:'3 × 10⁸ m/s (approximately 300,000 km/s)',                                                                                                                                                                               m:1},
-        {n:8,  q:'Name the organ that pumps blood throughout the human body.',                                                          a:'The heart',                                                                                                                                                                                                              m:1},
-        {n:9,  q:'What is the pH value of a neutral solution?',                                                                         a:'pH = 7',                                                                                                                                                                                                                 m:1},
-        {n:10, q:"State Newton's first law of motion in one sentence.",                                                                 a:'An object at rest stays at rest, and an object in motion continues in motion, unless acted upon by an unbalanced external force.',                                                                                          m:1},
-        {n:11, q:'Name the gas released by plants during photosynthesis.',                                                              a:'Oxygen (O₂)',                                                                                                                                                                                                            m:1},
-      ]},
-      { name:'Group B', desc:'8 questions · 2 marks each', marks:16, color:'grp-b', qs:[
-        {n:12, q:'State the two laws of reflection of light.',                                                                          a:'1st Law: The incident ray, reflected ray, and normal at the point of incidence all lie in the same plane.\n2nd Law: The angle of incidence equals the angle of reflection (∠i = ∠r).',                                          m:2},
-        {n:13, q:'What is the difference between speed and velocity? Give one example of each.',                                        a:'Speed: Distance travelled per unit time (scalar quantity). Example: 60 km/h.\nVelocity: Displacement per unit time in a specific direction (vector). Example: 60 km/h towards north.',                               m:2},
-        {n:14, q:'What happens when an acid reacts with a base? Write the general word equation.',                                      a:'Acid + Base → Salt + Water (Neutralisation reaction)\nExample: Hydrochloric acid + Sodium hydroxide → Sodium chloride + Water',                                                                                      m:2},
-        {n:15, q:'Name the four chambers of the human heart and state the function of the left ventricle.',                            a:'Four chambers: Right atrium, Right ventricle, Left atrium, Left ventricle.\nLeft ventricle: Pumps oxygenated blood to all parts of the body through the aorta.',                                                            m:2},
-        {n:16, q:'Write the word equation for photosynthesis.',                                                                         a:'Carbon dioxide + Water → (sunlight, chlorophyll) → Glucose + Oxygen\nCO₂ + H₂O → C₆H₁₂O₆ + O₂',                                                                                                                   m:2},
-        {n:17, q:'What is the greenhouse effect? Name two greenhouse gases.',                                                           a:'The greenhouse effect is the trapping of solar heat by gases in the atmosphere, warming the Earth\'s surface.\nGreenhouse gases: Carbon dioxide (CO₂) and Methane (CH₄).',                                             m:2},
-        {n:18, q:'Differentiate between exothermic and endothermic reactions with one example each.',                                   a:'Exothermic: Releases heat energy. Example: Burning of wood or coal.\nEndothermic: Absorbs heat energy from surroundings. Example: Dissolving ammonium chloride in water.',                                           m:2},
-        {n:19, q:"State Newton's second law of motion and write its mathematical form.",                                                a:'The rate of change of momentum of an object is directly proportional to the applied force and acts in the direction of force.\nMathematically: F = ma (Force = mass × acceleration)',                                      m:2},
-      ]},
-      { name:'Group C', desc:'5 questions · 4 marks each', marks:20, color:'grp-c', qs:[
-        {n:20, q:'Three resistors of 4Ω, 6Ω and 12Ω are connected in parallel. Find: (a) total resistance, (b) total current if the voltage is 12V.',
-                                                                                                                                        a:'(a) 1/R = 1/4 + 1/6 + 1/12 = 3/12 + 2/12 + 1/12 = 6/12\nR_total = 12/6 = 2Ω\n(b) I = V/R = 12/2 = 6 Amperes',                                                                                                    m:4},
-        {n:21, q:'Explain the process of digestion from the mouth to the small intestine.',                                             a:'Mouth: Food chewed; saliva contains amylase which breaks down starch into sugars.\nOesophagus: Food travels to stomach by peristalsis.\nStomach: HCl creates acidic environment; pepsin breaks down proteins.\nSmall intestine: Bile from liver emulsifies fats; pancreatic enzymes complete digestion; nutrients absorbed through villi into blood.',  m:4},
-        {n:22, q:'A ray of light travels from air into glass at 45°. The refractive index of glass is 1.5. Find the angle of refraction using Snell\'s Law.',
-                                                                                                                                        a:"Snell's Law: n₁ sin θ₁ = n₂ sin θ₂\n1 × sin 45° = 1.5 × sin θ₂\nsin θ₂ = 0.7071 / 1.5 = 0.4714\nθ₂ = sin⁻¹(0.4714) ≈ 28.1°",                                                                                          m:4},
-        {n:23, q:'What is biodiversity? Explain three reasons why conserving biodiversity is important.',                               a:'Biodiversity is the variety of all living organisms (plants, animals, microbes) in a given area or on Earth.\nImportance:\n1. Ecological balance — maintains food chains and ecosystems.\n2. Medicine — many plants are sources of life-saving drugs.\n3. Agriculture — biodiversity supports pollination and maintains soil health for crop growth.',  m:4},
-        {n:24, q:'Describe the carbon cycle. How do human activities disrupt it?',                                                      a:'Carbon cycle: Plants absorb CO₂ for photosynthesis → animals eat plants, respiring and releasing CO₂ → dead organisms decomposed by bacteria, releasing CO₂ → carbon returns to atmosphere.\nHuman disruption: Burning fossil fuels releases extra CO₂. Deforestation reduces CO₂ absorption. Both increase greenhouse gases, causing global warming.',  m:4},
-      ]},
-      { name:'Group D', desc:'2 questions · 5 marks each', marks:10, color:'grp-d', qs:[
-        {n:25, q:'Describe the structure of the human kidney and explain how it filters blood. How does it maintain water balance?',
-                                                                                                                                        a:'Structure: Bean-shaped, ~10cm long. Contains millions of nephrons. Each nephron has: glomerulus (filtering knot), Bowman\'s capsule, loop of Henle, collecting duct.\nFunction: Filters ~180L blood daily. Removes urea, creatinine, excess salts. Reabsorbs glucose and needed water.\nWater balance (osmoregulation):\n- If blood too concentrated → more water reabsorbed → small amount of concentrated urine.\n- If blood too dilute → less water reabsorbed → large amount of dilute urine.',  m:5},
-        {n:26, q:'With a circuit diagram description, explain how you would verify the relationship between current and voltage for a resistor. State your expected conclusion.',
-                                                                                                                                        a:"Circuit: Battery → ammeter (series) → resistor → back to battery. Voltmeter connected in parallel across resistor. Rheostat to vary current.\nProcedure: Adjust rheostat to different positions. At each position, record voltmeter reading (V) and ammeter reading (I).\nResults table: As V increases, I increases proportionally.\nGraph: Plot V (x-axis) vs I (y-axis) → straight line through origin.\nConclusion: V ∝ I, confirming Ohm's Law. The slope of the graph = resistance R.",  m:5},
-      ]},
-    ]
-  },
-  { subj:'maths',   year:2080, status:'draft', totalMarks:75, duration:'3 hours', groups:[] },
-  { subj:'science', year:2080, status:'draft', totalMarks:75, duration:'3 hours', groups:[] },
-  { subj:'maths',   year:2079, status:'draft', totalMarks:75, duration:'3 hours', groups:[] },
-  { subj:'science', year:2079, status:'draft', totalMarks:75, duration:'3 hours', groups:[] },
-];
+  science: {
+    2081: {
+      title:'Compulsory Science', totalMarks:75, duration:'3 hrs',
+      groups: [
+        { key:'A', totalMarks:11, questions:[
+          {n:1,  q:"State Ohm's Law.",                                                                                        a:'The current through a conductor is directly proportional to the voltage across it (at constant temperature). V = IR', m:1},
+          {n:2,  q:'What is the SI unit of electric current?',                                                                a:'Ampere (A)', m:1},
+          {n:3,  q:'Write the word equation for photosynthesis.',                                                             a:'Carbon dioxide + Water → (sunlight/chlorophyll) → Glucose + Oxygen', m:1},
+          {n:4,  q:"State Newton's First Law of Motion.",                                                                     a:'An object stays at rest or in uniform motion unless acted on by an external force (Law of Inertia).', m:1},
+          {n:5,  q:'Name the four chambers of the human heart.',                                                              a:'Right Atrium, Left Atrium, Right Ventricle, Left Ventricle', m:1},
+          {n:6,  q:'What is the chemical formula of water?',                                                                  a:'H₂O', m:1},
+          {n:7,  q:'Define refraction of light.',                                                                             a:'Refraction is the bending of light as it passes from one medium to another of different optical density.', m:1},
+          {n:8,  q:'What is an acid? Give one example.',                                                                      a:'An acid produces H⁺ ions in water. Example: Hydrochloric acid (HCl)', m:1},
+          {n:9,  q:'Name the planet closest to the Sun.',                                                                     a:'Mercury', m:1},
+          {n:10, q:'What is the function of stomata in plants?',                                                              a:'Stomata allow gaseous exchange (CO₂ in, O₂ out) and release water vapour during transpiration.', m:1},
+          {n:11, q:'Define ecosystem.',                                                                                       a:'An ecosystem is a community of living organisms interacting with each other and their non-living environment in a specific area.', m:1},
+        ]},
+        { key:'B', totalMarks:16, questions:[
+          {n:12, q:'State the two laws of reflection of light.',                                                              a:'1st Law: Incident ray, reflected ray and normal are in the same plane.\n2nd Law: Angle of incidence = Angle of reflection (∠i = ∠r)', m:2},
+          {n:13, q:'Three resistors 4Ω, 6Ω and 12Ω are connected in parallel. Find total resistance.',                      a:'1/R = 1/4 + 1/6 + 1/12 = 3/12 + 2/12 + 1/12 = 6/12\nR = 2Ω', m:2},
+          {n:14, q:'Differentiate between exothermic and endothermic reactions with one example each.',                      a:'Exothermic: Releases heat. Example: Combustion (burning wood).\nEndothermic: Absorbs heat. Example: Photosynthesis.', m:2},
+          {n:15, q:'What is the difference between speed and velocity?',                                                     a:'Speed: Distance/time — scalar (no direction).\nVelocity: Displacement/time — vector (has direction).', m:2},
+          {n:16, q:'Explain neutralisation with an example.',                                                                 a:'Acid + Base → Salt + Water\nExample: HCl + NaOH → NaCl + H₂O', m:2},
+          {n:17, q:'What is transpiration? Give two reasons why it is important.',                                           a:'Transpiration: Loss of water vapour through stomata.\nImportance: (1) Helps water move up the plant. (2) Cools the plant.', m:2},
+          {n:18, q:'Name the parts of the human respiratory system in order from nose to lungs.',                            a:'Nose → Nasal cavity → Pharynx → Larynx → Trachea → Bronchi → Bronchioles → Alveoli', m:2},
+          {n:19, q:'What is biodiversity? Give two reasons why it is important.',                                            a:'Biodiversity: variety of living organisms in an area.\nImportance: (1) Maintains ecological balance. (2) Source of food and medicine.', m:2},
+        ]},
+        { key:'C', totalMarks:20, questions:[
+          {n:20, q:'A current of 2A flows through a wire of resistance 15Ω. (a) Find voltage. (b) Find power. (c) Find energy in 2 hours.',
+                                                                                                                              a:'(a) V = IR = 2×15 = 30V\n(b) P = VI = 30×2 = 60W\n(c) E = P×t = 60×7200 = 432,000 J = 432 kJ', m:4},
+          {n:21, q:'Explain digestion in the human stomach. Name the enzymes involved.',                                     a:'Gastric glands secrete gastric juice (HCl + enzymes).\nHCl: kills bacteria, creates acid environment.\nPepsin: breaks proteins into peptides.\nRennin (children): curdles milk.\nResult: chyme passed to small intestine.', m:4},
+          {n:22, q:'What is the greenhouse effect? Name four greenhouse gases and explain how human activities increase global warming.',
+                                                                                                                              a:'Greenhouse effect: Atmospheric gases trap heat, keeping Earth warm.\nGases: CO₂, CH₄, N₂O, water vapour\nHuman causes:\n1. Burning fossil fuels → more CO₂\n2. Deforestation → less CO₂ absorbed\n3. Industry → greenhouse gas emissions\n4. Agriculture → methane from livestock', m:4},
+          {n:23, q:'Draw and label a diagram of the human eye. Explain how we see near and distant objects.',                a:'Diagram: cornea, iris, pupil, lens, retina, optic nerve.\n\nDistant objects: Ciliary muscles relax → lens thins → longer focal length → image on retina.\n\nNear objects: Ciliary muscles contract → lens thickens → shorter focal length → image on retina.\n\nThis adjustment is called accommodation.', m:4},
+          {n:24, q:'A body of mass 5 kg moves at 10 m/s. (a) Find momentum. (b) A 20N force acts for 3s — find new velocity. (c) Find impulse.',
+                                                                                                                              a:'(a) p = mv = 5×10 = 50 kg m/s\n(b) a = F/m = 20/5 = 4 m/s²\nv = u+at = 10+(4×3) = 22 m/s\n(c) Impulse = F×t = 20×3 = 60 Ns', m:4},
+        ]},
+        { key:'D', totalMarks:10, questions:[
+          {n:25, q:'Explain the carbon cycle with a labelled diagram. How do human activities disturb it?',                  a:'Carbon Cycle:\nAtmosphere → photosynthesis → plants → respiration → animals → decomposition → soil → fossil fuels → combustion → atmosphere.\n\nHuman disturbances:\n1. Burning fossil fuels — releases stored carbon\n2. Deforestation — reduces CO₂ absorption\n3. Industrial emissions — excess CO₂\nResult: Increased greenhouse effect and global warming.', m:5},
+          {n:26, q:'Explain the structure and function of DNA. Why is it called the blueprint of life? How does DNA replication occur?',
+                                                                                                                              a:'Structure: Double helix. Made of nucleotides (sugar + phosphate + base). Bases: A-T, G-C pairs.\n\nFunction: Carries genetic info. Controls protein synthesis. Determines organism traits.\n\nBlueprint of life: Contains all instructions to build and maintain an organism.\n\nReplication:\n1. Helix unwinds\n2. Strands separate\n3. Each strand acts as template\n4. New complementary bases attach\n5. Two identical DNA molecules formed (semi-conservative replication)', m:5},
+        ]},
+      ]
+    }
+  }
+};
 
-/* ============================================================
-   ③ CONTENT — Chapter practice (AI evaluates answers)
-   ============================================================ */
+/* CHAPTER CONTENT */
 const CONTENT = {
-  maths:{ chapters:[
-    {name:'Algebra',qs:[
-      {q:'If 2x + 3 = 11, find the value of x. Show your working.',m:2},
-      {q:'Simplify: 3(2x − 4) + 5x',m:1},
-      {q:'Factorise: x² − 5x + 6',m:2},
-      {q:'Solve: 5x − 3 = 2x + 9',m:2},
-      {q:'If x = 3 and y = −2, find the value of 2x² − 3y.',m:2},
-    ]},
-    {name:'Mensuration',qs:[
-      {q:'Find the area of a circle with radius 7 cm. (Use π = 22/7)',m:2},
-      {q:'A rectangular field is 40 m long and 25 m wide. Find its perimeter and area.',m:2},
-      {q:'Find the volume of a cylinder with radius 5 cm and height 10 cm. (Use π = 3.14)',m:2},
-    ]},
-    {name:'Trigonometry',qs:[
-      {q:'If sin θ = 3/5, find the value of cos θ and tan θ.',m:2},
-      {q:'Find the value of sin 30° + cos 60° − tan 45°.',m:1},
-    ]},
-    {name:'Statistics',qs:[
-      {q:'The mean of 5 numbers is 12. Four of them are 10, 14, 8 and 16. Find the fifth number.',m:2},
-      {q:'Find the median of: 4, 7, 2, 9, 3, 8, 5',m:1},
-    ]},
-    {name:'Probability',qs:[
-      {q:'A bag has 3 red balls and 5 blue balls. What is the probability of picking a red ball?',m:1},
-      {q:'A die is rolled once. What is the probability of getting an even number?',m:1},
-    ]},
-    {name:'Arithmetic',qs:[
-      {q:'A shopkeeper bought a book for Rs 250 and sold it for Rs 300. Find the profit percentage.',m:2},
-      {q:'Find the simple interest on Rs 5,000 at 8% per annum for 3 years.',m:2},
-    ]},
-    {name:'Geometry',qs:[
-      {q:'In a triangle, two angles are 60° and 70°. Find the third angle.',m:1},
-      {q:'The parallel sides of a trapezium are 12 cm and 8 cm and its height is 5 cm. Find its area.',m:2},
-    ]},
-    {name:'Coordinate Geometry',qs:[
-      {q:'Find the distance between the points A(3, 4) and B(0, 0).',m:2},
-      {q:'Find the midpoint of the line joining (2, 6) and (8, 4).',m:1},
-    ]},
-    {name:'Sets',qs:[
-      {q:'If A = {1,2,3,4} and B = {3,4,5,6}, find A ∪ B and A ∩ B.',m:2},
-      {q:'In a class of 30, 18 play cricket and 15 play football. 8 play both. How many play neither?',m:2},
-    ]},
-    {name:'Matrices',qs:[
-      {q:'If A = [[2,3],[1,4]], find the determinant of A.',m:1},
-      {q:'Add the matrices [[1,2],[3,4]] and [[5,6],[7,8]].',m:1},
-    ]},
+  maths: { chapters: [
+    {name:'Algebra',qs:[{q:'If 2x+3=11, find x.',m:2},{q:'Factorise: x²−5x+6',m:2},{q:'Solve: 5x−3=2x+9',m:2}]},
+    {name:'Mensuration',qs:[{q:'Find the area of a circle with radius 7 cm. (π=22/7)',m:2},{q:'Volume of cylinder: r=5cm, h=10cm.',m:2}]},
+    {name:'Trigonometry',qs:[{q:'If sin θ=3/5, find cos θ and tan θ.',m:2},{q:'Find sin 30°+cos 60°−tan 45°.',m:1}]},
+    {name:'Statistics',qs:[{q:'Mean of 5 numbers is 12. Four are 10,14,8,16. Find fifth.',m:2},{q:'Median of: 4,7,2,9,3,8,5',m:1}]},
+    {name:'Probability',qs:[{q:'Bag: 3 red, 5 blue. P(red)?',m:1},{q:'Die rolled. P(even number)?',m:1}]},
+    {name:'Arithmetic',qs:[{q:'Bought for Rs 250, sold Rs 300. Profit %?',m:2},{q:'SI on Rs 5,000 at 8% for 3 years.',m:2}]},
+    {name:'Geometry',qs:[{q:'Two angles 60° and 70°. Find third.',m:1},{q:'Trapezium parallel sides 12cm,8cm, height 5cm. Area?',m:2}]},
+    {name:'Sets',qs:[{q:'A={1,2,3,4}, B={3,4,5,6}. Find A∪B and A∩B.',m:2},{q:'30 students: 18 cricket,15 football,8 both. Neither?',m:2}]},
+    {name:'Coordinate Geometry',qs:[{q:'Distance between A(3,4) and B(0,0).',m:2},{q:'Midpoint of (2,6) and (8,4).',m:1}]},
+    {name:'Matrices',qs:[{q:'Determinant of [[2,3],[1,4]].',m:1},{q:'Add [[1,2],[3,4]] and [[5,6],[7,8]].',m:1}]},
   ]},
-  science:{ chapters:[
-    {name:'Light & Reflection',qs:[
-      {q:'A ray of light travels from water to air. Will it bend towards or away from the normal? Explain why.',m:2},
-      {q:'State the laws of reflection of light.',m:2},
-    ]},
-    {name:'Electricity',qs:[
-      {q:"State Ohm's Law and write its mathematical expression.",m:2},
-      {q:'Three resistors of 2Ω, 3Ω and 6Ω are in parallel. Find total resistance.',m:3},
-    ]},
-    {name:'Force & Motion',qs:[
-      {q:'What is the difference between speed and velocity? Give one example of each.',m:2},
-      {q:"State Newton's second law of motion and write its mathematical form.",m:2},
-    ]},
-    {name:'Chemical Reactions',qs:[
-      {q:'What is a chemical reaction? Write one example with a word equation.',m:2},
-      {q:'Differentiate between exothermic and endothermic reactions with one example each.',m:2},
-    ]},
-    {name:'Acids & Bases',qs:[
-      {q:'Name two indicators used to identify acids and bases. What colour does litmus turn in acid?',m:2},
-      {q:'What happens when an acid reacts with a base? Write the general equation.',m:1},
-    ]},
-    {name:'Human Biology',qs:[
-      {q:'Name the four chambers of the human heart and state the function of each.',m:2},
-      {q:'What is the role of the kidney in the human body?',m:1},
-    ]},
-    {name:'Plant Biology',qs:[
-      {q:'What is photosynthesis? Write the word equation for photosynthesis.',m:2},
-      {q:'Explain the process of transpiration in plants.',m:2},
-    ]},
-    {name:'Environment',qs:[
-      {q:'What is the greenhouse effect? Name two greenhouse gases.',m:2},
-      {q:'Define biodiversity. Why is it important to conserve biodiversity?',m:2},
-    ]},
+  science: { chapters: [
+    {name:'Light & Reflection',qs:[{q:'Ray from water to air — towards or away from normal?',m:2},{q:'State laws of reflection.',m:2}]},
+    {name:'Electricity',qs:[{q:"State Ohm's Law and write its formula.",m:2},{q:'Resistors 2Ω,3Ω,6Ω in parallel. Total resistance?',m:3}]},
+    {name:'Force & Motion',qs:[{q:'Difference between speed and velocity?',m:2},{q:"Newton's second law — state and formula.",m:2}]},
+    {name:'Chemical Reactions',qs:[{q:'What is a chemical reaction? One example.',m:2},{q:'Exothermic vs endothermic — one example each.',m:2}]},
+    {name:'Acids & Bases',qs:[{q:'Two indicators for acids and bases.',m:2},{q:'What happens when acid meets base?',m:1}]},
+    {name:'Human Biology',qs:[{q:'Four chambers of the heart.',m:2},{q:'Role of the kidney.',m:1}]},
+    {name:'Plant Biology',qs:[{q:'Photosynthesis word equation.',m:2},{q:'Explain transpiration.',m:2}]},
+    {name:'Environment',qs:[{q:'Greenhouse effect — two gases.',m:2},{q:'Define biodiversity and why it matters.',m:2}]},
   ]},
 };
 
-/* ============================================================
-   ④ ENGINE
-   ============================================================ */
-const $=id=>document.getElementById(id);
-const mk=(tag,cls,html)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!==undefined)e.innerHTML=html;return e;};
-const ST={subj:'maths',year:2081,chapter:null,ppQi:0,ppQs:[]};
+/* ENGINE */
+const $ = id => document.getElementById(id);
+const mk = (tag,cls,html) => { const e=document.createElement(tag); if(cls)e.className=cls; if(html!==undefined)e.innerHTML=html; return e; };
+const ST = { subj:'maths', year:2081 };
 
-// Close dropdowns on outside click
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.pp-selector')){
-    document.querySelectorAll('.pp-dropdown').forEach(d=>d.remove());
-    document.querySelectorAll('.pp-selector').forEach(s=>s.classList.remove('open'));
+document.addEventListener('click', e => {
+  if (!e.target.closest('.selector')) {
+    document.querySelectorAll('.dd-menu').forEach(d => d.classList.add('hidden'));
+    document.querySelectorAll('.selector').forEach(s => s.classList.remove('open'));
   }
 });
 
-function showScreen(name){
-  document.querySelectorAll('.prac-screen').forEach(s=>s.classList.remove('active'));
+function showScreen(name) {
+  document.querySelectorAll('.prac-screen').forEach(s => s.classList.remove('active'));
   $('ps-'+name).classList.add('active');
   window.scrollTo(0,0);
 }
 
-function updateGreeting(){
-  const h=new Date().getHours();
-  const g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
-  $('home-greeting').innerHTML=`${g}. <em style="font-style:italic;color:var(--brand);font-weight:400;">Let's practise.</em>`;
+function toggleDD(which, e) {
+  e.stopPropagation();
+  const dd = $('dd-'+which);
+  const isOpen = !dd.classList.contains('hidden');
+  document.querySelectorAll('.dd-menu').forEach(d => d.classList.add('hidden'));
+  document.querySelectorAll('.selector').forEach(s => s.classList.remove('open'));
+  if (!isOpen) { dd.classList.remove('hidden'); dd.closest('.selector').classList.add('open'); }
 }
 
-function buildSubjToggle(containerId,onChange){
-  const tog=$(containerId); tog.innerHTML='';
-  CONFIG.subjects.forEach(s=>{
-    const b=mk('button','subj-btn-toggle'+(s.key===ST.subj?' on':''));
-    b.innerHTML=`${s.icon} ${s.label}`;
-    b.dataset.subj=s.key;
-    b.onclick=()=>{
-      ST.subj=s.key;
-      document.querySelectorAll('.subj-btn-toggle').forEach(btn=>btn.classList.toggle('on',btn.dataset.subj===s.key));
-      if(onChange)onChange(s.key);
-    };
-    tog.appendChild(b);
+function buildSubjDD(ddId, onSelect) {
+  const dd = $(ddId); dd.innerHTML = '';
+  CONFIG.subjects.forEach(s => {
+    const item = mk('div', `dd-item${s.key===ST.subj?' on':''}`);
+    item.innerHTML = `<span class="dd-name">${s.icon} ${s.label}</span>${s.key===ST.subj?'<span class="dd-check">✓</span>':''}`;
+    item.onclick = e => { e.stopPropagation(); ST.subj=s.key; closeAllDD(); onSelect(s); };
+    dd.appendChild(item);
   });
 }
 
-function getAllPapersForSubj(subj){return PAPERS_CONTENT.filter(p=>p.subj===subj);}
+function buildYearDD(ddId, onSelect) {
+  const dd = $(ddId); dd.innerHTML = '';
+  if (CONFIG.availableYears.length) {
+    dd.appendChild(mk('div','dd-section','Available now'));
+    CONFIG.availableYears.forEach(y => {
+      const item = mk('div', `dd-item${y===ST.year?' on':''}`);
+      item.innerHTML = `<span class="dd-name">SEE ${y}</span>${y===ST.year?'<span class="dd-check">✓</span>':'<span class="dd-free">FREE</span>'}`;
+      item.onclick = e => { e.stopPropagation(); ST.year=y; closeAllDD(); onSelect(y); };
+      dd.appendChild(item);
+    });
+  }
+  if (CONFIG.lockedYears.length) {
+    dd.appendChild(mk('div','dd-section','Coming soon'));
+    CONFIG.lockedYears.forEach(y => {
+      const item = mk('div','dd-item locked');
+      item.innerHTML = `<span class="dd-name">🔒 SEE ${y}</span><span class="dd-soon">Soon</span>`;
+      dd.appendChild(item);
+    });
+  }
+}
 
-function renderHome(){
-  updateGreeting();
-  buildSubjToggle('home-subj-toggle',()=>renderHome());
-  const grid=$('mode-grid'); grid.innerHTML='';
+function closeAllDD() {
+  document.querySelectorAll('.dd-menu').forEach(d => d.classList.add('hidden'));
+  document.querySelectorAll('.selector').forEach(s => s.classList.remove('open'));
+}
 
-  CONFIG.modes.forEach(m=>{
-    const c=mk('div','mode-card'+(m.on?'':' disabled'));
-
-    if(m.key==='papers'){
-      const papers=getAllPapersForSubj(ST.subj);
-      const pillsHtml=papers.map(p=>{
-        if(p.status==='live'){
-          return `<button class="year-pill available" onclick="openPaperView('${p.subj}',${p.year})">SEE ${p.year}</button>`;
-        } else {
-          return `<span class="year-pill locked">🔒 ${p.year}</span>`;
-        }
-      }).join('');
-      c.innerHTML=`
-        <div class="mode-icon ${m.bg}">${m.icon}</div>
-        <div class="mode-info" style="width:100%;">
-          <div class="mode-title">${m.title}</div>
-          <div class="mode-desc">${m.desc}</div>
-          <span class="badge badge-sun" style="margin-bottom:10px;display:inline-block;">${m.tag}</span>
-          <div class="year-pills-row">${pillsHtml}</div>
-        </div>`;
-
-    } else if(m.key==='chapter' && m.on){
-      c.classList.add('clickable');
-      c.innerHTML=`<div class="mode-icon ${m.bg}">${m.icon}</div><div class="mode-info"><div class="mode-title">${m.title}</div><div class="mode-desc">${m.desc}</div><span class="badge badge-sun">${m.tag}</span></div><span style="font-size:22px;color:var(--ink-200);margin-left:auto;align-self:center;">›</span>`;
-      c.onclick=()=>{renderChapters();showScreen('chapters');};
-
-    } else {
-      c.innerHTML=`<div class="mode-icon ${m.bg}">${m.icon}</div><div class="mode-info"><div class="mode-title">${m.title}</div><div class="mode-desc">${m.desc}</div><span class="badge badge-blue">${m.tag}</span></div>`;
+/* HOME */
+function renderHome() {
+  const tog = $('home-subj-toggle'); tog.innerHTML = '';
+  CONFIG.subjects.forEach(s => {
+    const b = mk('button', `subj-btn-toggle${s.key===ST.subj?' on':''}`);
+    b.innerHTML = `${s.icon} ${s.label}`; b.dataset.subj = s.key;
+    b.onclick = () => { ST.subj=s.key; document.querySelectorAll('.subj-btn-toggle').forEach(x => x.classList.toggle('on', x.dataset.subj===s.key)); };
+    tog.appendChild(b);
+  });
+  const grid = $('mode-grid'); grid.innerHTML = '';
+  CONFIG.modes.forEach(m => {
+    const c = mk('button', `mode-card${m.on?'':' disabled'}`);
+    let extra = '';
+    if (m.key==='papers') {
+      const pills = CONFIG.availableYears.map(y => `<button class="yr-pill" onclick="event.stopPropagation();ST.year=${y};openPaper()">${y}</button>`).join('')
+                  + CONFIG.lockedYears.map(y => `<span class="yr-pill locked">🔒 ${y}</span>`).join('');
+      extra = `<div class="year-pills">${pills}</div>`;
+    }
+    c.innerHTML = `<div class="mode-icon ${m.bg}">${m.icon}</div><div class="mode-info"><div class="mode-title">${m.title}</div><div class="mode-desc">${m.desc}</div><span class="badge ${m.tag.cls}" style="margin-top:6px;">${m.tag.txt}</span>${extra}</div>`;
+    if (m.on) {
+      if (m.key==='chapter') c.onclick = () => { renderChapters(); showScreen('chapters'); };
+      if (m.key==='papers')  c.onclick = () => { if(CONFIG.availableYears.length) openPaper(); };
     }
     grid.appendChild(c);
   });
-
-  const pl=$('perks-list');
-  if(pl){pl.innerHTML='';CONFIG.perks.forEach(p=>pl.appendChild(mk('div','perk',`<span>${p.icon}</span><span>${p.txt}</span>`)));}
 }
 
-/* ── Paper View ── */
-function openPaperView(subj,year){
-  ST.subj=subj; ST.year=year;
-  const paper=PAPERS_CONTENT.find(p=>p.subj===subj&&p.year===year);
-  if(!paper)return;
-  const subjLabel=CONFIG.subjects.find(s=>s.key===subj).label;
+function openPaper() {
+  renderPaperView();
+  showScreen('paper');
+}
 
-  $('pv-bc').innerHTML=`
-    <button class="prac-bc-btn" onclick="showScreen('home')">🏠 Home</button>
-    <span class="prac-bc-sep">›</span>
-    <span class="prac-bc-btn on">SEE ${year} · ${subjLabel}</span>`;
+/* PAPER VIEW */
+function renderPaperView() {
+  const s = CONFIG.subjects.find(x => x.key===ST.subj);
+  $('sel-subj-val').textContent = s.label;
+  $('sel-year-val').textContent = `SEE ${ST.year}`;
+  $('paper-bc-label').textContent = `SEE ${ST.year} · ${s.label}`;
+  buildSubjDD('dd-subj', s => { $('sel-subj-val').textContent=s.label; renderPaperBody(); });
+  buildYearDD('dd-year', y => { $('sel-year-val').textContent=`SEE ${y}`; renderPaperBody(); });
+  renderPaperBody();
+}
 
-  const body=$('paper-view-body'); body.innerHTML='';
-  const totalQs=paper.groups.reduce((a,g)=>a+g.qs.length,0);
+function renderPaperBody() {
+  const body = $('paper-body'); body.innerHTML = '';
+  const paper = PAPERS[ST.subj]?.[ST.year];
+  const s = CONFIG.subjects.find(x => x.key===ST.subj);
+  $('paper-bc-label').textContent = `SEE ${ST.year} · ${s.label}`;
+
+  if (!paper) {
+    body.innerHTML = `<div style="text-align:center;padding:48px 24px;background:white;border-radius:16px;border:1px solid var(--ink-100);">
+      <div style="font-size:48px;margin-bottom:16px;">📋</div>
+      <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:8px;">Coming soon</div>
+      <p style="font-size:14px;color:var(--ink-500);">This paper is being prepared. Choose another year or subject.</p>
+    </div>`; return;
+  }
 
   // Header
-  const hdr=mk('div','paper-header-card');
-  hdr.innerHTML=`
-    <div class="paper-header-title">SEE ${year} — ${subjLabel}</div>
-    <div class="paper-header-sub">Secondary Education Examination · Nepal</div>
-    <div class="paper-stats">
-      <div class="paper-stat"><div class="paper-stat-num">${paper.totalMarks}</div><div class="paper-stat-lbl">Total marks</div></div>
-      <div class="paper-stat"><div class="paper-stat-num">${paper.duration}</div><div class="paper-stat-lbl">Duration</div></div>
-      <div class="paper-stat"><div class="paper-stat-num">${paper.groups.length}</div><div class="paper-stat-lbl">Groups</div></div>
-      <div class="paper-stat"><div class="paper-stat-num">${totalQs}</div><div class="paper-stat-lbl">Questions</div></div>
+  const hdr = mk('div','paper-hdr-card');
+  hdr.innerHTML = `<div><h2>SEE ${ST.year} — ${paper.title}</h2><p>Secondary Education Examination · Nepal</p></div>
+    <div class="paper-meta">
+      <div class="meta-box"><div class="meta-val">${paper.totalMarks}</div><div class="meta-lbl">Marks</div></div>
+      <div class="meta-box"><div class="meta-val">${paper.duration}</div><div class="meta-lbl">Duration</div></div>
+      <div class="meta-box"><div class="meta-val">${paper.groups.length}</div><div class="meta-lbl">Groups</div></div>
     </div>`;
   body.appendChild(hdr);
 
   // Groups
-  paper.groups.forEach((grp,gi)=>{
-    const block=mk('div',`group-block ${grp.color}`);
-    block.id=`grp-block-${gi}`;
+  paper.groups.forEach((grp, gi) => {
+    const cfg = CONFIG.groups[grp.key] || { label:`Group ${grp.key}`, color:'#6B7280', tagClass:'gc-b', desc:'' };
 
-    const hd=mk('div','group-header');
-    hd.innerHTML=`
-      <div>
-        <div class="group-name-badge">${grp.name}</div>
-        <div class="group-desc-txt">${grp.desc}</div>
-      </div>
-      <div class="group-marks-badge">${grp.marks} marks</div>`;
-    block.appendChild(hd);
-
-    const qs=mk('div','group-questions');
-    grp.qs.forEach(q=>{
-      const row=mk('div','paper-q-row');
-      row.innerHTML=`<div class="paper-q-num">Q${q.n}.</div><div class="paper-q-text">${q.q}</div><div class="paper-q-mark">${q.m} mark${q.m>1?'s':''}</div>`;
-      qs.appendChild(row);
-    });
-    block.appendChild(qs);
-
-    if(gi===0){
-      body.appendChild(block);
-      if(paper.groups.length>1) body.appendChild(makeShowBtn(paper,1));
-    } else {
-      block.style.display='none';
-      body.appendChild(block);
+    if (gi > 0) {
+      const btn = mk('button','show-group-btn');
+      btn.innerHTML = `<div class="sgb-icon">+</div><div class="sgb-content"><div class="sgb-txt">Show ${cfg.label}</div><div class="sgb-sub">${grp.questions.length} questions · ${grp.totalMarks} marks · ${cfg.desc}</div></div>`;
+      btn.onclick = () => { btn.style.display='none'; const el=$(`grp-${grp.key}`); el.classList.remove('hidden'); el.scrollIntoView({behavior:'smooth',block:'start'}); };
+      body.appendChild(btn);
     }
+
+    const block = mk('div', `group-block${gi>0?' hidden':''}`);
+    block.id = `grp-${grp.key}`;
+    const qRows = grp.questions.map(q => `<div class="q-row"><div class="q-row-num">Q${q.n}.</div><div class="q-row-text">${q.q}</div><div class="q-row-mark">${q.m} mark${q.m>1?'s':''}</div></div>`).join('');
+    block.innerHTML = `<div class="group-hdr"><div class="group-hdr-left"><div class="group-dot" style="background:${cfg.color}"></div><div><div class="group-hdr-name">${cfg.label}</div><div class="group-hdr-desc">${grp.questions.length} questions · ${cfg.desc}</div></div></div><div class="group-marks-badge">${grp.totalMarks} marks</div></div><div class="q-list">${qRows}</div>`;
+    body.appendChild(block);
   });
 
-  // Practice button
-  const btnWrap=mk('div','practice-paper-btn-wrap');
-  const btn=mk('button','practice-paper-btn');
-  btn.textContent=`📝 Practice this paper →`;
-  btn.onclick=()=>startPaperPractice(paper);
-  btnWrap.appendChild(btn);
-  body.appendChild(btnWrap);
-
-  showScreen('paper-view');
+  // Practice CTA
+  const cta = mk('div','practice-cta');
+  cta.innerHTML = `<div><h3>Ready to attempt this paper?</h3><p>Answer each question one by one and check your answers.</p></div><button class="btn-practice-paper" onclick="startPracticeMode()">Practice this paper →</button>`;
+  body.appendChild(cta);
 }
 
-function makeShowBtn(paper,nextIdx){
-  const grp=paper.groups[nextIdx];
-  if(!grp)return mk('div');
-  const btn=mk('button','show-group-btn');
-  btn.innerHTML=`<span style="font-size:18px">＋</span> Show ${grp.name} — ${grp.desc} · ${grp.marks} marks`;
-  btn.onclick=()=>{
-    btn.remove();
-    const block=$(`grp-block-${nextIdx}`);
-    block.style.display='';
-    block.scrollIntoView({behavior:'smooth',block:'start'});
-    if(nextIdx+1<paper.groups.length){
-      block.after(makeShowBtn(paper,nextIdx+1));
-    }
-  };
-  return btn;
-}
-
-/* ── Paper Practice (one by one) ── */
-function startPaperPractice(paper){
-  ST.ppQs=paper.groups.flatMap(g=>g.qs.map(q=>({...q,groupName:g.name,groupColor:g.color})));
-  ST.ppQi=0;
-  buildPPSelectors();
-  showScreen('pp');
-  PPQ.loadQ();
-}
-
-function buildPPSelectors(){
-  const wrap=$('pp-selectors'); wrap.innerHTML='';
-  const subjData=CONFIG.subjects.find(s=>s.key===ST.subj);
-
-  // Subject selector
-  const ss=mk('div','pp-selector');
-  ss.innerHTML=`<span class="pp-sel-icon">${subjData.icon}</span><div class="pp-sel-body"><div class="pp-sel-label">Subject</div><div class="pp-sel-value">${subjData.label}</div></div><span class="pp-sel-caret">▾</span>`;
-  ss.onclick=e=>{e.stopPropagation();toggleDD('subj',ss);};
-  wrap.appendChild(ss);
-
-  wrap.appendChild(mk('div','pp-divider'));
-
-  // Year selector
-  const ys=mk('div','pp-selector');
-  ys.innerHTML=`<span class="pp-sel-icon">📜</span><div class="pp-sel-body"><div class="pp-sel-label">Year</div><div class="pp-sel-value">SEE ${ST.year}</div></div><span class="pp-sel-caret">▾</span>`;
-  ys.onclick=e=>{e.stopPropagation();toggleDD('year',ys);};
-  wrap.appendChild(ys);
-}
-
-function toggleDD(type,sel){
-  document.querySelectorAll('.pp-dropdown').forEach(d=>d.remove());
-  document.querySelectorAll('.pp-selector').forEach(s=>s.classList.remove('open'));
-  sel.classList.add('open');
-  const dd=mk('div','pp-dropdown');
-
-  if(type==='subj'){
-    CONFIG.subjects.forEach(s=>{
-      const item=mk('div',`pp-dd-item${s.key===ST.subj?' on':''}`);
-      item.innerHTML=`<span class="pp-dd-name">${s.icon} ${s.label}</span>${s.key===ST.subj?'<span class="pp-dd-check">✓</span>':''}`;
-      item.onclick=e=>{
-        e.stopPropagation();
-        ST.subj=s.key;
-        const paper=PAPERS_CONTENT.find(p=>p.subj===s.key&&p.status==='live');
-        if(paper){ST.year=paper.year;startPaperPractice(paper);}
-        dd.remove();
-      };
-      dd.appendChild(item);
-    });
-  } else {
-    const avail=PAPERS_CONTENT.filter(p=>p.subj===ST.subj&&p.status==='live');
-    const locked=PAPERS_CONTENT.filter(p=>p.subj===ST.subj&&p.status!=='live');
-    if(avail.length){
-      const l=mk('div','pp-dd-section');l.textContent='Available';dd.appendChild(l);
-      avail.forEach(p=>{
-        const item=mk('div',`pp-dd-item${p.year===ST.year?' on':''}`);
-        item.innerHTML=`<span class="pp-dd-name">SEE ${p.year}</span>${p.year===ST.year?'<span class="pp-dd-check">✓</span>':'<span class="pp-dd-badge free">FREE</span>'}`;
-        item.onclick=e=>{e.stopPropagation();ST.year=p.year;startPaperPractice(p);dd.remove();};
-        dd.appendChild(item);
-      });
-    }
-    if(locked.length){
-      const l2=mk('div','pp-dd-section');l2.textContent='Coming soon';dd.appendChild(l2);
-      locked.forEach(p=>{
-        const item=mk('div','pp-dd-item locked-item');
-        item.innerHTML=`<span class="pp-dd-name">🔒 SEE ${p.year}</span><span class="pp-dd-badge soon">Soon</span>`;
-        dd.appendChild(item);
-      });
-    }
-  }
-  sel.appendChild(dd);
-}
-
-const PPQ={
-  loadQ(){
-    const qs=ST.ppQs;
-    $('pp-no-qs').classList.add('hidden');
-    $('pp-ans-card').classList.add('hidden');
-    if(!qs.length){$('pp-q-card').classList.add('hidden');$('pp-no-qs').classList.remove('hidden');return;}
-    const q=qs[ST.ppQi%qs.length];
-    const s=CONFIG.subjects.find(x=>x.key===ST.subj);
-    const tagColors={'grp-a':'background:#DCFCE7;color:#15803D','grp-b':'background:#DBEAFE;color:#1D4ED8','grp-c':'background:#FEF3C7;color:#92400E','grp-d':'background:#FEE2E2;color:#B91C1C'};
-    const ts=tagColors[q.groupColor]||'background:var(--ink-100);color:var(--ink-600)';
-    $('pp-q-group-tag').textContent=q.groupName;
-    $('pp-q-group-tag').setAttribute('style',`${ts};font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;`);
-    $('pp-q-src').textContent=` SEE ${ST.year} · ${s.label}`;
-    $('pp-q-marks').textContent=`${q.m} mark${q.m>1?'s':''}`;
-    $('pp-q-text').textContent=q.q;
-    const card=$('pp-q-card');
+/* PRACTICE MODE */
+const PRAC = {
+  qs:[], qi:0,
+  init() {
+    const paper = PAPERS[ST.subj]?.[ST.year];
+    this.qs = paper ? paper.groups.flatMap(g => g.questions.map(q => ({...q, group:g.key}))) : [];
+    this.qi = 0;
+  },
+  load() {
+    $('prac-reveal').classList.add('hidden');
+    if (!this.qs.length) { $('prac-no-qs').classList.remove('hidden'); $('prac-q-card').classList.add('hidden'); return; }
+    $('prac-no-qs').classList.add('hidden');
+    const q = this.qs[this.qi % this.qs.length];
+    const s = CONFIG.subjects.find(x => x.key===ST.subj);
+    const cfg = CONFIG.groups[q.group] || { label:`Group ${q.group}`, tagClass:'gc-b' };
+    $('prac-q-src').textContent = `SEE ${ST.year} · ${s.label}`;
+    $('prac-q-group').textContent = cfg.label;
+    $('prac-q-group').className = `q-group-tag ${cfg.tagClass}`;
+    $('prac-q-marks').textContent = `${q.m} mark${q.m>1?'s':''}`;
+    $('prac-q-text').textContent = `Q${q.n}. ${q.q}`;
+    $('prac-ans').value = '';
+    $('prac-show-btn').classList.remove('hidden');
+    $('prac-next-btn').classList.add('hidden');
+    $('prac-reveal').classList.add('hidden');
+    const card = $('prac-q-card');
     card.classList.remove('hidden');
-    card.style.animation='none';card.offsetHeight;card.style.animation='';
-    this.updateProgress();
-    buildPPSelectors();
+    card.style.animation='none'; card.offsetHeight; card.style.animation='';
+    $('prac-subj-val').textContent = s.label;
+    $('prac-year-val').textContent = `SEE ${ST.year}`;
+    this.updateProg();
   },
-  showAnswer(){
-    const q=ST.ppQs[ST.ppQi%ST.ppQs.length];
-    $('pp-ans-body').innerText=q.a;
-    $('pp-ans-card').classList.remove('hidden');
-    $('pp-ans-card').scrollIntoView({behavior:'smooth',block:'nearest'});
+  showAnswer() {
+    const q = this.qs[this.qi % this.qs.length];
+    $('prac-reveal-body').textContent = q.a;
+    $('prac-reveal').classList.remove('hidden');
+    $('prac-show-btn').classList.add('hidden');
+    $('prac-next-btn').classList.remove('hidden');
+    $('prac-reveal').scrollIntoView({behavior:'smooth',block:'nearest'});
   },
-  next(){ST.ppQi++;$('pp-ans-card').classList.add('hidden');this.loadQ();window.scrollTo({top:0,behavior:'smooth'});},
-  skip(){ST.ppQi++;$('pp-ans-card').classList.add('hidden');this.loadQ();window.scrollTo({top:0,behavior:'smooth'});},
-  updateProgress(){
-    const total=ST.ppQs.length;
-    const current=(ST.ppQi%total)+1;
-    $('pp-prog-fill').style.width=`${Math.min((ST.ppQi/total)*100,100)}%`;
-    $('pp-prog-txt').textContent=`${current} / ${total}`;
+  next() { this.qi++; this.load(); window.scrollTo({top:0,behavior:'smooth'}); },
+  skip() { this.qi++; this.load(); window.scrollTo({top:0,behavior:'smooth'}); },
+  updateProg() {
+    const total = this.qs.length;
+    const done = this.qi % (total||1);
+    $('prac-prog-fill').style.width = `${(done/total)*100}%`;
+    $('prac-prog-txt').textContent = `${done} / ${total}`;
   },
 };
 
-/* ── Chapter Practice ── */
-function renderChapters(){
-  const s=CONFIG.subjects.find(x=>x.key===ST.subj);
-  const sb=$('ch-subj-btns');sb.innerHTML='';
-  CONFIG.subjects.forEach(sub=>{
-    const b=mk('button',`ch-subj-btn${sub.key===ST.subj?' on':''}`);
-    b.innerHTML=`<span class="si">${sub.icon}</span>${sub.label}`;
-    b.onclick=()=>{ST.subj=sub.key;sb.querySelectorAll('.ch-subj-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');$('ch-ctx-subj').textContent=CONFIG.subjects.find(x=>x.key===ST.subj).label;renderChapterList();CP.reset();};
-    sb.appendChild(b);
-  });
-  $('ch-ctx-subj').textContent=s.label;
-  renderChapterList();CP.reset();
+function startPracticeMode() {
+  PRAC.init();
+  buildSubjDD('dd-prac-subj', s => { $('prac-subj-val').textContent=s.label; PRAC.init(); PRAC.load(); });
+  buildYearDD('dd-prac-year', y => { $('prac-year-val').textContent=`SEE ${y}`; PRAC.init(); PRAC.load(); });
+  showScreen('practice');
+  PRAC.load();
 }
 
-function renderChapterList(){
-  const list=$('ch-list');list.innerHTML='<div class="ch-list-lbl">Chapters</div>';
-  const chs=CONTENT[ST.subj]?.chapters||[];
-  chs.forEach(ch=>{
-    const b=mk('button','ch-item');
-    b.innerHTML=`<span>${ch.name}</span>`;
-    b.onclick=()=>{ST.chapter=ch.name;list.querySelectorAll('.ch-item').forEach(x=>x.classList.remove('on'));b.classList.add('on');CP.start(ch);};
+/* CHAPTER PRACTICE */
+function renderChapters() {
+  const sb = $('ch-subj-btns'); sb.innerHTML = '';
+  CONFIG.subjects.forEach(sub => {
+    const b = mk('button', `ch-subj-btn${sub.key===ST.subj?' on':''}`);
+    b.innerHTML = `<span class="si">${sub.icon}</span>${sub.label}`;
+    b.onclick = () => { ST.subj=sub.key; sb.querySelectorAll('.ch-subj-btn').forEach(x=>x.classList.remove('on')); b.classList.add('on'); $('ch-ctx-subj').textContent=CONFIG.subjects.find(x=>x.key===ST.subj).label; renderChapterList(); CP.reset(); };
+    sb.appendChild(b);
+  });
+  $('ch-ctx-subj').textContent = CONFIG.subjects.find(x=>x.key===ST.subj).label;
+  renderChapterList(); CP.reset();
+}
+
+function renderChapterList() {
+  const list = $('ch-list'); list.innerHTML = '<div class="ch-list-lbl">Chapters</div>';
+  (CONTENT[ST.subj]?.chapters||[]).forEach(ch => {
+    const b = mk('button','ch-item'); b.innerHTML = `<span>${ch.name}</span>`;
+    b.onclick = () => { list.querySelectorAll('.ch-item').forEach(x=>x.classList.remove('on')); b.classList.add('on'); CP.start(ch); };
     list.appendChild(b);
   });
 }
 
-const CP={
-  qi:0,ans:0,ok:0,
-  reset(){this.qi=0;this.ans=0;this.ok=0;$('ch-empty').classList.remove('hidden');$('ch-q-card').classList.add('hidden');$('ch-fb-card').classList.add('hidden');$('ch-loading').classList.add('hidden');$('ch-ctx-ch').textContent='Choose a chapter';$('ch-prog-fill').style.width='0%';$('ch-prog-txt').textContent=`0 / ${CONFIG.sessionLength}`;},
-  start(ch){this.qi=0;this.ans=0;this.ok=0;ST.chapter=ch.name;$('ch-ctx-ch').textContent=ch.name;$('ch-empty').classList.add('hidden');$('ch-fb-card').classList.add('hidden');$('ch-btn-next').textContent='Next question →';$('ch-btn-next').onclick=()=>CP.next();this.loadQ();},
-  loadQ(){
-    const chs=CONTENT[ST.subj]?.chapters||[];
-    const ch=chs.find(x=>x.name===ST.chapter);
-    if(!ch||!ch.qs.length)return;
-    const q=ch.qs[this.qi%ch.qs.length];
-    const s=CONFIG.subjects.find(x=>x.key===ST.subj);
-    $('ch-q-card').classList.add('hidden');$('ch-fb-card').classList.add('hidden');
-    $('ch-q-src').textContent=`${ST.chapter} · ${s.label}`;
-    $('ch-q-marks').textContent=`${q.m} mark${q.m>1?'s':''}`;
-    $('ch-q-text').textContent=q.q;
-    $('ch-ans').value='';
-    const card=$('ch-q-card');card.classList.remove('hidden');card.style.animation='none';card.offsetHeight;card.style.animation='';
-    this.updateProgress();$('ch-q-area').scrollTo({top:0,behavior:'smooth'});
+const CP = {
+  qi:0, ans:0,
+  reset() {
+    this.qi=0; this.ans=0;
+    $('ch-empty').classList.remove('hidden');
+    $('ch-q-card').classList.add('hidden'); $('ch-fb-card').classList.add('hidden'); $('ch-loading').classList.add('hidden');
+    $('ch-ctx-ch').textContent='Choose a chapter';
+    $('ch-prog-fill').style.width='0%'; $('ch-prog-txt').textContent=`0 / ${CONFIG.sessionLength}`;
   },
-  async check(){
-    const answer=$('ch-ans').value.trim();
-    if(!answer){$('ch-ans').focus();return;}
-    const chs=CONTENT[ST.subj]?.chapters||[];
-    const ch=chs.find(x=>x.name===ST.chapter);
-    const q=ch.qs[this.qi%ch.qs.length];
-    $('ch-loading').classList.remove('hidden');$('ch-q-card').classList.add('hidden');$('ch-fb-card').classList.add('hidden');
-    try{
-      const res=await fetch('/api/practice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'evaluate',subject:ST.subj,question:q.q,studentAnswer:answer})});
-      const data=await res.json();
-      $('ch-loading').classList.add('hidden');
-      this.ans++;if(data.verdict==='correct')this.ok++;
-      const card=$('ch-fb-card');
-      card.className=`fb-card ${data.verdict==='correct'?'correct':data.verdict==='partial'?'partial':'wrong'}`;
-      $('ch-fb-verdict').textContent=data.verdict==='correct'?'✅ Correct!':data.verdict==='partial'?'~ Partially correct':'❌ Not quite right';
-      $('ch-fb-body').textContent=data.feedback;
-      card.classList.remove('hidden');$('ch-q-card').classList.remove('hidden');
-      card.scrollIntoView({behavior:'smooth',block:'nearest'});
-      this.updateProgress();
-    }catch(e){$('ch-loading').classList.add('hidden');$('ch-q-card').classList.remove('hidden');alert('Something went wrong. Please try again.');}
+  start(ch) {
+    this.qi=0; this.ans=0; ST.chapter=ch.name;
+    $('ch-ctx-ch').textContent=ch.name;
+    $('ch-empty').classList.add('hidden'); $('ch-fb-card').classList.add('hidden');
+    this.loadQ();
   },
-  next(){this.qi++;this.loadQ();},
-  skip(){this.qi++;this.loadQ();},
-  updateProgress(){const pct=Math.min(this.ans/CONFIG.sessionLength*100,100);$('ch-prog-fill').style.width=`${pct}%`;$('ch-prog-txt').textContent=`${this.ans} / ${CONFIG.sessionLength}`;},
+  loadQ() {
+    const ch = (CONTENT[ST.subj]?.chapters||[]).find(x=>x.name===ST.chapter); if(!ch) return;
+    const q = ch.qs[this.qi%ch.qs.length];
+    $('ch-q-card').classList.add('hidden'); $('ch-fb-card').classList.add('hidden');
+    $('ch-q-src').textContent = `${ST.chapter} · ${CONFIG.subjects.find(x=>x.key===ST.subj).label}`;
+    $('ch-q-marks').textContent = `${q.m} mark${q.m>1?'s':''}`;
+    $('ch-q-text').textContent = q.q; $('ch-ans').value='';
+    const card = $('ch-q-card'); card.classList.remove('hidden');
+    card.style.animation='none'; card.offsetHeight; card.style.animation='';
+    this.updateProg();
+  },
+  async check() {
+    const answer = $('ch-ans').value.trim(); if(!answer){$('ch-ans').focus();return;}
+    const ch = (CONTENT[ST.subj]?.chapters||[]).find(x=>x.name===ST.chapter);
+    const q = ch.qs[this.qi%ch.qs.length];
+    $('ch-loading').classList.remove('hidden'); $('ch-q-card').classList.add('hidden'); $('ch-fb-card').classList.add('hidden');
+    try {
+      const res = await fetch('/api/practice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'evaluate',subject:ST.subj,question:q.q,studentAnswer:answer})});
+      const data = await res.json();
+      $('ch-loading').classList.add('hidden'); this.ans++;
+      const card = $('ch-fb-card');
+      card.className = `fb-card ${data.verdict==='correct'?'correct':data.verdict==='partial'?'partial':'wrong'}`;
+      $('ch-fb-verdict').textContent = data.verdict==='correct'?'✅ Correct!':data.verdict==='partial'?'~ Partially correct':'❌ Not quite right';
+      $('ch-fb-body').textContent = data.feedback;
+      $('ch-q-card').classList.remove('hidden'); card.classList.remove('hidden');
+      card.scrollIntoView({behavior:'smooth',block:'nearest'}); this.updateProg();
+    } catch(e) { $('ch-loading').classList.add('hidden'); $('ch-q-card').classList.remove('hidden'); alert('Something went wrong. Please try again.'); }
+  },
+  next(){this.qi++;this.loadQ();}, skip(){this.qi++;this.loadQ();},
+  updateProg(){$('ch-prog-fill').style.width=`${Math.min(this.ans/CONFIG.sessionLength*100,100)}%`;$('ch-prog-txt').textContent=`${this.ans}/${CONFIG.sessionLength}`;}
 };
 
-// Boot
 renderHome();
 </script>
 </body>
