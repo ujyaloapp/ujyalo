@@ -119,7 +119,7 @@
 .btn-practice-paper { background:var(--brand); color:white; border:none; padding:13px 24px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
 .btn-practice-paper:hover { background:var(--brand-dark); transform:translateY(-1px); box-shadow:0 6px 20px rgba(30,95,168,0.25); }
 .prac-topbar { background:white; border-bottom:1px solid var(--ink-100); padding:10px 20px; flex-shrink:0; }
-.prac-topbar-row1 { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.prac-topbar-row1 { display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .back-btn { font-size:13px; color:var(--brand); background:none; border:none; cursor:pointer; font-family:inherit; font-weight:600; padding:0; }
 .prog-wrap { display:flex; align-items:center; gap:8px; }
 .prog-bar { width:100px; height:6px; background:var(--ink-100); border-radius:999px; overflow:hidden; }
@@ -233,14 +233,9 @@
     </div>
     <div class="picker-divider"></div>
     <!-- Year cards -->
-    <div class="picker-row">
+    <div class="picker-row" style="margin-bottom:0;">
       <div class="picker-section-lbl"><i class="ti ti-calendar-event" aria-hidden="true"></i> Year</div>
       <div class="yr-cards" id="picker-yr-cards"></div>
-    </div>
-    <div class="picker-divider"></div>
-    <!-- Action -->
-    <div class="picker-actions">
-      <button class="btn-practice-paper" onclick="startPracticeMode()">Practice this paper →</button>
     </div>
   </div>
   <div class="paper-body" id="paper-body"></div>
@@ -251,22 +246,10 @@
   <div class="prac-topbar">
     <div class="prac-topbar-row1">
       <button class="back-btn" onclick="showScreen('paper')">‹ Back to paper</button>
+      <div style="font-size:13px;font-weight:600;color:var(--ink-700);" id="prac-paper-label">SEE 2081 · Maths</div>
       <div class="prog-wrap">
         <div class="prog-bar"><div class="prog-fill" id="prac-prog-fill" style="width:0%"></div></div>
         <div class="prog-txt" id="prac-prog-txt">0 / 0</div>
-      </div>
-    </div>
-    <div class="prac-topbar-row2">
-      <div class="selector" onclick="toggleDD('prac-subj',event)" style="flex:1;">
-        <div><span class="sel-label">Subject</span><span class="sel-value" id="prac-subj-val">Maths</span></div>
-        <span class="sel-caret">▾</span>
-        <div class="dd-menu hidden" id="dd-prac-subj"></div>
-      </div>
-      <div class="sel-divider"></div>
-      <div class="selector" onclick="toggleDD('prac-year',event)" style="flex:1;">
-        <div><span class="sel-label">Year</span><span class="sel-value" id="prac-year-val">SEE 2081</span></div>
-        <span class="sel-caret">▾</span>
-        <div class="dd-menu hidden" id="dd-prac-year"></div>
       </div>
     </div>
   </div>
@@ -757,9 +740,10 @@ const PRAC = {
 
 function startPracticeMode() {
   PRAC.init();
-  buildSubjDD('dd-prac-subj', s => { $('prac-subj-val').textContent=s.label; PRAC.init(); PRAC.load(); });
-  buildYearDD('dd-prac-year', y => { $('prac-year-val').textContent=`SEE ${y}`; PRAC.init(); PRAC.load(); });
   showScreen('practice');
+  const s = CONFIG.subjects.find(x => x.key===ST.subj);
+  const label = $('prac-paper-label');
+  if (label) label.textContent = `SEE ${ST.year} · ${s.label}`;
   PRAC.load();
 }
 
