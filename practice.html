@@ -11,273 +11,300 @@
 <style>
 /* ============================================================
    UJYALO PRACTICE PAGE
-   To change settings → edit CONFIG at bottom of this file
-   To add questions  → edit CONTENT at bottom of this file
+   Edit CONFIG    → settings
+   Edit PAPERS_CONTENT → past paper questions + answers
+   Edit CONTENT   → chapter practice questions
+   To unlock a year: change status from 'draft' to 'live'
    ============================================================ */
 
-.prac-screen { display: none; flex-direction: column; min-height: calc(100vh - 56px); }
-.prac-screen.active { display: flex; }
+.prac-screen { display:none; flex-direction:column; min-height:calc(100vh - 56px); }
+.prac-screen.active { display:flex; }
 
 /* Breadcrumb */
-.prac-bc { display: flex; align-items: center; gap: 6px; padding: 9px 24px; background: white; border-bottom: 1px solid var(--ink-100); font-size: 13px; flex-shrink: 0; }
-.prac-bc-btn { color: var(--ink-500); background: none; border: none; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; padding: 0; transition: color 0.2s; }
-.prac-bc-btn:hover { color: var(--brand); }
-.prac-bc-btn.on { color: var(--ink-900); font-weight: 700; cursor: default; }
-.prac-bc-sep { color: var(--ink-200); }
+.prac-bc { display:flex; align-items:center; gap:6px; padding:9px 24px; background:white; border-bottom:1px solid var(--ink-100); font-size:13px; flex-shrink:0; }
+.prac-bc-btn { color:var(--ink-500); background:none; border:none; font-family:inherit; font-size:13px; font-weight:500; cursor:pointer; padding:0; transition:color 0.2s; }
+.prac-bc-btn:hover { color:var(--brand); }
+.prac-bc-btn.on { color:var(--ink-900); font-weight:700; cursor:default; }
+.prac-bc-sep { color:var(--ink-200); }
 
 /* Subject toggle */
-.subj-toggle { display: inline-flex; background: var(--ink-50); border-radius: 999px; padding: 3px; gap: 2px; }
-.subj-btn-toggle { padding: 7px 18px; border-radius: 999px; border: none; background: none; font-family: inherit; font-size: 14px; font-weight: 700; color: var(--ink-500); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
-.subj-btn-toggle.on { background: white; color: var(--ink-900); box-shadow: 0 2px 8px rgba(10,22,40,0.08); }
+.subj-toggle { display:inline-flex; background:var(--ink-50); border-radius:999px; padding:3px; gap:2px; }
+.subj-btn-toggle { padding:7px 18px; border-radius:999px; border:none; background:none; font-family:inherit; font-size:14px; font-weight:700; color:var(--ink-500); cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px; }
+.subj-btn-toggle.on { background:white; color:var(--ink-900); box-shadow:0 2px 8px rgba(10,22,40,0.08); }
 
 /* Mode cards */
-.mode-grid { padding: 20px 24px; display: flex; flex-direction: column; gap: 10px; max-width: 580px; margin: 0 auto; width: 100%; }
-.mode-card { background: white; border: 2px solid var(--ink-100); border-radius: 18px; padding: 18px 20px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: all 0.22s cubic-bezier(0.16,1,0.3,1); width: 100%; text-align: left; font-family: inherit; position: relative; }
-.mode-card::after { content: '›'; font-size: 22px; color: var(--ink-200); margin-left: auto; transition: all 0.2s; flex-shrink: 0; }
-.mode-card:hover { border-color: var(--brand); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(30,95,168,0.1); }
-.mode-card:hover::after { color: var(--brand); transform: translateX(3px); }
-.mode-card.disabled { opacity: 0.55; cursor: default; }
-.mode-card.disabled:hover { transform: none; box-shadow: none; border-color: var(--ink-100); }
-.mode-card.disabled::after { content: ''; }
-.mode-icon { width: 52px; height: 52px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
-.mode-icon.blue { background: var(--brand-light); }
-.mode-icon.gold { background: var(--sun-light); }
-.mode-icon.soft { background: var(--ink-100); }
-.mode-info { flex: 1; min-width: 0; }
-.mode-title { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: var(--ink-900); margin-bottom: 3px; }
-.mode-desc { font-size: 13px; color: var(--ink-500); line-height: 1.5; margin-bottom: 6px; }
+.mode-grid { padding:20px 24px; display:flex; flex-direction:column; gap:10px; max-width:580px; margin:0 auto; width:100%; }
+.mode-card { background:white; border:2px solid var(--ink-100); border-radius:18px; padding:18px 20px; display:flex; align-items:flex-start; gap:16px; transition:all 0.22s cubic-bezier(0.16,1,0.3,1); width:100%; text-align:left; font-family:inherit; position:relative; }
+.mode-card.clickable { cursor:pointer; }
+.mode-card.clickable:hover { border-color:var(--brand); transform:translateY(-2px); box-shadow:0 10px 30px rgba(30,95,168,0.1); }
+.mode-card.disabled { opacity:0.55; cursor:default; }
+.mode-icon { width:52px; height:52px; border-radius:13px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+.mode-icon.blue { background:var(--brand-light); }
+.mode-icon.gold { background:var(--sun-light); }
+.mode-icon.soft { background:var(--ink-100); }
+.mode-info { flex:1; min-width:0; }
+.mode-title { font-family:'Fraunces',serif; font-size:17px; font-weight:600; color:var(--ink-900); margin-bottom:3px; }
+.mode-desc { font-size:13px; color:var(--ink-500); line-height:1.5; margin-bottom:8px; }
 
-/* Years list */
-.years-body { padding: 16px 24px 40px; max-width: 580px; margin: 0 auto; width: 100%; }
-.years-group-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--ink-300); margin: 20px 0 8px; }
-.years-group-lbl:first-child { margin-top: 0; }
-.year-row { background: white; border: 2px solid var(--ink-100); border-radius: 14px; padding: 13px 16px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; width: 100%; font-family: inherit; text-align: left; }
-.year-row:hover { border-color: var(--brand); }
-.year-row.locked { cursor: default; opacity: 0.5; }
-.year-row.locked:hover { border-color: var(--ink-100); transform: none; }
-.year-row-left { display: flex; align-items: center; gap: 12px; }
-.year-row-ico { width: 40px; height: 40px; border-radius: 10px; background: var(--brand-50); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.year-row-ico.locked-ico { background: var(--ink-100); }
-.year-row-name { font-weight: 700; font-size: 15px; }
-.year-row-sub { font-size: 12px; color: var(--ink-500); margin-top: 2px; }
-.year-row-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-.tag-free-sm { font-size: 11px; font-weight: 700; background: var(--green-light); color: var(--green); padding: 3px 9px; border-radius: 999px; }
-.tag-soon-sm { font-size: 11px; font-weight: 700; background: var(--ink-100); color: var(--ink-400); padding: 3px 9px; border-radius: 999px; }
+/* Year pills */
+.year-pills-row { display:flex; gap:6px; flex-wrap:wrap; padding-top:10px; border-top:1px solid var(--ink-100); }
+.year-pill { padding:5px 12px; border-radius:8px; font-size:12px; font-weight:700; border:none; font-family:inherit; transition:all 0.18s; }
+.year-pill.available { background:var(--brand-light); color:var(--brand); border:1.5px solid var(--brand); cursor:pointer; }
+.year-pill.available:hover { background:var(--brand); color:white; transform:translateY(-1px); }
+.year-pill.locked { background:var(--ink-50); color:var(--ink-300); border:1.5px solid var(--ink-100); cursor:default; font-size:11px; }
 
-/* Practice area */
-.prac-topbar { background: white; border-bottom: 1px solid var(--ink-100); padding: 11px 24px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-.prac-ctx { font-size: 13px; color: var(--ink-500); display: flex; align-items: center; gap: 6px; }
-.prac-ctx strong { color: var(--ink-900); font-weight: 700; }
-.prog-wrap { display: flex; align-items: center; gap: 10px; }
-.prog-bar { width: 100px; height: 7px; background: var(--ink-100); border-radius: 999px; overflow: hidden; }
-.prog-fill { height: 100%; background: linear-gradient(90deg, var(--brand), var(--sun)); border-radius: 999px; transition: width 0.6s cubic-bezier(0.16,1,0.3,1); }
-.prog-txt { font-size: 12px; font-weight: 700; color: var(--ink-500); min-width: 36px; text-align: right; }
-.q-outer { flex: 1; padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; max-width: 680px; margin: 0 auto; width: 100%; overflow-y: auto; }
-.q-card { background: white; border-radius: 20px; border: 1px solid var(--ink-100); padding: 24px; box-shadow: 0 2px 16px rgba(10,22,40,0.06); animation: prac-up 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+/* Paper view */
+.paper-view-body { flex:1; overflow-y:auto; padding:20px 24px 80px; max-width:720px; margin:0 auto; width:100%; }
+.paper-header-card { background:white; border-radius:16px; border:1px solid var(--ink-100); padding:20px 24px; margin-bottom:20px; text-align:center; box-shadow:0 2px 12px rgba(10,22,40,0.05); }
+.paper-header-title { font-family:'Fraunces',serif; font-size:22px; font-weight:700; color:var(--ink-900); margin-bottom:4px; }
+.paper-header-sub { font-size:13px; color:var(--ink-500); margin-bottom:16px; }
+.paper-stats { display:flex; justify-content:center; gap:24px; flex-wrap:wrap; }
+.paper-stat { text-align:center; }
+.paper-stat-num { font-family:'Fraunces',serif; font-size:24px; font-weight:700; color:var(--brand); line-height:1; }
+.paper-stat-lbl { font-size:11px; color:var(--ink-400); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; margin-top:2px; }
+
+.group-block { margin-bottom:16px; }
+.group-header { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-radius:10px 10px 0 0; }
+.grp-a .group-header { background:#F0FDF4; border:1px solid #86EFAC; border-bottom:none; }
+.grp-b .group-header { background:#EFF6FF; border:1px solid #93C5FD; border-bottom:none; }
+.grp-c .group-header { background:#FFFBEB; border:1px solid #FCD34D; border-bottom:none; }
+.grp-d .group-header { background:#FEF2F2; border:1px solid #FCA5A5; border-bottom:none; }
+.grp-x .group-header { background:var(--ink-50); border:1px solid var(--ink-200); border-bottom:none; }
+.group-name-badge { font-family:'Fraunces',serif; font-size:15px; font-weight:700; }
+.grp-a .group-name-badge { color:#15803D; }
+.grp-b .group-name-badge { color:#1D4ED8; }
+.grp-c .group-name-badge { color:#92400E; }
+.grp-d .group-name-badge { color:#B91C1C; }
+.grp-x .group-name-badge { color:var(--ink-700); }
+.group-desc-txt { font-size:12px; color:var(--ink-500); margin-top:2px; }
+.group-marks-badge { font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px; }
+.grp-a .group-marks-badge { background:#DCFCE7; color:#15803D; }
+.grp-b .group-marks-badge { background:#DBEAFE; color:#1D4ED8; }
+.grp-c .group-marks-badge { background:#FEF3C7; color:#92400E; }
+.grp-d .group-marks-badge { background:#FEE2E2; color:#B91C1C; }
+.grp-x .group-marks-badge { background:var(--ink-100); color:var(--ink-600); }
+.group-questions { background:white; border-radius:0 0 10px 10px; }
+.grp-a .group-questions { border:1px solid #86EFAC; border-top:none; }
+.grp-b .group-questions { border:1px solid #93C5FD; border-top:none; }
+.grp-c .group-questions { border:1px solid #FCD34D; border-top:none; }
+.grp-d .group-questions { border:1px solid #FCA5A5; border-top:none; }
+.grp-x .group-questions { border:1px solid var(--ink-200); border-top:none; }
+.paper-q-row { display:flex; align-items:flex-start; gap:12px; padding:14px 18px; border-bottom:1px solid var(--ink-50); transition:background 0.15s; }
+.paper-q-row:last-child { border-bottom:none; }
+.paper-q-row:hover { background:var(--ink-50); }
+.paper-q-num { font-size:12px; font-weight:700; color:var(--ink-400); min-width:28px; padding-top:2px; flex-shrink:0; }
+.paper-q-text { font-size:14px; color:var(--ink-900); line-height:1.6; flex:1; }
+.paper-q-mark { font-size:11px; font-weight:700; background:var(--sun-light); color:#92400e; padding:2px 8px; border-radius:999px; flex-shrink:0; white-space:nowrap; }
+
+.show-group-btn { width:100%; padding:14px; border:2px dashed var(--ink-200); border-radius:12px; background:none; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:16px; transition:all 0.2s; color:var(--ink-500); font-size:13px; font-weight:600; }
+.show-group-btn:hover { border-color:var(--brand); color:var(--brand); background:var(--brand-light); }
+
+.practice-paper-btn-wrap { position:sticky; bottom:0; background:linear-gradient(to top,white 70%,transparent); padding:20px 0 8px; }
+.practice-paper-btn { width:100%; padding:16px; background:var(--brand); color:white; border:none; border-radius:14px; font-family:'Fraunces',serif; font-size:18px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+.practice-paper-btn:hover { background:var(--brand-dark); transform:translateY(-2px); box-shadow:0 8px 24px rgba(30,95,168,0.3); }
+
+/* Paper practice topbar */
+.pp-topbar { background:white; border-bottom:1px solid var(--ink-100); padding:10px 20px; flex-shrink:0; }
+.pp-topbar-row1 { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.pp-back { font-size:13px; color:var(--brand); background:none; border:none; cursor:pointer; font-family:inherit; font-weight:600; padding:0; }
+.pp-prog-wrap { display:flex; align-items:center; gap:8px; }
+.pp-prog-bar { width:80px; height:6px; background:var(--ink-100); border-radius:999px; overflow:hidden; }
+.pp-prog-fill { height:100%; background:linear-gradient(90deg,var(--brand),var(--sun)); border-radius:999px; transition:width 0.5s cubic-bezier(0.16,1,0.3,1); }
+.pp-prog-txt { font-size:12px; font-weight:700; color:var(--ink-500); }
+.pp-topbar-row2 { display:flex; align-items:center; gap:8px; }
+.pp-selector { display:flex; align-items:center; gap:6px; padding:7px 12px; border-radius:9px; border:1.5px solid var(--ink-100); background:var(--ink-50); cursor:pointer; font-family:inherit; transition:all 0.15s; flex:1; position:relative; }
+.pp-selector:hover,.pp-selector.open { border-color:var(--brand); background:var(--brand-light); }
+.pp-sel-icon { font-size:14px; }
+.pp-sel-body { flex:1; text-align:left; }
+.pp-sel-label { font-size:9px; color:var(--ink-400); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; line-height:1; }
+.pp-sel-value { font-size:13px; font-weight:700; color:var(--ink-900); line-height:1.3; }
+.pp-sel-caret { font-size:10px; color:var(--ink-400); }
+.pp-divider { width:1px; height:36px; background:var(--ink-200); flex-shrink:0; }
+.pp-dropdown { position:absolute; top:calc(100% + 6px); left:0; min-width:180px; background:white; border:1.5px solid var(--ink-100); border-radius:12px; padding:6px; z-index:100; box-shadow:0 8px 32px rgba(10,22,40,0.12); }
+.pp-dd-section { font-size:9px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-300); font-weight:700; padding:6px 8px 4px; }
+.pp-dd-item { display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border-radius:8px; cursor:pointer; transition:background 0.12s; gap:8px; }
+.pp-dd-item:hover { background:var(--ink-50); }
+.pp-dd-item.on { background:var(--brand-light); }
+.pp-dd-item.locked-item { opacity:0.45; cursor:default; }
+.pp-dd-name { font-size:13px; font-weight:600; color:var(--ink-900); }
+.pp-dd-badge { font-size:10px; font-weight:700; padding:2px 7px; border-radius:999px; }
+.pp-dd-badge.free { background:var(--green-light); color:var(--green); }
+.pp-dd-badge.soon { background:var(--ink-100); color:var(--ink-400); }
+.pp-dd-check { color:var(--brand); font-size:14px; font-weight:700; }
+
+/* Question card */
+.q-outer { flex:1; padding:20px 24px; display:flex; flex-direction:column; gap:14px; max-width:680px; margin:0 auto; width:100%; overflow-y:auto; }
+.q-card { background:white; border-radius:20px; border:1px solid var(--ink-100); padding:24px; box-shadow:0 2px 16px rgba(10,22,40,0.06); animation:prac-up 0.4s cubic-bezier(0.16,1,0.3,1) both; }
 @keyframes prac-up { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-.q-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.q-src-tag { font-size: 11px; font-weight: 700; color: var(--ink-300); text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 6px; }
-.marks-tag { background: var(--sun-light); color: #92400e; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
-.q-text { font-family: 'Fraunces', serif; font-size: 20px; line-height: 1.55; color: var(--ink-900); margin-bottom: 20px; }
-.ans-area { width: 100%; min-height: 110px; padding: 14px 16px; border: 2px solid var(--ink-100); border-radius: 14px; font-family: inherit; font-size: 15px; color: var(--ink-900); background: var(--ink-50); resize: none; line-height: 1.65; transition: all 0.2s; }
-.ans-area:focus { outline: none; border-color: var(--brand); background: white; box-shadow: 0 0 0 3px rgba(30,95,168,0.08); }
-.ans-area::placeholder { color: var(--ink-300); }
-.q-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
-.btn-skip-q { font-size: 13px; color: var(--ink-300); background: none; border: none; cursor: pointer; font-family: inherit; font-weight: 500; transition: color 0.2s; }
-.btn-skip-q:hover { color: var(--ink-500); }
-.btn-check-q { background: var(--brand); color: white; border: none; padding: 12px 24px; border-radius: 999px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
-.btn-check-q:hover { background: var(--brand-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(30,95,168,0.25); }
-.btn-check-q:disabled { background: var(--ink-200); color: var(--ink-500); cursor: not-allowed; transform: none; box-shadow: none; }
+.q-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:6px; }
+.q-src-tag { font-size:11px; font-weight:700; color:var(--ink-300); text-transform:uppercase; letter-spacing:0.08em; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.q-group-tag { font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; }
+.marks-tag { background:var(--sun-light); color:#92400e; font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap; }
+.q-text { font-family:'Fraunces',serif; font-size:20px; line-height:1.55; color:var(--ink-900); margin-bottom:20px; }
+.ans-area { width:100%; min-height:110px; padding:14px 16px; border:2px solid var(--ink-100); border-radius:14px; font-family:inherit; font-size:15px; color:var(--ink-900); background:var(--ink-50); resize:none; line-height:1.65; transition:all 0.2s; }
+.ans-area:focus { outline:none; border-color:var(--brand); background:white; box-shadow:0 0 0 3px rgba(30,95,168,0.08); }
+.ans-area::placeholder { color:var(--ink-300); }
+.q-actions { display:flex; align-items:center; justify-content:space-between; margin-top:16px; gap:8px; flex-wrap:wrap; }
+.btn-skip-q { font-size:13px; color:var(--ink-300); background:none; border:none; cursor:pointer; font-family:inherit; font-weight:500; }
+.btn-skip-q:hover { color:var(--ink-500); }
+.btn-show-ans { background:var(--ink-50); color:var(--ink-700); border:1.5px solid var(--ink-200); padding:10px 18px; border-radius:999px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.btn-show-ans:hover { background:var(--ink-100); }
+.btn-check-q { background:var(--brand); color:white; border:none; padding:12px 24px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:8px; }
+.btn-check-q:hover { background:var(--brand-dark); transform:translateY(-1px); box-shadow:0 6px 20px rgba(30,95,168,0.25); }
 
-/* Feedback */
-.fb-card { background: white; border-radius: 18px; padding: 20px 22px; border: 2px solid; animation: prac-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
-.fb-card.correct { background: var(--green-light); border-color: #86efac; }
-.fb-card.partial { background: var(--sun-light); border-color: #fde68a; }
-.fb-card.wrong { background: var(--red-light); border-color: #fca5a5; }
-.fb-verdict { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; margin-bottom: 10px; }
-.fb-card.correct .fb-verdict { color: var(--green); }
-.fb-card.partial .fb-verdict { color: #92400e; }
-.fb-card.wrong .fb-verdict { color: var(--red); }
-.fb-body { font-size: 14px; line-height: 1.8; color: var(--ink-700); margin-bottom: 16px; }
-.btn-next-q { background: var(--ink-900); color: white; border: none; padding: 11px 22px; border-radius: 999px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.btn-next-q:hover { background: var(--brand); }
+/* Answer reveal */
+.ans-reveal-card { background:#F0FDF4; border:2px solid #86EFAC; border-radius:18px; padding:20px 22px; animation:prac-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.ans-reveal-title { font-family:'Fraunces',serif; font-size:16px; font-weight:600; color:#15803D; margin-bottom:10px; }
+.ans-reveal-body { font-size:14px; line-height:1.8; color:#166534; white-space:pre-line; }
+.btn-next-q { background:var(--ink-900); color:white; border:none; padding:11px 22px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; margin-top:14px; display:inline-block; }
+.btn-next-q:hover { background:var(--brand); }
 
-/* Loading dots */
-.dot-loader { display: inline-flex; gap: 4px; }
-.dot-loader span { width: 6px; height: 6px; background: var(--ink-500); border-radius: 50%; animation: dotB 1.4s ease-in-out infinite both; }
-.dot-loader span:nth-child(1) { animation-delay: -0.32s; }
-.dot-loader span:nth-child(2) { animation-delay: -0.16s; }
-@keyframes dotB { 0%,80%,100%{transform:scale(.6);opacity:.5} 40%{transform:scale(1);opacity:1} }
+/* AI feedback */
+.fb-card { background:white; border-radius:18px; padding:20px 22px; border:2px solid; animation:prac-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.fb-card.correct { background:var(--green-light); border-color:#86efac; }
+.fb-card.partial { background:var(--sun-light); border-color:#fde68a; }
+.fb-card.wrong { background:var(--red-light); border-color:#fca5a5; }
+.fb-verdict { font-family:'Fraunces',serif; font-size:19px; font-weight:600; margin-bottom:10px; }
+.fb-card.correct .fb-verdict { color:var(--green); }
+.fb-card.partial .fb-verdict { color:#92400e; }
+.fb-card.wrong .fb-verdict { color:var(--red); }
+.fb-body { font-size:14px; line-height:1.8; color:var(--ink-700); margin-bottom:16px; }
 
-/* No questions state */
-.no-qs-card { background: white; border-radius: 20px; border: 1px solid var(--ink-100); padding: 40px 24px; text-align: center; box-shadow: 0 2px 16px rgba(10,22,40,0.06); }
-.no-qs-card .icon { font-size: 48px; margin-bottom: 16px; }
-.no-qs-card h3 { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; margin-bottom: 8px; color: var(--ink-900); }
-.no-qs-card p { font-size: 14px; color: var(--ink-500); line-height: 1.6; margin-bottom: 20px; }
+/* Loading */
+.dot-loader { display:inline-flex; gap:4px; }
+.dot-loader span { width:6px; height:6px; background:var(--ink-500); border-radius:50%; animation:dotB 1.4s ease-in-out infinite both; }
+.dot-loader span:nth-child(1){animation-delay:-0.32s}
+.dot-loader span:nth-child(2){animation-delay:-0.16s}
+@keyframes dotB{0%,80%,100%{transform:scale(.6);opacity:.5}40%{transform:scale(1);opacity:1}}
 
-/* Chapter practice two-panel */
-.ch-body { display: grid; grid-template-columns: 244px 1fr; flex: 1; overflow: hidden; }
-.ch-sidebar { background: white; border-right: 1px solid var(--ink-100); display: flex; flex-direction: column; overflow: hidden; }
-.ch-sidebar-top { padding: 14px 12px 10px; border-bottom: 1px solid var(--ink-100); flex-shrink: 0; }
-.ch-sidebar-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--ink-300); margin-bottom: 10px; }
-.ch-subj-btns { display: flex; gap: 5px; }
-.ch-subj-btn { flex: 1; padding: 9px 4px; border-radius: 10px; border: 2px solid var(--ink-100); background: white; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 700; color: var(--ink-500); text-align: center; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.ch-subj-btn .si { font-size: 18px; line-height: 1; }
-.ch-subj-btn.on { background: var(--brand); border-color: var(--brand); color: white; }
-.ch-subj-btn:hover:not(.on) { border-color: var(--brand); color: var(--brand); }
-.ch-list { flex: 1; overflow-y: auto; padding: 6px 8px 16px; }
-.ch-list::-webkit-scrollbar { width: 3px; }
-.ch-list::-webkit-scrollbar-thumb { background: var(--ink-200); border-radius: 2px; }
-.ch-list-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--ink-300); padding: 10px 6px 6px; }
-.ch-item { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 9px 8px; border-radius: 8px; border: none; background: none; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; color: var(--ink-700); text-align: left; transition: all 0.15s; position: relative; }
-.ch-item:hover { background: var(--ink-50); color: var(--ink-900); }
-.ch-item.on { background: var(--brand-light); color: var(--brand); font-weight: 700; }
-.ch-item.on::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 3px; background: var(--brand); border-radius: 2px; }
-.ch-main { display: flex; flex-direction: column; overflow: hidden; }
-.ch-topbar { background: white; border-bottom: 1px solid var(--ink-100); padding: 11px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-.ch-ctx { font-size: 13px; color: var(--ink-500); display: flex; align-items: center; gap: 6px; }
-.ch-ctx strong { color: var(--ink-900); font-weight: 700; }
-.ch-q-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
-.ch-q-area::-webkit-scrollbar { width: 4px; }
-.ch-q-area::-webkit-scrollbar-thumb { background: var(--ink-200); border-radius: 2px; }
-.ch-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--ink-300); gap: 12px; padding: 40px; }
-.ch-empty-icon { font-size: 48px; }
-.ch-empty-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--ink-500); }
-.ch-empty-sub { font-size: 13px; line-height: 1.6; max-width: 240px; }
+/* No questions */
+.no-qs-card { background:white; border-radius:20px; border:1px solid var(--ink-100); padding:40px 24px; text-align:center; }
+.no-qs-card .icon { font-size:48px; margin-bottom:16px; }
+.no-qs-card h3 { font-family:'Fraunces',serif; font-size:22px; font-weight:600; margin-bottom:8px; }
+.no-qs-card p { font-size:14px; color:var(--ink-500); line-height:1.6; margin-bottom:20px; }
 
-/* AI dot — only shown during evaluate */
-.ai-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: aipulse 2s infinite; }
-@keyframes aipulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.5)} }
+/* Chapter practice */
+.ch-body { display:grid; grid-template-columns:244px 1fr; flex:1; overflow:hidden; }
+.ch-sidebar { background:white; border-right:1px solid var(--ink-100); display:flex; flex-direction:column; overflow:hidden; }
+.ch-sidebar-top { padding:14px 12px 10px; border-bottom:1px solid var(--ink-100); flex-shrink:0; }
+.ch-sidebar-lbl { font-size:10px; text-transform:uppercase; letter-spacing:0.1em; font-weight:700; color:var(--ink-300); margin-bottom:10px; }
+.ch-subj-btns { display:flex; gap:5px; }
+.ch-subj-btn { flex:1; padding:9px 4px; border-radius:10px; border:2px solid var(--ink-100); background:white; cursor:pointer; font-family:inherit; font-size:12px; font-weight:700; color:var(--ink-500); text-align:center; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.ch-subj-btn .si { font-size:18px; line-height:1; }
+.ch-subj-btn.on { background:var(--brand); border-color:var(--brand); color:white; }
+.ch-subj-btn:hover:not(.on) { border-color:var(--brand); color:var(--brand); }
+.ch-list { flex:1; overflow-y:auto; padding:6px 8px 16px; }
+.ch-list::-webkit-scrollbar { width:3px; }
+.ch-list::-webkit-scrollbar-thumb { background:var(--ink-200); border-radius:2px; }
+.ch-list-lbl { font-size:10px; text-transform:uppercase; letter-spacing:0.1em; font-weight:700; color:var(--ink-300); padding:10px 6px 6px; }
+.ch-item { width:100%; display:flex; align-items:center; justify-content:space-between; padding:9px 8px; border-radius:8px; border:none; background:none; cursor:pointer; font-family:inherit; font-size:13px; font-weight:500; color:var(--ink-700); text-align:left; transition:all 0.15s; position:relative; }
+.ch-item:hover { background:var(--ink-50); color:var(--ink-900); }
+.ch-item.on { background:var(--brand-light); color:var(--brand); font-weight:700; }
+.ch-item.on::before { content:''; position:absolute; left:0; top:20%; bottom:20%; width:3px; background:var(--brand); border-radius:2px; }
+.ch-main { display:flex; flex-direction:column; overflow:hidden; }
+.ch-topbar { background:white; border-bottom:1px solid var(--ink-100); padding:11px 20px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+.ch-ctx { font-size:13px; color:var(--ink-500); display:flex; align-items:center; gap:6px; }
+.ch-ctx strong { color:var(--ink-900); font-weight:700; }
+.ch-q-area { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:14px; }
+.ch-q-area::-webkit-scrollbar { width:4px; }
+.ch-q-area::-webkit-scrollbar-thumb { background:var(--ink-200); border-radius:2px; }
+.ch-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:var(--ink-300); gap:12px; padding:40px; }
+.ch-empty-icon { font-size:48px; }
+.ch-empty-title { font-family:'Fraunces',serif; font-size:18px; font-weight:600; color:var(--ink-500); }
+.ch-empty-sub { font-size:13px; line-height:1.6; max-width:240px; }
+.ai-dot { width:6px; height:6px; background:#22c55e; border-radius:50%; animation:aipulse 2s infinite; }
+@keyframes aipulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
 
 /* Signup wall */
-.signup-wall { background: white; flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px 24px; }
-.signup-inner { max-width: 420px; width: 100%; }
-.celebrate { text-align: center; margin-bottom: 24px; }
-.confetti { font-size: 52px; display: block; margin-bottom: 12px; animation: pop 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
-@keyframes pop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
-.celebrate h2 { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
-.celebrate h2 em { font-style: italic; color: var(--brand); }
-.celebrate p { font-size: 15px; color: var(--ink-500); line-height: 1.6; }
-.score-row { display: flex; justify-content: center; gap: 20px; background: var(--brand-50); border-radius: 14px; padding: 18px; margin-bottom: 18px; }
-.score-item { text-align: center; }
-.score-num { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; color: var(--brand); line-height: 1; }
-.score-lbl { font-size: 11px; color: var(--ink-500); font-weight: 600; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
-.perks-list { background: var(--ink-50); border-radius: 14px; padding: 16px; margin-bottom: 18px; display: flex; flex-direction: column; gap: 10px; }
-.perk { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-700); font-weight: 500; }
-.perk span:first-child { font-size: 18px; flex-shrink: 0; }
-.form-box { border: 1.5px solid var(--ink-100); border-radius: 18px; padding: 24px; background: white; }
-.form-box h3 { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-.form-box > p { font-size: 13px; color: var(--ink-500); margin-bottom: 20px; }
-.form-foot { text-align: center; margin-top: 12px; font-size: 11px; color: var(--ink-300); }
-.btn-continue { display: block; text-align: center; margin-top: 12px; font-size: 13px; color: var(--ink-300); cursor: pointer; background: none; border: none; font-family: inherit; font-weight: 500; width: 100%; }
-.btn-continue:hover { color: var(--ink-500); }
+.signup-wall { background:white; flex:1; display:flex; align-items:center; justify-content:center; padding:32px 24px; }
+.signup-inner { max-width:420px; width:100%; }
+.celebrate { text-align:center; margin-bottom:24px; }
+.confetti { font-size:52px; display:block; margin-bottom:12px; animation:pop 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.celebrate h2 { font-family:'Fraunces',serif; font-size:26px; font-weight:700; line-height:1.2; margin-bottom:8px; }
+.celebrate h2 em { font-style:italic; color:var(--brand); }
+.perks-list { background:var(--ink-50); border-radius:14px; padding:16px; margin-bottom:18px; display:flex; flex-direction:column; gap:10px; }
+.perk { display:flex; align-items:center; gap:10px; font-size:14px; color:var(--ink-700); font-weight:500; }
+.perk span:first-child { font-size:18px; flex-shrink:0; }
+.form-box { border:1.5px solid var(--ink-100); border-radius:18px; padding:24px; background:white; }
+.form-box h3 { font-family:'Fraunces',serif; font-size:18px; font-weight:700; margin-bottom:4px; }
+.form-box>p { font-size:13px; color:var(--ink-500); margin-bottom:20px; }
+.form-foot { text-align:center; margin-top:12px; font-size:11px; color:var(--ink-300); }
+.btn-continue { display:block; text-align:center; margin-top:12px; font-size:13px; color:var(--ink-300); cursor:pointer; background:none; border:none; font-family:inherit; font-weight:500; width:100%; }
+.btn-continue:hover { color:var(--ink-500); }
 
-@media (max-width: 700px) {
-  .ch-body { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-  .ch-sidebar { max-height: 220px; border-right: none; border-bottom: 1px solid var(--ink-100); }
-  .ch-list { max-height: 130px; }
+@media (max-width:700px) {
+  .ch-body { grid-template-columns:1fr; grid-template-rows:auto 1fr; }
+  .ch-sidebar { max-height:220px; border-right:none; border-bottom:1px solid var(--ink-100); }
+  .ch-list { max-height:130px; }
+  .pp-topbar-row2 { gap:4px; }
 }
 </style>
 </head>
-<body style="background: var(--ink-50);">
-
+<body style="background:var(--ink-50);">
 <div id="site-nav"></div>
 
-<!-- ══════════════════════════════════════
-     SCREEN: HOME
-══════════════════════════════════════ -->
+<!-- HOME -->
 <div class="prac-screen active" id="ps-home">
   <div style="background:white;border-bottom:1px solid var(--ink-100);padding:18px 24px 14px;flex-shrink:0;">
-    <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;margin-bottom:14px;line-height:1.2;">
-      Good morning. <em style="font-style:italic;color:var(--brand);font-weight:400;">Let's practise.</em>
-    </div>
+    <div id="home-greeting" style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;margin-bottom:14px;line-height:1.2;">Good morning. <em style="font-style:italic;color:var(--brand);font-weight:400;">Let's practise.</em></div>
     <div class="subj-toggle" id="home-subj-toggle"></div>
   </div>
   <div class="mode-grid" id="mode-grid"></div>
 </div>
 
-<!-- ══════════════════════════════════════
-     SCREEN: YEARS — Pick past paper year
-══════════════════════════════════════ -->
-<div class="prac-screen" id="ps-years">
-  <div class="prac-bc">
-    <button class="prac-bc-btn" onclick="showScreen('home')">🏠 Home</button>
-    <span class="prac-bc-sep">›</span>
-    <span class="prac-bc-btn on">Past Papers</span>
-  </div>
-  <!-- Header with subject toggle built in -->
-  <div style="background:white;border-bottom:1px solid var(--ink-100);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <button onclick="showScreen('home')" style="width:36px;height:36px;border-radius:50%;border:1.5px solid var(--ink-200);background:none;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--ink-700);" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--ink-200)';this.style.color='var(--ink-700)'">←</button>
-      <div>
-        <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:700;">Past Papers</div>
-        <div style="font-size:13px;color:var(--ink-500);">Choose a year to practise</div>
-      </div>
-    </div>
-    <!-- Subject toggle on years page -->
-    <div class="subj-toggle" id="years-subj-toggle"></div>
-  </div>
-  <div class="years-body" id="years-body"></div>
+<!-- PAPER VIEW -->
+<div class="prac-screen" id="ps-paper-view">
+  <div class="prac-bc" id="pv-bc"></div>
+  <div class="paper-view-body" id="paper-view-body"></div>
 </div>
 
-<!-- ══════════════════════════════════════
-     SCREEN: PRACTICE — Question
-══════════════════════════════════════ -->
-<div class="prac-screen" id="ps-practice">
-  <div class="prac-bc" id="papers-bc"></div>
-  <div class="prac-topbar">
-    <div class="prac-ctx">
-      <span id="prac-subj-label">Maths</span>
-      <span style="color:var(--ink-200);">›</span>
-      <strong id="prac-detail-label">SEE 2081</strong>
+<!-- PAPER PRACTICE (one by one) -->
+<div class="prac-screen" id="ps-pp">
+  <div class="pp-topbar">
+    <div class="pp-topbar-row1">
+      <button class="pp-back" onclick="showScreen('paper-view')">‹ Back to paper</button>
+      <div class="pp-prog-wrap">
+        <div class="pp-prog-bar"><div class="pp-prog-fill" id="pp-prog-fill" style="width:0%"></div></div>
+        <div class="pp-prog-txt" id="pp-prog-txt">0 / 0</div>
+      </div>
     </div>
-    <div class="prog-wrap">
-      <div class="prog-bar"><div class="prog-fill" id="prac-prog-fill" style="width:0%"></div></div>
-      <div class="prog-txt" id="prac-prog-txt">0 / 5</div>
-    </div>
+    <div class="pp-topbar-row2" id="pp-selectors"></div>
   </div>
-  <div class="q-outer">
-    <!-- Loading (only shown during AI evaluate) -->
-    <div id="prac-loading" class="hidden" style="text-align:center;padding:40px 0;">
+  <div class="q-outer" id="pp-q-outer">
+    <div id="pp-loading" class="hidden" style="text-align:center;padding:40px 0;">
       <div class="dot-loader"><span></span><span></span><span></span></div>
       <div style="font-size:14px;color:var(--ink-500);margin-top:12px;">Checking your answer...</div>
     </div>
-    <!-- Question -->
-    <div class="q-card hidden" id="prac-q-card">
+    <div class="q-card hidden" id="pp-q-card">
       <div class="q-meta">
-        <div class="q-src-tag"><span id="prac-q-src">SEE 2081 · Maths</span></div>
-        <div class="marks-tag" id="prac-q-marks">2 marks</div>
+        <div class="q-src-tag">
+          <span id="pp-q-group-tag" class="q-group-tag"></span>
+          <span id="pp-q-src"></span>
+        </div>
+        <div class="marks-tag" id="pp-q-marks">2 marks</div>
       </div>
-      <div class="q-text" id="prac-q-text"></div>
-      <textarea class="ans-area" id="prac-ans" placeholder="Write your answer here...&#10;&#10;Show your working — just like in the real SEE exam."></textarea>
+      <div class="q-text" id="pp-q-text"></div>
       <div class="q-actions">
-        <button class="btn-skip-q" onclick="PP.skip()">Skip →</button>
-        <button class="btn-check-q" id="prac-check-btn" onclick="PP.check()">
-          Check answer
-          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m-3-3 3 3-3 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <button class="btn-skip-q" onclick="PPQ.skip()">Skip →</button>
+        <button class="btn-show-ans" onclick="PPQ.showAnswer()">Show answer</button>
       </div>
     </div>
-    <!-- Feedback (shown after AI evaluates) -->
-    <div class="fb-card hidden" id="prac-fb-card">
-      <div class="q-src-tag" style="margin-bottom:10px;"><div class="ai-dot"></div><span style="font-size:11px;font-weight:700;color:var(--ink-300);text-transform:uppercase;letter-spacing:0.08em;">AI Feedback</span></div>
-      <div class="fb-verdict" id="prac-fb-verdict"></div>
-      <div class="fb-body" id="prac-fb-body"></div>
-      <button class="btn-next-q" id="prac-btn-next" onclick="PP.next()">Next question →</button>
+    <div class="ans-reveal-card hidden" id="pp-ans-card">
+      <div class="ans-reveal-title">✅ Model answer</div>
+      <div class="ans-reveal-body" id="pp-ans-body"></div>
+      <button class="btn-next-q" onclick="PPQ.next()">Next question →</button>
     </div>
-    <!-- No questions for this year/subject -->
-    <div class="no-qs-card hidden" id="prac-no-qs">
+    <div class="no-qs-card hidden" id="pp-no-qs">
       <div class="icon">📋</div>
       <h3>Questions coming soon</h3>
-      <p>We're adding real SEE past paper questions for this year. Check back soon, or try Chapter Practice in the meantime.</p>
-      <button class="btn btn-blue" onclick="showScreen('home')">← Back to practice</button>
+      <p>We're adding real SEE past paper questions. Check back soon, or try Chapter Practice.</p>
+      <button class="btn btn-blue" onclick="showScreen('home')">← Back to home</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     SCREEN: CHAPTER PRACTICE — Two panel
-══════════════════════════════════════ -->
+<!-- CHAPTER PRACTICE -->
 <div class="prac-screen" id="ps-chapters" style="flex:1;overflow:hidden;">
   <div class="prac-bc">
     <button class="prac-bc-btn" onclick="showScreen('home')">🏠 Home</button>
@@ -290,20 +317,14 @@
         <div class="ch-sidebar-lbl">Subject</div>
         <div class="ch-subj-btns" id="ch-subj-btns"></div>
       </div>
-      <div class="ch-list" id="ch-list">
-        <div class="ch-list-lbl">Chapters</div>
-      </div>
+      <div class="ch-list" id="ch-list"><div class="ch-list-lbl">Chapters</div></div>
     </aside>
     <div class="ch-main">
       <div class="ch-topbar">
-        <div class="ch-ctx">
-          <span id="ch-ctx-subj">Maths</span>
-          <span style="color:var(--ink-200);">›</span>
-          <strong id="ch-ctx-ch">Choose a chapter</strong>
-        </div>
-        <div class="prog-wrap">
-          <div class="prog-bar"><div class="prog-fill" id="ch-prog-fill" style="width:0%"></div></div>
-          <div class="prog-txt" id="ch-prog-txt">0 / 5</div>
+        <div class="ch-ctx"><span id="ch-ctx-subj">Maths</span><span style="color:var(--ink-200);">›</span><strong id="ch-ctx-ch">Choose a chapter</strong></div>
+        <div class="pp-prog-wrap">
+          <div class="pp-prog-bar" style="width:80px;"><div class="pp-prog-fill" id="ch-prog-fill" style="width:0%"></div></div>
+          <div class="pp-prog-txt" id="ch-prog-txt">0 / 5</div>
         </div>
       </div>
       <div class="ch-q-area" id="ch-q-area">
@@ -325,10 +346,7 @@
           <textarea class="ans-area" id="ch-ans" placeholder="Write your answer here...&#10;&#10;Show your working — just like in the real SEE exam."></textarea>
           <div class="q-actions">
             <button class="btn-skip-q" onclick="CP.skip()">Skip →</button>
-            <button class="btn-check-q" id="ch-check-btn" onclick="CP.check()">
-              Check answer
-              <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m-3-3 3 3-3 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
+            <button class="btn-check-q" onclick="CP.check()">Check answer <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m-3-3 3 3-3 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
         </div>
         <div class="fb-card hidden" id="ch-fb-card">
@@ -342,26 +360,14 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     SCREEN: SIGNUP WALL
-══════════════════════════════════════ -->
+<!-- SIGNUP WALL -->
 <div class="prac-screen" id="ps-signup">
   <div class="signup-wall">
     <div class="signup-inner">
-      <div class="celebrate">
-        <span class="confetti">🎉</span>
-        <h2>You're doing great!<br><em>Keep going.</em></h2>
-        <p style="margin-top:8px;">Sign up free to unlock more questions and save your progress.</p>
-      </div>
-      <div class="score-row">
-        <div class="score-item"><div class="score-num" id="wall-correct">0/5</div><div class="score-lbl">Correct</div></div>
-        <div class="score-item"><div class="score-num" id="wall-pct">0%</div><div class="score-lbl">Accuracy</div></div>
-        <div class="score-item"><div class="score-num">🔥 1</div><div class="score-lbl">Streak</div></div>
-      </div>
+      <div class="celebrate"><span class="confetti">🎉</span><h2>You're doing great!<br><em>Keep going.</em></h2><p style="margin-top:8px;">Sign up free to unlock more questions and save your progress.</p></div>
       <div class="perks-list" id="perks-list"></div>
       <div class="form-box">
-        <h3>Create your free account</h3>
-        <p>30 seconds. No credit card. No spam.</p>
+        <h3>Create your free account</h3><p>30 seconds. No credit card. No spam.</p>
         <div class="field"><label>Your full name</label><input type="text" class="input" placeholder="Sita Sharma"></div>
         <div class="field"><label>Email</label><input type="email" class="input" placeholder="sita@gmail.com"></div>
         <div class="field"><label>Parent email <span style="font-size:11px;color:var(--ink-300);font-weight:400;">optional</span></label><input type="email" class="input" placeholder="mum@gmail.com"></div>
@@ -377,9 +383,7 @@
 <script src="/scripts/components.js"></script>
 <script>
 /* ============================================================
-   ① CONFIG
-   availableYears  = years with real questions (open to students)
-   lockedYears     = years shown but locked as "Coming soon"
+   ① CONFIG — change settings here only
    ============================================================ */
 const CONFIG = {
   sessionLength: 5,
@@ -387,443 +391,552 @@ const CONFIG = {
     { key:'maths',   label:'Maths',   icon:'🧮' },
     { key:'science', label:'Science', icon:'🔬' },
   ],
-  // Only these 3 years are available — real questions typed in by helper
-  availableYears: [2081, 2080, 2079],
-  // These years show as locked "Coming soon"
-  lockedYears:    [2078, 2077, 2076, 2075, 2074, 2073, 2072],
   modes: [
-    { key:'papers',  title:'Past Papers',      desc:'Practice real SEE questions from past years. The closest thing to the actual exam.',  icon:'📜', bg:'blue', tag:{txt:'✓ Last 3 years — free', cls:'badge-sun'}, on:true },
-    { key:'chapter', title:'Chapter Practice', desc:'Pick a chapter and drill it. Perfect for targeted revision before a test.',           icon:'📚', bg:'gold', tag:{txt:'✓ Free — all chapters',  cls:'badge-sun'}, on:true },
-    { key:'mock',    title:'Mock Test',        desc:'Full 3-hour SEE simulation. Timed. Marked. Just like the real exam day.',            icon:'⏱️', bg:'soft', tag:{txt:'Coming soon',              cls:'badge-blue'}, on:false },
+    { key:'papers',  title:'Past Papers',      desc:'Practice real SEE questions from past years. The closest thing to the actual exam.',  icon:'📜', bg:'blue', tag:'✓ Free — no signup needed', on:true  },
+    { key:'chapter', title:'Chapter Practice', desc:'Pick a chapter and drill it. Perfect for targeted revision before a test.',           icon:'📚', bg:'gold', tag:'✓ Free — all chapters',       on:true  },
+    { key:'mock',    title:'Mock Test',        desc:'Full 3-hour SEE simulation. Timed. Marked. Just like the real exam day.',            icon:'⏱️', bg:'soft', tag:'Coming soon',                  on:false },
   ],
-  perks: [
-    { icon:'📄', txt:'Real SEE past paper questions — completely free' },
-    { icon:'📈', txt:'Save your progress and see improvement over time' },
-    { icon:'📧', txt:'Weekly progress report sent to your parents' },
-    { icon:'🔥', txt:'Daily streak to keep you motivated' },
+  perks:[
+    {icon:'📄',txt:'Real SEE past paper questions — completely free'},
+    {icon:'📈',txt:'Save your progress and see improvement over time'},
+    {icon:'📧',txt:'Weekly progress report sent to your parents'},
+    {icon:'🔥',txt:'Daily streak to keep you motivated'},
   ],
 };
 
 /* ============================================================
-   ② CONTENT — Real questions from past papers
-      y = Nepali year (2081 = most recent)
-      Add questions here as helper types them in.
+   ② PAPERS_CONTENT
+   status: 'live' = visible | 'draft' = locked (coming soon)
+   groups: add as many as the real paper has — fully dynamic
+   Each question: n=number, q=question text, a=model answer, m=marks
+   group color classes: grp-a (green) grp-b (blue) grp-c (amber) grp-d (red) grp-x (gray)
+   ============================================================ */
+const PAPERS_CONTENT = [
+  {
+    subj:'maths', year:2081, status:'live', totalMarks:75, duration:'3 hours',
+    groups:[
+      { name:'Group A', desc:'11 questions · 1 mark each', marks:11, color:'grp-a', qs:[
+        {n:1,  q:'Write the formula for finding the volume of a cylinder.',                                                             a:'V = πr²h\nwhere r = radius, h = height of the cylinder.',                                                                                                                                                                m:1},
+        {n:2,  q:'If A = {1,2,3} and B = {3,4,5}, write A ∩ B.',                                                                       a:'A ∩ B = {3}',                                                                                                                                                                                                            m:1},
+        {n:3,  q:'What is the value of sin 30°?',                                                                                       a:'sin 30° = 1/2 = 0.5',                                                                                                                                                                                                    m:1},
+        {n:4,  q:'Write the quadratic formula.',                                                                                        a:'x = (−b ± √(b²−4ac)) / 2a',                                                                                                                                                                                             m:1},
+        {n:5,  q:'If the mean of 4 numbers is 10, what is their sum?',                                                                  a:'Sum = Mean × Count = 10 × 4 = 40',                                                                                                                                                                                      m:1},
+        {n:6,  q:'What is the probability of getting a head when a fair coin is tossed?',                                               a:'P(head) = 1/2',                                                                                                                                                                                                          m:1},
+        {n:7,  q:'Write the slope-intercept form of a straight line.',                                                                  a:'y = mx + c\nwhere m = slope, c = y-intercept.',                                                                                                                                                                          m:1},
+        {n:8,  q:'What is the determinant of the matrix [[3,1],[2,4]]?',                                                                a:'det = (3×4) − (1×2) = 12 − 2 = 10',                                                                                                                                                                                     m:1},
+        {n:9,  q:'The sum of interior angles of a triangle is ___°.',                                                                   a:'180°',                                                                                                                                                                                                                   m:1},
+        {n:10, q:'Factorise: x² − 9.',                                                                                                  a:'x² − 9 = (x + 3)(x − 3)',                                                                                                                                                                                               m:1},
+        {n:11, q:'Write the distance formula between two points (x₁,y₁) and (x₂,y₂).',                                                 a:'d = √[(x₂−x₁)² + (y₂−y₁)²]',                                                                                                                                                                                           m:1},
+      ]},
+      { name:'Group B', desc:'8 questions · 2 marks each', marks:16, color:'grp-b', qs:[
+        {n:12, q:'Solve: 5x − 3 = 2x + 9. Show your working.',                                                                         a:'5x − 2x = 9 + 3\n3x = 12\nx = 4',                                                                                                                                                                                      m:2},
+        {n:13, q:'Find the area of a circle with radius 7 cm. (Use π = 22/7)',                                                          a:'Area = πr² = (22/7) × 7 × 7 = 22 × 7 = 154 cm²',                                                                                                                                                                       m:2},
+        {n:14, q:'If sin θ = 3/5, find cos θ.',                                                                                         a:'sin²θ + cos²θ = 1\n(3/5)² + cos²θ = 1\ncos²θ = 1 − 9/25 = 16/25\ncos θ = 4/5',                                                                                                                                        m:2},
+        {n:15, q:'The mean of 5 numbers is 12. Four of the numbers are 10, 14, 8 and 16. Find the fifth number.',                       a:'Sum of 5 numbers = 5 × 12 = 60\nSum of 4 known = 10+14+8+16 = 48\nFifth number = 60 − 48 = 12',                                                                                                                         m:2},
+        {n:16, q:'Find the midpoint of the line joining A(2,6) and B(8,4).',                                                            a:'Midpoint = ((2+8)/2, (6+4)/2) = (10/2, 10/2) = (5, 5)',                                                                                                                                                                 m:2},
+        {n:17, q:'A shopkeeper bought a book for Rs 250 and sold it for Rs 300. Find the profit percentage.',                           a:'Profit = 300 − 250 = Rs 50\nProfit% = (Profit/CP) × 100 = (50/250) × 100 = 20%',                                                                                                                                        m:2},
+        {n:18, q:'In a class of 30 students, 18 play cricket and 15 play football. 8 play both. How many play neither?',                a:'n(C ∪ F) = n(C) + n(F) − n(C ∩ F) = 18 + 15 − 8 = 25\nStudents playing neither = 30 − 25 = 5',                                                                                                                          m:2},
+        {n:19, q:'Add the matrices A = [[1,2],[3,4]] and B = [[5,6],[7,8]].',                                                           a:'A + B = [[1+5, 2+6],[3+7, 4+8]] = [[6, 8],[10, 12]]',                                                                                                                                                                   m:2},
+      ]},
+      { name:'Group C', desc:'5 questions · 4 marks each', marks:20, color:'grp-c', qs:[
+        {n:20, q:'A shopkeeper bought 50 kg of rice at Rs 60 per kg and sold it at Rs 75 per kg. Find his profit percentage and total profit amount.',
+                                                                                                                                        a:'Cost price = 50 × 60 = Rs 3,000\nSelling price = 50 × 75 = Rs 3,750\nProfit = 3,750 − 3,000 = Rs 750\nProfit% = (750 / 3000) × 100 = 25%',                                                                               m:4},
+        {n:21, q:'Find the volume and total surface area of a cylinder with radius 5 cm and height 10 cm. (Use π = 3.14)',              a:'Volume = πr²h = 3.14 × 25 × 10 = 785 cm³\nTotal Surface Area = 2πr(r + h) = 2 × 3.14 × 5 × (5+10) = 31.4 × 15 = 471 cm²',                                                                                           m:4},
+        {n:22, q:'Solve the quadratic equation x² − 5x + 6 = 0 using factorisation. Verify your answer.',                              a:'x² − 5x + 6 = 0\n(x − 2)(x − 3) = 0\nx = 2 or x = 3\nVerification:\nFor x=2: (2)²−5(2)+6 = 4−10+6 = 0 ✓\nFor x=3: (3)²−5(3)+6 = 9−15+6 = 0 ✓',                                                                      m:4},
+        {n:23, q:'Find the compound interest on Rs 8,000 at 10% per annum for 2 years, compounded annually.',                          a:'Year 1 interest = 8000 × 10/100 = Rs 800\nAmount after Year 1 = Rs 8,800\nYear 2 interest = 8800 × 10/100 = Rs 880\nTotal CI = 800 + 880 = Rs 1,680',                                                                   m:4},
+        {n:24, q:'In triangle ABC, angle A = 60° and angle B = 70°. Find angle C. Also verify that the exterior angle of a triangle equals the sum of the two non-adjacent interior angles.',
+                                                                                                                                        a:'Angle C = 180° − 60° − 70° = 50°\nExterior angle at C = 180° − 50° = 130°\nSum of non-adjacent angles = A + B = 60° + 70° = 130° ✓',                                                                                   m:4},
+      ]},
+      { name:'Group D', desc:'2 questions · 5 marks each', marks:10, color:'grp-d', qs:[
+        {n:25, q:'Prove that the angle subtended by an arc at the centre of a circle is double the angle subtended by it at any point on the remaining part of the circle. Support with a neat figure description.',
+                                                                                                                                        a:'Given: Circle with centre O. Arc PQ subtends ∠POQ at centre and ∠PRQ at point R on major arc.\nTo prove: ∠POQ = 2∠PRQ\nConstruction: Join RO and extend to S.\nProof:\nIn △OPR: OP = OR (radii) → ∠OPR = ∠ORP\nExterior angle ∠POS = ∠OPR + ∠ORP = 2∠ORP\nSimilarly, ∠QOS = 2∠ORQ\n∴ ∠POQ = ∠POS + ∠QOS = 2(∠ORP + ∠ORQ) = 2∠PRQ [Proved]',                                                          m:5},
+        {n:26, q:'A survey of 100 students found: 60 like Maths, 50 like Science, 30 like both. Draw a Venn diagram and find: (a) students who like only Maths, (b) only Science, (c) neither subject.',
+                                                                                                                                        a:'Using Venn diagram with two overlapping circles:\nOnly Maths = 60 − 30 = 30\nOnly Science = 50 − 30 = 20\nBoth = 30\nTotal = 30 + 20 + 30 = 80\n(a) Only Maths = 30\n(b) Only Science = 20\n(c) Neither = 100 − 80 = 20',                                                                                   m:5},
+      ]},
+    ]
+  },
+  {
+    subj:'science', year:2081, status:'live', totalMarks:75, duration:'3 hours',
+    groups:[
+      { name:'Group A', desc:'11 questions · 1 mark each', marks:11, color:'grp-a', qs:[
+        {n:1,  q:"Write Ohm's Law.",                                                                                                    a:'V = IR\nV = voltage (volts), I = current (amperes), R = resistance (ohms).',                                                                                                                                                   m:1},
+        {n:2,  q:'Name the process by which plants make their own food.',                                                               a:'Photosynthesis',                                                                                                                                                                                                         m:1},
+        {n:3,  q:'What is the SI unit of force?',                                                                                       a:'Newton (N)',                                                                                                                                                                                                              m:1},
+        {n:4,  q:'Name the acid found in the human stomach.',                                                                           a:'Hydrochloric acid (HCl)',                                                                                                                                                                                                m:1},
+        {n:5,  q:'What does DNA stand for?',                                                                                            a:'Deoxyribonucleic Acid',                                                                                                                                                                                                  m:1},
+        {n:6,  q:'Write the chemical formula for water.',                                                                               a:'H₂O',                                                                                                                                                                                                                    m:1},
+        {n:7,  q:'What is the approximate speed of light in vacuum?',                                                                   a:'3 × 10⁸ m/s (approximately 300,000 km/s)',                                                                                                                                                                               m:1},
+        {n:8,  q:'Name the organ that pumps blood throughout the human body.',                                                          a:'The heart',                                                                                                                                                                                                              m:1},
+        {n:9,  q:'What is the pH value of a neutral solution?',                                                                         a:'pH = 7',                                                                                                                                                                                                                 m:1},
+        {n:10, q:"State Newton's first law of motion in one sentence.",                                                                 a:'An object at rest stays at rest, and an object in motion continues in motion, unless acted upon by an unbalanced external force.',                                                                                          m:1},
+        {n:11, q:'Name the gas released by plants during photosynthesis.',                                                              a:'Oxygen (O₂)',                                                                                                                                                                                                            m:1},
+      ]},
+      { name:'Group B', desc:'8 questions · 2 marks each', marks:16, color:'grp-b', qs:[
+        {n:12, q:'State the two laws of reflection of light.',                                                                          a:'1st Law: The incident ray, reflected ray, and normal at the point of incidence all lie in the same plane.\n2nd Law: The angle of incidence equals the angle of reflection (∠i = ∠r).',                                          m:2},
+        {n:13, q:'What is the difference between speed and velocity? Give one example of each.',                                        a:'Speed: Distance travelled per unit time (scalar quantity). Example: 60 km/h.\nVelocity: Displacement per unit time in a specific direction (vector). Example: 60 km/h towards north.',                               m:2},
+        {n:14, q:'What happens when an acid reacts with a base? Write the general word equation.',                                      a:'Acid + Base → Salt + Water (Neutralisation reaction)\nExample: Hydrochloric acid + Sodium hydroxide → Sodium chloride + Water',                                                                                      m:2},
+        {n:15, q:'Name the four chambers of the human heart and state the function of the left ventricle.',                            a:'Four chambers: Right atrium, Right ventricle, Left atrium, Left ventricle.\nLeft ventricle: Pumps oxygenated blood to all parts of the body through the aorta.',                                                            m:2},
+        {n:16, q:'Write the word equation for photosynthesis.',                                                                         a:'Carbon dioxide + Water → (sunlight, chlorophyll) → Glucose + Oxygen\nCO₂ + H₂O → C₆H₁₂O₆ + O₂',                                                                                                                   m:2},
+        {n:17, q:'What is the greenhouse effect? Name two greenhouse gases.',                                                           a:'The greenhouse effect is the trapping of solar heat by gases in the atmosphere, warming the Earth\'s surface.\nGreenhouse gases: Carbon dioxide (CO₂) and Methane (CH₄).',                                             m:2},
+        {n:18, q:'Differentiate between exothermic and endothermic reactions with one example each.',                                   a:'Exothermic: Releases heat energy. Example: Burning of wood or coal.\nEndothermic: Absorbs heat energy from surroundings. Example: Dissolving ammonium chloride in water.',                                           m:2},
+        {n:19, q:"State Newton's second law of motion and write its mathematical form.",                                                a:'The rate of change of momentum of an object is directly proportional to the applied force and acts in the direction of force.\nMathematically: F = ma (Force = mass × acceleration)',                                      m:2},
+      ]},
+      { name:'Group C', desc:'5 questions · 4 marks each', marks:20, color:'grp-c', qs:[
+        {n:20, q:'Three resistors of 4Ω, 6Ω and 12Ω are connected in parallel. Find: (a) total resistance, (b) total current if the voltage is 12V.',
+                                                                                                                                        a:'(a) 1/R = 1/4 + 1/6 + 1/12 = 3/12 + 2/12 + 1/12 = 6/12\nR_total = 12/6 = 2Ω\n(b) I = V/R = 12/2 = 6 Amperes',                                                                                                    m:4},
+        {n:21, q:'Explain the process of digestion from the mouth to the small intestine.',                                             a:'Mouth: Food chewed; saliva contains amylase which breaks down starch into sugars.\nOesophagus: Food travels to stomach by peristalsis.\nStomach: HCl creates acidic environment; pepsin breaks down proteins.\nSmall intestine: Bile from liver emulsifies fats; pancreatic enzymes complete digestion; nutrients absorbed through villi into blood.',  m:4},
+        {n:22, q:'A ray of light travels from air into glass at 45°. The refractive index of glass is 1.5. Find the angle of refraction using Snell\'s Law.',
+                                                                                                                                        a:"Snell's Law: n₁ sin θ₁ = n₂ sin θ₂\n1 × sin 45° = 1.5 × sin θ₂\nsin θ₂ = 0.7071 / 1.5 = 0.4714\nθ₂ = sin⁻¹(0.4714) ≈ 28.1°",                                                                                          m:4},
+        {n:23, q:'What is biodiversity? Explain three reasons why conserving biodiversity is important.',                               a:'Biodiversity is the variety of all living organisms (plants, animals, microbes) in a given area or on Earth.\nImportance:\n1. Ecological balance — maintains food chains and ecosystems.\n2. Medicine — many plants are sources of life-saving drugs.\n3. Agriculture — biodiversity supports pollination and maintains soil health for crop growth.',  m:4},
+        {n:24, q:'Describe the carbon cycle. How do human activities disrupt it?',                                                      a:'Carbon cycle: Plants absorb CO₂ for photosynthesis → animals eat plants, respiring and releasing CO₂ → dead organisms decomposed by bacteria, releasing CO₂ → carbon returns to atmosphere.\nHuman disruption: Burning fossil fuels releases extra CO₂. Deforestation reduces CO₂ absorption. Both increase greenhouse gases, causing global warming.',  m:4},
+      ]},
+      { name:'Group D', desc:'2 questions · 5 marks each', marks:10, color:'grp-d', qs:[
+        {n:25, q:'Describe the structure of the human kidney and explain how it filters blood. How does it maintain water balance?',
+                                                                                                                                        a:'Structure: Bean-shaped, ~10cm long. Contains millions of nephrons. Each nephron has: glomerulus (filtering knot), Bowman\'s capsule, loop of Henle, collecting duct.\nFunction: Filters ~180L blood daily. Removes urea, creatinine, excess salts. Reabsorbs glucose and needed water.\nWater balance (osmoregulation):\n- If blood too concentrated → more water reabsorbed → small amount of concentrated urine.\n- If blood too dilute → less water reabsorbed → large amount of dilute urine.',  m:5},
+        {n:26, q:'With a circuit diagram description, explain how you would verify the relationship between current and voltage for a resistor. State your expected conclusion.',
+                                                                                                                                        a:"Circuit: Battery → ammeter (series) → resistor → back to battery. Voltmeter connected in parallel across resistor. Rheostat to vary current.\nProcedure: Adjust rheostat to different positions. At each position, record voltmeter reading (V) and ammeter reading (I).\nResults table: As V increases, I increases proportionally.\nGraph: Plot V (x-axis) vs I (y-axis) → straight line through origin.\nConclusion: V ∝ I, confirming Ohm's Law. The slope of the graph = resistance R.",  m:5},
+      ]},
+    ]
+  },
+  { subj:'maths',   year:2080, status:'draft', totalMarks:75, duration:'3 hours', groups:[] },
+  { subj:'science', year:2080, status:'draft', totalMarks:75, duration:'3 hours', groups:[] },
+  { subj:'maths',   year:2079, status:'draft', totalMarks:75, duration:'3 hours', groups:[] },
+  { subj:'science', year:2079, status:'draft', totalMarks:75, duration:'3 hours', groups:[] },
+];
+
+/* ============================================================
+   ③ CONTENT — Chapter practice (AI evaluates answers)
    ============================================================ */
 const CONTENT = {
-  maths: { chapters: [
-    { name:'Algebra', qs:[
-      {q:'If 2x + 3 = 11, find the value of x. Show your working.',m:2,y:2081},
-      {q:'Simplify: 3(2x − 4) + 5x',m:1,y:2081},
-      {q:'If x = 3 and y = −2, find the value of 2x² − 3y.',m:2,y:2080},
-      {q:'Solve: 5x − 3 = 2x + 9',m:2,y:2080},
-      {q:'Factorise: x² − 5x + 6',m:2,y:2079},
+  maths:{ chapters:[
+    {name:'Algebra',qs:[
+      {q:'If 2x + 3 = 11, find the value of x. Show your working.',m:2},
+      {q:'Simplify: 3(2x − 4) + 5x',m:1},
+      {q:'Factorise: x² − 5x + 6',m:2},
+      {q:'Solve: 5x − 3 = 2x + 9',m:2},
+      {q:'If x = 3 and y = −2, find the value of 2x² − 3y.',m:2},
     ]},
-    { name:'Mensuration', qs:[
-      {q:'Find the area of a circle with radius 7 cm. (Use π = 22/7)',m:2,y:2081},
-      {q:'A rectangular field is 40 m long and 25 m wide. Find its perimeter and area.',m:2,y:2080},
-      {q:'Find the volume of a cylinder with radius 5 cm and height 10 cm.',m:2,y:2079},
+    {name:'Mensuration',qs:[
+      {q:'Find the area of a circle with radius 7 cm. (Use π = 22/7)',m:2},
+      {q:'A rectangular field is 40 m long and 25 m wide. Find its perimeter and area.',m:2},
+      {q:'Find the volume of a cylinder with radius 5 cm and height 10 cm. (Use π = 3.14)',m:2},
     ]},
-    { name:'Trigonometry', qs:[
-      {q:'If sin θ = 3/5, find the value of cos θ and tan θ.',m:2,y:2081},
-      {q:'Find the value of sin 30° + cos 60° − tan 45°.',m:1,y:2080},
+    {name:'Trigonometry',qs:[
+      {q:'If sin θ = 3/5, find the value of cos θ and tan θ.',m:2},
+      {q:'Find the value of sin 30° + cos 60° − tan 45°.',m:1},
     ]},
-    { name:'Statistics', qs:[
-      {q:'The mean of 5 numbers is 12. Four of them are 10, 14, 8 and 16. Find the fifth number.',m:2,y:2081},
-      {q:'Find the median of: 4, 7, 2, 9, 3, 8, 5',m:1,y:2080},
+    {name:'Statistics',qs:[
+      {q:'The mean of 5 numbers is 12. Four of them are 10, 14, 8 and 16. Find the fifth number.',m:2},
+      {q:'Find the median of: 4, 7, 2, 9, 3, 8, 5',m:1},
     ]},
-    { name:'Probability', qs:[
-      {q:'A bag has 3 red balls and 5 blue balls. What is the probability of picking a red ball?',m:1,y:2081},
-      {q:'A die is rolled once. What is the probability of getting an even number?',m:1,y:2080},
+    {name:'Probability',qs:[
+      {q:'A bag has 3 red balls and 5 blue balls. What is the probability of picking a red ball?',m:1},
+      {q:'A die is rolled once. What is the probability of getting an even number?',m:1},
     ]},
-    { name:'Arithmetic', qs:[
-      {q:'A shopkeeper bought a book for Rs 250 and sold it for Rs 300. Find the profit percentage.',m:2,y:2081},
-      {q:'Find the simple interest on Rs 5,000 at 8% per annum for 3 years.',m:2,y:2080},
+    {name:'Arithmetic',qs:[
+      {q:'A shopkeeper bought a book for Rs 250 and sold it for Rs 300. Find the profit percentage.',m:2},
+      {q:'Find the simple interest on Rs 5,000 at 8% per annum for 3 years.',m:2},
     ]},
-    { name:'Geometry', qs:[
-      {q:'In a triangle, two angles are 60° and 70°. Find the third angle.',m:1,y:2081},
-      {q:'The parallel sides of a trapezium are 12 cm and 8 cm and its height is 5 cm. Find its area.',m:2,y:2080},
+    {name:'Geometry',qs:[
+      {q:'In a triangle, two angles are 60° and 70°. Find the third angle.',m:1},
+      {q:'The parallel sides of a trapezium are 12 cm and 8 cm and its height is 5 cm. Find its area.',m:2},
     ]},
-    { name:'Coordinate Geometry', qs:[
-      {q:'Find the distance between the points A(3, 4) and B(0, 0).',m:2,y:2081},
-      {q:'Find the midpoint of the line joining (2, 6) and (8, 4).',m:1,y:2080},
+    {name:'Coordinate Geometry',qs:[
+      {q:'Find the distance between the points A(3, 4) and B(0, 0).',m:2},
+      {q:'Find the midpoint of the line joining (2, 6) and (8, 4).',m:1},
     ]},
-    { name:'Sets', qs:[
-      {q:'If A = {1,2,3,4} and B = {3,4,5,6}, find A ∪ B and A ∩ B.',m:2,y:2081},
-      {q:'In a class of 30, 18 play cricket and 15 play football. 8 play both. How many play neither?',m:2,y:2080},
+    {name:'Sets',qs:[
+      {q:'If A = {1,2,3,4} and B = {3,4,5,6}, find A ∪ B and A ∩ B.',m:2},
+      {q:'In a class of 30, 18 play cricket and 15 play football. 8 play both. How many play neither?',m:2},
     ]},
-    { name:'Matrices', qs:[
-      {q:'If A = [[2,3],[1,4]], find the determinant of A.',m:1,y:2081},
-      {q:'Add the matrices [[1,2],[3,4]] and [[5,6],[7,8]].',m:1,y:2080},
+    {name:'Matrices',qs:[
+      {q:'If A = [[2,3],[1,4]], find the determinant of A.',m:1},
+      {q:'Add the matrices [[1,2],[3,4]] and [[5,6],[7,8]].',m:1},
     ]},
   ]},
-  science: { chapters: [
-    { name:'Light & Reflection', qs:[
-      {q:'A ray of light travels from water to air. Will it bend towards or away from the normal? Explain why.',m:2,y:2081},
-      {q:'State the laws of reflection of light.',m:2,y:2080},
+  science:{ chapters:[
+    {name:'Light & Reflection',qs:[
+      {q:'A ray of light travels from water to air. Will it bend towards or away from the normal? Explain why.',m:2},
+      {q:'State the laws of reflection of light.',m:2},
     ]},
-    { name:'Electricity', qs:[
-      {q:"State Ohm's Law and write its mathematical expression.",m:2,y:2081},
-      {q:'Three resistors of 2Ω, 3Ω and 6Ω are in parallel. Find total resistance.',m:3,y:2080},
+    {name:'Electricity',qs:[
+      {q:"State Ohm's Law and write its mathematical expression.",m:2},
+      {q:'Three resistors of 2Ω, 3Ω and 6Ω are in parallel. Find total resistance.',m:3},
     ]},
-    { name:'Force & Motion', qs:[
-      {q:'What is the difference between speed and velocity? Give one example of each.',m:2,y:2081},
-      {q:"State Newton's second law of motion and write its mathematical form.",m:2,y:2080},
+    {name:'Force & Motion',qs:[
+      {q:'What is the difference between speed and velocity? Give one example of each.',m:2},
+      {q:"State Newton's second law of motion and write its mathematical form.",m:2},
     ]},
-    { name:'Chemical Reactions', qs:[
-      {q:'What is a chemical reaction? Write one example with a word equation.',m:2,y:2081},
-      {q:'Differentiate between exothermic and endothermic reactions with one example each.',m:2,y:2080},
+    {name:'Chemical Reactions',qs:[
+      {q:'What is a chemical reaction? Write one example with a word equation.',m:2},
+      {q:'Differentiate between exothermic and endothermic reactions with one example each.',m:2},
     ]},
-    { name:'Acids & Bases', qs:[
-      {q:'Name two indicators used to identify acids and bases. What colour does litmus turn in acid?',m:2,y:2081},
-      {q:'What happens when an acid reacts with a base? Write the general equation.',m:1,y:2080},
+    {name:'Acids & Bases',qs:[
+      {q:'Name two indicators used to identify acids and bases. What colour does litmus turn in acid?',m:2},
+      {q:'What happens when an acid reacts with a base? Write the general equation.',m:1},
     ]},
-    { name:'Human Biology', qs:[
-      {q:'Name the four chambers of the human heart and state the function of each.',m:2,y:2081},
-      {q:'What is the role of the kidney in the human body?',m:1,y:2080},
+    {name:'Human Biology',qs:[
+      {q:'Name the four chambers of the human heart and state the function of each.',m:2},
+      {q:'What is the role of the kidney in the human body?',m:1},
     ]},
-    { name:'Plant Biology', qs:[
-      {q:'What is photosynthesis? Write the word equation for photosynthesis.',m:2,y:2081},
-      {q:'Explain the process of transpiration in plants.',m:2,y:2080},
+    {name:'Plant Biology',qs:[
+      {q:'What is photosynthesis? Write the word equation for photosynthesis.',m:2},
+      {q:'Explain the process of transpiration in plants.',m:2},
     ]},
-    { name:'Environment', qs:[
-      {q:'What is the greenhouse effect? Name two greenhouse gases.',m:2,y:2081},
-      {q:'Define biodiversity. Why is it important to conserve biodiversity?',m:2,y:2080},
+    {name:'Environment',qs:[
+      {q:'What is the greenhouse effect? Name two greenhouse gases.',m:2},
+      {q:'Define biodiversity. Why is it important to conserve biodiversity?',m:2},
     ]},
   ]},
 };
 
 /* ============================================================
-   ③ ENGINE
+   ④ ENGINE
    ============================================================ */
-const $ = id => document.getElementById(id);
-const mk = (tag,cls,html) => { const e=document.createElement(tag); if(cls)e.className=cls; if(html!==undefined)e.innerHTML=html; return e; };
+const $=id=>document.getElementById(id);
+const mk=(tag,cls,html)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!==undefined)e.innerHTML=html;return e;};
+const ST={subj:'maths',year:2081,chapter:null,ppQi:0,ppQs:[]};
 
-const ST = { subj:'maths', mode:null, year:null, chapter:null, qi:0, ans:0, ok:0 };
+// Close dropdowns on outside click
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.pp-selector')){
+    document.querySelectorAll('.pp-dropdown').forEach(d=>d.remove());
+    document.querySelectorAll('.pp-selector').forEach(s=>s.classList.remove('open'));
+  }
+});
 
-function showScreen(name) {
-  document.querySelectorAll('.prac-screen').forEach(s => s.classList.remove('active'));
-  $('ps-' + name).classList.add('active');
+function showScreen(name){
+  document.querySelectorAll('.prac-screen').forEach(s=>s.classList.remove('active'));
+  $('ps-'+name).classList.add('active');
   window.scrollTo(0,0);
 }
 
-// Build a subject toggle and attach to a container element
-function buildSubjToggle(containerId, onChange) {
-  const tog = $(containerId); tog.innerHTML = '';
-  CONFIG.subjects.forEach((s, i) => {
-    const b = mk('button', 'subj-btn-toggle' + (s.key === ST.subj ? ' on' : ''));
-    b.innerHTML = `${s.icon} ${s.label}`;
-    b.onclick = () => {
-      ST.subj = s.key;
-      // Update ALL subject toggles to stay in sync
-      document.querySelectorAll('.subj-btn-toggle').forEach(btn => {
-        btn.classList.toggle('on', btn.dataset.subj === s.key);
-      });
-      if (onChange) onChange(s.key);
+function updateGreeting(){
+  const h=new Date().getHours();
+  const g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  $('home-greeting').innerHTML=`${g}. <em style="font-style:italic;color:var(--brand);font-weight:400;">Let's practise.</em>`;
+}
+
+function buildSubjToggle(containerId,onChange){
+  const tog=$(containerId); tog.innerHTML='';
+  CONFIG.subjects.forEach(s=>{
+    const b=mk('button','subj-btn-toggle'+(s.key===ST.subj?' on':''));
+    b.innerHTML=`${s.icon} ${s.label}`;
+    b.dataset.subj=s.key;
+    b.onclick=()=>{
+      ST.subj=s.key;
+      document.querySelectorAll('.subj-btn-toggle').forEach(btn=>btn.classList.toggle('on',btn.dataset.subj===s.key));
+      if(onChange)onChange(s.key);
     };
-    b.dataset.subj = s.key;
     tog.appendChild(b);
   });
 }
 
-// Render home
-function renderHome() {
-  buildSubjToggle('home-subj-toggle', () => {});
+function getAllPapersForSubj(subj){return PAPERS_CONTENT.filter(p=>p.subj===subj);}
 
-  const grid = $('mode-grid'); grid.innerHTML = '';
-  CONFIG.modes.forEach(m => {
-    const c = mk('button', `mode-card${m.on ? '' : ' disabled'}`);
-    c.innerHTML = `<div class="mode-icon ${m.bg}">${m.icon}</div><div class="mode-info"><div class="mode-title">${m.title}</div><div class="mode-desc">${m.desc}</div><span class="badge ${m.tag.cls}" style="margin-top:6px;">${m.tag.txt}</span></div>`;
-    if (m.on) c.onclick = () => {
-      ST.mode = m.key;
-      if (m.key === 'papers') { renderYears(); showScreen('years'); }
-      else { renderChapters(); showScreen('chapters'); }
-    };
+function renderHome(){
+  updateGreeting();
+  buildSubjToggle('home-subj-toggle',()=>renderHome());
+  const grid=$('mode-grid'); grid.innerHTML='';
+
+  CONFIG.modes.forEach(m=>{
+    const c=mk('div','mode-card'+(m.on?'':' disabled'));
+
+    if(m.key==='papers'){
+      const papers=getAllPapersForSubj(ST.subj);
+      const pillsHtml=papers.map(p=>{
+        if(p.status==='live'){
+          return `<button class="year-pill available" onclick="openPaperView('${p.subj}',${p.year})">SEE ${p.year}</button>`;
+        } else {
+          return `<span class="year-pill locked">🔒 ${p.year}</span>`;
+        }
+      }).join('');
+      c.innerHTML=`
+        <div class="mode-icon ${m.bg}">${m.icon}</div>
+        <div class="mode-info" style="width:100%;">
+          <div class="mode-title">${m.title}</div>
+          <div class="mode-desc">${m.desc}</div>
+          <span class="badge badge-sun" style="margin-bottom:10px;display:inline-block;">${m.tag}</span>
+          <div class="year-pills-row">${pillsHtml}</div>
+        </div>`;
+
+    } else if(m.key==='chapter' && m.on){
+      c.classList.add('clickable');
+      c.innerHTML=`<div class="mode-icon ${m.bg}">${m.icon}</div><div class="mode-info"><div class="mode-title">${m.title}</div><div class="mode-desc">${m.desc}</div><span class="badge badge-sun">${m.tag}</span></div><span style="font-size:22px;color:var(--ink-200);margin-left:auto;align-self:center;">›</span>`;
+      c.onclick=()=>{renderChapters();showScreen('chapters');};
+
+    } else {
+      c.innerHTML=`<div class="mode-icon ${m.bg}">${m.icon}</div><div class="mode-info"><div class="mode-title">${m.title}</div><div class="mode-desc">${m.desc}</div><span class="badge badge-blue">${m.tag}</span></div>`;
+    }
     grid.appendChild(c);
   });
 
-  const pl = $('perks-list'); pl.innerHTML = '';
-  CONFIG.perks.forEach(p => pl.appendChild(mk('div','perk',`<span>${p.icon}</span><span>${p.txt}</span>`)));
+  const pl=$('perks-list');
+  if(pl){pl.innerHTML='';CONFIG.perks.forEach(p=>pl.appendChild(mk('div','perk',`<span>${p.icon}</span><span>${p.txt}</span>`)));}
 }
 
-// Render years — with subject toggle synced
-function renderYears() {
-  buildSubjToggle('years-subj-toggle', () => renderYearsList());
-  renderYearsList();
-}
+/* ── Paper View ── */
+function openPaperView(subj,year){
+  ST.subj=subj; ST.year=year;
+  const paper=PAPERS_CONTENT.find(p=>p.subj===subj&&p.year===year);
+  if(!paper)return;
+  const subjLabel=CONFIG.subjects.find(s=>s.key===subj).label;
 
-function renderYearsList() {
-  const body = $('years-body'); body.innerHTML = '';
-
-  // Available years
-  if (CONFIG.availableYears.length) {
-    const lbl = mk('div','years-group-lbl'); lbl.textContent = 'Available now — free'; body.appendChild(lbl);
-    CONFIG.availableYears.forEach((y, i) => {
-      const isNewest = i === 0;
-      const row = mk('button', 'year-row');
-      row.innerHTML = `
-        <div class="year-row-left">
-          <div class="year-row-ico">📄</div>
-          <div>
-            <div class="year-row-name">SEE ${y}</div>
-            <div class="year-row-sub">${isNewest ? 'Most recent · ' : ''}Real past paper questions</div>
-          </div>
-        </div>
-        <div class="year-row-right">
-          <div class="tag-free-sm">FREE</div>
-          <span style="color:var(--ink-300);font-size:18px">›</span>
-        </div>`;
-      row.onclick = () => { ST.year = y; startPractice(); };
-      body.appendChild(row);
-    });
-  }
-
-  // Locked years
-  if (CONFIG.lockedYears.length) {
-    const lbl2 = mk('div','years-group-lbl'); lbl2.textContent = 'Coming soon'; body.appendChild(lbl2);
-    CONFIG.lockedYears.forEach(y => {
-      const row = mk('button', 'year-row locked');
-      row.innerHTML = `
-        <div class="year-row-left">
-          <div class="year-row-ico locked-ico">🔒</div>
-          <div>
-            <div class="year-row-name" style="color:var(--ink-400);">SEE ${y}</div>
-            <div class="year-row-sub">Being added — check back soon</div>
-          </div>
-        </div>
-        <div class="year-row-right">
-          <div class="tag-soon-sm">Coming soon</div>
-        </div>`;
-      body.appendChild(row);
-    });
-  }
-}
-
-// Start past paper practice — NO AI generation, just show question directly
-function startPractice() {
-  const s = CONFIG.subjects.find(x => x.key === ST.subj);
-  $('prac-subj-label').textContent = s.label;
-  $('prac-detail-label').textContent = `SEE ${ST.year}`;
-  $('papers-bc').innerHTML = `
+  $('pv-bc').innerHTML=`
     <button class="prac-bc-btn" onclick="showScreen('home')">🏠 Home</button>
     <span class="prac-bc-sep">›</span>
-    <button class="prac-bc-btn" onclick="showScreen('years')">Past Papers</button>
-    <span class="prac-bc-sep">›</span>
-    <span class="prac-bc-btn on">SEE ${ST.year}</span>`;
-  ST.qi = 0; ST.ans = 0; ST.ok = 0;
-  showScreen('practice');
-  PP.loadQ();
+    <span class="prac-bc-btn on">SEE ${year} · ${subjLabel}</span>`;
+
+  const body=$('paper-view-body'); body.innerHTML='';
+  const totalQs=paper.groups.reduce((a,g)=>a+g.qs.length,0);
+
+  // Header
+  const hdr=mk('div','paper-header-card');
+  hdr.innerHTML=`
+    <div class="paper-header-title">SEE ${year} — ${subjLabel}</div>
+    <div class="paper-header-sub">Secondary Education Examination · Nepal</div>
+    <div class="paper-stats">
+      <div class="paper-stat"><div class="paper-stat-num">${paper.totalMarks}</div><div class="paper-stat-lbl">Total marks</div></div>
+      <div class="paper-stat"><div class="paper-stat-num">${paper.duration}</div><div class="paper-stat-lbl">Duration</div></div>
+      <div class="paper-stat"><div class="paper-stat-num">${paper.groups.length}</div><div class="paper-stat-lbl">Groups</div></div>
+      <div class="paper-stat"><div class="paper-stat-num">${totalQs}</div><div class="paper-stat-lbl">Questions</div></div>
+    </div>`;
+  body.appendChild(hdr);
+
+  // Groups
+  paper.groups.forEach((grp,gi)=>{
+    const block=mk('div',`group-block ${grp.color}`);
+    block.id=`grp-block-${gi}`;
+
+    const hd=mk('div','group-header');
+    hd.innerHTML=`
+      <div>
+        <div class="group-name-badge">${grp.name}</div>
+        <div class="group-desc-txt">${grp.desc}</div>
+      </div>
+      <div class="group-marks-badge">${grp.marks} marks</div>`;
+    block.appendChild(hd);
+
+    const qs=mk('div','group-questions');
+    grp.qs.forEach(q=>{
+      const row=mk('div','paper-q-row');
+      row.innerHTML=`<div class="paper-q-num">Q${q.n}.</div><div class="paper-q-text">${q.q}</div><div class="paper-q-mark">${q.m} mark${q.m>1?'s':''}</div>`;
+      qs.appendChild(row);
+    });
+    block.appendChild(qs);
+
+    if(gi===0){
+      body.appendChild(block);
+      if(paper.groups.length>1) body.appendChild(makeShowBtn(paper,1));
+    } else {
+      block.style.display='none';
+      body.appendChild(block);
+    }
+  });
+
+  // Practice button
+  const btnWrap=mk('div','practice-paper-btn-wrap');
+  const btn=mk('button','practice-paper-btn');
+  btn.textContent=`📝 Practice this paper →`;
+  btn.onclick=()=>startPaperPractice(paper);
+  btnWrap.appendChild(btn);
+  body.appendChild(btnWrap);
+
+  showScreen('paper-view');
 }
 
-/* ── Past Paper Practice engine ── */
-const PP = {
-  qs() {
-    const c = CONTENT[ST.subj]; if (!c) return [];
-    return c.chapters.flatMap(ch => ch.qs.filter(q => q.y === ST.year));
-  },
-  loadQ() {
-    const qs = this.qs();
-
-    // No questions for this year/subject yet
-    if (!qs.length) {
-      $('prac-q-card').classList.add('hidden');
-      $('prac-fb-card').classList.add('hidden');
-      $('prac-loading').classList.add('hidden');
-      $('prac-no-qs').classList.remove('hidden');
-      return;
+function makeShowBtn(paper,nextIdx){
+  const grp=paper.groups[nextIdx];
+  if(!grp)return mk('div');
+  const btn=mk('button','show-group-btn');
+  btn.innerHTML=`<span style="font-size:18px">＋</span> Show ${grp.name} — ${grp.desc} · ${grp.marks} marks`;
+  btn.onclick=()=>{
+    btn.remove();
+    const block=$(`grp-block-${nextIdx}`);
+    block.style.display='';
+    block.scrollIntoView({behavior:'smooth',block:'start'});
+    if(nextIdx+1<paper.groups.length){
+      block.after(makeShowBtn(paper,nextIdx+1));
     }
+  };
+  return btn;
+}
 
-    $('prac-no-qs').classList.add('hidden');
-    $('prac-fb-card').classList.add('hidden');
+/* ── Paper Practice (one by one) ── */
+function startPaperPractice(paper){
+  ST.ppQs=paper.groups.flatMap(g=>g.qs.map(q=>({...q,groupName:g.name,groupColor:g.color})));
+  ST.ppQi=0;
+  buildPPSelectors();
+  showScreen('pp');
+  PPQ.loadQ();
+}
 
-    const q = qs[ST.qi % qs.length];
-    const s = CONFIG.subjects.find(x => x.key === ST.subj);
+function buildPPSelectors(){
+  const wrap=$('pp-selectors'); wrap.innerHTML='';
+  const subjData=CONFIG.subjects.find(s=>s.key===ST.subj);
 
-    // Show question directly — NO API call here
-    $('prac-q-src').textContent = `SEE ${ST.year} · ${s.label}`;
-    $('prac-q-marks').textContent = `${q.m} mark${q.m > 1 ? 's' : ''}`;
-    $('prac-q-text').textContent = q.q;
-    $('prac-ans').value = '';
-    $('prac-btn-next').textContent = 'Next question →';
-    $('prac-btn-next').onclick = () => PP.next();
+  // Subject selector
+  const ss=mk('div','pp-selector');
+  ss.innerHTML=`<span class="pp-sel-icon">${subjData.icon}</span><div class="pp-sel-body"><div class="pp-sel-label">Subject</div><div class="pp-sel-value">${subjData.label}</div></div><span class="pp-sel-caret">▾</span>`;
+  ss.onclick=e=>{e.stopPropagation();toggleDD('subj',ss);};
+  wrap.appendChild(ss);
 
-    const card = $('prac-q-card');
-    card.classList.remove('hidden');
-    card.style.animation = 'none'; card.offsetHeight; card.style.animation = '';
-    this.updateProgress();
-  },
-  // AI is ONLY called here — when student submits their answer
-  async check() {
-    const answer = $('prac-ans').value.trim();
-    if (!answer) { $('prac-ans').focus(); return; }
+  wrap.appendChild(mk('div','pp-divider'));
 
-    const qs = this.qs();
-    const q = qs[ST.qi % qs.length];
+  // Year selector
+  const ys=mk('div','pp-selector');
+  ys.innerHTML=`<span class="pp-sel-icon">📜</span><div class="pp-sel-body"><div class="pp-sel-label">Year</div><div class="pp-sel-value">SEE ${ST.year}</div></div><span class="pp-sel-caret">▾</span>`;
+  ys.onclick=e=>{e.stopPropagation();toggleDD('year',ys);};
+  wrap.appendChild(ys);
+}
 
-    $('prac-loading').classList.remove('hidden');
-    $('prac-q-card').classList.add('hidden');
-    $('prac-fb-card').classList.add('hidden');
+function toggleDD(type,sel){
+  document.querySelectorAll('.pp-dropdown').forEach(d=>d.remove());
+  document.querySelectorAll('.pp-selector').forEach(s=>s.classList.remove('open'));
+  sel.classList.add('open');
+  const dd=mk('div','pp-dropdown');
 
-    try {
-      const res = await fetch('/api/practice', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'evaluate', subject: ST.subj, question: q.q, studentAnswer: answer })
+  if(type==='subj'){
+    CONFIG.subjects.forEach(s=>{
+      const item=mk('div',`pp-dd-item${s.key===ST.subj?' on':''}`);
+      item.innerHTML=`<span class="pp-dd-name">${s.icon} ${s.label}</span>${s.key===ST.subj?'<span class="pp-dd-check">✓</span>':''}`;
+      item.onclick=e=>{
+        e.stopPropagation();
+        ST.subj=s.key;
+        const paper=PAPERS_CONTENT.find(p=>p.subj===s.key&&p.status==='live');
+        if(paper){ST.year=paper.year;startPaperPractice(paper);}
+        dd.remove();
+      };
+      dd.appendChild(item);
+    });
+  } else {
+    const avail=PAPERS_CONTENT.filter(p=>p.subj===ST.subj&&p.status==='live');
+    const locked=PAPERS_CONTENT.filter(p=>p.subj===ST.subj&&p.status!=='live');
+    if(avail.length){
+      const l=mk('div','pp-dd-section');l.textContent='Available';dd.appendChild(l);
+      avail.forEach(p=>{
+        const item=mk('div',`pp-dd-item${p.year===ST.year?' on':''}`);
+        item.innerHTML=`<span class="pp-dd-name">SEE ${p.year}</span>${p.year===ST.year?'<span class="pp-dd-check">✓</span>':'<span class="pp-dd-badge free">FREE</span>'}`;
+        item.onclick=e=>{e.stopPropagation();ST.year=p.year;startPaperPractice(p);dd.remove();};
+        dd.appendChild(item);
       });
-      const data = await res.json();
-      $('prac-loading').classList.add('hidden');
-      ST.ans++;
-      if (data.verdict === 'correct') ST.ok++;
-
-      const card = $('prac-fb-card');
-      card.className = `fb-card ${data.verdict === 'correct' ? 'correct' : data.verdict === 'partial' ? 'partial' : 'wrong'}`;
-      $('prac-fb-verdict').textContent = data.verdict === 'correct' ? '✅ Correct!' : data.verdict === 'partial' ? '~ Partially correct' : '❌ Not quite right';
-      $('prac-fb-body').textContent = data.feedback;
-      card.classList.remove('hidden');
-      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      $('prac-q-card').classList.remove('hidden');
-      this.updateProgress();
-    } catch (e) {
-      $('prac-loading').classList.add('hidden');
-      $('prac-q-card').classList.remove('hidden');
-      alert('Something went wrong. Please try again.');
     }
+    if(locked.length){
+      const l2=mk('div','pp-dd-section');l2.textContent='Coming soon';dd.appendChild(l2);
+      locked.forEach(p=>{
+        const item=mk('div','pp-dd-item locked-item');
+        item.innerHTML=`<span class="pp-dd-name">🔒 SEE ${p.year}</span><span class="pp-dd-badge soon">Soon</span>`;
+        dd.appendChild(item);
+      });
+    }
+  }
+  sel.appendChild(dd);
+}
+
+const PPQ={
+  loadQ(){
+    const qs=ST.ppQs;
+    $('pp-no-qs').classList.add('hidden');
+    $('pp-ans-card').classList.add('hidden');
+    if(!qs.length){$('pp-q-card').classList.add('hidden');$('pp-no-qs').classList.remove('hidden');return;}
+    const q=qs[ST.ppQi%qs.length];
+    const s=CONFIG.subjects.find(x=>x.key===ST.subj);
+    const tagColors={'grp-a':'background:#DCFCE7;color:#15803D','grp-b':'background:#DBEAFE;color:#1D4ED8','grp-c':'background:#FEF3C7;color:#92400E','grp-d':'background:#FEE2E2;color:#B91C1C'};
+    const ts=tagColors[q.groupColor]||'background:var(--ink-100);color:var(--ink-600)';
+    $('pp-q-group-tag').textContent=q.groupName;
+    $('pp-q-group-tag').setAttribute('style',`${ts};font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;`);
+    $('pp-q-src').textContent=` SEE ${ST.year} · ${s.label}`;
+    $('pp-q-marks').textContent=`${q.m} mark${q.m>1?'s':''}`;
+    $('pp-q-text').textContent=q.q;
+    const card=$('pp-q-card');
+    card.classList.remove('hidden');
+    card.style.animation='none';card.offsetHeight;card.style.animation='';
+    this.updateProgress();
+    buildPPSelectors();
   },
-  next() { ST.qi++; this.loadQ(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
-  skip() { ST.qi++; this.loadQ(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
-  updateProgress() {
-    const pct = Math.min(ST.ans / CONFIG.sessionLength * 100, 100);
-    $('prac-prog-fill').style.width = `${pct}%`;
-    $('prac-prog-txt').textContent = `${ST.ans} / ${CONFIG.sessionLength}`;
+  showAnswer(){
+    const q=ST.ppQs[ST.ppQi%ST.ppQs.length];
+    $('pp-ans-body').innerText=q.a;
+    $('pp-ans-card').classList.remove('hidden');
+    $('pp-ans-card').scrollIntoView({behavior:'smooth',block:'nearest'});
+  },
+  next(){ST.ppQi++;$('pp-ans-card').classList.add('hidden');this.loadQ();window.scrollTo({top:0,behavior:'smooth'});},
+  skip(){ST.ppQi++;$('pp-ans-card').classList.add('hidden');this.loadQ();window.scrollTo({top:0,behavior:'smooth'});},
+  updateProgress(){
+    const total=ST.ppQs.length;
+    const current=(ST.ppQi%total)+1;
+    $('pp-prog-fill').style.width=`${Math.min((ST.ppQi/total)*100,100)}%`;
+    $('pp-prog-txt').textContent=`${current} / ${total}`;
   },
 };
 
-/* ── Chapter Practice engine ── */
-function renderChapters() {
-  const s = CONFIG.subjects.find(x => x.key === ST.subj);
-  const sb = $('ch-subj-btns'); sb.innerHTML = '';
-  CONFIG.subjects.forEach(sub => {
-    const b = mk('button', `ch-subj-btn${sub.key === ST.subj ? ' on' : ''}`);
-    b.innerHTML = `<span class="si">${sub.icon}</span>${sub.label}`;
-    b.onclick = () => {
-      ST.subj = sub.key;
-      sb.querySelectorAll('.ch-subj-btn').forEach(x => x.classList.remove('on'));
-      b.classList.add('on');
-      $('ch-ctx-subj').textContent = CONFIG.subjects.find(x => x.key === ST.subj).label;
-      renderChapterList();
-      CP.reset();
-    };
+/* ── Chapter Practice ── */
+function renderChapters(){
+  const s=CONFIG.subjects.find(x=>x.key===ST.subj);
+  const sb=$('ch-subj-btns');sb.innerHTML='';
+  CONFIG.subjects.forEach(sub=>{
+    const b=mk('button',`ch-subj-btn${sub.key===ST.subj?' on':''}`);
+    b.innerHTML=`<span class="si">${sub.icon}</span>${sub.label}`;
+    b.onclick=()=>{ST.subj=sub.key;sb.querySelectorAll('.ch-subj-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');$('ch-ctx-subj').textContent=CONFIG.subjects.find(x=>x.key===ST.subj).label;renderChapterList();CP.reset();};
     sb.appendChild(b);
   });
-  $('ch-ctx-subj').textContent = s.label;
-  renderChapterList();
-  CP.reset();
+  $('ch-ctx-subj').textContent=s.label;
+  renderChapterList();CP.reset();
 }
 
-function renderChapterList() {
-  const list = $('ch-list'); list.innerHTML = '<div class="ch-list-lbl">Chapters</div>';
-  const chs = CONTENT[ST.subj]?.chapters || [];
-  chs.forEach(ch => {
-    const b = mk('button', 'ch-item');
-    b.innerHTML = `<span>${ch.name}</span>`;
-    b.dataset.name = ch.name;
-    b.onclick = () => {
-      ST.chapter = ch.name;
-      list.querySelectorAll('.ch-item').forEach(x => x.classList.remove('on'));
-      b.classList.add('on');
-      CP.start(ch);
-    };
+function renderChapterList(){
+  const list=$('ch-list');list.innerHTML='<div class="ch-list-lbl">Chapters</div>';
+  const chs=CONTENT[ST.subj]?.chapters||[];
+  chs.forEach(ch=>{
+    const b=mk('button','ch-item');
+    b.innerHTML=`<span>${ch.name}</span>`;
+    b.onclick=()=>{ST.chapter=ch.name;list.querySelectorAll('.ch-item').forEach(x=>x.classList.remove('on'));b.classList.add('on');CP.start(ch);};
     list.appendChild(b);
   });
 }
 
-const CP = {
-  qi: 0, ans: 0, ok: 0,
-  reset() {
-    this.qi = 0; this.ans = 0; this.ok = 0;
-    $('ch-empty').classList.remove('hidden');
-    $('ch-q-card').classList.add('hidden');
-    $('ch-fb-card').classList.add('hidden');
-    $('ch-loading').classList.add('hidden');
-    $('ch-ctx-ch').textContent = 'Choose a chapter';
-    $('ch-prog-fill').style.width = '0%';
-    $('ch-prog-txt').textContent = `0 / ${CONFIG.sessionLength}`;
+const CP={
+  qi:0,ans:0,ok:0,
+  reset(){this.qi=0;this.ans=0;this.ok=0;$('ch-empty').classList.remove('hidden');$('ch-q-card').classList.add('hidden');$('ch-fb-card').classList.add('hidden');$('ch-loading').classList.add('hidden');$('ch-ctx-ch').textContent='Choose a chapter';$('ch-prog-fill').style.width='0%';$('ch-prog-txt').textContent=`0 / ${CONFIG.sessionLength}`;},
+  start(ch){this.qi=0;this.ans=0;this.ok=0;ST.chapter=ch.name;$('ch-ctx-ch').textContent=ch.name;$('ch-empty').classList.add('hidden');$('ch-fb-card').classList.add('hidden');$('ch-btn-next').textContent='Next question →';$('ch-btn-next').onclick=()=>CP.next();this.loadQ();},
+  loadQ(){
+    const chs=CONTENT[ST.subj]?.chapters||[];
+    const ch=chs.find(x=>x.name===ST.chapter);
+    if(!ch||!ch.qs.length)return;
+    const q=ch.qs[this.qi%ch.qs.length];
+    const s=CONFIG.subjects.find(x=>x.key===ST.subj);
+    $('ch-q-card').classList.add('hidden');$('ch-fb-card').classList.add('hidden');
+    $('ch-q-src').textContent=`${ST.chapter} · ${s.label}`;
+    $('ch-q-marks').textContent=`${q.m} mark${q.m>1?'s':''}`;
+    $('ch-q-text').textContent=q.q;
+    $('ch-ans').value='';
+    const card=$('ch-q-card');card.classList.remove('hidden');card.style.animation='none';card.offsetHeight;card.style.animation='';
+    this.updateProgress();$('ch-q-area').scrollTo({top:0,behavior:'smooth'});
   },
-  start(ch) {
-    this.qi = 0; this.ans = 0; this.ok = 0;
-    ST.chapter = ch.name;
-    $('ch-ctx-ch').textContent = ch.name;
-    $('ch-empty').classList.add('hidden');
-    $('ch-fb-card').classList.add('hidden');
-    $('ch-btn-next').textContent = 'Next question →';
-    $('ch-btn-next').onclick = () => CP.next();
-    this.loadQ();
-  },
-  loadQ() {
-    const chs = CONTENT[ST.subj]?.chapters || [];
-    const ch = chs.find(x => x.name === ST.chapter);
-    if (!ch || !ch.qs.length) return;
-    const q = ch.qs[this.qi % ch.qs.length];
-    const s = CONFIG.subjects.find(x => x.key === ST.subj);
-
-    // Show question directly — NO API call
-    $('ch-q-card').classList.add('hidden');
-    $('ch-fb-card').classList.add('hidden');
-    $('ch-q-src').textContent = `${ST.chapter} · ${s.label}`;
-    $('ch-q-marks').textContent = `${q.m} mark${q.m > 1 ? 's' : ''}`;
-    $('ch-q-text').textContent = q.q;
-    $('ch-ans').value = '';
-
-    const card = $('ch-q-card');
-    card.classList.remove('hidden');
-    card.style.animation = 'none'; card.offsetHeight; card.style.animation = '';
-    this.updateProgress();
-    $('ch-q-area').scrollTo({ top: 0, behavior: 'smooth' });
-  },
-  // AI ONLY called when checking answer
-  async check() {
-    const answer = $('ch-ans').value.trim();
-    if (!answer) { $('ch-ans').focus(); return; }
-
-    const chs = CONTENT[ST.subj]?.chapters || [];
-    const ch = chs.find(x => x.name === ST.chapter);
-    const q = ch.qs[this.qi % ch.qs.length];
-
-    $('ch-loading').classList.remove('hidden');
-    $('ch-q-card').classList.add('hidden');
-    $('ch-fb-card').classList.add('hidden');
-
-    try {
-      const res = await fetch('/api/practice', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'evaluate', subject: ST.subj, question: q.q, studentAnswer: answer })
-      });
-      const data = await res.json();
+  async check(){
+    const answer=$('ch-ans').value.trim();
+    if(!answer){$('ch-ans').focus();return;}
+    const chs=CONTENT[ST.subj]?.chapters||[];
+    const ch=chs.find(x=>x.name===ST.chapter);
+    const q=ch.qs[this.qi%ch.qs.length];
+    $('ch-loading').classList.remove('hidden');$('ch-q-card').classList.add('hidden');$('ch-fb-card').classList.add('hidden');
+    try{
+      const res=await fetch('/api/practice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'evaluate',subject:ST.subj,question:q.q,studentAnswer:answer})});
+      const data=await res.json();
       $('ch-loading').classList.add('hidden');
-      this.ans++;
-      if (data.verdict === 'correct') this.ok++;
-
-      const card = $('ch-fb-card');
-      card.className = `fb-card ${data.verdict === 'correct' ? 'correct' : data.verdict === 'partial' ? 'partial' : 'wrong'}`;
-      $('ch-fb-verdict').textContent = data.verdict === 'correct' ? '✅ Correct!' : data.verdict === 'partial' ? '~ Partially correct' : '❌ Not quite right';
-      $('ch-fb-body').textContent = data.feedback;
-      card.classList.remove('hidden');
-      $('ch-q-card').classList.remove('hidden');
-      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      this.ans++;if(data.verdict==='correct')this.ok++;
+      const card=$('ch-fb-card');
+      card.className=`fb-card ${data.verdict==='correct'?'correct':data.verdict==='partial'?'partial':'wrong'}`;
+      $('ch-fb-verdict').textContent=data.verdict==='correct'?'✅ Correct!':data.verdict==='partial'?'~ Partially correct':'❌ Not quite right';
+      $('ch-fb-body').textContent=data.feedback;
+      card.classList.remove('hidden');$('ch-q-card').classList.remove('hidden');
+      card.scrollIntoView({behavior:'smooth',block:'nearest'});
       this.updateProgress();
-    } catch (e) {
-      $('ch-loading').classList.add('hidden');
-      $('ch-q-card').classList.remove('hidden');
-      alert('Something went wrong. Please try again.');
-    }
+    }catch(e){$('ch-loading').classList.add('hidden');$('ch-q-card').classList.remove('hidden');alert('Something went wrong. Please try again.');}
   },
-  next() { this.qi++; this.loadQ(); },
-  skip() { this.qi++; this.loadQ(); },
-  updateProgress() {
-    const pct = Math.min(this.ans / CONFIG.sessionLength * 100, 100);
-    $('ch-prog-fill').style.width = `${pct}%`;
-    $('ch-prog-txt').textContent = `${this.ans} / ${CONFIG.sessionLength}`;
-  },
+  next(){this.qi++;this.loadQ();},
+  skip(){this.qi++;this.loadQ();},
+  updateProgress(){const pct=Math.min(this.ans/CONFIG.sessionLength*100,100);$('ch-prog-fill').style.width=`${pct}%`;$('ch-prog-txt').textContent=`${this.ans} / ${CONFIG.sessionLength}`;},
 };
 
 // Boot
