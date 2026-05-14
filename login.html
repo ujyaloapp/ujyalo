@@ -43,11 +43,14 @@
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
 <script>
-  // If already logged in — go straight to dashboard
-  const user = localStorage.getItem('ujyalo_user');
+  // If already logged in — redirect to correct page
+  const ADMIN_EMAILS = ['hello@ujyalo.app']; // keep in sync with auth-login.js
+  const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
   const token = localStorage.getItem('ujyalo_token');
   if (user && token) {
-    window.location.href = '/dashboard.html';
+    window.location.href = ADMIN_EMAILS.includes(user.email?.toLowerCase())
+      ? '/admin.html'
+      : '/dashboard.html';
   }
 </script>
 <script>
