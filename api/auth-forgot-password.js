@@ -1,13 +1,6 @@
 // /api/auth-forgot-password.js
 // Sends a password reset email via Supabase Auth
 
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -20,20 +13,23 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://ujyalo.app/reset-password.html',
+    const response = await fetch(`${process.env.SUPABASE_URL}/auth/v1/recover`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': process.env.SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({
+        email,
+        gotrue_meta_security: {},
+      }),
     });
 
-    // Always return success — don't reveal if email exists or not (security)
-    if (error) {
-      console.error('Reset password error:', error.message);
-      // Still return success to the client for security
-    }
-
+    // Always return success — don't reveal if email exists (security)
     return res.status(200).json({ success: true });
 
   } catch (err) {
-    console.error('Forgot password handler error:', err);
+    console.error('Forgot password error:', err);
     return res.status(200).json({ success: true }); // Always success for security
   }
 }
