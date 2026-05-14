@@ -133,6 +133,8 @@
 .prac-btn-skip:hover { color:var(--ink-500); }
 .prac-btn-show { font-size:13px; font-weight:600; color:var(--brand); background:var(--brand-light); border:none; padding:10px 20px; border-radius:999px; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:6px; transition:all 0.2s; }
 .prac-btn-show:hover { background:var(--brand); color:white; }
+.prac-btn-check { font-size:13px; font-weight:600; color:white; background:var(--brand); border:none; padding:10px 20px; border-radius:999px; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:6px; transition:all 0.2s; }
+.prac-btn-check:hover { background:var(--brand-dark); transform:translateY(-1px); }
 .prac-btn-next { font-size:13px; font-weight:600; color:white; background:var(--ink-900); border:none; padding:10px 20px; border-radius:999px; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:6px; transition:all 0.2s; }
 .prac-btn-next:hover { background:var(--brand); }
 
@@ -142,10 +144,16 @@
 .prac-ans-reveal-body { font-size:14px; color:var(--ink-700); line-height:1.8; white-space:pre-line; }
 
 @media(max-width:800px) {
-  .prac-three-col,.prac-three-col.with-right { grid-template-columns:1fr; grid-template-rows:auto 1fr; }
-  .prac-sidebar { max-height:200px; border-right:none; border-bottom:1px solid var(--ink-100); }
-  .prac-sidebar-body { max-height:120px; }
-  .prac-right { display:none; }
+  .prac-three-col { grid-template-columns:1fr; grid-template-rows:auto 1fr; }
+  .prac-three-col.with-right { grid-template-columns:1fr; }
+  .prac-sidebar { max-height:180px; border-right:none; border-bottom:1px solid var(--ink-100); flex-direction:column; }
+  .prac-sidebar-body { overflow-x:auto; overflow-y:hidden; }
+  .prac-group-section { display:inline-flex; flex-direction:column; vertical-align:top; margin-right:12px; flex-shrink:0; }
+  .prac-q-grid { display:flex; gap:4px; flex-wrap:nowrap; }
+  .prac-q-btn { width:32px; height:32px; flex-shrink:0; font-size:11px; }
+  .prac-sidebar-legend { padding:5px 10px; }
+  .prac-right { display:none !important; }
+  .prac-sidebar-body { display:flex; flex-direction:row; padding:6px 10px; white-space:nowrap; }
 }
 .paper-topbar { background:white; border-bottom:1px solid var(--ink-100); padding:11px 24px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
 .paper-selectors { display:flex; align-items:center; gap:8px; }
@@ -384,20 +392,34 @@
             <span class="prac-q-marks" id="prac-q-marks"></span>
           </div>
           <div class="prac-q-text" id="prac-q-text"></div>
-          <textarea class="prac-ans-area" id="prac-ans" placeholder="Write your answer here...&#10;&#10;Show your working — just like in the real SEE exam."></textarea>
+          <textarea class="prac-ans-area" id="prac-ans" placeholder="Write your answer here...&#10;&#10;Show your working — just like in the real SEE exam." oninput="PRAC.onType()"></textarea>
           <div class="prac-q-actions">
             <button class="prac-btn-skip" onclick="PRAC.skip()">
               <i class="ti ti-player-skip-forward" aria-hidden="true"></i> Skip
             </button>
-            <div style="display:flex;gap:8px;">
+            <div style="display:flex;gap:8px;align-items:center;" id="prac-action-btns">
+              <!-- Check answer — shown when student has typed something -->
+              <button class="prac-btn-check hidden" id="prac-check-btn" onclick="PRAC.checkAnswer()">
+                <i class="ti ti-check" aria-hidden="true"></i> Check answer
+              </button>
+              <!-- Show answer — always available as fallback -->
               <button class="prac-btn-show" id="prac-show-btn" onclick="PRAC.showAnswer()">
                 <i class="ti ti-eye" aria-hidden="true"></i> Show answer
               </button>
+              <!-- Next — only shown after checking or showing answer -->
               <button class="prac-btn-next hidden" id="prac-next-btn" onclick="PRAC.next()">
                 Next <i class="ti ti-arrow-right" aria-hidden="true"></i>
               </button>
             </div>
           </div>
+        </div>
+
+        <!-- Student answer feedback -->
+        <div class="prac-ans-reveal hidden" id="prac-feedback" style="border-color:#fde68a;border-left-color:#F59E0B;background:#fffbeb;">
+          <div class="prac-ans-reveal-title" style="color:#854F0B;">
+            <i class="ti ti-pencil" aria-hidden="true"></i> Your answer
+          </div>
+          <div class="prac-ans-reveal-body" id="prac-feedback-body" style="color:#854F0B;"></div>
         </div>
 
         <!-- Answer reveal -->
@@ -420,8 +442,8 @@
     </div>
 
     <!-- RIGHT: Reserved for future features (notes, formula sheet, hints etc) -->
-    <!-- To activate: add class "with-right" to prac-three-col and remove hidden from this div -->
-    <div class="prac-right hidden" id="prac-right-panel">
+    <!-- To activate: add class "with-right" to prac-three-col and remove hidden from prac-right-panel -->
+    <div class="prac-right" id="prac-right-panel" style="display:none;">
       <div class="prac-right-header">
         <div class="prac-right-title">Notes</div>
       </div>
@@ -886,7 +908,7 @@ const PRAC = {
   },
 
   load() {
-    $('prac-reveal').classList.add('hidden');
+    ['prac-reveal','prac-feedback'].forEach(id => $( id)?.classList.add('hidden'));
     if (!this.qs.length) {
       $('prac-no-qs').classList.remove('hidden');
       $('prac-q-card').classList.add('hidden');
@@ -906,9 +928,11 @@ const PRAC = {
     $('prac-q-marks').textContent = `${q.m} mark${q.m>1?'s':''}`;
     $('prac-q-text').textContent = q.q;
     $('prac-ans').value = '';
+
+    // Reset buttons
+    $('prac-check-btn').classList.add('hidden');
     $('prac-show-btn').classList.remove('hidden');
     $('prac-next-btn').classList.add('hidden');
-    $('prac-reveal').classList.add('hidden');
 
     const card = $('prac-q-card');
     card.classList.remove('hidden');
@@ -922,16 +946,62 @@ const PRAC = {
     if (centre) centre.scrollTo({top:0, behavior:'smooth'});
   },
 
-  showAnswer() {
+  onType() {
+    const val = $('prac-ans').value.trim();
+    if (val.length > 0) {
+      $('prac-check-btn').classList.remove('hidden');
+    } else {
+      $('prac-check-btn').classList.add('hidden');
+    }
+  },
+
+  checkAnswer() {
+    const studentAns = $('prac-ans').value.trim();
+    if (!studentAns) { $('prac-ans').focus(); return; }
     const q = this.qs[this.qi];
+
+    // Show student's answer
+    $('prac-feedback-body').textContent = studentAns;
+    $('prac-feedback').classList.remove('hidden');
+
+    // Show correct answer
     $('prac-reveal-body').textContent = q.a;
     $('prac-reveal').classList.remove('hidden');
+
+    // Hide check + show answer buttons, show next
+    $('prac-check-btn').classList.add('hidden');
     $('prac-show-btn').classList.add('hidden');
     $('prac-next-btn').classList.remove('hidden');
+
     // Mark as answered
     this.answered.add(this.qi);
     this.skipped.delete(this.qi);
     this.renderSidebar();
+
+    $('prac-reveal').scrollIntoView({behavior:'smooth', block:'nearest'});
+  },
+
+  showAnswer() {
+    const q = this.qs[this.qi];
+
+    // Show student answer if they typed anything
+    const studentAns = $('prac-ans').value.trim();
+    if (studentAns) {
+      $('prac-feedback-body').textContent = studentAns;
+      $('prac-feedback').classList.remove('hidden');
+    }
+
+    $('prac-reveal-body').textContent = q.a;
+    $('prac-reveal').classList.remove('hidden');
+    $('prac-check-btn').classList.add('hidden');
+    $('prac-show-btn').classList.add('hidden');
+    $('prac-next-btn').classList.remove('hidden');
+
+    // Mark as answered
+    this.answered.add(this.qi);
+    this.skipped.delete(this.qi);
+    this.renderSidebar();
+
     $('prac-reveal').scrollIntoView({behavior:'smooth', block:'nearest'});
   },
 
