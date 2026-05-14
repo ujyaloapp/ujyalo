@@ -414,6 +414,15 @@ tr:hover td { background:var(--ink-50); }
         <input type="number" id="qm-marks" placeholder="e.g. 1" min="1">
       </div>
     </div>
+
+    <!-- ── Chapter dropdown — populated based on current paper's subject ── -->
+    <div class="field">
+      <label>Chapter <span style="font-weight:400;text-transform:none;color:var(--ink-300);">(tag for progress tracking)</span></label>
+      <select id="qm-chapter">
+        <option value="">Select chapter...</option>
+      </select>
+    </div>
+
     <div class="field">
       <label>Question *</label>
       <textarea id="qm-text" placeholder="Type the full question exactly as it appears in the paper..."></textarea>
@@ -448,12 +457,65 @@ const ADMIN_EMAILS = [
 
 const SUPABASE_URL = 'https://uigausnyrlxxyosxjgvi.supabase.co';
 
+/* ============================================================
+   CHAPTERS — per subject
+   Key must match the exam_subjects.code value in your DB.
+   Add/remove chapters here as needed.
+   ============================================================ */
+const CHAPTERS = {
+  maths: [
+    'Algebra',
+    'Arithmetic',
+    'Coordinate Geometry',
+    'Geometry',
+    'Matrices',
+    'Mensuration',
+    'Probability',
+    'Sets',
+    'Statistics',
+    'Trigonometry',
+  ],
+  science: [
+    'Acids & Bases',
+    'Chemical Reactions',
+    'Electricity',
+    'Environment & Ecology',
+    'Force & Motion',
+    'Human Biology',
+    'Light & Optics',
+    'Plant Biology',
+    'Space & Universe',
+    'Waves & Sound',
+  ],
+  english: [
+    'Reading Comprehension',
+    'Grammar',
+    'Writing',
+    'Vocabulary',
+    'Literature',
+  ],
+  social: [
+    'Geography of Nepal',
+    'History of Nepal',
+    'Civics',
+    'Economics',
+    'Social Issues',
+  ],
+  nepali: [
+    'व्याकरण (Grammar)',
+    'निबन्ध (Essay)',
+    'पत्र लेखन (Letter Writing)',
+    'गद्यांश (Prose)',
+    'पद्यांश (Poetry)',
+  ],
+};
+
 /* ── State ── */
 const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
 const token = localStorage.getItem('ujyalo_token');
-let currentPaper = null; // paper being viewed/edited
-let examsCache   = [];   // cached exam list
-let subjectsCache = [];  // cached subjects
+let currentPaper  = null;
+let examsCache    = [];
+let subjectsCache = [];
 
 /* ── Access check ── */
 function checkAccess() {
@@ -548,13 +610,11 @@ async function loadOverview() {
 
 /* ══ PAST PAPERS ══ */
 
-/* Load exams and subjects into filter dropdowns */
 async function loadExamsAndSubjects() {
   try {
     examsCache    = await sbGet('exams', 'select=*&order=name');
     subjectsCache = await sbGet('exam_subjects', 'select=*&order=name');
 
-    // Populate filter exam dropdown
     const examFilter = document.getElementById('filter-exam');
     examsCache.forEach(e => {
       const opt = document.createElement('option');
@@ -562,7 +622,6 @@ async function loadExamsAndSubjects() {
       examFilter.appendChild(opt);
     });
 
-    // Populate modal exam dropdown
     const pmExam = document.getElementById('pm-exam');
     examsCache.forEach(e => {
       const opt = document.createElement('option');
@@ -572,7 +631,6 @@ async function loadExamsAndSubjects() {
   } catch(e) { console.error('Exams load error:', e); }
 }
 
-/* Load subjects when exam changes in modal */
 function loadSubjectsForExam() {
   const examId = document.getElementById('pm-exam').value;
   const subjectSel = document.getElementById('pm-subject');
@@ -584,7 +642,36 @@ function loadSubjectsForExam() {
   });
 }
 
-/* Load papers list */
+/* Populate chapter dropdown based on current paper's subject code */
+function populateChapters(selectedChapter = '') {
+  const chapterSel = document.getElementById('qm-chapter');
+  chapterSel.innerHTML = '<option value="">Select chapter...</option>';
+
+  if (!currentPaper) return;
+
+  // Find the subject record to get its code (e.g. 'maths', 'science')
+  const subj = subjectsCache.find(s => s.id === currentPaper.subject_id);
+  const subjectCode = subj?.code || '';
+  const chapters = CHAPTERS[subjectCode] || [];
+
+  if (chapters.length === 0) {
+    // Subject not in CHAPTERS yet — show a text fallback note
+    const opt = document.createElement('option');
+    opt.value = ''; opt.textContent = '— No chapters defined for this subject yet —';
+    opt.disabled = true;
+    chapterSel.appendChild(opt);
+    return;
+  }
+
+  chapters.forEach(ch => {
+    const opt = document.createElement('option');
+    opt.value = ch;
+    opt.textContent = ch;
+    if (ch === selectedChapter) opt.selected = true;
+    chapterSel.appendChild(opt);
+  });
+}
+
 async function loadPapers() {
   const loading = document.getElementById('papers-loading');
   const list    = document.getElementById('papers-list');
@@ -595,8 +682,7 @@ async function loadPapers() {
   empty.classList.add('hidden');
 
   try {
-    // Build filter params
-    let params = 'select=*,exam_subjects(name,exam_id,exams(name))&order=year.desc';
+    let params = 'select=*,exam_subjects(name,code,exam_id,exams(name))&order=year.desc';
     const examId   = document.getElementById('filter-exam').value;
     const subjId   = document.getElementById('filter-subject').value;
     const year     = document.getElementById('filter-year').value;
@@ -607,12 +693,10 @@ async function loadPapers() {
 
     let papers = await sbGet('past_papers', params);
 
-    // Filter by exam if selected (exam is nested)
     if (examId && Array.isArray(papers)) {
       papers = papers.filter(p => p.exam_subjects?.exam_id === examId);
     }
 
-    // Populate subject filter based on exam selection
     const subjFilter = document.getElementById('filter-subject');
     subjFilter.innerHTML = '<option value="">All subjects</option>';
     const filtered = examId ? subjectsCache.filter(s => s.exam_id === examId) : subjectsCache;
@@ -668,7 +752,6 @@ async function loadPapers() {
   }
 }
 
-/* Open paper modal */
 function openAddPaper() {
   document.getElementById('paper-modal-title').textContent = 'New Past Paper';
   document.getElementById('paper-modal-save').textContent  = 'Create paper';
@@ -686,7 +769,6 @@ function closePaperModal() {
   document.getElementById('paper-modal').classList.add('hidden');
 }
 
-/* Save paper */
 async function savePaper() {
   const id       = document.getElementById('pm-id').value;
   const subjId   = document.getElementById('pm-subject').value;
@@ -724,20 +806,17 @@ function showPaperAlert(msg) {
   a.textContent = msg; a.className = 'alert alert-error'; a.style.display = 'block';
 }
 
-/* Delete paper */
 async function deletePaper(id) {
   if (!confirm('Delete this paper and ALL its questions? This cannot be undone.')) return;
   await sbDelete('past_papers', id);
   loadPapers(); loadOverview();
 }
 
-/* Open paper questions view */
 async function openPaperQuestions(paper) {
   currentPaper = paper;
   document.getElementById('view-papers').classList.add('hidden');
   document.getElementById('view-questions').classList.remove('hidden');
 
-  // Get subject and exam names
   const subj = subjectsCache.find(s => s.id === paper.subject_id);
   const exam = examsCache.find(e => e.id === subj?.exam_id);
   const title = `${exam?.name || ''} · ${subj?.name || ''} · ${paper.year}`;
@@ -745,7 +824,6 @@ async function openPaperQuestions(paper) {
   document.getElementById('paper-view-title').textContent = title;
   document.getElementById('paper-view-meta').textContent  = `${paper.total_marks} marks · ${paper.duration}`;
 
-  // Status badge + action buttons
   const statusMap = {
     draft: '<span class="badge badge-gold">📋 Draft</span>',
     ready: '<span class="badge badge-blue">🔵 Ready for review</span>',
@@ -753,7 +831,6 @@ async function openPaperQuestions(paper) {
   };
   document.getElementById('paper-status-badge').innerHTML = statusMap[paper.status] || '';
 
-  // Show/hide action buttons based on status
   document.getElementById('btn-mark-ready').classList.toggle('hidden', paper.status !== 'draft');
   document.getElementById('btn-approve').classList.toggle('hidden',    paper.status !== 'ready');
   document.getElementById('btn-unpublish').classList.toggle('hidden',  paper.status === 'draft');
@@ -767,7 +844,6 @@ function backToPapers() {
   document.getElementById('view-papers').classList.remove('hidden');
 }
 
-/* Update paper status */
 async function updatePaperStatus(newStatus) {
   if (!currentPaper) return;
   const labels = { ready:'mark as Ready', live:'approve and go Live', draft:'unpublish' };
@@ -800,16 +876,17 @@ async function loadQuestions() {
       return;
     }
 
-    // Stats
     const groups = [...new Set(data.map(q => q.group_name))].sort();
     const totalMarks = data.reduce((sum, q) => sum + (q.marks || 0), 0);
+    const taggedCount = data.filter(q => q.chapter).length;
+
     stats.innerHTML = `
       <span class="badge badge-blue">${data.length} questions</span>
       <span class="badge badge-gold">${totalMarks} marks entered</span>
-      ${groups.map(g => `<span class="badge badge-gray">Group ${g}: ${data.filter(q=>q.group_name===g).length} questions</span>`).join('')}
-      <span class="badge ${data.filter(q=>q.status==='ready').length === data.length ? 'badge-green' : 'badge-gold'}">${data.filter(q=>q.status==='ready').length}/${data.length} verified</span>`;
+      ${groups.map(g => `<span class="badge badge-gray">Group ${g}: ${data.filter(q=>q.group_name===g).length}q</span>`).join('')}
+      <span class="badge ${data.filter(q=>q.status==='ready').length === data.length ? 'badge-green' : 'badge-gold'}">${data.filter(q=>q.status==='ready').length}/${data.length} verified</span>
+      <span class="badge ${taggedCount === data.length ? 'badge-green' : 'badge-gold'}">${taggedCount}/${data.length} chapter-tagged</span>`;
 
-    // Group by group_name
     list.innerHTML = '';
     groups.forEach(g => {
       const groupQs = data.filter(q => q.group_name === g);
@@ -822,9 +899,10 @@ async function loadQuestions() {
         qDiv.className = 'q-entry';
         qDiv.innerHTML = `
           <div class="q-entry-top">
-            <div style="display:flex;align-items:center;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
               <span class="badge badge-gray">Q${q.question_no}</span>
               <span class="badge badge-gold">${q.marks} mark${q.marks>1?'s':''}</span>
+              ${q.chapter ? `<span class="badge badge-purple">${q.chapter}</span>` : '<span class="badge badge-gray" style="opacity:0.5;">No chapter</span>'}
               <span class="badge ${q.status==='ready'?'badge-green':'badge-gold'}">${q.status==='ready'?'✓ Verified':'Draft'}</span>
             </div>
             <div style="display:flex;gap:6px;">
@@ -847,7 +925,6 @@ async function loadQuestions() {
   }
 }
 
-/* Add question modal */
 function openAddQuestion() {
   document.getElementById('q-modal-title').textContent = 'Add Question';
   document.getElementById('q-modal-save').textContent  = 'Save question';
@@ -859,6 +936,7 @@ function openAddQuestion() {
   document.getElementById('qm-answer').value = '';
   document.getElementById('qm-status').value = 'draft';
   document.getElementById('q-modal-alert').style.display = 'none';
+  populateChapters(); // populate chapter dropdown for current paper's subject
   document.getElementById('q-modal').classList.remove('hidden');
 }
 
@@ -873,6 +951,7 @@ function editQuestion(q) {
   document.getElementById('qm-answer').value = q.answer || '';
   document.getElementById('qm-status').value = q.status || 'draft';
   document.getElementById('q-modal-alert').style.display = 'none';
+  populateChapters(q.chapter || ''); // pre-select existing chapter
   document.getElementById('q-modal').classList.remove('hidden');
 }
 
@@ -881,13 +960,14 @@ function closeQModal() {
 }
 
 async function saveQuestion() {
-  const id     = document.getElementById('qm-id').value;
-  const group  = document.getElementById('qm-group').value.trim().toUpperCase();
-  const qno    = document.getElementById('qm-qno').value;
-  const marks  = document.getElementById('qm-marks').value;
-  const text   = document.getElementById('qm-text').value.trim();
-  const answer = document.getElementById('qm-answer').value.trim();
-  const status = document.getElementById('qm-status').value;
+  const id      = document.getElementById('qm-id').value;
+  const group   = document.getElementById('qm-group').value.trim().toUpperCase();
+  const qno     = document.getElementById('qm-qno').value;
+  const marks   = document.getElementById('qm-marks').value;
+  const text    = document.getElementById('qm-text').value.trim();
+  const answer  = document.getElementById('qm-answer').value.trim();
+  const status  = document.getElementById('qm-status').value;
+  const chapter = document.getElementById('qm-chapter').value || null;
 
   if (!group)  { showQAlert('Please enter the group (A, B, C, D).'); return; }
   if (!qno)    { showQAlert('Please enter the question number.'); return; }
@@ -898,13 +978,14 @@ async function saveQuestion() {
   btn.disabled = true; btn.textContent = 'Saving...';
 
   const body = {
-    paper_id: currentPaper.id,
-    group_name: group,
-    question_no: parseInt(qno),
-    marks: parseInt(marks),
+    paper_id:      currentPaper.id,
+    group_name:    group,
+    question_no:   parseInt(qno),
+    marks:         parseInt(marks),
     question_text: text,
-    answer: answer || null,
+    answer:        answer || null,
     status,
+    chapter,       // new — saved to DB
   };
 
   try {
