@@ -34,9 +34,11 @@ export default async function handler(req, res) {
     }
 
     // Return simplified user list
+    // Filter out all admin emails from student list
+    const ADMIN_EMAILS = ['hello@ujyalo.app']; // keep in sync with auth-login.js
     const users = (data.users || [])
-  .filter(u => u.email !== 'hello@ujyalo.app')
-  .map(u => ({
+      .filter(u => !ADMIN_EMAILS.includes(u.email?.toLowerCase()))
+      .map(u => ({
       id:         u.id,
       email:      u.email,
       full_name:  u.user_metadata?.full_name || '—',
