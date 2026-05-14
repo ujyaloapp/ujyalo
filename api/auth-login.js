@@ -1,13 +1,6 @@
 // /api/auth-login.js
 // Handles login — redirects admins to admin.html, students to dashboard.html
 
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
-
 // ============================================================
 // ADMIN EMAILS — add emails here to grant admin access
 // ============================================================
@@ -28,21 +21,29 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    const response = await fetch(`${process.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': process.env.SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ email, password }),
     });
 
-    if (error) {
-      return res.status(401).json({ error: error.message });
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(401).json({
+        error: data.error_description || data.msg || 'Invalid email or password.'
+      });
     }
 
-    if (!data.user || !data.session) {
+    if (!data.access_token) {
       return res.status(401).json({ error: 'Login failed. Please try again.' });
     }
 
     // Check if email is verified
-    if (!data.user.email_confirmed_at) {
+    if (!data.user?.email_confirmed_at) {
       return res.status(401).json({
         error: 'Please verify your email first. Check your inbox for a confirmation link.'
       });
@@ -54,7 +55,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      access_token: data.session.access_token,
+      access_token: data.access_token,
       redirectTo,
       user: {
         id:         data.user.id,
