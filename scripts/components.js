@@ -1,8 +1,6 @@
 /* ============================================================
    UJYALO — components.js
-   This file controls the nav and footer on EVERY page.
-   Want to change the nav? Change it here. Done.
-   Want to change the footer? Change it here. Done.
+   Controls nav and footer on EVERY page.
    ============================================================ */
 
 const ANNOUNCEMENT = `
@@ -14,9 +12,9 @@ const NAV = `
 <nav class="nav-public">
   <div class="container nav-inner">
     <a href="/index.html" class="logo">
-      <img src="/ujyalo-logo-transparent.png" style="height: 38px; width: auto;" alt="Ujyalo">
+      <img src="/ujyalo-logo-transparent.png" style="height:38px;width:auto;" alt="Ujyalo">
     </a>
-    <div class="nav-links">
+    <div class="nav-links" id="nav-links">
       <a href="/practice.html">Practice</a>
       <a href="/features.html">Features</a>
       <a href="/pricing.html">Pricing</a>
@@ -26,8 +24,93 @@ const NAV = `
       <a href="/login.html" class="btn btn-ghost">Log in</a>
       <a href="/signup.html" class="btn btn-primary">Sign up free →</a>
     </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" onclick="toggleMobileNav()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+  <!-- Mobile menu -->
+  <div class="nav-mobile-menu hidden" id="nav-mobile-menu">
+    <a href="/practice.html">Practice</a>
+    <a href="/features.html">Features</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/about.html">About</a>
+    <div class="nav-mobile-divider"></div>
+    <a href="/login.html" class="nav-mobile-login">Log in</a>
+    <a href="/signup.html" class="nav-mobile-signup">Sign up free →</a>
   </div>
 </nav>`;
+
+const NAV_STYLES = `
+<style>
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.nav-hamburger:hover { background: var(--ink-100); }
+.nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--ink-900);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-mobile-menu {
+  background: white;
+  border-top: 1px solid var(--ink-100);
+  padding: 12px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 8px 24px rgba(10,22,40,0.1);
+}
+.nav-mobile-menu a {
+  display: block;
+  padding: 11px 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-700);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.nav-mobile-menu a:hover { background: var(--ink-50); color: var(--brand); }
+.nav-mobile-menu a.active { color: var(--brand); font-weight: 700; }
+.nav-mobile-divider { height: 1px; background: var(--ink-100); margin: 8px 0; }
+.nav-mobile-login {
+  color: var(--ink-700) !important;
+}
+.nav-mobile-signup {
+  background: var(--ink-900) !important;
+  color: white !important;
+  text-align: center;
+  border-radius: 999px !important;
+  padding: 12px !important;
+  font-weight: 700 !important;
+  margin-top: 4px;
+}
+.nav-mobile-signup:hover { background: var(--brand) !important; }
+
+@media (max-width: 768px) {
+  .nav-hamburger { display: flex; }
+  .nav-links { display: none !important; }
+  .nav-actions { display: none !important; }
+}
+</style>`;
 
 const FOOTER = `
 <footer class="site-footer">
@@ -35,7 +118,7 @@ const FOOTER = `
     <div class="footer-top">
       <div class="footer-brand">
         <a href="/index.html">
-          <img src="/ujyalo-logo-transparent.png" style="height: 36px; width: auto; filter: brightness(0) invert(1);" alt="Ujyalo">
+          <img src="/ujyalo-logo-transparent.png" style="height:36px;width:auto;filter:brightness(0) invert(1);" alt="Ujyalo">
         </a>
         <p>AI-powered exam preparation made with care, in Nepal.
         Helping students brighten their future, one question at a time.</p>
@@ -88,14 +171,35 @@ const FOOTER = `
   Need help?
 </a>`;
 
-// Global logout function — available on every page
+// Toggle mobile nav
+function toggleMobileNav() {
+  const menu = document.getElementById('nav-mobile-menu');
+  const btn   = document.getElementById('nav-hamburger');
+  if (!menu || !btn) return;
+  const isOpen = !menu.classList.contains('hidden');
+  menu.classList.toggle('hidden', isOpen);
+  btn.classList.toggle('open', !isOpen);
+}
+
+// Close mobile nav when clicking outside
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('nav-mobile-menu');
+  const btn   = document.getElementById('nav-hamburger');
+  if (!menu || !btn) return;
+  if (!menu.classList.contains('hidden') && !menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.add('hidden');
+    btn.classList.remove('open');
+  }
+});
+
+// Global logout
 function ujyaloLogout() {
   localStorage.removeItem('ujyalo_token');
   localStorage.removeItem('ujyalo_user');
   window.location.href = '/index.html';
 }
 
-// Google Analytics — tracks every page automatically
+// Google Analytics
 (function() {
   var script = document.createElement('script');
   script.async = true;
@@ -108,7 +212,7 @@ function ujyaloLogout() {
   window.gtag = gtag;
 })();
 
-// Microsoft Clarity — session recordings and heatmaps
+// Microsoft Clarity
 (function(c,l,a,r,i,t,y){
   c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
   t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
@@ -116,6 +220,9 @@ function ujyaloLogout() {
 })(window, document, "clarity", "script", "wpmkas1s1o");
 
 document.addEventListener('DOMContentLoaded', function () {
+
+  // Inject nav styles
+  document.head.insertAdjacentHTML('beforeend', NAV_STYLES);
 
   // Favicon
   const favicon = document.createElement('link');
@@ -131,31 +238,43 @@ document.addEventListener('DOMContentLoaded', function () {
   const footerEl = document.getElementById('site-footer');
   if (footerEl) footerEl.innerHTML = FOOTER;
 
-  // Active nav link
+  // Active nav link — both desktop and mobile
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.nav-links a').forEach(link => {
+  document.querySelectorAll('.nav-links a, .nav-mobile-menu a').forEach(link => {
     if (link.getAttribute('href').split('/').pop() === currentPage) {
       link.classList.add('active');
     }
   });
 
-  // Check if logged in — update nav buttons
-  const user = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
+  // Check if logged in — update nav
+  const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
   const token = localStorage.getItem('ujyalo_token');
   const navActions = document.getElementById('nav-actions');
 
-  if (user && token && navActions) {
+  if (user && token) {
     const firstName = user.full_name
       ? user.full_name.split(' ')[0]
       : user.email.split('@')[0];
     const initials = firstName.charAt(0).toUpperCase();
 
-    navActions.innerHTML = `
-      <a href="/dashboard.html" class="btn btn-ghost">Dashboard</a>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div style="width:32px;height:32px;border-radius:50%;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">${initials}</div>
-        <button onclick="ujyaloLogout()" style="font-size:13px;color:var(--ink-500);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:500;">Log out</button>
-      </div>`;
+    // Update desktop nav
+    if (navActions) {
+      navActions.innerHTML = `
+        <a href="/dashboard.html" class="btn btn-ghost">Dashboard</a>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">${initials}</div>
+          <button onclick="ujyaloLogout()" style="font-size:13px;color:var(--ink-500);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:500;">Log out</button>
+        </div>`;
+    }
+
+    // Update mobile menu
+    const mobileMenu = document.getElementById('nav-mobile-menu');
+    if (mobileMenu) {
+      const mobileActions = mobileMenu.querySelector('.nav-mobile-login');
+      const mobileSignup  = mobileMenu.querySelector('.nav-mobile-signup');
+      if (mobileActions) mobileActions.outerHTML = `<a href="/dashboard.html">Dashboard</a>`;
+      if (mobileSignup)  mobileSignup.outerHTML  = `<button onclick="ujyaloLogout()" style="background:var(--ink-100);color:var(--ink-700);border:none;border-radius:999px;padding:12px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;width:100%;margin-top:4px;">Log out</button>`;
+    }
   }
 
 });
