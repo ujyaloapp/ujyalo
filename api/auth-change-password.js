@@ -1,19 +1,11 @@
 // /api/auth-change-password.js
 // Changes password for a currently logged-in user
 
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Get token from Authorization header
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -31,27 +23,26 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Get the user from the token first
-    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
-
-    if (userError || !user) {
-      return res.status(401).json({ error: 'Session expired. Please log in again.' });
-    }
-
-    // Update password using admin API (service key)
-    const { error } = await supabase.auth.admin.updateUserById(user.id, {
-      password: password
+    const response = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': process.env.SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ password }),
     });
 
-    if (error) {
-      console.error('Change password error:', error.message);
-      return res.status(400).json({ error: error.message });
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(400).json({ error: data.message || 'Failed to update password' });
     }
 
     return res.status(200).json({ success: true });
 
   } catch (err) {
-    console.error('Change password handler error:', err);
+    console.error('Change password error:', err);
     return res.status(500).json({ error: 'Something went wrong. Please try again.' });
   }
 }
