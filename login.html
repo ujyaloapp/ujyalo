@@ -70,7 +70,7 @@ async function submitLogin() {
     if (data.success) {
       localStorage.setItem('ujyalo_token', data.access_token);
       localStorage.setItem('ujyalo_user', JSON.stringify(data.user));
-      window.location.href = '/dashboard.html';
+      window.location.href = data.redirectTo || '/dashboard.html';
     } else {
       showError(data.error || 'Something went wrong. Please try again.');
       btn.disabled = false;
