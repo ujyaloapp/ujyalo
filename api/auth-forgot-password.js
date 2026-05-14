@@ -22,14 +22,15 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         email,
         gotrue_meta_security: {},
+        redirectTo: 'https://ujyalo.app/reset-password.html',
       }),
     });
 
-    // Always return success — don't reveal if email exists (security)
+    // Always return success for security
     return res.status(200).json({ success: true });
 
   } catch (err) {
     console.error('Forgot password error:', err);
-    return res.status(200).json({ success: true }); // Always success for security
+    return res.status(200).json({ success: true });
   }
 }
