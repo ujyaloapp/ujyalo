@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   if (!full_name) return res.status(400).json({ error: 'Please enter your full name.' });
   if (!email)     return res.status(400).json({ error: 'Please enter your email.' });
   if (!password)  return res.status(400).json({ error: 'Please enter a password.' });
-  if (password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+  if (password.length < 8) return res.status(400).json({ error: 'Password must be at least 8 characters.' });
 
   // Basic email check
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
