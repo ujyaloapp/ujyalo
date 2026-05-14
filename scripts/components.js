@@ -31,7 +31,7 @@ const NAV = `
     </button>
   </div>
   <!-- Mobile menu -->
-  <div class="nav-mobile-menu hidden" id="nav-mobile-menu">
+  <div class="nav-mobile-menu" id="nav-mobile-menu" style="display:none;">
     <a href="/practice.html">Practice</a>
     <a href="/features.html">Features</a>
     <a href="/pricing.html">Pricing</a>
@@ -73,7 +73,6 @@ const NAV_STYLES = `
   background: white;
   border-top: 1px solid var(--ink-100);
   padding: 12px 20px 20px;
-  display: flex;
   flex-direction: column;
   gap: 2px;
   box-shadow: 0 8px 24px rgba(10,22,40,0.1);
@@ -176,8 +175,8 @@ function toggleMobileNav() {
   const menu = document.getElementById('nav-mobile-menu');
   const btn   = document.getElementById('nav-hamburger');
   if (!menu || !btn) return;
-  const isOpen = !menu.classList.contains('hidden');
-  menu.classList.toggle('hidden', isOpen);
+  const isOpen = menu.style.display === 'flex';
+  menu.style.display = isOpen ? 'none' : 'flex';
   btn.classList.toggle('open', !isOpen);
 }
 
@@ -186,8 +185,8 @@ document.addEventListener('click', function(e) {
   const menu = document.getElementById('nav-mobile-menu');
   const btn   = document.getElementById('nav-hamburger');
   if (!menu || !btn) return;
-  if (!menu.classList.contains('hidden') && !menu.contains(e.target) && !btn.contains(e.target)) {
-    menu.classList.add('hidden');
+  if (menu.style.display === 'flex' && !menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.style.display = 'none';
     btn.classList.remove('open');
   }
 });
