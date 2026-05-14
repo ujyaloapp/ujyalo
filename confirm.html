@@ -9,71 +9,35 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.css">
 <style>
-  .confirm-wrap {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--ink-50);
-    padding: 24px;
-  }
-  .confirm-card {
-    background: white;
-    border-radius: 20px;
-    padding: 48px 40px;
-    text-align: center;
-    max-width: 420px;
-    width: 100%;
-    box-shadow: 0 4px 24px rgba(10,22,40,0.08);
-  }
-  .confirm-icon { font-size: 56px; margin-bottom: 16px; }
-  .confirm-title {
-    font-family: 'Fraunces', serif;
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    color: var(--ink-900);
-  }
-  .confirm-sub {
-    font-size: 15px;
-    color: var(--ink-500);
-    line-height: 1.65;
-    margin-bottom: 24px;
-  }
-  .spinner {
-    width: 36px; height: 36px;
-    border: 3px solid var(--ink-100);
-    border-top-color: var(--brand);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 16px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .confirm-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--ink-50); padding:24px; }
+  .confirm-card { background:white; border-radius:20px; padding:48px 40px; text-align:center; max-width:420px; width:100%; box-shadow:0 4px 24px rgba(10,22,40,0.08); }
+  .confirm-icon { font-size:56px; margin-bottom:16px; }
+  .confirm-title { font-family:'Fraunces',serif; font-size:24px; font-weight:700; margin-bottom:8px; color:var(--ink-900); }
+  .confirm-sub { font-size:15px; color:var(--ink-500); line-height:1.65; margin-bottom:24px; }
+  .spinner { width:36px; height:36px; border:3px solid var(--ink-100); border-top-color:var(--brand); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 16px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
 </style>
 </head>
 <body>
 <div class="confirm-wrap">
   <div class="confirm-card">
 
-    <!-- Loading state -->
     <div id="state-loading">
       <div class="spinner"></div>
-      <div class="confirm-title">Confirming your account...</div>
-      <div class="confirm-sub">Please wait a moment. You'll be taken to your dashboard shortly.</div>
+      <div class="confirm-title">Please wait...</div>
+      <div class="confirm-sub">Verifying your link.</div>
     </div>
 
-    <!-- Success state -->
     <div id="state-success" class="hidden">
       <div class="confirm-icon">🎉</div>
       <div class="confirm-title">Email confirmed!</div>
       <div class="confirm-sub">Welcome to Ujyalo. Taking you to your dashboard now...</div>
     </div>
 
-    <!-- Error state -->
     <div id="state-error" class="hidden">
       <div class="confirm-icon">😕</div>
       <div class="confirm-title">Something went wrong</div>
-      <div class="confirm-sub" id="error-msg">The confirmation link may have expired. Please try signing up again or log in if you already have an account.</div>
+      <div class="confirm-sub" id="error-msg">The link may have expired. Please try again.</div>
       <a href="/login.html" class="btn btn-blue" style="display:inline-block;margin-top:8px;">Go to login →</a>
     </div>
 
@@ -81,9 +45,22 @@
 </div>
 
 <script>
+// Admin emails — same list as auth-login.js
+const ADMIN_EMAILS = [
+  'hello@ujyalo.app',
+  // 'friend1@ujyalo.app',
+];
+
+async function init() {
+  try {
+    const res  = await fetch('/api/auth-config');
+    const data = await res.json();
+    window._sbKey = data.anon_key;
+  } catch(e) {}
+  handleConfirmation();
+}
+
 async function handleConfirmation() {
-  // Get the token from the URL
-  // Supabase puts it in the hash (#) or as query params
   const hash   = window.location.hash.substring(1);
   const params = new URLSearchParams(hash || window.location.search);
 
@@ -92,110 +69,73 @@ async function handleConfirmation() {
   const type         = params.get('type');
   const errorDesc    = params.get('error_description');
 
-  // If there's an error in the URL
+  // Error in URL
   if (errorDesc) {
     showError(decodeURIComponent(errorDesc));
     return;
   }
 
-  // If we have an access token — log them in automatically
-  if (accessToken) {
-    try {
-      // Get user info from Supabase using the token
-      const res = await fetch(
-        `${getSupabaseUrl()}/auth/v1/user`,
-        {
-          headers: {
-            'apikey': getSupabaseKey(),
-            'Authorization': `Bearer ${accessToken}`
-          }
-        }
-      );
-
-      const userData = await res.json();
-
-      if (userData.id) {
-        // Save session to localStorage — same format as login
-        localStorage.setItem('ujyalo_token', accessToken);
-        localStorage.setItem('ujyalo_user', JSON.stringify({
-          id:        userData.id,
-          email:     userData.email,
-          full_name: userData.user_metadata?.full_name || ''
-        }));
-
-        // Show success briefly then redirect
-        show('state-success');
-        hide('state-loading');
-
-        setTimeout(() => {
-          window.location.href = '/dashboard.html';
-        }, 1500);
-
-      } else {
-        showError('Could not verify your account. Please try logging in.');
-      }
-
-    } catch (e) {
-      console.error('Confirmation error:', e);
-      showError('Something went wrong. Please try logging in.');
-    }
-
-  } else {
-    // No token — maybe they landed here by mistake
-    // Redirect to login
+  if (!accessToken) {
     window.location.href = '/login.html';
+    return;
   }
-}
 
-// Get Supabase URL and key from our API
-// We call a simple endpoint that returns the public config
-async function getSupabaseConfig() {
-  try {
-    const res = await fetch('/api/config');
-    return await res.json();
-  } catch (e) {
-    return null;
+  // ── PASSWORD RECOVERY — send to reset-password.html ──
+  // Do NOT log them in here — let reset-password.html handle it
+  if (type === 'recovery') {
+    window.location.href = `/reset-password.html${window.location.hash}`;
+    return;
   }
-}
 
-// Supabase public config — safe to have in frontend
-function getSupabaseUrl() {
-  return 'https://uigausnyrlxxyosxjgvi.supabase.co';
-}
-function getSupabaseKey() {
-  // This is the anon/public key — safe to use in browser
-  // It cannot bypass Row Level Security
-  return document.querySelector('meta[name="sb-key"]')?.content || '';
-}
-
-// We need the anon key on this page
-// Load it from a meta tag we'll add
-async function init() {
+  // ── EMAIL CONFIRMATION (signup) — log them in ──
   try {
-    const res  = await fetch('/api/auth-config');
-    const data = await res.json();
-    if (data.anon_key) {
-      // Store temporarily for this page
-      window._sbKey = data.anon_key;
+    const res = await fetch(
+      'https://uigausnyrlxxyosxjgvi.supabase.co/auth/v1/user',
+      {
+        headers: {
+          'apikey': window._sbKey,
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    );
+
+    const userData = await res.json();
+
+    if (userData.id) {
+      localStorage.setItem('ujyalo_token', accessToken);
+      localStorage.setItem('ujyalo_user', JSON.stringify({
+        id:        userData.id,
+        email:     userData.email,
+        full_name: userData.user_metadata?.full_name || ''
+      }));
+
+      show('state-success');
+      hide('state-loading');
+
+      // Redirect admin to admin.html, students to dashboard.html
+      const isAdmin = ADMIN_EMAILS.includes(userData.email?.toLowerCase());
+      setTimeout(() => {
+        window.location.href = isAdmin ? '/admin.html' : '/dashboard.html';
+      }, 1500);
+
+    } else {
+      showError('Could not verify your account. Please try logging in.');
     }
-  } catch (e) {}
-  handleConfirmation();
-}
 
-function getSupabaseKey() {
-  return window._sbKey || '';
+  } catch(e) {
+    console.error('Confirmation error:', e);
+    showError('Something went wrong. Please try logging in.');
+  }
 }
 
 function show(id) { document.getElementById(id).classList.remove('hidden'); }
 function hide(id) { document.getElementById(id).classList.add('hidden'); }
-
 function showError(msg) {
   hide('state-loading');
   show('state-error');
   if (msg) document.getElementById('error-msg').textContent = msg;
 }
 
-// Start
 init();
 </script>
 </body>
