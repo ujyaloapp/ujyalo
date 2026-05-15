@@ -10,231 +10,36 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <link rel="stylesheet" href="/styles/main.css">
 <style>
-/* ============================================================
-   UJYALO — EXAM PICKER PAGE
-   To add a new exam → add one object to EXAMS array in CONFIG
-   To unlock an exam → change status from 'soon' to 'live'
-   To change colours/icons → edit the exam object
-   ============================================================ */
-
-.picker-page {
-  min-height: calc(100vh - 56px);
-  background: var(--ink-50);
-  padding: 48px 24px 80px;
-}
-
-.picker-inner {
-  max-width: 760px;
-  margin: 0 auto;
-}
-
-.picker-heading {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.picker-heading h1 {
-  font-family: 'Fraunces', serif;
-  font-size: 36px;
-  font-weight: 700;
-  color: var(--ink-900);
-  letter-spacing: -1px;
-  margin-bottom: 8px;
-  line-height: 1.2;
-}
-
-.picker-heading h1 em {
-  font-style: italic;
-  color: var(--brand);
-  font-weight: 400;
-}
-
-.picker-heading p {
-  font-size: 16px;
-  color: var(--ink-500);
-  line-height: 1.6;
-}
-
-/* Exam grid — 2 columns, wraps to 1 on mobile */
-.exam-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
-/* Exam card */
-.exam-card {
-  background: white;
-  border: 2px solid var(--ink-100);
-  border-radius: 20px;
-  padding: 24px;
-  cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-  text-align: left;
-  font-family: inherit;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  position: relative;
-  overflow: hidden;
-}
-
-.exam-card.live:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
-}
-
-.exam-card.locked {
-  cursor: default;
-  opacity: 0.6;
-}
-
-.exam-card.locked:hover {
-  transform: none;
-  box-shadow: none;
-}
-
-/* Card top row — icon + badge */
-.exam-card-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-
-.exam-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.exam-icon i {
-  font-size: 26px;
-}
-
-.exam-badge-live {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: var(--green-light);
-  color: var(--green);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.exam-badge-live::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--green);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(1.4); }
-}
-
-.exam-badge-soon {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: var(--ink-100);
-  color: var(--ink-400);
-}
-
-/* Card content */
-.exam-card-name {
-  font-family: 'Fraunces', serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ink-900);
-  margin-bottom: 3px;
-  line-height: 1.2;
-}
-
-.exam-card-sub {
-  font-size: 13px;
-  color: var(--ink-500);
-  line-height: 1.5;
-  margin-bottom: 8px;
-}
-
-.exam-card-subjects {
-  display: flex;
-  gap: 5px;
-  flex-wrap: wrap;
-}
-
-.subj-chip {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.subj-chip i {
-  font-size: 12px;
-}
-
-/* Card footer — arrow for live, lock for soon */
-.exam-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
-  padding-top: 4px;
-}
-
-.exam-card-cta {
-  font-size: 13px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: gap 0.2s;
-}
-
-.exam-card.live:hover .exam-card-cta {
-  gap: 10px;
-}
-
-.exam-card-locked-msg {
-  font-size: 12px;
-  color: var(--ink-300);
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-/* Decorative corner accent on live cards */
-.exam-card.live::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 80px;
-  height: 80px;
-  border-radius: 0 20px 0 100%;
-  opacity: 0.06;
-}
-
-/* Mobile */
-@media (max-width: 600px) {
-  .exam-grid { grid-template-columns: 1fr; }
-  .picker-heading h1 { font-size: 28px; }
-}
+.picker-page { min-height:calc(100vh - 56px); background:var(--ink-50); padding:48px 24px 80px; }
+.picker-inner { max-width:760px; margin:0 auto; }
+.picker-heading { text-align:center; margin-bottom:40px; }
+.picker-heading h1 { font-family:'Fraunces',serif; font-size:36px; font-weight:700; color:var(--ink-900); letter-spacing:-1px; margin-bottom:8px; line-height:1.2; }
+.picker-heading h1 em { font-style:italic; color:var(--brand); font-weight:400; }
+.picker-heading p { font-size:16px; color:var(--ink-500); line-height:1.6; }
+.exam-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+.exam-card { background:white; border:2px solid var(--ink-100); border-radius:20px; padding:24px; cursor:pointer; transition:all 0.22s cubic-bezier(0.16,1,0.3,1); text-align:left; font-family:inherit; width:100%; display:flex; flex-direction:column; gap:14px; position:relative; overflow:hidden; }
+.exam-card.live:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,0.1); }
+.exam-card.locked { cursor:default; opacity:0.6; }
+.exam-card.locked:hover { transform:none; box-shadow:none; }
+.exam-card-top { display:flex; align-items:flex-start; justify-content:space-between; }
+.exam-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.exam-icon i { font-size:26px; }
+.exam-badge-live { font-size:10px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--green-light); color:var(--green); display:flex; align-items:center; gap:4px; }
+.exam-badge-live::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.4)} }
+.exam-badge-soon { font-size:10px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--ink-100); color:var(--ink-400); }
+.exam-card-name { font-family:'Fraunces',serif; font-size:20px; font-weight:700; color:var(--ink-900); margin-bottom:3px; line-height:1.2; }
+.exam-card-sub { font-size:13px; color:var(--ink-500); line-height:1.5; margin-bottom:8px; }
+.exam-card-subjects { display:flex; gap:5px; flex-wrap:wrap; }
+.subj-chip { font-size:11px; font-weight:600; padding:3px 9px; border-radius:6px; display:flex; align-items:center; gap:4px; }
+.subj-chip i { font-size:12px; }
+.exam-card-footer { display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:4px; }
+.exam-card-cta { font-size:13px; font-weight:700; display:flex; align-items:center; gap:5px; transition:gap 0.2s; }
+.exam-card.live:hover .exam-card-cta { gap:10px; }
+.exam-card-locked-msg { font-size:12px; color:var(--ink-300); display:flex; align-items:center; gap:5px; }
+/* coming soon note inside locked card */
+.coming-soon-note { background:var(--ink-50); border-radius:10px; padding:10px 12px; font-size:12px; color:var(--ink-400); line-height:1.5; margin-top:4px; }
+@media(max-width:600px) { .exam-grid{grid-template-columns:1fr;} .picker-heading h1{font-size:28px;} }
 </style>
 </head>
 <body>
@@ -245,12 +50,10 @@
 
     <div class="picker-heading">
       <h1>What are you <em>preparing for?</em></h1>
-      <p>Choose your exam and we'll show you the right practice papers, chapters and past questions.</p>
+      <p>Choose your exam and we'll show you the right practice material.</p>
     </div>
 
-    <div class="exam-grid" id="exam-grid">
-      <!-- Rendered by JS from CONFIG below -->
-    </div>
+    <div class="exam-grid" id="exam-grid"></div>
 
   </div>
 </div>
@@ -259,31 +62,41 @@
 <script src="/scripts/components.js"></script>
 <script>
 /* ============================================================
-   CONFIG — Edit here to add or unlock exams
-   
-   status: 'live'  → clickable, goes to url
+   CONFIG
+   status: 'live'  → clickable
    status: 'soon'  → locked, shows coming soon
-
-   subjects: shown as chips on the card
-   color: hex used for icon bg, border, text, accent
-   icon: any Tabler icon name (ti-xxx)
-   url: where to go when student clicks (for live exams)
    ============================================================ */
 const EXAMS = [
   {
-    key:      'see',
-    name:     'SEE Grade 10',
-    sub:      'Secondary Education Examination · Nepal',
-    icon:     'ti-school',
+    key:      'see-chapters',
+    name:     'SEE Chapter Practice',
+    sub:      'Practice by chapter with instant AI feedback — live now',
+    icon:     'ti-books',
     color:    '#1E5FA8',
     colorBg:  '#EFF6FF',
     status:   'live',
-    url:      '/see-practice.html',
+    url:      '/chapter-practice.html',
     subjects: [
       { label:'Maths',   icon:'ti-math-function', bg:'#EFF6FF', color:'#1E5FA8' },
       { label:'Science', icon:'ti-microscope',    bg:'#F0FDF4', color:'#16A34A' },
     ],
     cta: 'Start practising →',
+  },
+  {
+    key:      'see-papers',
+    name:     'SEE Past Papers',
+    sub:      'Full past papers from SEE 2081, 2080, 2079 and beyond',
+    icon:     'ti-file-description',
+    color:    '#1E5FA8',
+    colorBg:  '#EFF6FF',
+    status:   'soon',
+    url:      '/see-practice.html',
+    subjects: [
+      { label:'Maths',   icon:'ti-math-function', bg:'#EFF6FF', color:'#1E5FA8' },
+      { label:'Science', icon:'ti-microscope',    bg:'#F0FDF4', color:'#16A34A' },
+    ],
+    comingSoonNote: 'Papers are being prepared. Sign up to get notified when they go live.',
+    cta: 'Practice papers →',
   },
   {
     key:      'neb11',
@@ -295,9 +108,9 @@ const EXAMS = [
     status:   'soon',
     url:      '/neb11-practice.html',
     subjects: [
-      { label:'Physics',   icon:'ti-atom',      bg:'#EFF6FF', color:'#1E5FA8' },
-      { label:'Chemistry', icon:'ti-flask',     bg:'#FDF4FF', color:'#9333EA' },
-      { label:'Maths',     icon:'ti-math-function', bg:'#FFF7ED', color:'#C2410C' },
+      { label:'Physics',   icon:'ti-atom',             bg:'#EFF6FF', color:'#1E5FA8' },
+      { label:'Chemistry', icon:'ti-flask',             bg:'#FDF4FF', color:'#9333EA' },
+      { label:'Maths',     icon:'ti-math-function',    bg:'#FFF7ED', color:'#C2410C' },
     ],
     cta: 'Start practising →',
   },
@@ -311,10 +124,10 @@ const EXAMS = [
     status:   'soon',
     url:      '/neb12-practice.html',
     subjects: [
-      { label:'Physics',   icon:'ti-atom',         bg:'#EFF6FF', color:'#1E5FA8' },
-      { label:'Chemistry', icon:'ti-flask',         bg:'#FDF4FF', color:'#9333EA' },
-      { label:'Biology',   icon:'ti-dna',           bg:'#F0FDF4', color:'#16A34A' },
-      { label:'Maths',     icon:'ti-math-function', bg:'#FFF7ED', color:'#C2410C' },
+      { label:'Physics',   icon:'ti-atom',             bg:'#EFF6FF', color:'#1E5FA8' },
+      { label:'Chemistry', icon:'ti-flask',             bg:'#FDF4FF', color:'#9333EA' },
+      { label:'Biology',   icon:'ti-dna',              bg:'#F0FDF4', color:'#16A34A' },
+      { label:'Maths',     icon:'ti-math-function',    bg:'#FFF7ED', color:'#C2410C' },
     ],
     cta: 'Start practising →',
   },
@@ -328,9 +141,9 @@ const EXAMS = [
     status:   'soon',
     url:      '/ioe-practice.html',
     subjects: [
-      { label:'Physics',   icon:'ti-atom',         bg:'#EFF6FF', color:'#1E5FA8' },
-      { label:'Maths',     icon:'ti-math-function', bg:'#FFF7ED', color:'#C2410C' },
-      { label:'Chemistry', icon:'ti-flask',         bg:'#FDF4FF', color:'#9333EA' },
+      { label:'Physics',   icon:'ti-atom',             bg:'#EFF6FF', color:'#1E5FA8' },
+      { label:'Maths',     icon:'ti-math-function',    bg:'#FFF7ED', color:'#C2410C' },
+      { label:'Chemistry', icon:'ti-flask',             bg:'#FDF4FF', color:'#9333EA' },
     ],
     cta: 'Start practising →',
   },
@@ -351,46 +164,35 @@ const EXAMS = [
   },
 ];
 
-/* ── Render ── */
 function renderExams() {
   const grid = document.getElementById('exam-grid');
   grid.innerHTML = '';
 
   EXAMS.forEach(exam => {
     const isLive = exam.status === 'live';
-
     const card = document.createElement('button');
     card.className = `exam-card ${isLive ? 'live' : 'locked'}`;
 
     if (isLive) {
       card.style.borderColor = exam.color;
-      card.style.boxShadow = `0 0 0 0 ${exam.color}22`;
-      card.addEventListener('mouseenter', () => {
-        card.style.borderColor = exam.color;
-        card.style.boxShadow = `0 12px 32px ${exam.color}22`;
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.boxShadow = `0 0 0 0 ${exam.color}22`;
-      });
+      card.addEventListener('mouseenter', () => { card.style.boxShadow = `0 12px 32px ${exam.color}22`; });
+      card.addEventListener('mouseleave', () => { card.style.boxShadow = ''; });
       card.onclick = () => { window.location.href = exam.url; };
     }
 
-    // Accent corner
-    if (isLive) {
-      card.style.setProperty('--accent', exam.colorBg);
-    }
-
-    // Subject chips HTML
     const chipsHTML = exam.subjects.map(s =>
       `<span class="subj-chip" style="background:${s.bg};color:${s.color};">
         <i class="ti ${s.icon}" aria-hidden="true"></i>${s.label}
       </span>`
     ).join('');
 
-    // Footer HTML
     const footerHTML = isLive
       ? `<span class="exam-card-cta" style="color:${exam.color};">${exam.cta} <i class="ti ti-arrow-right" aria-hidden="true"></i></span>`
       : `<span class="exam-card-locked-msg"><i class="ti ti-lock" aria-hidden="true"></i> Coming soon</span>`;
+
+    const noteHTML = (!isLive && exam.comingSoonNote)
+      ? `<div class="coming-soon-note">📋 ${exam.comingSoonNote}</div>`
+      : '';
 
     card.innerHTML = `
       <div class="exam-card-top">
@@ -406,6 +208,7 @@ function renderExams() {
         <div class="exam-card-name">${exam.name}</div>
         <div class="exam-card-sub">${exam.sub}</div>
         <div class="exam-card-subjects">${chipsHTML}</div>
+        ${noteHTML}
       </div>
       <div class="exam-card-footer">${footerHTML}</div>`;
 
