@@ -3,334 +3,131 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Practice real SEE past papers with instant answers. Free for Nepali students. No signup needed to start." />
+  <meta name="description" content="Practice SEE exam questions chapter by chapter with instant AI feedback. Free for Nepali students. No signup needed to start." />
   <title>Ujyalo — SEE Exam Practice, Free</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles/main.css" />
   <style>
-
-    /* ── HERO ── */
-    .hero-home {
-      position: relative;
-      padding: 80px 0 64px;
-      background: radial-gradient(at 15% 0%, var(--sun-50) 0px, transparent 55%),
-                  radial-gradient(at 85% 10%, var(--brand-50) 0px, transparent 55%),
-                  white;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--brand-light); border: 1px solid var(--brand);
-      color: var(--brand); font-size: 12px; font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      padding: 6px 14px; border-radius: 999px; margin-bottom: 24px;
-    }
-
-    /* live paper card shown in hero */
-    .hero-paper-card {
-      display: inline-flex; align-items: center; gap: 14px;
-      background: white; border: 1.5px solid var(--ink-100);
-      border-radius: 16px; padding: 14px 20px;
-      box-shadow: 0 4px 24px rgba(10,22,40,0.07);
-      margin: 28px auto 10px; text-align: left;
-      max-width: 420px; width: 100%;
-    }
-    .hero-paper-icon {
-      width: 44px; height: 44px; border-radius: 12px;
-      background: var(--brand-light);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; flex-shrink: 0;
-    }
-    .hero-paper-name {
-      font-size: 15px; font-weight: 700; color: var(--ink-900);
-      margin-bottom: 2px;
-    }
-    .hero-paper-meta { font-size: 12px; color: var(--ink-500); }
-    .hero-paper-badge {
-      margin-left: auto; flex-shrink: 0;
-      background: var(--green-light); color: var(--green);
-      font-size: 11px; font-weight: 700;
-      padding: 4px 10px; border-radius: 999px;
-    }
-
-    .hero-cta-row {
-      display: flex; gap: 12px; justify-content: center;
-      flex-wrap: wrap; margin-top: 28px;
-    }
-
-    .hero-no-signup {
-      font-size: 12px; color: var(--ink-400);
-      margin-top: 12px; display: flex;
-      align-items: center; justify-content: center; gap: 14px;
-    }
-    .hero-no-signup span { display: flex; align-items: center; gap: 4px; }
-
-    /* coming soon pill */
-    .coming-soon-row {
-      display: flex; gap: 8px; flex-wrap: wrap;
-      justify-content: center; margin-top: 24px;
-    }
-    .cs-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--ink-50); border: 1px solid var(--ink-100);
-      border-radius: 999px; padding: 5px 12px;
-      font-size: 12px; color: var(--ink-400); font-weight: 600;
-    }
-    .cs-pill .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--ink-300); flex-shrink: 0;
-    }
-    .cs-pill.live { background: var(--green-light); border-color: #86efac; color: var(--green); }
-    .cs-pill.live .dot { background: var(--green); }
-
-    /* ── PROBLEM ── */
-    .problem-section-inner {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 24px; align-items: start;
-    }
-    .problem-box {
-      background: white; border: 1px solid var(--ink-100);
-      border-radius: var(--radius-xl); padding: 36px 40px;
-      text-align: left;
-    }
-    .problem-box .emoji { font-size: 2.4rem; margin-bottom: 12px; display: block; }
-    .problem-box h3 {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
-      font-weight: 700; margin-bottom: 14px; line-height: 1.25;
-    }
-    .problem-box h3 em { font-style: italic; color: var(--brand); }
-    .problem-box p { color: var(--ink-500); font-size: 15px; line-height: 1.8; margin-bottom: 12px; }
-    .problem-stats { display: flex; flex-direction: column; gap: 16px; }
-    .problem-stat-card {
-      background: white; border: 1px solid var(--ink-100);
-      border-radius: var(--radius-lg); padding: 24px 20px;
-      text-align: center;
-    }
-    .problem-stat-card .ps-num {
-      font-family: 'Fraunces', serif; font-size: 2.2rem;
-      font-weight: 700; color: var(--brand); line-height: 1;
-      margin-bottom: 6px;
-    }
-    .problem-stat-card .ps-lbl {
-      font-size: 13px; color: var(--ink-500);
-      font-weight: 500; line-height: 1.5;
-    }
-    .problem-stat-card.highlight {
-      background: var(--brand); border-color: var(--brand);
-    }
-    .problem-stat-card.highlight .ps-num { color: white; }
-    .problem-stat-card.highlight .ps-lbl { color: rgba(255,255,255,0.8); }
+    .hero-home { position:relative; padding:80px 0 64px; background:radial-gradient(at 15% 0%,var(--sun-50) 0px,transparent 55%),radial-gradient(at 85% 10%,var(--brand-50) 0px,transparent 55%),white; text-align:center; overflow:hidden; }
+    .hero-badge { display:inline-flex; align-items:center; gap:6px; background:var(--brand-light); border:1px solid var(--brand); color:var(--brand); font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:6px 14px; border-radius:999px; margin-bottom:24px; }
+    .hero-paper-card { display:inline-flex; align-items:center; gap:14px; background:white; border:1.5px solid var(--green); border-radius:16px; padding:14px 20px; box-shadow:0 4px 24px rgba(10,22,40,0.07); margin:28px auto 10px; text-align:left; max-width:440px; width:100%; }
+    .hero-paper-icon { width:44px; height:44px; border-radius:12px; background:var(--brand-light); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+    .hero-paper-name { font-size:15px; font-weight:700; color:var(--ink-900); margin-bottom:2px; }
+    .hero-paper-meta { font-size:12px; color:var(--ink-500); }
+    .hero-paper-badge { margin-left:auto; flex-shrink:0; background:var(--green-light); color:var(--green); font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px; }
+    .hero-cta-row { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:28px; }
+    .hero-no-signup { font-size:12px; color:var(--ink-400); margin-top:12px; display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; }
+    .coming-soon-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:24px; }
+    .cs-pill { display:inline-flex; align-items:center; gap:6px; background:var(--ink-50); border:1px solid var(--ink-100); border-radius:999px; padding:5px 12px; font-size:12px; color:var(--ink-400); font-weight:600; }
+    .cs-pill .dot { width:6px; height:6px; border-radius:50%; background:var(--ink-300); flex-shrink:0; }
+    .cs-pill.live { background:var(--green-light); border-color:#86efac; color:var(--green); }
+    .cs-pill.live .dot { background:var(--green); }
+    .problem-section-inner { display:grid; grid-template-columns:1fr 300px; gap:24px; align-items:start; }
+    .problem-box { background:white; border:1px solid var(--ink-100); border-radius:var(--radius-xl); padding:36px 40px; text-align:left; }
+    .problem-box .emoji { font-size:2.4rem; margin-bottom:12px; display:block; }
+    .problem-box h3 { font-family:'Fraunces',serif; font-size:clamp(1.4rem,2.5vw,1.9rem); font-weight:700; margin-bottom:14px; line-height:1.25; }
+    .problem-box h3 em { font-style:italic; color:var(--brand); }
+    .problem-box p { color:var(--ink-500); font-size:15px; line-height:1.8; margin-bottom:12px; }
+    .problem-stats { display:flex; flex-direction:column; gap:16px; }
+    .problem-stat-card { background:white; border:1px solid var(--ink-100); border-radius:var(--radius-lg); padding:24px 20px; text-align:center; }
+    .problem-stat-card .ps-num { font-family:'Fraunces',serif; font-size:2.2rem; font-weight:700; color:var(--brand); line-height:1; margin-bottom:6px; }
+    .problem-stat-card .ps-lbl { font-size:13px; color:var(--ink-500); font-weight:500; line-height:1.5; }
+    .problem-stat-card.highlight { background:var(--brand); border-color:var(--brand); }
+    .problem-stat-card.highlight .ps-num { color:white; }
+    .problem-stat-card.highlight .ps-lbl { color:rgba(255,255,255,0.8); }
+    .live-now-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+    .live-now-card { background:white; border:1.5px solid var(--ink-100); border-radius:var(--radius-lg); padding:24px; display:flex; flex-direction:column; gap:12px; }
+    .live-now-card.is-live { border-color:var(--green); }
+    .live-now-card-top { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .live-now-card h3 { font-size:16px; font-weight:700; color:var(--ink-900); }
+    .live-now-card p { font-size:13px; color:var(--ink-500); line-height:1.6; }
+    .live-now-card .action-row { margin-top:auto; padding-top:8px; }
+    .home-features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1px; background:var(--ink-200); border:1px solid var(--ink-200); border-radius:var(--radius-xl); overflow:hidden; }
+    .feature-cell { background:white; padding:36px; transition:background 0.2s; }
+    .feature-cell:hover { background:var(--ink-50); }
+    .feature-cell .icon { width:48px; height:48px; border-radius:var(--radius-md); background:var(--brand-light); display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:20px; }
+    .feature-cell h3 { font-size:16px; font-weight:700; margin-bottom:8px; color:var(--ink-900); }
+    .feature-cell p { font-size:14px; color:var(--ink-500); line-height:1.65; }
+    .feat-status { display:inline-block; margin-top:12px; font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; }
+    .feat-live { background:var(--green-light); color:var(--green); }
+    .feat-soon { background:var(--ink-100); color:var(--ink-400); }
+    .feat-building { background:#FEF3C7; color:#92400e; }
+    .steps-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:24px; }
+    .step-card { background:white; border:1px solid var(--ink-100); border-radius:var(--radius-lg); padding:32px 24px; text-align:center; }
+    .step-num-circle { width:52px; height:52px; background:var(--brand); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:1.4rem; font-weight:700; margin:0 auto 16px; }
+    .step-card h3 { font-size:15px; font-weight:700; margin-bottom:8px; }
+    .step-card p { font-size:13px; color:var(--ink-500); line-height:1.65; }
+    .subjects-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+    .parents-section { background:linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%); color:white; }
+    .parents-inner { display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; max-width:960px; margin:0 auto; padding:80px 24px; }
+    .parents-text h2 { font-family:'Fraunces',serif; font-size:clamp(1.8rem,4vw,2.6rem); font-weight:700; line-height:1.2; color:white; margin-bottom:16px; }
+    .parents-text h2 em { font-style:italic; color:#fcd34d; }
+    .parents-text p { color:rgba(255,255,255,0.8); font-size:15px; line-height:1.8; margin-bottom:12px; }
+    .parents-coming-soon { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:999px; padding:8px 16px; font-size:13px; font-weight:600; color:white; margin-top:8px; }
+    .report-preview { background:white; border-radius:16px; padding:24px; color:var(--ink-900); }
+    .report-preview-title { font-size:13px; font-weight:700; color:var(--ink-500); margin-bottom:16px; }
+    .report-preview-coming { text-align:center; padding:24px 16px; background:var(--ink-50); border-radius:12px; border:2px dashed var(--ink-200); }
+    .report-preview-coming .rp-icon { font-size:36px; margin-bottom:10px; }
+    .report-preview-coming p { font-size:13px; color:var(--ink-500); line-height:1.6; margin:0; }
     @media(max-width:767px) {
-      .problem-section-inner { grid-template-columns: 1fr; }
-      .problem-stats { flex-direction: row; flex-wrap: wrap; }
-      .problem-stat-card { flex: 1; min-width: 130px; }
-    }
-
-    /* ── WHAT'S LIVE NOW ── */
-    .live-now-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
-    }
-    .live-now-card {
-      background: white; border: 1.5px solid var(--ink-100);
-      border-radius: var(--radius-lg); padding: 24px;
-      display: flex; flex-direction: column; gap: 12px;
-    }
-    .live-now-card.is-live { border-color: var(--green); }
-    .live-now-card-top {
-      display: flex; align-items: center;
-      justify-content: space-between; gap: 10px;
-    }
-    .live-now-card h3 { font-size: 16px; font-weight: 700; color: var(--ink-900); }
-    .live-now-card p { font-size: 13px; color: var(--ink-500); line-height: 1.6; }
-    .live-now-card .action-row { margin-top: auto; padding-top: 8px; }
-
-    /* ── FEATURES ── */
-    .home-features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1px; background: var(--ink-200);
-      border: 1px solid var(--ink-200);
-      border-radius: var(--radius-xl); overflow: hidden;
-    }
-    .feature-cell {
-      background: white; padding: 36px;
-      transition: background 0.2s;
-    }
-    .feature-cell:hover { background: var(--ink-50); }
-    .feature-cell .icon {
-      width: 48px; height: 48px; border-radius: var(--radius-md);
-      background: var(--brand-light);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; margin-bottom: 20px;
-    }
-    .feature-cell h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--ink-900); }
-    .feature-cell p { font-size: 14px; color: var(--ink-500); line-height: 1.65; }
-    .feature-cell .feat-status {
-      display: inline-block; margin-top: 12px;
-      font-size: 11px; font-weight: 700;
-      padding: 3px 10px; border-radius: 999px;
-    }
-    .feat-live { background: var(--green-light); color: var(--green); }
-    .feat-soon { background: var(--ink-100); color: var(--ink-400); }
-    .feat-building { background: #FEF3C7; color: #92400e; }
-
-    /* ── HOW IT WORKS ── */
-    .steps-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 24px;
-    }
-    .step-card {
-      background: white; border: 1px solid var(--ink-100);
-      border-radius: var(--radius-lg); padding: 32px 24px;
-      text-align: center;
-    }
-    .step-num-circle {
-      width: 52px; height: 52px; background: var(--brand);
-      color: white; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Fraunces', serif; font-size: 1.4rem;
-      font-weight: 700; margin: 0 auto 16px;
-    }
-    .step-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
-    .step-card p { font-size: 13px; color: var(--ink-500); line-height: 1.65; }
-
-    /* ── SUBJECTS ── */
-    .subjects-row {
-      display: flex; gap: 12px; flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    /* ── PARENTS ── */
-    .parents-section {
-      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
-      color: white;
-    }
-    .parents-inner {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 56px; align-items: center;
-      max-width: 960px; margin: 0 auto; padding: 80px 24px;
-    }
-    .parents-text h2 {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
-      font-weight: 700; line-height: 1.2; color: white; margin-bottom: 16px;
-    }
-    .parents-text h2 em { font-style: italic; color: #fcd34d; }
-    .parents-text p { color: rgba(255,255,255,0.8); font-size: 15px; line-height: 1.8; margin-bottom: 12px; }
-    .parents-coming-soon {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
-      border-radius: 999px; padding: 8px 16px;
-      font-size: 13px; font-weight: 600; color: white; margin-top: 8px;
-    }
-
-    /* visual placeholder for parent report */
-    .report-preview {
-      background: white; border-radius: 16px;
-      padding: 24px; color: var(--ink-900);
-    }
-    .report-preview-title {
-      font-size: 13px; font-weight: 700; color: var(--ink-500);
-      margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
-    }
-    .report-preview-coming {
-      text-align: center; padding: 24px 16px;
-      background: var(--ink-50); border-radius: 12px;
-      border: 2px dashed var(--ink-200);
-    }
-    .report-preview-coming .rp-icon { font-size: 36px; margin-bottom: 10px; }
-    .report-preview-coming p {
-      font-size: 13px; color: var(--ink-500); line-height: 1.6; margin: 0;
-    }
-    .report-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--ink-100); }
-    .report-row:last-child { border-bottom: none; }
-    .report-label { font-size: 13px; color: var(--ink-500); }
-    .report-value { font-size: 13px; font-weight: 700; }
-    .report-value.good { color: var(--green); }
-
-    @media(max-width:767px) {
-      .parents-inner { grid-template-columns: 1fr; gap: 32px; padding: 48px 24px; }
-      .hero-paper-card { flex-wrap: wrap; }
+      .parents-inner { grid-template-columns:1fr; gap:32px; padding:48px 24px; }
+      .problem-section-inner { grid-template-columns:1fr; }
+      .problem-stats { flex-direction:row; flex-wrap:wrap; }
+      .problem-stat-card { flex:1; min-width:130px; }
+      .hero-paper-card { flex-wrap:wrap; }
     }
   </style>
 </head>
 <body>
-
 <div id="site-nav"></div>
 
-<!-- ══ HERO ══ -->
+<!-- HERO -->
 <div class="hero-home">
   <div class="container">
     <div class="hero-badge">🇳🇵 Built for Nepali students · Free during beta</div>
-
-    <h1 class="hero-title">
-      Real SEE questions.<br>
-      <em>Instant answers. Free.</em>
-    </h1>
-
-    <p class="hero-sub" style="max-width:520px;margin:0 auto;">
-      Practice real past paper questions from SEE. Type your answer,
-      see the correct solution immediately. No tuition needed.
-    </p>
-
-    <!-- Live paper card -->
+    <h1 class="hero-title">Practice for SEE.<br><em>Chapter by chapter. Free.</em></h1>
+    <p class="hero-sub" style="max-width:520px;margin:0 auto;">Pick a chapter, answer real SEE-style questions, get instant AI feedback. Built specifically for Nepal's exam — free to start, no signup needed.</p>
     <div style="display:flex;justify-content:center;">
       <div class="hero-paper-card">
-        <div class="hero-paper-icon">📜</div>
+        <div class="hero-paper-icon">📚</div>
         <div>
-          <div class="hero-paper-name">SEE 2081 · Maths</div>
-          <div class="hero-paper-meta">26 questions · Groups A–D · Free</div>
+          <div class="hero-paper-name">SEE Chapter Practice</div>
+          <div class="hero-paper-meta">Maths & Science · All chapters · AI feedback</div>
         </div>
         <div class="hero-paper-badge">✓ Live now</div>
       </div>
     </div>
-
     <div class="hero-cta-row">
-      <a href="/see-practice.html" class="btn btn-primary btn-large">Start practising now →</a>
+      <a href="/chapter-practice.html" class="btn btn-primary btn-large">Start practising now →</a>
       <a href="/signup.html" class="btn btn-secondary btn-large">Create free account</a>
     </div>
-
     <div class="hero-no-signup">
       <span>✓ No signup needed to start</span>
       <span>✓ No credit card ever</span>
       <span>✓ 100% free</span>
     </div>
-
-    <!-- What's coming -->
     <div class="coming-soon-row" style="margin-top:32px;">
-      <span class="cs-pill live"><span class="dot"></span>SEE Maths 2081 — Live</span>
-      <span class="cs-pill"><span class="dot"></span>Science 2081 — Coming soon</span>
-      <span class="cs-pill"><span class="dot"></span>2080 papers — Coming soon</span>
-      <span class="cs-pill"><span class="dot"></span>English — Coming soon</span>
+      <span class="cs-pill live"><span class="dot"></span>SEE Chapter Practice — Live now</span>
+      <span class="cs-pill live"><span class="dot"></span>Maths & Science — Live now</span>
+      <span class="cs-pill"><span class="dot"></span>SEE Past Papers — Coming soon</span>
+      <span class="cs-pill"><span class="dot"></span>English, Social, Nepali — Coming soon</span>
     </div>
-
   </div>
 </div>
 
-<!-- ══ PROBLEM ══ -->
+<!-- PROBLEM -->
 <section class="section section-bg-soft">
   <div class="container">
     <div class="problem-section-inner">
-
-      <!-- Left: main message -->
       <div class="problem-box">
         <span class="emoji">😓</span>
         <h3>The pressure is <em>real.</em><br>The tools haven't kept up.</h3>
         <p>Every year, hundreds of thousands of Nepali students face their most important exam carrying the weight of their family on their shoulders. It is not just an exam — it is pride, honour, and hope.</p>
         <div class="highlight-quote">"Most families sacrifice everything for tuition. But even tuition doesn't always work. And for those who can't afford it — their child faces the exam essentially alone."</div>
-        <p>Ujyalo exists to change that. Real past paper questions, instant correct answers, available any time you open your phone. Free.</p>
+        <p>Ujyalo exists to change that. Real SEE-style practice questions, instant correct answers, AI feedback — available any time you open your phone. Free.</p>
       </div>
-
-      <!-- Right: stats -->
       <div class="problem-stats">
         <div class="problem-stat-card highlight">
           <div class="ps-num">Rs 0</div>
@@ -349,179 +146,155 @@
           <div class="ps-lbl">Nepali students sit SEE every year — every one deserves this</div>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- ══ WHAT'S LIVE NOW ══ -->
+<!-- WHAT'S LIVE NOW -->
 <section class="section">
   <div class="container">
     <div class="text-center mb-8">
       <span class="label-tiny">Available right now</span>
       <h2 class="section-title mt-2">Start practising <em>today.</em></h2>
-      <p class="text-muted mt-4" style="max-width:460px;margin-left:auto;margin-right:auto;font-size:15px;line-height:1.75;">
-        No waiting. No signup required. Open a paper and start answering real SEE questions right now.
-      </p>
+      <p class="text-muted mt-4" style="max-width:460px;margin-left:auto;margin-right:auto;font-size:15px;line-height:1.75;">No waiting. No signup required. Pick a chapter and start answering real SEE-style questions right now.</p>
     </div>
-
     <div class="live-now-grid" style="max-width:860px;margin:0 auto;">
-
-      <!-- Live -->
       <div class="live-now-card is-live">
         <div class="live-now-card-top">
-          <span style="font-size:28px;">🧮</span>
+          <span style="font-size:28px;">📚</span>
           <span class="badge badge-green">✓ Live now</span>
         </div>
         <div>
-          <h3>SEE 2081 — Maths</h3>
-          <p>All 26 questions from the 2081 SEE Maths paper. Groups A, B, C and D. Correct answers included.</p>
+          <h3>SEE Chapter Practice</h3>
+          <p>Practice by chapter — Algebra, Electricity, Trigonometry and more. Answer questions, get instant AI feedback on your answer.</p>
         </div>
         <div class="action-row">
-          <a href="/see-practice.html" class="btn btn-primary btn-sm">Practice now →</a>
+          <a href="/chapter-practice.html" class="btn btn-primary btn-sm">Start practising →</a>
         </div>
       </div>
-
-      <!-- Coming soon: Science -->
       <div class="live-now-card">
         <div class="live-now-card-top">
-          <span style="font-size:28px;">🔬</span>
+          <span style="font-size:28px;">📜</span>
           <span class="badge badge-gold">Coming soon</span>
         </div>
         <div>
-          <h3>SEE 2081 — Science</h3>
-          <p>Being prepared now. All questions from the 2081 Science paper with full answers.</p>
+          <h3>SEE Past Papers</h3>
+          <p>Full past papers from SEE 2081, 2080, 2079 and beyond. Being prepared now — sign up to get notified.</p>
         </div>
         <div class="action-row">
           <a href="/signup.html" class="btn btn-ghost btn-sm">Get notified →</a>
         </div>
       </div>
-
-      <!-- Coming soon: older years -->
       <div class="live-now-card">
         <div class="live-now-card-top">
-          <span style="font-size:28px;">📚</span>
+          <span style="font-size:28px;">📖</span>
           <span class="badge badge-gold">Coming soon</span>
         </div>
         <div>
-          <h3>2080, 2079, 2078…</h3>
-          <p>Older papers being added week by week. Sign up to be notified when each year goes live.</p>
+          <h3>English, Social & Nepali</h3>
+          <p>More subjects being added week by week. Maths and Science are live now — the rest follow soon.</p>
         </div>
         <div class="action-row">
           <a href="/signup.html" class="btn btn-ghost btn-sm">Get notified →</a>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- ══ FEATURES ══ -->
+<!-- FEATURES -->
 <section class="section section-bg-soft">
   <div class="container">
     <div class="text-center mb-8">
       <span class="label-tiny">What makes Ujyalo different</span>
       <h2 class="section-title mt-2">Built for <em>Nepali students.</em></h2>
-      <p class="text-muted mt-4" style="max-width:520px;margin-left:auto;margin-right:auto;font-size:15px;line-height:1.75;">
-        Not a generic tool. Built from the ground up for Nepal's exam syllabus.
-      </p>
+      <p class="text-muted mt-4" style="max-width:520px;margin-left:auto;margin-right:auto;font-size:15px;line-height:1.75;">Not a generic tool. Built from the ground up for Nepal's SEE exam.</p>
     </div>
     <div class="home-features-grid">
-
       <div class="feature-cell">
-        <div class="icon">📜</div>
-        <h3>Real past papers</h3>
-        <p>Actual SEE questions from past years — the exact format, groups, and marks as the real exam. Not made-up practice questions.</p>
-        <span class="feature-cell .feat-status feat-live">✓ Live — SEE 2081 Maths</span>
-      </div>
-
-      <div class="feature-cell">
-        <div class="icon">⚡</div>
-        <h3>Instant correct answers</h3>
-        <p>Type your answer, then see the full correct solution with working steps. Know immediately if you understood it or not.</p>
+        <div class="icon">📚</div>
+        <h3>Chapter-by-chapter practice</h3>
+        <p>Focus on one chapter at a time. Algebra today, Electricity tomorrow. Build your understanding step by step.</p>
         <span class="feat-status feat-live">✓ Live now</span>
       </div>
-
+      <div class="feature-cell">
+        <div class="icon">🤖</div>
+        <h3>AI feedback on every answer</h3>
+        <p>Write your answer and get personalised feedback instantly — not just right or wrong, but exactly why.</p>
+        <span class="feat-status feat-live">✓ Live now</span>
+      </div>
+      <div class="feature-cell">
+        <div class="icon">📜</div>
+        <h3>Real SEE past papers</h3>
+        <p>Full past papers from the actual SEE exam. The exact format, groups and marks. Being prepared now.</p>
+        <span class="feat-status feat-building">⚙ Coming soon</span>
+      </div>
       <div class="feature-cell">
         <div class="icon">📈</div>
         <h3>Progress tracking</h3>
-        <p>Every question you answer is saved. See exactly which questions you've done and which chapters need more work.</p>
+        <p>Every question you answer is saved. See which chapters you've covered and where you need more work.</p>
         <span class="feat-status feat-live">✓ Live — create free account</span>
       </div>
-
-      <div class="feature-cell">
-        <div class="icon">🤖</div>
-        <h3>AI feedback on your answer</h3>
-        <p>Write your answer and get personalised feedback — not just the correct answer, but why yours was right or wrong.</p>
-        <span class="feat-status feat-building">⚙ Building now</span>
-      </div>
-
       <div class="feature-cell">
         <div class="icon">📧</div>
         <h3>Weekly parent reports</h3>
         <p>Every week, your parents get a simple email showing exactly how you're doing and what to focus on next.</p>
         <span class="feat-status feat-soon">Coming soon</span>
       </div>
-
       <div class="feature-cell">
         <div class="icon">💸</div>
         <h3>Free — completely</h3>
         <p>Everything on Ujyalo is free while we're in beta. No credit card. No hidden fees. Quality education for every family.</p>
         <span class="feat-status feat-live">✓ Free during beta</span>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- ══ HOW IT WORKS ══ -->
+<!-- HOW IT WORKS -->
 <section class="section">
   <div class="container">
     <div class="text-center mb-8">
       <span class="label-tiny">How it works</span>
       <h2 class="section-title mt-2">Three steps. <em>No friction.</em></h2>
-      <p class="text-muted mt-4" style="max-width:480px;margin-left:auto;margin-right:auto;font-size:15px;">
-        Open your phone or laptop and you are practising in under a minute.
-      </p>
+      <p class="text-muted mt-4" style="max-width:480px;margin-left:auto;margin-right:auto;font-size:15px;">Open your phone or laptop and you are practising in under a minute.</p>
     </div>
     <div class="steps-row">
       <div class="step-card">
         <div class="step-num-circle">01</div>
-        <h3>Pick a paper</h3>
-        <p>Choose SEE 2081 Maths. No signup needed. Opens instantly.</p>
+        <h3>Pick a chapter</h3>
+        <p>Choose Maths or Science. Pick any chapter — Algebra, Electricity, Trigonometry. No signup needed.</p>
       </div>
       <div class="step-card">
         <div class="step-num-circle">02</div>
-        <h3>Answer each question</h3>
-        <p>Real exam questions one by one. Type your answer just like in the actual SEE exam.</p>
+        <h3>Answer the question</h3>
+        <p>Real SEE-style questions. Type your answer and show your working — just like in the actual exam.</p>
       </div>
       <div class="step-card">
         <div class="step-num-circle">03</div>
-        <h3>See the correct answer</h3>
-        <p>Full solution with working steps shown immediately. Understand exactly where you went right or wrong.</p>
+        <h3>Get AI feedback</h3>
+        <p>Instant personalised feedback. Understand exactly what you got right, what you missed, and why.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ SUBJECTS ══ -->
+<!-- SUBJECTS -->
 <section class="section section-bg-soft">
   <div class="container">
     <div class="text-center mb-8">
       <span class="label-tiny">Subjects</span>
       <h2 class="section-title mt-2">All five SEE <em>subjects.</em></h2>
-      <p class="text-muted mt-4" style="max-width:420px;margin-left:auto;margin-right:auto;font-size:15px;">
-        Maths is live now. The rest are being prepared and added week by week.
-      </p>
+      <p class="text-muted mt-4" style="max-width:420px;margin-left:auto;margin-right:auto;font-size:15px;">Maths and Science are live now. The rest are being prepared and added week by week.</p>
     </div>
     <div class="subjects-row">
-      <a href="/see-practice.html" class="subject-pill-link" style="border-color:var(--green);background:var(--green-light);">
+      <a href="/chapter-practice.html" class="subject-pill-link" style="border-color:var(--green);background:var(--green-light);">
         <span class="pill-emoji">🧮</span>
         <span>Maths<span class="pill-sub" style="color:var(--green);">✓ Live now</span></span>
       </a>
-      <a href="/signup.html" class="subject-pill-link">
+      <a href="/chapter-practice.html" class="subject-pill-link" style="border-color:var(--green);background:var(--green-light);">
         <span class="pill-emoji">🔬</span>
-        <span>Science<span class="pill-sub">Coming soon</span></span>
+        <span>Science<span class="pill-sub" style="color:var(--green);">✓ Live now</span></span>
       </a>
       <a href="/signup.html" class="subject-pill-link">
         <span class="pill-emoji">📖</span>
@@ -539,7 +312,7 @@
   </div>
 </section>
 
-<!-- ══ PARENTS ══ -->
+<!-- PARENTS -->
 <div class="parents-section">
   <div class="parents-inner">
     <div class="parents-text">
@@ -548,14 +321,10 @@
       <p>Most Nepali parents pay for their child's education without ever knowing if it's actually helping. Ujyalo will change that.</p>
       <p>Soon — every week, you'll get a simple email showing exactly how your child is practising, which subjects are improving, and what needs attention.</p>
       <p>No more guessing. No more hoping. Just clear, honest progress.</p>
-      <div class="parents-coming-soon">
-        ⚙ Weekly parent reports — building now
-      </div>
+      <div class="parents-coming-soon">⚙ Weekly parent reports — building now</div>
     </div>
     <div class="report-preview">
-      <div class="report-preview-title">
-        📧 Weekly parent report
-      </div>
+      <div class="report-preview-title">📧 Weekly parent report</div>
       <div class="report-preview-coming">
         <div class="rp-icon">📊</div>
         <p>Weekly email reports for parents are being built right now. Sign up to be first to know when they launch.</p>
@@ -565,18 +334,16 @@
   </div>
 </div>
 
-<!-- ══ FINAL CTA ══ -->
+<!-- FINAL CTA -->
 <section class="cta-section">
   <div class="container">
     <h2>No signup. No credit card.<br><em>Just start.</em></h2>
-    <p>SEE 2081 Maths is ready right now. Open it and answer your first question in 30 seconds.</p>
+    <p>SEE Chapter Practice is live right now. Pick a chapter and answer your first question in 30 seconds.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
-      <a href="/see-practice.html" class="btn btn-primary btn-large">Start practising now →</a>
+      <a href="/chapter-practice.html" class="btn btn-primary btn-large">Start practising now →</a>
       <a href="/signup.html" class="btn btn-secondary btn-large">Create free account</a>
     </div>
-    <p style="font-size:12px;color:var(--ink-400);margin-top:16px;">
-      Create a free account to save your progress across sessions.
-    </p>
+    <p style="font-size:12px;color:var(--ink-400);margin-top:16px;">Create a free account to save your progress across sessions.</p>
   </div>
 </section>
 
