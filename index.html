@@ -3,225 +3,576 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AI-powered exam preparation for Nepali students. Practice past papers, get instant AI feedback, and track your progress." />
-  <title>Ujyalo — Brighten your future</title>
+  <meta name="description" content="Practice real SEE past papers with instant answers. Free for Nepali students. No signup needed to start." />
+  <title>Ujyalo — SEE Exam Practice, Free</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles/main.css" />
   <style>
+
+    /* ── HERO ── */
     .hero-home {
-      position: relative; padding: 90px 0 70px;
-      background: radial-gradient(at 20% 0%, var(--sun-50) 0px, transparent 50%), radial-gradient(at 80% 10%, var(--brand-50) 0px, transparent 50%), white;
-      text-align: center; overflow: hidden;
+      position: relative;
+      padding: 80px 0 64px;
+      background: radial-gradient(at 15% 0%, var(--sun-50) 0px, transparent 55%),
+                  radial-gradient(at 85% 10%, var(--brand-50) 0px, transparent 55%),
+                  white;
+      text-align: center;
+      overflow: hidden;
     }
-    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--brand-light); border: 1px solid var(--brand); color: var(--brand); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 14px; border-radius: 999px; margin-bottom: 24px; }
-    .hero-cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 36px; }
-    .stats-bar { background: white; border-top: 1px solid var(--ink-100); border-bottom: 1px solid var(--ink-100); padding: 28px 0; }
-    .stats-bar-inner { display: flex; justify-content: center; gap: 56px; flex-wrap: wrap; }
-    .stat-item { text-align: center; }
-    .stat-item .num { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 700; color: var(--brand); line-height: 1; margin-bottom: 4px; }
-    .stat-item .lbl { font-size: 12px; color: var(--ink-500); font-weight: 500; }
-    .problem-box { background: white; border: 1px solid var(--ink-100); border-radius: var(--radius-xl); padding: 48px 40px; max-width: 680px; margin: 0 auto; text-align: center; }
-    .problem-box .emoji { font-size: 3rem; margin-bottom: 16px; }
-    .problem-box h3 { font-family: 'Fraunces', serif; font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; margin-bottom: 16px; line-height: 1.25; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--brand-light); border: 1px solid var(--brand);
+      color: var(--brand); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 999px; margin-bottom: 24px;
+    }
+
+    /* live paper card shown in hero */
+    .hero-paper-card {
+      display: inline-flex; align-items: center; gap: 14px;
+      background: white; border: 1.5px solid var(--ink-100);
+      border-radius: 16px; padding: 14px 20px;
+      box-shadow: 0 4px 24px rgba(10,22,40,0.07);
+      margin: 28px auto 10px; text-align: left;
+      max-width: 420px; width: 100%;
+    }
+    .hero-paper-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--brand-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .hero-paper-name {
+      font-size: 15px; font-weight: 700; color: var(--ink-900);
+      margin-bottom: 2px;
+    }
+    .hero-paper-meta { font-size: 12px; color: var(--ink-500); }
+    .hero-paper-badge {
+      margin-left: auto; flex-shrink: 0;
+      background: var(--green-light); color: var(--green);
+      font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: 999px;
+    }
+
+    .hero-cta-row {
+      display: flex; gap: 12px; justify-content: center;
+      flex-wrap: wrap; margin-top: 28px;
+    }
+
+    .hero-no-signup {
+      font-size: 12px; color: var(--ink-400);
+      margin-top: 12px; display: flex;
+      align-items: center; justify-content: center; gap: 14px;
+    }
+    .hero-no-signup span { display: flex; align-items: center; gap: 4px; }
+
+    /* coming soon pill */
+    .coming-soon-row {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      justify-content: center; margin-top: 24px;
+    }
+    .cs-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--ink-50); border: 1px solid var(--ink-100);
+      border-radius: 999px; padding: 5px 12px;
+      font-size: 12px; color: var(--ink-400); font-weight: 600;
+    }
+    .cs-pill .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--ink-300); flex-shrink: 0;
+    }
+    .cs-pill.live { background: var(--green-light); border-color: #86efac; color: var(--green); }
+    .cs-pill.live .dot { background: var(--green); }
+
+    /* ── PROBLEM ── */
+    .problem-section-inner {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 24px; align-items: start;
+    }
+    .problem-box {
+      background: white; border: 1px solid var(--ink-100);
+      border-radius: var(--radius-xl); padding: 36px 40px;
+      text-align: left;
+    }
+    .problem-box .emoji { font-size: 2.4rem; margin-bottom: 12px; display: block; }
+    .problem-box h3 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      font-weight: 700; margin-bottom: 14px; line-height: 1.25;
+    }
     .problem-box h3 em { font-style: italic; color: var(--brand); }
     .problem-box p { color: var(--ink-500); font-size: 15px; line-height: 1.8; margin-bottom: 12px; }
-    .home-features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: var(--ink-200); border: 1px solid var(--ink-200); border-radius: var(--radius-xl); overflow: hidden; }
-    .feature-cell { background: white; padding: 36px; transition: background 0.2s; }
+    .problem-stats { display: flex; flex-direction: column; gap: 16px; }
+    .problem-stat-card {
+      background: white; border: 1px solid var(--ink-100);
+      border-radius: var(--radius-lg); padding: 24px 20px;
+      text-align: center;
+    }
+    .problem-stat-card .ps-num {
+      font-family: 'Fraunces', serif; font-size: 2.2rem;
+      font-weight: 700; color: var(--brand); line-height: 1;
+      margin-bottom: 6px;
+    }
+    .problem-stat-card .ps-lbl {
+      font-size: 13px; color: var(--ink-500);
+      font-weight: 500; line-height: 1.5;
+    }
+    .problem-stat-card.highlight {
+      background: var(--brand); border-color: var(--brand);
+    }
+    .problem-stat-card.highlight .ps-num { color: white; }
+    .problem-stat-card.highlight .ps-lbl { color: rgba(255,255,255,0.8); }
+    @media(max-width:767px) {
+      .problem-section-inner { grid-template-columns: 1fr; }
+      .problem-stats { flex-direction: row; flex-wrap: wrap; }
+      .problem-stat-card { flex: 1; min-width: 130px; }
+    }
+
+    /* ── WHAT'S LIVE NOW ── */
+    .live-now-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .live-now-card {
+      background: white; border: 1.5px solid var(--ink-100);
+      border-radius: var(--radius-lg); padding: 24px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .live-now-card.is-live { border-color: var(--green); }
+    .live-now-card-top {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 10px;
+    }
+    .live-now-card h3 { font-size: 16px; font-weight: 700; color: var(--ink-900); }
+    .live-now-card p { font-size: 13px; color: var(--ink-500); line-height: 1.6; }
+    .live-now-card .action-row { margin-top: auto; padding-top: 8px; }
+
+    /* ── FEATURES ── */
+    .home-features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1px; background: var(--ink-200);
+      border: 1px solid var(--ink-200);
+      border-radius: var(--radius-xl); overflow: hidden;
+    }
+    .feature-cell {
+      background: white; padding: 36px;
+      transition: background 0.2s;
+    }
     .feature-cell:hover { background: var(--ink-50); }
-    .feature-cell .icon { width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--brand-light); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; }
+    .feature-cell .icon {
+      width: 48px; height: 48px; border-radius: var(--radius-md);
+      background: var(--brand-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 20px;
+    }
     .feature-cell h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--ink-900); }
     .feature-cell p { font-size: 14px; color: var(--ink-500); line-height: 1.65; }
-    .steps-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
-    .step-card { background: white; border: 1px solid var(--ink-100); border-radius: var(--radius-lg); padding: 32px 24px; text-align: center; }
-    .step-num-circle { width: 52px; height: 52px; background: var(--brand); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 700; margin: 0 auto 16px; }
+    .feature-cell .feat-status {
+      display: inline-block; margin-top: 12px;
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px;
+    }
+    .feat-live { background: var(--green-light); color: var(--green); }
+    .feat-soon { background: var(--ink-100); color: var(--ink-400); }
+    .feat-building { background: #FEF3C7; color: #92400e; }
+
+    /* ── HOW IT WORKS ── */
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+    }
+    .step-card {
+      background: white; border: 1px solid var(--ink-100);
+      border-radius: var(--radius-lg); padding: 32px 24px;
+      text-align: center;
+    }
+    .step-num-circle {
+      width: 52px; height: 52px; background: var(--brand);
+      color: white; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Fraunces', serif; font-size: 1.4rem;
+      font-weight: 700; margin: 0 auto 16px;
+    }
     .step-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
     .step-card p { font-size: 13px; color: var(--ink-500); line-height: 1.65; }
-    .subjects-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-    .tgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-    .parents-section { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); color: white; }
-    .parents-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; max-width: 960px; margin: 0 auto; padding: 80px 24px; }
-    .parents-text h2 { font-family: 'Fraunces', serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; line-height: 1.2; color: white; margin-bottom: 16px; }
+
+    /* ── SUBJECTS ── */
+    .subjects-row {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* ── PARENTS ── */
+    .parents-section {
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+      color: white;
+    }
+    .parents-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 56px; align-items: center;
+      max-width: 960px; margin: 0 auto; padding: 80px 24px;
+    }
+    .parents-text h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700; line-height: 1.2; color: white; margin-bottom: 16px;
+    }
     .parents-text h2 em { font-style: italic; color: #fcd34d; }
     .parents-text p { color: rgba(255,255,255,0.8); font-size: 15px; line-height: 1.8; margin-bottom: 12px; }
-    .pricing-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; max-width: 820px; margin: 0 auto; }
-    @media(max-width:767px){ .parents-inner{grid-template-columns:1fr;gap:32px;padding:48px 24px;} .stats-bar-inner{gap:28px;} .problem-box{padding:32px 24px;} }
+    .parents-coming-soon {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 999px; padding: 8px 16px;
+      font-size: 13px; font-weight: 600; color: white; margin-top: 8px;
+    }
+
+    /* visual placeholder for parent report */
+    .report-preview {
+      background: white; border-radius: 16px;
+      padding: 24px; color: var(--ink-900);
+    }
+    .report-preview-title {
+      font-size: 13px; font-weight: 700; color: var(--ink-500);
+      margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+    }
+    .report-preview-coming {
+      text-align: center; padding: 24px 16px;
+      background: var(--ink-50); border-radius: 12px;
+      border: 2px dashed var(--ink-200);
+    }
+    .report-preview-coming .rp-icon { font-size: 36px; margin-bottom: 10px; }
+    .report-preview-coming p {
+      font-size: 13px; color: var(--ink-500); line-height: 1.6; margin: 0;
+    }
+    .report-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--ink-100); }
+    .report-row:last-child { border-bottom: none; }
+    .report-label { font-size: 13px; color: var(--ink-500); }
+    .report-value { font-size: 13px; font-weight: 700; }
+    .report-value.good { color: var(--green); }
+
+    @media(max-width:767px) {
+      .parents-inner { grid-template-columns: 1fr; gap: 32px; padding: 48px 24px; }
+      .hero-paper-card { flex-wrap: wrap; }
+    }
   </style>
 </head>
 <body>
 
 <div id="site-nav"></div>
 
-<!-- HERO -->
+<!-- ══ HERO ══ -->
 <div class="hero-home">
   <div class="container">
-    <div class="hero-badge">🇳🇵 Made in Nepal, for Nepali students</div>
+    <div class="hero-badge">🇳🇵 Built for Nepali students · Free during beta</div>
+
     <h1 class="hero-title">
-      Your exam. Your future.<br>
-      <em>100% free.</em>
+      Real SEE questions.<br>
+      <em>Instant answers. Free.</em>
     </h1>
-    <p class="hero-sub">
-      All past papers. AI feedback on every answer. No credit card. No limits.
-      Built for Nepali students — completely free while we're in beta.
+
+    <p class="hero-sub" style="max-width:520px;margin:0 auto;">
+      Practice real past paper questions from SEE. Type your answer,
+      see the correct solution immediately. No tuition needed.
     </p>
+
+    <!-- Live paper card -->
+    <div style="display:flex;justify-content:center;">
+      <div class="hero-paper-card">
+        <div class="hero-paper-icon">📜</div>
+        <div>
+          <div class="hero-paper-name">SEE 2081 · Maths</div>
+          <div class="hero-paper-meta">26 questions · Groups A–D · Free</div>
+        </div>
+        <div class="hero-paper-badge">✓ Live now</div>
+      </div>
+    </div>
+
     <div class="hero-cta-row">
-      <a href="/signup.html" class="btn btn-primary btn-large">Start practising free →</a>
-      <a href="/how-it-works.html" class="btn btn-secondary btn-large">See how it works</a>
+      <a href="/see-practice.html" class="btn btn-primary btn-large">Start practising now →</a>
+      <a href="/signup.html" class="btn btn-secondary btn-large">Create free account</a>
     </div>
-    <div class="live-bar">
-      <div class="live-dot"></div>
-      <span>Students are practising right now &nbsp;·&nbsp; <strong>Free to start</strong> &nbsp;·&nbsp; No credit card needed</span>
+
+    <div class="hero-no-signup">
+      <span>✓ No signup needed to start</span>
+      <span>✓ No credit card ever</span>
+      <span>✓ 100% free</span>
     </div>
+
+    <!-- What's coming -->
+    <div class="coming-soon-row" style="margin-top:32px;">
+      <span class="cs-pill live"><span class="dot"></span>SEE Maths 2081 — Live</span>
+      <span class="cs-pill"><span class="dot"></span>Science 2081 — Coming soon</span>
+      <span class="cs-pill"><span class="dot"></span>2080 papers — Coming soon</span>
+      <span class="cs-pill"><span class="dot"></span>English — Coming soon</span>
+    </div>
+
   </div>
 </div>
 
-<!-- STATS -->
-<div class="stats-bar">
-  <div class="stats-bar-inner">
-    <div class="stat-item"><div class="num">10 yrs</div><div class="lbl">Past papers</div></div>
-    <div class="stat-item"><div class="num">5</div><div class="lbl">Subjects covered</div></div>
-    <div class="stat-item"><div class="num">24/7</div><div class="lbl">AI feedback</div></div>
-    <div class="stat-item"><div class="num">Rs 299</div><div class="lbl">Less than one tuition class</div></div>
-  </div>
-</div>
-
-<!-- PROBLEM -->
+<!-- ══ PROBLEM ══ -->
 <section class="section section-bg-soft">
   <div class="container">
-    <div class="problem-box">
-      <div class="emoji">😓</div>
-      <h3>The pressure is <em>real.</em><br>The tools haven't kept up.</h3>
-      <p>Every year, hundreds of thousands of Nepali students face their most important exams carrying the weight of their entire family on their shoulders. It is not just an exam — it is pride, honour, and a family's hope.</p>
-      <div class="highlight-quote">"Most families sacrifice everything for tuition. But even tuition does not always work. And for those who cannot afford it — their child faces the exam essentially alone."</div>
-      <p>Ujyalo exists to change that. A patient, knowledgeable study companion in every student's pocket — free to start, built for Nepal, available any time of day or night.</p>
+    <div class="problem-section-inner">
+
+      <!-- Left: main message -->
+      <div class="problem-box">
+        <span class="emoji">😓</span>
+        <h3>The pressure is <em>real.</em><br>The tools haven't kept up.</h3>
+        <p>Every year, hundreds of thousands of Nepali students face their most important exam carrying the weight of their family on their shoulders. It is not just an exam — it is pride, honour, and hope.</p>
+        <div class="highlight-quote">"Most families sacrifice everything for tuition. But even tuition doesn't always work. And for those who can't afford it — their child faces the exam essentially alone."</div>
+        <p>Ujyalo exists to change that. Real past paper questions, instant correct answers, available any time you open your phone. Free.</p>
+      </div>
+
+      <!-- Right: stats -->
+      <div class="problem-stats">
+        <div class="problem-stat-card highlight">
+          <div class="ps-num">Rs 0</div>
+          <div class="ps-lbl">Cost to use Ujyalo during beta — completely free</div>
+        </div>
+        <div class="problem-stat-card">
+          <div class="ps-num">24/7</div>
+          <div class="ps-lbl">Available any time — phone, laptop, anywhere</div>
+        </div>
+        <div class="problem-stat-card">
+          <div class="ps-num">SEE</div>
+          <div class="ps-lbl">Built specifically for Nepal's exam syllabus</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
+<!-- ══ WHAT'S LIVE NOW ══ -->
 <section class="section">
+  <div class="container">
+    <div class="text-center mb-8">
+      <span class="label-tiny">Available right now</span>
+      <h2 class="section-title mt-2">Start practising <em>today.</em></h2>
+      <p class="text-muted mt-4" style="max-width:460px;margin-left:auto;margin-right:auto;font-size:15px;line-height:1.75;">
+        No waiting. No signup required. Open a paper and start answering real SEE questions right now.
+      </p>
+    </div>
+
+    <div class="live-now-grid" style="max-width:860px;margin:0 auto;">
+
+      <!-- Live -->
+      <div class="live-now-card is-live">
+        <div class="live-now-card-top">
+          <span style="font-size:28px;">🧮</span>
+          <span class="badge badge-green">✓ Live now</span>
+        </div>
+        <div>
+          <h3>SEE 2081 — Maths</h3>
+          <p>All 26 questions from the 2081 SEE Maths paper. Groups A, B, C and D. Correct answers included.</p>
+        </div>
+        <div class="action-row">
+          <a href="/see-practice.html" class="btn btn-primary btn-sm">Practice now →</a>
+        </div>
+      </div>
+
+      <!-- Coming soon: Science -->
+      <div class="live-now-card">
+        <div class="live-now-card-top">
+          <span style="font-size:28px;">🔬</span>
+          <span class="badge badge-gold">Coming soon</span>
+        </div>
+        <div>
+          <h3>SEE 2081 — Science</h3>
+          <p>Being prepared now. All questions from the 2081 Science paper with full answers.</p>
+        </div>
+        <div class="action-row">
+          <a href="/signup.html" class="btn btn-ghost btn-sm">Get notified →</a>
+        </div>
+      </div>
+
+      <!-- Coming soon: older years -->
+      <div class="live-now-card">
+        <div class="live-now-card-top">
+          <span style="font-size:28px;">📚</span>
+          <span class="badge badge-gold">Coming soon</span>
+        </div>
+        <div>
+          <h3>2080, 2079, 2078…</h3>
+          <p>Older papers being added week by week. Sign up to be notified when each year goes live.</p>
+        </div>
+        <div class="action-row">
+          <a href="/signup.html" class="btn btn-ghost btn-sm">Get notified →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══ -->
+<section class="section section-bg-soft">
   <div class="container">
     <div class="text-center mb-8">
       <span class="label-tiny">What makes Ujyalo different</span>
       <h2 class="section-title mt-2">Built for <em>Nepali students.</em></h2>
-      <p class="text-muted mt-4" style="max-width:520px; margin-left:auto; margin-right:auto; font-size:15px; line-height:1.75;">Not a generic AI tool. Built from the ground up for Nepal's exam syllabus and students.</p>
+      <p class="text-muted mt-4" style="max-width:520px;margin-left:auto;margin-right:auto;font-size:15px;line-height:1.75;">
+        Not a generic tool. Built from the ground up for Nepal's exam syllabus.
+      </p>
     </div>
     <div class="home-features-grid">
-      <div class="feature-cell"><div class="icon">📜</div><h3>10 years of past papers</h3><p>Real past papers from the last decade. The exact questions that have come before — the way marks are actually scored.</p><span class="badge badge-sun mt-4">⭐ Most popular</span></div>
-      <div class="feature-cell"><div class="icon">🤖</div><h3>AI that explains, not just answers</h3><p>Get a wrong answer? Ujyalo explains why, shows the correct method, and asks if you want to try again.</p></div>
-      <div class="feature-cell"><div class="icon">📈</div><h3>Progress tracking + streaks</h3><p>See yourself improve every day. Weak chapters identified automatically. Streaks keep you coming back.</p></div>
-      <div class="feature-cell"><div class="icon">📧</div><h3>Weekly parent reports</h3><p>Every week, your parents get a simple email showing exactly how you are doing and what to focus on next.</p><span class="badge badge-sun mt-4">💛 Killer feature</span></div>
-      <div class="feature-cell"><div class="icon">🏫</div><h3>School integration</h3><p>Teachers and schools can track all their students in one dashboard. Class reports and custom question banks.</p></div>
-      <div class="feature-cell"><div class="icon">💸</div><h3>Fraction of coaching cost</h3><p>Coaching centres charge Rs 5,000–15,000 per month. Ujyalo is Rs 299. Quality education for every family.</p></div>
+
+      <div class="feature-cell">
+        <div class="icon">📜</div>
+        <h3>Real past papers</h3>
+        <p>Actual SEE questions from past years — the exact format, groups, and marks as the real exam. Not made-up practice questions.</p>
+        <span class="feature-cell .feat-status feat-live">✓ Live — SEE 2081 Maths</span>
+      </div>
+
+      <div class="feature-cell">
+        <div class="icon">⚡</div>
+        <h3>Instant correct answers</h3>
+        <p>Type your answer, then see the full correct solution with working steps. Know immediately if you understood it or not.</p>
+        <span class="feat-status feat-live">✓ Live now</span>
+      </div>
+
+      <div class="feature-cell">
+        <div class="icon">📈</div>
+        <h3>Progress tracking</h3>
+        <p>Every question you answer is saved. See exactly which questions you've done and which chapters need more work.</p>
+        <span class="feat-status feat-live">✓ Live — create free account</span>
+      </div>
+
+      <div class="feature-cell">
+        <div class="icon">🤖</div>
+        <h3>AI feedback on your answer</h3>
+        <p>Write your answer and get personalised feedback — not just the correct answer, but why yours was right or wrong.</p>
+        <span class="feat-status feat-building">⚙ Building now</span>
+      </div>
+
+      <div class="feature-cell">
+        <div class="icon">📧</div>
+        <h3>Weekly parent reports</h3>
+        <p>Every week, your parents get a simple email showing exactly how you're doing and what to focus on next.</p>
+        <span class="feat-status feat-soon">Coming soon</span>
+      </div>
+
+      <div class="feature-cell">
+        <div class="icon">💸</div>
+        <h3>Free — completely</h3>
+        <p>Everything on Ujyalo is free while we're in beta. No credit card. No hidden fees. Quality education for every family.</p>
+        <span class="feat-status feat-live">✓ Free during beta</span>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="section section-bg-soft">
+<!-- ══ HOW IT WORKS ══ -->
+<section class="section">
   <div class="container">
     <div class="text-center mb-8">
       <span class="label-tiny">How it works</span>
       <h2 class="section-title mt-2">Three steps. <em>No friction.</em></h2>
-      <p class="text-muted mt-4" style="max-width:480px; margin-left:auto; margin-right:auto; font-size:15px;">Open your phone or laptop and you are practising in under a minute.</p>
+      <p class="text-muted mt-4" style="max-width:480px;margin-left:auto;margin-right:auto;font-size:15px;">
+        Open your phone or laptop and you are practising in under a minute.
+      </p>
     </div>
     <div class="steps-row">
-      <div class="step-card"><div class="step-num-circle">01</div><h3>Pick what you need</h3><p>Past papers, mock tests, or chapter practice. Pick your subject. Start immediately.</p></div>
-      <div class="step-card"><div class="step-num-circle">02</div><h3>Practice &amp; answer</h3><p>Real exam-format questions. Take your time. Type your answer — just like in the real exam.</p></div>
-      <div class="step-card"><div class="step-num-circle">03</div><h3>Learn instantly</h3><p>AI feedback in seconds. Progress saved. Parents informed. You get better every day.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- SUBJECTS -->
-<section class="section">
-  <div class="container">
-    <div class="text-center mb-8">
-      <span class="label-tiny">Subjects</span>
-      <h2 class="section-title mt-2">All <em>five subjects.</em></h2>
-      <p class="text-muted mt-4" style="max-width:400px; margin-left:auto; margin-right:auto; font-size:15px;">Starting with the five compulsory subjects. More coming soon.</p>
-    </div>
-    <div class="subjects-row">
-      <a href="/signup.html" class="subject-pill-link"><span class="pill-emoji">🧮</span><span>Maths<span class="pill-sub">Compulsory</span></span></a>
-      <a href="/signup.html" class="subject-pill-link"><span class="pill-emoji">🔬</span><span>Science<span class="pill-sub">Physics, Chem, Bio</span></span></a>
-      <a href="/signup.html" class="subject-pill-link"><span class="pill-emoji">📖</span><span>English<span class="pill-sub">Compulsory</span></span></a>
-      <a href="/signup.html" class="subject-pill-link"><span class="pill-emoji">🌏</span><span>Social Studies<span class="pill-sub">Compulsory</span></span></a>
-      <a href="/signup.html" class="subject-pill-link"><span class="pill-emoji">📝</span><span>Nepali<span class="pill-sub">Compulsory</span></span></a>
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section class="section section-bg-soft">
-  <div class="container">
-    <div class="text-center mb-8">
-      <span class="label-tiny">Student voices</span>
-      <h2 class="section-title mt-2">What students <em>say.</em></h2>
-    </div>
-    <div class="tgrid">
-      <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><blockquote>"Maths was my biggest fear. With Ujyalo I practise every night and I actually understand what I am doing now."</blockquote><div class="testimonial-author"><div class="testimonial-avatar">👧</div><div class="testimonial-author-info"><strong>Sita Sharma</strong><span>Grade 10 · Chitwan</span></div></div></div>
-      <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><blockquote>"My parents cannot help me study. But now they get a weekly report and feel involved. It means so much to our family."</blockquote><div class="testimonial-author"><div class="testimonial-avatar">👦</div><div class="testimonial-author-info"><strong>Rajan Thapa</strong><span>Grade 10 · Pokhara</span></div></div></div>
-      <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><blockquote>"No good coaching centre near my village. Ujyalo feels like having a teacher available any time I open my phone."</blockquote><div class="testimonial-author"><div class="testimonial-avatar">👧</div><div class="testimonial-author-info"><strong>Priya Gurung</strong><span>Grade 10 · Mustang</span></div></div></div>
-    </div>
-    <p class="testimonials-note">✦ Early student feedback during beta. Verified reviews coming soon.</p>
-  </div>
-</section>
-
-<!-- PARENTS -->
-<div class="parents-section">
-  <div class="parents-inner">
-    <div class="parents-text">
-      <span class="label-tiny" style="color:#fcd34d;">For parents</span>
-      <h2>You sacrifice everything.<br><em>See it working.</em></h2>
-      <p>Most Nepali parents pay for their child's education without ever knowing if it is actually helping. Ujyalo changes that.</p>
-      <p>Every week, you get a simple email showing exactly how your child is practising — which subjects are improving and how many questions they answered.</p>
-      <p>No more guessing. No more hoping. Just clear, honest progress.</p>
-    </div>
-    <div class="report-card">
-      <div class="report-card-title">📧 Weekly parent report — Rajan Thapa</div>
-      <div class="report-row"><span class="report-label">Questions answered</span><span class="report-value good">142 this week</span></div>
-      <div class="report-row"><span class="report-label">Study streak</span><span class="report-value good">🔥 7 days</span></div>
-      <div class="report-row"><span class="report-label">Maths score</span><span class="report-value good">↑ 74% → 81%</span></div>
-      <div class="report-row"><span class="report-label">Science score</span><span class="report-value warn">Needs attention</span></div>
-      <div class="report-row"><span class="report-label">Overall progress</span><span class="report-value good">On track ✓</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- PRICING -->
-<section class="section">
-  <div class="container">
-    <div class="text-center mb-8">
-      <span class="label-tiny">Pricing</span>
-      <h2 class="section-title mt-2"><em>Free.</em> Completely.</h2>
-      <p class="text-muted mt-4" style="max-width:460px; margin-left:auto; margin-right:auto; font-size:15px;">Everything on Ujyalo is free while we are in beta. All past papers. AI feedback. No credit card ever.</p>
-    </div>
-    <div style="max-width:480px;margin:0 auto;">
-      <div class="price-card featured">
-        <div class="price-tag">Beta — Free for everyone</div>
-        <div class="price-name">Everything free</div>
-        <div class="price-amount">Rs 0</div>
-        <span class="price-suffix">no credit card · no catch · no time limit</span>
-        <ul class="price-features" style="text-align:left;margin-top:20px;">
-          <li>All past papers — 10 years</li>
-          <li>All subjects — Maths and Science</li>
-          <li>AI feedback on every answer</li>
-          <li>Chapter practice — all chapters</li>
-          <li>No question limits</li>
-        </ul>
-        <a href="/signup.html" class="btn btn-primary btn-block" style="margin-top:20px;">Start free now →</a>
+      <div class="step-card">
+        <div class="step-num-circle">01</div>
+        <h3>Pick a paper</h3>
+        <p>Choose SEE 2081 Maths. No signup needed. Opens instantly.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num-circle">02</div>
+        <h3>Answer each question</h3>
+        <p>Real exam questions one by one. Type your answer just like in the actual SEE exam.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num-circle">03</div>
+        <h3>See the correct answer</h3>
+        <p>Full solution with working steps shown immediately. Understand exactly where you went right or wrong.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
+<!-- ══ SUBJECTS ══ -->
+<section class="section section-bg-soft">
+  <div class="container">
+    <div class="text-center mb-8">
+      <span class="label-tiny">Subjects</span>
+      <h2 class="section-title mt-2">All five SEE <em>subjects.</em></h2>
+      <p class="text-muted mt-4" style="max-width:420px;margin-left:auto;margin-right:auto;font-size:15px;">
+        Maths is live now. The rest are being prepared and added week by week.
+      </p>
+    </div>
+    <div class="subjects-row">
+      <a href="/see-practice.html" class="subject-pill-link" style="border-color:var(--green);background:var(--green-light);">
+        <span class="pill-emoji">🧮</span>
+        <span>Maths<span class="pill-sub" style="color:var(--green);">✓ Live now</span></span>
+      </a>
+      <a href="/signup.html" class="subject-pill-link">
+        <span class="pill-emoji">🔬</span>
+        <span>Science<span class="pill-sub">Coming soon</span></span>
+      </a>
+      <a href="/signup.html" class="subject-pill-link">
+        <span class="pill-emoji">📖</span>
+        <span>English<span class="pill-sub">Coming soon</span></span>
+      </a>
+      <a href="/signup.html" class="subject-pill-link">
+        <span class="pill-emoji">🌏</span>
+        <span>Social Studies<span class="pill-sub">Coming soon</span></span>
+      </a>
+      <a href="/signup.html" class="subject-pill-link">
+        <span class="pill-emoji">📝</span>
+        <span>Nepali<span class="pill-sub">Coming soon</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PARENTS ══ -->
+<div class="parents-section">
+  <div class="parents-inner">
+    <div class="parents-text">
+      <span class="label-tiny" style="color:#fcd34d;">For parents</span>
+      <h2>You sacrifice everything.<br><em>See it working.</em></h2>
+      <p>Most Nepali parents pay for their child's education without ever knowing if it's actually helping. Ujyalo will change that.</p>
+      <p>Soon — every week, you'll get a simple email showing exactly how your child is practising, which subjects are improving, and what needs attention.</p>
+      <p>No more guessing. No more hoping. Just clear, honest progress.</p>
+      <div class="parents-coming-soon">
+        ⚙ Weekly parent reports — building now
+      </div>
+    </div>
+    <div class="report-preview">
+      <div class="report-preview-title">
+        📧 Weekly parent report
+      </div>
+      <div class="report-preview-coming">
+        <div class="rp-icon">📊</div>
+        <p>Weekly email reports for parents are being built right now. Sign up to be first to know when they launch.</p>
+        <a href="/signup.html" class="btn btn-primary btn-sm" style="margin-top:14px;display:inline-flex;">Get notified →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FINAL CTA ══ -->
 <section class="cta-section">
   <div class="container">
-    <h2>Free today.<br><em>Free tomorrow.</em></h2>
-    <p>No credit card. No limits. Just start practising right now.</p>
-    <a href="/signup.html" class="btn btn-primary btn-large">Start free now →</a>
+    <h2>No signup. No credit card.<br><em>Just start.</em></h2>
+    <p>SEE 2081 Maths is ready right now. Open it and answer your first question in 30 seconds.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
+      <a href="/see-practice.html" class="btn btn-primary btn-large">Start practising now →</a>
+      <a href="/signup.html" class="btn btn-secondary btn-large">Create free account</a>
+    </div>
+    <p style="font-size:12px;color:var(--ink-400);margin-top:16px;">
+      Create a free account to save your progress across sessions.
+    </p>
   </div>
 </section>
 
