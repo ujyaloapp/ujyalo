@@ -10,12 +10,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <link rel="stylesheet" href="/styles/main.css">
 <style>
-/* ── Layout ── */
 .cp-page { display:grid; grid-template-columns:260px 1fr; min-height:calc(100vh - 56px); background:var(--ink-50); }
 .cp-sidebar { background:white; border-right:1px solid var(--ink-100); display:flex; flex-direction:column; overflow:hidden; position:sticky; top:56px; height:calc(100vh - 56px); }
-.cp-main { display:flex; flex-direction:column; overflow:hidden; min-height:calc(100vh - 56px); }
-
-/* ── Sidebar ── */
+.cp-main { display:flex; flex-direction:column; }
 .cp-sidebar-top { padding:16px 14px 12px; border-bottom:1px solid var(--ink-100); flex-shrink:0; }
 .cp-sidebar-title { font-family:'Fraunces',serif; font-size:16px; font-weight:700; color:var(--ink-900); margin-bottom:4px; }
 .cp-sidebar-sub { font-size:12px; color:var(--ink-400); }
@@ -24,7 +21,6 @@
 .cp-subj-btn .si { font-size:20px; line-height:1; }
 .cp-subj-btn.on { background:var(--brand); border-color:var(--brand); color:white; }
 .cp-subj-btn:hover:not(.on) { border-color:var(--brand); color:var(--brand); }
-
 .cp-chapter-list { flex:1; overflow-y:auto; padding:8px 10px 20px; }
 .cp-chapter-list::-webkit-scrollbar { width:3px; }
 .cp-chapter-list::-webkit-scrollbar-thumb { background:var(--ink-200); border-radius:2px; }
@@ -35,32 +31,26 @@
 .cp-chapter-btn.on::before { content:''; position:absolute; left:0; top:20%; bottom:20%; width:3px; background:var(--brand); border-radius:2px; }
 .cp-chapter-count { font-size:10px; font-weight:600; color:var(--ink-300); background:var(--ink-50); padding:2px 6px; border-radius:999px; flex-shrink:0; }
 .cp-chapter-btn.on .cp-chapter-count { background:var(--brand); color:white; }
-
-/* ── Main area ── */
 .cp-topbar { background:white; border-bottom:1px solid var(--ink-100); padding:12px 20px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; gap:12px; }
 .cp-topbar-left { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink-500); }
 .cp-topbar-left strong { color:var(--ink-900); font-weight:700; }
-.cp-topbar-right { display:flex; align-items:center; gap:8px; }
 .prog-wrap { display:flex; align-items:center; gap:8px; }
 .prog-bar { width:80px; height:5px; background:var(--ink-100); border-radius:999px; overflow:hidden; }
 .prog-fill { height:100%; background:linear-gradient(90deg,var(--brand),var(--sun)); border-radius:999px; transition:width 0.5s cubic-bezier(0.16,1,0.3,1); }
 .prog-txt { font-size:11px; font-weight:700; color:var(--ink-500); }
+.cp-q-area { flex:1; padding:24px; display:flex; flex-direction:column; gap:16px; max-width:700px; width:100%; margin:0 auto; }
 
-.cp-q-area { flex:1; overflow-y:auto; padding:24px; display:flex; flex-direction:column; gap:16px; max-width:700px; width:100%; margin:0 auto; }
-
-/* ── Empty state ── */
-.cp-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:var(--ink-300); gap:12px; padding:60px 24px; }
+/* Empty state */
+.cp-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:var(--ink-300); gap:12px; padding:60px 24px; min-height:300px; }
 .cp-empty-icon { font-size:52px; }
 .cp-empty-title { font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:var(--ink-500); }
 .cp-empty-sub { font-size:14px; line-height:1.6; max-width:280px; color:var(--ink-400); }
 
-/* ── Question card ── */
+/* Question card */
 .cp-q-card { background:white; border-radius:18px; border:1px solid var(--ink-100); padding:24px; box-shadow:0 2px 16px rgba(10,22,40,0.05); animation:cp-up 0.35s cubic-bezier(0.16,1,0.3,1) both; }
 @keyframes cp-up { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 .cp-q-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:6px; }
 .cp-q-meta-left { display:flex; align-items:center; gap:6px; }
-.cp-ai-dot { width:7px; height:7px; background:#22c55e; border-radius:50%; animation:aipulse 2s infinite; }
-@keyframes aipulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.5)} }
 .cp-q-src { font-size:11px; font-weight:700; color:var(--ink-400); text-transform:uppercase; letter-spacing:0.08em; }
 .cp-q-marks { font-size:11px; font-weight:700; background:var(--sun-light); color:#854F0B; padding:3px 10px; border-radius:999px; }
 .cp-q-text { font-family:'Fraunces',serif; font-size:20px; line-height:1.55; color:var(--ink-900); margin-bottom:20px; }
@@ -68,42 +58,38 @@
 .cp-ans-area:focus { outline:none; border-color:var(--brand); background:white; box-shadow:0 0 0 3px rgba(30,95,168,0.08); }
 .cp-ans-area::placeholder { color:var(--ink-300); }
 .cp-q-actions { display:flex; align-items:center; justify-content:space-between; margin-top:16px; flex-wrap:wrap; gap:8px; }
-.cp-btn-skip { font-size:13px; color:var(--ink-300); background:none; border:none; cursor:pointer; font-family:inherit; font-weight:500; }
+.cp-btn-skip { font-size:13px; color:var(--ink-300); background:none; border:none; cursor:pointer; font-family:inherit; font-weight:500; display:flex; align-items:center; gap:4px; }
 .cp-btn-skip:hover { color:var(--ink-500); }
 .cp-btn-check { background:var(--brand); color:white; border:none; padding:12px 24px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; }
 .cp-btn-check:hover { background:var(--brand-dark); transform:translateY(-1px); }
 
-/* ── Loading ── */
-.cp-loading { text-align:center; padding:40px 0; }
-.dot-loader { display:inline-flex; gap:4px; }
-.dot-loader span { width:7px; height:7px; background:var(--ink-400); border-radius:50%; animation:dotB 1.4s ease-in-out infinite both; }
-.dot-loader span:nth-child(1){animation-delay:-0.32s;}
-.dot-loader span:nth-child(2){animation-delay:-0.16s;}
-@keyframes dotB { 0%,80%,100%{transform:scale(.6);opacity:.5} 40%{transform:scale(1);opacity:1} }
+/* Student answer box */
+.cp-student-ans { background:#fffbeb; border:1px solid #fde68a; border-left:3px solid #F59E0B; border-radius:12px; padding:14px 16px; animation:cp-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.cp-student-ans-title { font-size:11px; font-weight:700; color:#854F0B; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; display:flex; align-items:center; gap:5px; }
+.cp-student-ans-body { font-size:14px; color:#854F0B; line-height:1.7; white-space:pre-line; }
 
-/* ── Feedback card ── */
-.cp-fb-card { background:white; border-radius:18px; padding:22px 24px; border:2px solid; animation:cp-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
-.cp-fb-card.correct { background:var(--green-light); border-color:#86efac; }
-.cp-fb-card.partial { background:var(--sun-light); border-color:#fde68a; }
-.cp-fb-card.wrong { background:var(--red-light); border-color:#fca5a5; }
-.cp-fb-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
-.cp-fb-header .cp-ai-dot { flex-shrink:0; }
-.cp-fb-label { font-size:11px; font-weight:700; color:var(--ink-400); text-transform:uppercase; letter-spacing:0.08em; }
-.cp-fb-verdict { font-family:'Fraunces',serif; font-size:19px; font-weight:600; margin-bottom:10px; }
-.cp-fb-card.correct .cp-fb-verdict { color:var(--green); }
-.cp-fb-card.partial .cp-fb-verdict { color:#92400e; }
-.cp-fb-card.wrong .cp-fb-verdict { color:var(--red); }
-.cp-fb-body { font-size:14px; line-height:1.8; color:var(--ink-700); margin-bottom:16px; }
-.cp-btn-next { background:var(--ink-900); color:white; border:none; padding:11px 22px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; }
-.cp-btn-next:hover { background:var(--brand); }
+/* Model answer box */
+.cp-model-ans { background:white; border:1px solid #86efac; border-left:3px solid var(--green); border-radius:12px; padding:16px 18px; animation:cp-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.cp-model-ans-title { font-size:11px; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; display:flex; align-items:center; gap:5px; }
+.cp-model-ans-body { font-size:14px; color:var(--ink-700); line-height:1.8; white-space:pre-line; }
 
-/* ── Sign up nudge ── */
+/* Self assessment */
+.cp-self-assess { background:white; border:1px solid var(--ink-100); border-radius:14px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; animation:cp-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.cp-self-assess p { font-size:13px; font-weight:600; color:var(--ink-700); margin:0; }
+.cp-self-btns { display:flex; gap:8px; }
+.cp-btn-got-it { background:var(--green-light); color:var(--green); border:1.5px solid #86efac; padding:8px 16px; border-radius:999px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.cp-btn-got-it:hover { background:var(--green); color:white; }
+.cp-btn-retry { background:var(--ink-50); color:var(--ink-500); border:1.5px solid var(--ink-200); padding:8px 16px; border-radius:999px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.cp-btn-retry:hover { background:var(--ink-100); color:var(--ink-900); }
+
+/* Sign up nudge */
 .cp-signup-nudge { background:var(--brand-light); border:1px solid var(--brand); border-radius:14px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
 .cp-signup-nudge p { font-size:13px; color:var(--brand); font-weight:600; margin:0; }
-.cp-signup-nudge a { font-size:13px; font-weight:700; color:white; background:var(--brand); padding:8px 18px; border-radius:999px; text-decoration:none; white-space:nowrap; transition:background 0.2s; }
+.cp-signup-nudge a { font-size:13px; font-weight:700; color:white; background:var(--brand); padding:8px 18px; border-radius:999px; text-decoration:none; white-space:nowrap; }
 .cp-signup-nudge a:hover { background:var(--brand-dark); }
 
-/* ── Mobile ── */
+.hidden { display:none !important; }
+
 @media(max-width:700px) {
   .cp-page { grid-template-columns:1fr; grid-template-rows:auto 1fr; }
   .cp-sidebar { position:static; height:auto; max-height:240px; border-right:none; border-bottom:1px solid var(--ink-100); }
@@ -116,7 +102,7 @@
 
 <div class="cp-page">
 
-  <!-- ── SIDEBAR ── -->
+  <!-- SIDEBAR -->
   <aside class="cp-sidebar">
     <div class="cp-sidebar-top">
       <div class="cp-sidebar-title">SEE Chapter Practice</div>
@@ -135,10 +121,8 @@
     </div>
   </aside>
 
-  <!-- ── MAIN ── -->
+  <!-- MAIN -->
   <div class="cp-main">
-
-    <!-- Topbar -->
     <div class="cp-topbar">
       <div class="cp-topbar-left">
         <span id="cp-ctx-subj">Maths</span>
@@ -147,31 +131,23 @@
       </div>
       <div class="prog-wrap">
         <div class="prog-bar"><div class="prog-fill" id="cp-prog-fill" style="width:0%"></div></div>
-        <div class="prog-txt" id="cp-prog-txt">0 / 5</div>
+        <div class="prog-txt" id="cp-prog-txt">0 / 0</div>
       </div>
     </div>
 
-    <!-- Question area -->
     <div class="cp-q-area" id="cp-q-area">
 
-      <!-- Empty state -->
-      <div class="cp-empty" id="cp-empty">
+      <!-- Empty state — hidden once chapter is picked -->
+      <div id="cp-empty" class="cp-empty">
         <div class="cp-empty-icon">📚</div>
         <div class="cp-empty-title">Pick a chapter to start</div>
         <div class="cp-empty-sub">Choose any chapter from the left — your first SEE question appears instantly.</div>
       </div>
 
-      <!-- Loading -->
-      <div id="cp-loading" class="cp-loading hidden">
-        <div class="dot-loader"><span></span><span></span><span></span></div>
-        <div style="font-size:14px;color:var(--ink-500);margin-top:12px;">Checking your answer…</div>
-      </div>
-
-      <!-- Question card -->
+      <!-- Question card — hidden until chapter picked -->
       <div class="cp-q-card hidden" id="cp-q-card">
         <div class="cp-q-meta">
           <div class="cp-q-meta-left">
-            <div class="cp-ai-dot"></div>
             <span class="cp-q-src" id="cp-q-src">Maths · Algebra</span>
           </div>
           <span class="cp-q-marks" id="cp-q-marks">2 marks</span>
@@ -183,121 +159,131 @@
           <button class="cp-btn-skip" onclick="CP.skip()">
             <i class="ti ti-player-skip-forward" aria-hidden="true"></i> Skip
           </button>
-          <button class="cp-btn-check" onclick="CP.check()">
+          <button class="cp-btn-check" onclick="CP.showAnswer()">
             Check answer →
           </button>
         </div>
       </div>
 
-      <!-- Feedback card -->
-      <div class="cp-fb-card hidden" id="cp-fb-card">
-        <div class="cp-fb-header">
-          <div class="cp-ai-dot"></div>
-          <span class="cp-fb-label">AI Feedback</span>
+      <!-- Student's answer — shown after check -->
+      <div class="cp-student-ans hidden" id="cp-student-ans">
+        <div class="cp-student-ans-title">
+          <i class="ti ti-pencil" aria-hidden="true"></i> Your answer
         </div>
-        <div class="cp-fb-verdict" id="cp-fb-verdict"></div>
-        <div class="cp-fb-body" id="cp-fb-body"></div>
-        <button class="cp-btn-next" onclick="CP.next()">Next question →</button>
+        <div class="cp-student-ans-body" id="cp-student-ans-body"></div>
       </div>
 
-      <!-- Sign up nudge — shown after 3 questions for guests -->
+      <!-- Model answer — shown after check -->
+      <div class="cp-model-ans hidden" id="cp-model-ans">
+        <div class="cp-model-ans-title">
+          <i class="ti ti-check" aria-hidden="true"></i> Model answer
+        </div>
+        <div class="cp-model-ans-body" id="cp-model-ans-body"></div>
+      </div>
+
+      <!-- Self assessment — shown after model answer -->
+      <div class="cp-self-assess hidden" id="cp-self-assess">
+        <p>How did you do?</p>
+        <div class="cp-self-btns">
+          <button class="cp-btn-got-it" onclick="CP.gotIt()">✓ Got it right</button>
+          <button class="cp-btn-retry" onclick="CP.next()">Try next question →</button>
+        </div>
+      </div>
+
+      <!-- Signup nudge for guests -->
       <div class="cp-signup-nudge hidden" id="cp-signup-nudge">
-        <p>💡 Create a free account to save your progress across sessions.</p>
+        <p>💡 Create a free account to save your progress.</p>
         <a href="/signup.html">Save my progress →</a>
       </div>
 
     </div>
   </div>
-
 </div>
 
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
 <script>
 /* ============================================================
-   CHAPTER CONTENT
-   SEE-style questions for Maths and Science.
-   Questions are written to match SEE exam format and difficulty.
+   CONTENT — questions and model answers
+   Each question has: q (question text), a (model answer), m (marks)
    ============================================================ */
 const CONTENT = {
   maths: {
     label: 'Maths',
     chapters: [
       { name:'Algebra', qs:[
-        {q:'Solve: 3x + 7 = 22. Show your working.',m:2},
-        {q:'Factorise: x² − 7x + 12',m:2},
-        {q:'Solve: 5x − 3 = 2x + 9. Show your working.',m:2},
-        {q:'If 2x + 3y = 12 and x = 3, find the value of y.',m:2},
-        {q:'Expand and simplify: (x + 4)(x − 3)',m:2},
-        {q:'Solve the quadratic equation x² − 5x + 6 = 0 by factorisation.',m:4},
-        {q:'The sum of two numbers is 18 and their difference is 4. Find both numbers.',m:3},
-        {q:'Simplify: (3x² + 5x − 2) − (x² − 2x + 1)',m:2},
+        {q:'Solve: 3x + 7 = 22. Show your working.',a:'3x + 7 = 22\n3x = 22 − 7\n3x = 15\nx = 5',m:2},
+        {q:'Factorise: x² − 7x + 12',a:'Find two numbers that multiply to 12 and add to −7: −3 and −4\n\nx² − 7x + 12 = (x − 3)(x − 4)',m:2},
+        {q:'Solve: 5x − 3 = 2x + 9. Show your working.',a:'5x − 3 = 2x + 9\n5x − 2x = 9 + 3\n3x = 12\nx = 4',m:2},
+        {q:'If 2x + 3y = 12 and x = 3, find the value of y.',a:'Substitute x = 3:\n2(3) + 3y = 12\n6 + 3y = 12\n3y = 6\ny = 2',m:2},
+        {q:'Expand and simplify: (x + 4)(x − 3)',a:'(x + 4)(x − 3)\n= x² − 3x + 4x − 12\n= x² + x − 12',m:2},
+        {q:'Solve the quadratic equation x² − 5x + 6 = 0 by factorisation.',a:'Find two numbers that multiply to 6 and add to −5: −2 and −3\n\nx² − 5x + 6 = (x − 2)(x − 3) = 0\n\nx = 2  or  x = 3',m:4},
+        {q:'The sum of two numbers is 18 and their difference is 4. Find both numbers.',a:'Let the numbers be x and y.\nx + y = 18 ... (1)\nx − y = 4  ... (2)\n\nAdding (1) and (2):\n2x = 22\nx = 11\n\nFrom (1): y = 18 − 11 = 7\n\nThe numbers are 11 and 7.',m:3},
+        {q:'Simplify: (3x² + 5x − 2) − (x² − 2x + 1)',a:'= 3x² + 5x − 2 − x² + 2x − 1\n= 2x² + 7x − 3',m:2},
       ]},
       { name:'Mensuration', qs:[
-        {q:'Find the area of a circle with radius 7 cm. (Use π = 22/7)',m:2},
-        {q:'Find the volume of a cylinder with radius 5 cm and height 10 cm. (Use π = 22/7)',m:2},
-        {q:'A rectangle has length 12 cm and width 8 cm. Find its area and perimeter.',m:2},
-        {q:'Find the curved surface area of a cylinder with radius 3.5 cm and height 10 cm.',m:2},
-        {q:'A circular garden has a diameter of 28 m. Find its area. (Use π = 22/7)',m:3},
-        {q:'The total surface area of a cylinder is 660 cm². If the radius is 5 cm, find the height.',m:4},
+        {q:'Find the area of a circle with radius 7 cm. (Use π = 22/7)',a:'Area = πr²\n= (22/7) × 7²\n= (22/7) × 49\n= 22 × 7\n= 154 cm²',m:2},
+        {q:'Find the volume of a cylinder with radius 5 cm and height 10 cm. (Use π = 22/7)',a:'Volume = πr²h\n= (22/7) × 5² × 10\n= (22/7) × 25 × 10\n= (22 × 250) / 7\n= 5500/7\n≈ 785.7 cm³',m:2},
+        {q:'A rectangle has length 12 cm and width 8 cm. Find its area and perimeter.',a:'Area = length × width\n= 12 × 8\n= 96 cm²\n\nPerimeter = 2(length + width)\n= 2(12 + 8)\n= 2 × 20\n= 40 cm',m:2},
+        {q:'Find the curved surface area of a cylinder with radius 3.5 cm and height 10 cm.',a:'Curved Surface Area = 2πrh\n= 2 × (22/7) × 3.5 × 10\n= 2 × 22 × 0.5 × 10\n= 220 cm²',m:2},
+        {q:'A circular garden has a diameter of 28 m. Find its area. (Use π = 22/7)',a:'Radius = diameter ÷ 2 = 28 ÷ 2 = 14 m\n\nArea = πr²\n= (22/7) × 14²\n= (22/7) × 196\n= 22 × 28\n= 616 m²',m:3},
+        {q:'The total surface area of a cylinder is 660 cm². If the radius is 5 cm, find the height.',a:'Total Surface Area = 2πr(r + h)\n660 = 2 × (22/7) × 5 × (5 + h)\n660 = (220/7) × (5 + h)\n5 + h = 660 × 7 / 220\n5 + h = 4620 / 220\n5 + h = 21\nh = 16 cm',m:4},
       ]},
       { name:'Trigonometry', qs:[
-        {q:'If sin θ = 3/5, find the values of cos θ and tan θ.',m:2},
-        {q:'Find the value of: sin 30° + cos 60° − tan 45°',m:2},
-        {q:'In a right-angled triangle, the opposite side is 4 cm and hypotenuse is 5 cm. Find sin θ, cos θ and tan θ.',m:3},
-        {q:'Prove that: sin²θ + cos²θ = 1',m:2},
-        {q:'A ladder 10 m long leans against a wall at an angle of 60° with the ground. How high up the wall does it reach?',m:3},
-        {q:'Find the value of: (sin 45° × cos 45°) + (tan 30° × tan 60°)',m:3},
+        {q:'If sin θ = 3/5, find the values of cos θ and tan θ.',a:'Given: sin θ = 3/5\nopposite = 3, hypotenuse = 5\n\nBy Pythagoras: adjacent = √(5² − 3²) = √(25 − 9) = √16 = 4\n\ncos θ = adjacent/hypotenuse = 4/5\ntan θ = opposite/adjacent = 3/4',m:2},
+        {q:'Find the value of: sin 30° + cos 60° − tan 45°',a:'sin 30° = 1/2\ncos 60° = 1/2\ntan 45° = 1\n\nsin 30° + cos 60° − tan 45°\n= 1/2 + 1/2 − 1\n= 1 − 1\n= 0',m:2},
+        {q:'In a right-angled triangle, the opposite side is 4 cm and hypotenuse is 5 cm. Find sin θ, cos θ and tan θ.',a:'opposite = 4, hypotenuse = 5\nadjacent = √(5² − 4²) = √(25 − 16) = √9 = 3\n\nsin θ = 4/5 = 0.8\ncos θ = 3/5 = 0.6\ntan θ = 4/3 ≈ 1.33',m:3},
+        {q:'A ladder 10 m long leans against a wall at an angle of 60° with the ground. How high up the wall does it reach?',a:'The ladder is the hypotenuse = 10 m\nAngle with ground = 60°\n\nHeight = hypotenuse × sin 60°\n= 10 × (√3/2)\n= 10 × 0.866\n= 8.66 m\n\nThe ladder reaches 8.66 m up the wall.',m:3},
+        {q:'Find the value of: (sin 45° × cos 45°) + (tan 30° × tan 60°)',a:'sin 45° = 1/√2,  cos 45° = 1/√2\ntan 30° = 1/√3,  tan 60° = √3\n\n= (1/√2 × 1/√2) + (1/√3 × √3)\n= (1/2) + (1)\n= 3/2\n= 1.5',m:3},
       ]},
       { name:'Statistics', qs:[
-        {q:'Find the mean of: 12, 18, 24, 15, 21',m:2},
-        {q:'Find the median of: 4, 7, 2, 9, 3, 8, 5',m:2},
-        {q:'The mean of 5 numbers is 12. Four of the numbers are 10, 14, 8 and 16. Find the fifth number.',m:2},
-        {q:'Find the mode of: 3, 7, 5, 3, 9, 7, 3, 5, 7, 3',m:1},
-        {q:'Find the mean, median and mode of: 5, 8, 4, 5, 10, 7, 5, 8',m:4},
-        {q:'The ages of 6 students are: 14, 15, 14, 16, 15, 14. Find the mean and mode.',m:3},
+        {q:'Find the mean of: 12, 18, 24, 15, 21',a:'Mean = Sum ÷ Count\n= (12 + 18 + 24 + 15 + 21) ÷ 5\n= 90 ÷ 5\n= 18',m:2},
+        {q:'Find the median of: 4, 7, 2, 9, 3, 8, 5',a:'First, arrange in order:\n2, 3, 4, 5, 7, 8, 9\n\nThere are 7 values. Median is the 4th value.\n\nMedian = 5',m:2},
+        {q:'The mean of 5 numbers is 12. Four of the numbers are 10, 14, 8 and 16. Find the fifth number.',a:'Sum of all 5 numbers = mean × count = 12 × 5 = 60\n\nSum of 4 known numbers = 10 + 14 + 8 + 16 = 48\n\nFifth number = 60 − 48 = 12',m:2},
+        {q:'Find the mode of: 3, 7, 5, 3, 9, 7, 3, 5, 7, 3',a:'Count each number:\n3 appears 4 times\n7 appears 3 times\n5 appears 2 times\n9 appears 1 time\n\nMode = 3 (appears most often)',m:1},
+        {q:'Find the mean, median and mode of: 5, 8, 4, 5, 10, 7, 5, 8',a:'Arranged in order: 4, 5, 5, 5, 7, 8, 8, 10\n\nMean = (4+5+5+5+7+8+8+10) ÷ 8 = 52 ÷ 8 = 6.5\n\nMedian: 8 values, middle is between 4th and 5th\n= (5 + 7) ÷ 2 = 6\n\nMode = 5 (appears 3 times)',m:4},
+        {q:'The ages of 6 students are: 14, 15, 14, 16, 15, 14. Find the mean and mode.',a:'Mean = (14+15+14+16+15+14) ÷ 6 = 88 ÷ 6 ≈ 14.67\n\nCount each: 14 appears 3 times, 15 appears 2 times, 16 appears 1 time\nMode = 14',m:3},
       ]},
       { name:'Probability', qs:[
-        {q:'A bag contains 3 red and 5 blue balls. What is the probability of picking a red ball?',m:1},
-        {q:'A fair die is rolled. Find the probability of getting an even number.',m:1},
-        {q:'A card is drawn from a standard deck of 52 cards. Find the probability of drawing a king.',m:2},
-        {q:'Two coins are tossed. Find the probability of getting exactly one head.',m:2},
-        {q:'A bag has 4 red, 3 blue and 5 green balls. A ball is drawn at random. Find the probability that it is not red.',m:2},
+        {q:'A bag contains 3 red and 5 blue balls. What is the probability of picking a red ball?',a:'Total balls = 3 + 5 = 8\nFavourable outcomes (red) = 3\n\nP(red) = 3/8',m:1},
+        {q:'A fair die is rolled. Find the probability of getting an even number.',a:'Total outcomes = 6 (1, 2, 3, 4, 5, 6)\nEven numbers = 2, 4, 6 → 3 outcomes\n\nP(even) = 3/6 = 1/2',m:1},
+        {q:'A card is drawn from a standard deck of 52 cards. Find the probability of drawing a king.',a:'Total cards = 52\nNumber of kings = 4 (one in each suit)\n\nP(king) = 4/52 = 1/13',m:2},
+        {q:'Two coins are tossed. Find the probability of getting exactly one head.',a:'All possible outcomes: HH, HT, TH, TT → 4 outcomes\nOutcomes with exactly one head: HT, TH → 2 outcomes\n\nP(exactly one head) = 2/4 = 1/2',m:2},
+        {q:'A bag has 4 red, 3 blue and 5 green balls. A ball is drawn at random. Find the probability that it is not red.',a:'Total balls = 4 + 3 + 5 = 12\nNot red = blue + green = 3 + 5 = 8\n\nP(not red) = 8/12 = 2/3',m:2},
       ]},
       { name:'Sets', qs:[
-        {q:'If A = {1, 2, 3, 4, 5} and B = {3, 4, 5, 6, 7}, find A ∪ B and A ∩ B.',m:2},
-        {q:'In a class of 30 students, 18 play cricket, 15 play football and 8 play both. How many play neither?',m:3},
-        {q:'If A = {factors of 12} and B = {factors of 18}, find A ∩ B.',m:2},
-        {q:'Draw a Venn diagram to show: n(A) = 20, n(B) = 15, n(A ∩ B) = 8, n(A ∪ B) = 27.',m:3},
-        {q:'In a survey of 50 people, 30 like tea, 25 like coffee and 10 like both. How many like neither?',m:3},
+        {q:'If A = {1, 2, 3, 4, 5} and B = {3, 4, 5, 6, 7}, find A ∪ B and A ∩ B.',a:'A ∪ B (all elements in A or B):\n= {1, 2, 3, 4, 5, 6, 7}\n\nA ∩ B (elements in both A and B):\n= {3, 4, 5}',m:2},
+        {q:'In a class of 30 students, 18 play cricket, 15 play football and 8 play both. How many play neither?',a:'n(C ∪ F) = n(C) + n(F) − n(C ∩ F)\n= 18 + 15 − 8\n= 25\n\nNeither = Total − n(C ∪ F)\n= 30 − 25\n= 5 students',m:3},
+        {q:'If A = {factors of 12} and B = {factors of 18}, find A ∩ B.',a:'Factors of 12: {1, 2, 3, 4, 6, 12}\nFactors of 18: {1, 2, 3, 6, 9, 18}\n\nA ∩ B = {1, 2, 3, 6}',m:2},
+        {q:'In a survey of 50 people, 30 like tea, 25 like coffee and 10 like both. How many like neither?',a:'n(T ∪ C) = n(T) + n(C) − n(T ∩ C)\n= 30 + 25 − 10\n= 45\n\nNeither = 50 − 45 = 5 people',m:3},
       ]},
       { name:'Coordinate Geometry', qs:[
-        {q:'Find the distance between points A(3, 4) and B(0, 0).',m:2},
-        {q:'Find the midpoint of the line joining A(2, 6) and B(8, 4).',m:1},
-        {q:'Find the gradient of the line passing through (1, 2) and (4, 8).',m:2},
-        {q:'Write the equation of a line with gradient 3 and y-intercept −2.',m:2},
-        {q:'Find the distance between points P(−2, 3) and Q(4, −5).',m:2},
-        {q:'The midpoint of AB is (3, 5). If A = (1, 3), find the coordinates of B.',m:2},
+        {q:'Find the distance between points A(3, 4) and B(0, 0).',a:'Distance = √[(x₂−x₁)² + (y₂−y₁)²]\n= √[(0−3)² + (0−4)²]\n= √[9 + 16]\n= √25\n= 5 units',m:2},
+        {q:'Find the midpoint of the line joining A(2, 6) and B(8, 4).',a:'Midpoint = ((x₁+x₂)/2, (y₁+y₂)/2)\n= ((2+8)/2, (6+4)/2)\n= (10/2, 10/2)\n= (5, 5)',m:1},
+        {q:'Find the gradient of the line passing through (1, 2) and (4, 8).',a:'Gradient = (y₂−y₁) / (x₂−x₁)\n= (8−2) / (4−1)\n= 6/3\n= 2',m:2},
+        {q:'Write the equation of a line with gradient 3 and y-intercept −2.',a:'y = mx + c\nm = 3, c = −2\n\ny = 3x − 2',m:2},
+        {q:'Find the distance between points P(−2, 3) and Q(4, −5).',a:'Distance = √[(4−(−2))² + (−5−3)²]\n= √[(6)² + (−8)²]\n= √[36 + 64]\n= √100\n= 10 units',m:2},
+        {q:'The midpoint of AB is (3, 5). If A = (1, 3), find the coordinates of B.',a:'Midpoint formula: ((x₁+x₂)/2, (y₁+y₂)/2) = (3, 5)\n\n(1+x₂)/2 = 3  →  x₂ = 5\n(3+y₂)/2 = 5  →  y₂ = 7\n\nB = (5, 7)',m:2},
       ]},
       { name:'Matrices', qs:[
-        {q:'Find the determinant of the matrix [[3, 1], [2, 4]].',m:1},
-        {q:'Add the matrices [[1, 2], [3, 4]] and [[5, 6], [7, 8]].',m:1},
-        {q:'Multiply: [[2, 3], [1, 0]] × [[1, 0], [0, 1]]',m:2},
-        {q:'Find the inverse of the matrix [[2, 1], [5, 3]].',m:3},
+        {q:'Find the determinant of the matrix [[3, 1], [2, 4]].',a:'det = (3 × 4) − (1 × 2)\n= 12 − 2\n= 10',m:1},
+        {q:'Add the matrices [[1, 2], [3, 4]] and [[5, 6], [7, 8]].',a:'Add corresponding elements:\n[[1+5, 2+6], [3+7, 4+8]]\n= [[6, 8], [10, 12]]',m:1},
+        {q:'Multiply: [[2, 3], [1, 0]] × [[1, 0], [0, 1]]',a:'[[2×1+3×0, 2×0+3×1], [1×1+0×0, 1×0+0×1]]\n= [[2, 3], [1, 0]]\n\nNote: Multiplying by the identity matrix gives the same matrix.',m:2},
+        {q:'Find the inverse of the matrix [[2, 1], [5, 3]].',a:'det = (2×3) − (1×5) = 6 − 5 = 1\n\nInverse = (1/det) × [[d, −b], [−c, a]]\n= (1/1) × [[3, −1], [−5, 2]]\n= [[3, −1], [−5, 2]]',m:3},
       ]},
       { name:'Arithmetic', qs:[
-        {q:'A shopkeeper bought an article for Rs 250 and sold it for Rs 300. Find the profit percentage.',m:2},
-        {q:'Find the simple interest on Rs 5,000 at 8% per annum for 3 years.',m:2},
-        {q:'After a 20% discount, a shirt costs Rs 480. What was the original price?',m:2},
-        {q:'A bicycle bought for Rs 4,000 was sold at a loss of 15%. Find the selling price.',m:2},
-        {q:'Find the compound interest on Rs 10,000 at 10% per annum for 2 years.',m:4},
+        {q:'A shopkeeper bought an article for Rs 250 and sold it for Rs 300. Find the profit percentage.',a:'Profit = Selling Price − Cost Price\n= 300 − 250 = Rs 50\n\nProfit % = (Profit / Cost Price) × 100\n= (50/250) × 100\n= 20%',m:2},
+        {q:'Find the simple interest on Rs 5,000 at 8% per annum for 3 years.',a:'SI = (P × R × T) / 100\n= (5000 × 8 × 3) / 100\n= 120000 / 100\n= Rs 1,200',m:2},
+        {q:'After a 20% discount, a shirt costs Rs 480. What was the original price?',a:'After 20% discount, student pays 80% of original price.\n\n80% of original = Rs 480\nOriginal = 480 × 100/80\n= Rs 600',m:2},
+        {q:'A bicycle bought for Rs 4,000 was sold at a loss of 15%. Find the selling price.',a:'Loss = 15% of 4000 = (15/100) × 4000 = Rs 600\n\nSelling Price = Cost Price − Loss\n= 4000 − 600\n= Rs 3,400',m:2},
+        {q:'Find the compound interest on Rs 10,000 at 10% per annum for 2 years.',a:'A = P(1 + R/100)ⁿ\n= 10000 × (1 + 10/100)²\n= 10000 × (1.1)²\n= 10000 × 1.21\n= Rs 12,100\n\nCI = A − P = 12100 − 10000 = Rs 2,100',m:4},
       ]},
       { name:'Geometry', qs:[
-        {q:'Two angles of a triangle are 60° and 70°. Find the third angle.',m:1},
-        {q:'The angles of a triangle are in the ratio 2:3:4. Find each angle.',m:2},
-        {q:'Find the area of a trapezium with parallel sides 12 cm and 8 cm and height 5 cm.',m:2},
-        {q:'In a right-angled triangle, the two shorter sides are 6 cm and 8 cm. Find the hypotenuse.',m:2},
-        {q:'State the Pythagoras theorem and use it to find the missing side: a = 5, b = 12.',m:3},
+        {q:'Two angles of a triangle are 60° and 70°. Find the third angle.',a:'Sum of angles in a triangle = 180°\nThird angle = 180° − 60° − 70° = 50°',m:1},
+        {q:'The angles of a triangle are in the ratio 2:3:4. Find each angle.',a:'Let angles be 2x, 3x and 4x.\n2x + 3x + 4x = 180°\n9x = 180°\nx = 20°\n\nAngles: 2×20=40°, 3×20=60°, 4×20=80°',m:2},
+        {q:'Find the area of a trapezium with parallel sides 12 cm and 8 cm and height 5 cm.',a:'Area = ½ × (sum of parallel sides) × height\n= ½ × (12 + 8) × 5\n= ½ × 20 × 5\n= 50 cm²',m:2},
+        {q:'In a right-angled triangle, the two shorter sides are 6 cm and 8 cm. Find the hypotenuse.',a:'By Pythagoras theorem:\nhypotenuse² = 6² + 8²\n= 36 + 64\n= 100\nhypotenuse = √100 = 10 cm',m:2},
+        {q:'State the Pythagoras theorem and use it to find the missing side: a = 5, b = 12.',a:'Pythagoras theorem: In a right-angled triangle,\nc² = a² + b² (where c is the hypotenuse)\n\nc² = 5² + 12²\n= 25 + 144\n= 169\nc = √169 = 13 units',m:3},
       ]},
     ]
   },
@@ -305,65 +291,54 @@ const CONTENT = {
     label: 'Science',
     chapters: [
       { name:'Electricity', qs:[
-        {q:"State Ohm's Law and write its formula.",m:2},
-        {q:'Three resistors of 2Ω, 3Ω and 6Ω are connected in parallel. Find the total resistance.',m:3},
-        {q:'A current of 3A flows through a resistor of 10Ω. Find the voltage across it.',m:2},
-        {q:'Find the power consumed by a bulb connected to 220V with a current of 0.5A flowing through it.',m:2},
-        {q:'Differentiate between series and parallel circuits. Give one advantage of each.',m:3},
-        {q:'A 60W bulb is used for 5 hours daily. Calculate the energy consumed in one week (in kWh).',m:4},
+        {q:"State Ohm's Law and write its formula.",a:"Ohm's Law: The current through a conductor is directly proportional to the voltage across it, provided temperature remains constant.\n\nFormula: V = IR\n(V = voltage in volts, I = current in amperes, R = resistance in ohms)",m:2},
+        {q:'Three resistors of 2Ω, 3Ω and 6Ω are connected in parallel. Find the total resistance.',a:'For parallel: 1/R = 1/R₁ + 1/R₂ + 1/R₃\n= 1/2 + 1/3 + 1/6\n= 3/6 + 2/6 + 1/6\n= 6/6\n= 1\n\nR = 1Ω',m:3},
+        {q:'A current of 3A flows through a resistor of 10Ω. Find the voltage across it.',a:'Using Ohm\'s Law: V = IR\nV = 3 × 10\nV = 30V',m:2},
+        {q:'Find the power consumed by a bulb connected to 220V with a current of 0.5A flowing through it.',a:'Power = V × I\n= 220 × 0.5\n= 110 W',m:2},
+        {q:'A 60W bulb is used for 5 hours daily. Calculate the energy consumed in one week (in kWh).',a:'Energy per day = Power × Time = 60W × 5h = 300 Wh\nEnergy per week = 300 × 7 = 2100 Wh\n\nIn kWh = 2100 / 1000 = 2.1 kWh',m:4},
       ]},
       { name:'Light & Optics', qs:[
-        {q:'State the two laws of reflection of light.',m:2},
-        {q:'Define refraction of light. What happens to light when it moves from water to air?',m:2},
-        {q:'A ray of light travels from air into glass. Does it bend towards or away from the normal? Why?',m:2},
-        {q:'What is the difference between a real image and a virtual image? Give one example of each.',m:2},
-        {q:'Draw a ray diagram to show how a convex lens forms an image when the object is placed beyond 2F.',m:4},
+        {q:'State the two laws of reflection of light.',a:'First Law: The incident ray, reflected ray and normal all lie in the same plane.\n\nSecond Law: The angle of incidence equals the angle of reflection.\n(∠i = ∠r)',m:2},
+        {q:'Define refraction of light. What happens to light when it moves from water to air?',a:'Refraction: The bending of light as it passes from one medium to another of different optical density.\n\nWhen light moves from water to air (denser to less dense medium), it bends away from the normal and speeds up.',m:2},
+        {q:'A ray of light travels from air into glass. Does it bend towards or away from the normal? Why?',a:'It bends towards the normal.\n\nBecause glass is denser than air, light slows down when entering glass. According to the laws of refraction, when light enters a denser medium it bends towards the normal.',m:2},
+        {q:'What is the difference between a real image and a virtual image? Give one example of each.',a:'Real image:\n- Formed by actual intersection of light rays\n- Can be projected on a screen\n- Always inverted\n- Example: Image formed by a convex lens on a cinema screen\n\nVirtual image:\n- Formed by apparent intersection of light rays\n- Cannot be projected on a screen\n- Always erect\n- Example: Image seen in a plane mirror',m:2},
       ]},
       { name:'Force & Motion', qs:[
-        {q:"State Newton's First Law of Motion. Give one real-life example.",m:2},
-        {q:'What is the difference between speed and velocity?',m:2},
-        {q:"State Newton's Second Law of Motion and write its formula.",m:2},
-        {q:'A ball of mass 2 kg is moving at 5 m/s. Find its momentum.',m:2},
-        {q:'A force of 20N acts on a body of mass 5 kg. Find the acceleration produced.',m:2},
-        {q:'A car accelerates from rest to 20 m/s in 4 seconds. Find the acceleration and the force if the mass is 1000 kg.',m:4},
+        {q:"State Newton's First Law of Motion. Give one real-life example.",a:"Newton's First Law (Law of Inertia): An object remains at rest or continues moving in a straight line at constant speed unless acted upon by an external force.\n\nExample: A passenger jerks forward when a bus stops suddenly — the passenger's body tends to continue moving forward due to inertia.",m:2},
+        {q:'What is the difference between speed and velocity?',a:'Speed:\n- Distance travelled per unit time\n- Scalar quantity (no direction)\n- Formula: speed = distance/time\n\nVelocity:\n- Displacement per unit time\n- Vector quantity (has direction)\n- Formula: velocity = displacement/time',m:2},
+        {q:"State Newton's Second Law of Motion and write its formula.",a:"Newton's Second Law: The acceleration of an object is directly proportional to the net force applied and inversely proportional to its mass.\n\nFormula: F = ma\n(F = force in newtons, m = mass in kg, a = acceleration in m/s²)",m:2},
+        {q:'A ball of mass 2 kg is moving at 5 m/s. Find its momentum.',a:'Momentum = mass × velocity\n= 2 × 5\n= 10 kg m/s',m:2},
+        {q:'A car accelerates from rest to 20 m/s in 4 seconds. Find the acceleration and the force if the mass is 1000 kg.',a:'Acceleration = (v − u) / t\n= (20 − 0) / 4\n= 5 m/s²\n\nForce = ma\n= 1000 × 5\n= 5000 N',m:4},
       ]},
       { name:'Chemical Reactions', qs:[
-        {q:'What is a chemical reaction? Give one example with a word equation.',m:2},
-        {q:'Differentiate between exothermic and endothermic reactions with one example each.',m:2},
-        {q:'Write the word equation for the combustion of methane.',m:1},
-        {q:'What is oxidation? Give one example.',m:2},
-        {q:'Explain what happens when iron is exposed to moist air. Write the word equation.',m:2},
+        {q:'What is a chemical reaction? Give one example with a word equation.',a:'A chemical reaction is a process where substances (reactants) are transformed into new substances (products) with different properties.\n\nExample: Burning of magnesium\nMagnesium + Oxygen → Magnesium oxide',m:2},
+        {q:'Differentiate between exothermic and endothermic reactions with one example each.',a:'Exothermic reaction:\n- Releases heat energy to the surroundings\n- Temperature of surroundings increases\n- Example: Burning of wood (combustion)\n\nEndothermic reaction:\n- Absorbs heat energy from surroundings\n- Temperature of surroundings decreases\n- Example: Photosynthesis',m:2},
+        {q:'Write the word equation for the combustion of methane.',a:'Methane + Oxygen → Carbon dioxide + Water\n\n(CH₄ + 2O₂ → CO₂ + 2H₂O)',m:1},
+        {q:'Explain what happens when iron is exposed to moist air. Write the word equation.',a:'Iron reacts with oxygen and water in moist air to form rust (iron oxide). This is a slow oxidation reaction.\n\nWord equation:\nIron + Oxygen + Water → Iron oxide (rust)\n\nRusting can be prevented by painting, oiling, or galvanising the iron.',m:2},
       ]},
       { name:'Acids & Bases', qs:[
-        {q:'What is an acid? Give two properties of acids.',m:2},
-        {q:'What happens when hydrochloric acid reacts with sodium hydroxide? Write the word equation.',m:2},
-        {q:'Name two indicators used to test for acids and bases. What colour change do they show?',m:2},
-        {q:'What is neutralisation? Give one real-life example of neutralisation.',m:2},
-        {q:'Explain the difference between a strong acid and a weak acid with an example of each.',m:3},
+        {q:'What is an acid? Give two properties of acids.',a:'An acid is a substance that produces hydrogen ions (H⁺) when dissolved in water.\n\nProperties:\n1. Tastes sour\n2. Turns blue litmus paper red\n3. Has a pH less than 7\n4. Reacts with metals to produce hydrogen gas',m:2},
+        {q:'What happens when hydrochloric acid reacts with sodium hydroxide? Write the word equation.',a:'This is a neutralisation reaction — an acid reacting with a base.\n\nHydrochloric acid + Sodium hydroxide → Sodium chloride + Water\n\n(HCl + NaOH → NaCl + H₂O)\n\nThe solution becomes neutral (pH 7).',m:2},
+        {q:'Name two indicators used to test for acids and bases. What colour change do they show?',a:'1. Litmus:\n   - Turns red in acid\n   - Turns blue in base\n\n2. Universal indicator:\n   - Shows red/orange in strong acid\n   - Shows green in neutral\n   - Shows blue/purple in base',m:2},
+        {q:'What is neutralisation? Give one real-life example of neutralisation.',a:'Neutralisation is the reaction between an acid and a base to form a salt and water.\n\nAcid + Base → Salt + Water\n\nReal-life example: When we take antacid tablets for indigestion, the antacid (a base) neutralises the excess hydrochloric acid in our stomach.',m:2},
       ]},
       { name:'Human Biology', qs:[
-        {q:'Name the four chambers of the human heart and state the function of each.',m:2},
-        {q:'What is the role of the kidney in the human body?',m:2},
-        {q:'Explain how blood is oxygenated in the lungs.',m:3},
-        {q:'Name the parts of the human respiratory system in order from the nose to the lungs.',m:2},
-        {q:'What is the function of red blood cells, white blood cells and platelets?',m:3},
-        {q:'Explain the process of digestion in the small intestine. Name the enzymes involved.',m:4},
+        {q:'Name the four chambers of the human heart and state the function of each.',a:'1. Right Atrium — receives deoxygenated blood from the body\n2. Right Ventricle — pumps deoxygenated blood to the lungs\n3. Left Atrium — receives oxygenated blood from the lungs\n4. Left Ventricle — pumps oxygenated blood to the rest of the body',m:2},
+        {q:'What is the role of the kidney in the human body?',a:'The kidneys:\n1. Filter waste products (urea, excess salts) from the blood\n2. Produce urine\n3. Regulate water balance in the body\n4. Maintain blood pressure\n5. Control pH of the blood',m:2},
+        {q:'Name the parts of the human respiratory system in order from the nose to the lungs.',a:'Nose → Nasal cavity → Pharynx → Larynx → Trachea → Bronchi → Bronchioles → Alveoli (in the lungs)',m:2},
+        {q:'What is the function of red blood cells, white blood cells and platelets?',a:'Red blood cells (RBC):\n- Carry oxygen from lungs to body cells\n- Contain haemoglobin\n\nWhite blood cells (WBC):\n- Fight infection and disease\n- Part of the immune system\n\nPlatelets:\n- Help blood to clot\n- Prevent excessive bleeding from wounds',m:3},
       ]},
       { name:'Plant Biology', qs:[
-        {q:'Write the word equation for photosynthesis.',m:1},
-        {q:'What are stomata? Give two functions of stomata.',m:2},
-        {q:'What is transpiration? Give two reasons why it is important for plants.',m:2},
-        {q:'Explain the difference between photosynthesis and respiration.',m:3},
-        {q:'What is the role of chlorophyll in photosynthesis?',m:2},
-        {q:'Describe how water is transported from the roots to the leaves of a plant.',m:3},
+        {q:'Write the word equation for photosynthesis.',a:'Carbon dioxide + Water → (sunlight + chlorophyll) → Glucose + Oxygen\n\n6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂',m:1},
+        {q:'What are stomata? Give two functions of stomata.',a:'Stomata are tiny pores (openings) found mainly on the underside of leaves.\n\nFunctions:\n1. Allow gaseous exchange — CO₂ enters and O₂ exits during photosynthesis\n2. Allow water vapour to escape during transpiration',m:2},
+        {q:'What is transpiration? Give two reasons why it is important for plants.',a:'Transpiration is the loss of water vapour from the leaves of plants through the stomata.\n\nImportance:\n1. Helps transport water and minerals from roots to leaves (transpiration pull)\n2. Cools the plant by evaporation\n3. Helps maintain the turgidity of plant cells',m:2},
+        {q:'What is the role of chlorophyll in photosynthesis?',a:'Chlorophyll is the green pigment found in chloroplasts of plant cells.\n\nRole in photosynthesis:\n- Absorbs sunlight (mainly red and blue wavelengths)\n- Converts light energy into chemical energy\n- This energy is used to convert CO₂ and water into glucose',m:2},
       ]},
       { name:'Environment & Ecology', qs:[
-        {q:'What is the greenhouse effect? Name two greenhouse gases.',m:2},
-        {q:'Define biodiversity. Give two reasons why biodiversity is important.',m:2},
-        {q:'Explain how deforestation contributes to climate change.',m:3},
-        {q:'What is a food chain? Write a food chain with four organisms.',m:2},
-        {q:'Explain the carbon cycle. How do human activities disturb it?',m:4},
-        {q:'What is the difference between renewable and non-renewable energy sources? Give two examples of each.',m:3},
+        {q:'What is the greenhouse effect? Name two greenhouse gases.',a:'The greenhouse effect is the process by which certain gases in the atmosphere trap heat from the sun, keeping the Earth warm enough to support life.\n\nGreenhouse gases:\n1. Carbon dioxide (CO₂)\n2. Methane (CH₄)\n3. Water vapour\n4. Nitrous oxide (N₂O)',m:2},
+        {q:'Define biodiversity. Give two reasons why biodiversity is important.',a:'Biodiversity is the variety of all living organisms (plants, animals, microorganisms) in a given area.\n\nImportance:\n1. Maintains ecological balance and stability of ecosystems\n2. Provides food, medicines and other resources for humans\n3. Each species plays a role in nutrient cycling and energy flow',m:2},
+        {q:'Explain how deforestation contributes to climate change.',a:'Deforestation contributes to climate change in two main ways:\n\n1. Trees absorb CO₂ during photosynthesis. When forests are cut down, less CO₂ is absorbed, so more remains in the atmosphere.\n\n2. When trees are burned or decay, stored carbon is released as CO₂ into the atmosphere.\n\nThis increases the greenhouse effect and leads to global warming.',m:3},
+        {q:'What is a food chain? Write a food chain with four organisms.',a:'A food chain shows the transfer of energy from one organism to another through feeding relationships.\n\nEach organism feeds on the one before it.\n\nExample:\nGrass → Grasshopper → Frog → Snake\n\n(Producer → Primary consumer → Secondary consumer → Tertiary consumer)',m:2},
       ]},
     ]
   }
@@ -371,40 +346,39 @@ const CONTENT = {
 
 /* ── State ── */
 const $ = id => document.getElementById(id);
-let currentSubject = 'maths';
-let currentChapter = null;
-let questionIndex  = 0;
+let currentSubject   = 'maths';
+let currentChapter   = null;
+let questionIndex    = 0;
 let questionsAnswered = 0;
-const SESSION_LENGTH = 5;
+let gotItCount       = 0;
+const SESSION_LENGTH = currentChapter ? currentChapter.qs.length : 10;
 
-/* Read auth from localStorage */
 const loggedInUser = (() => {
   try { return JSON.parse(localStorage.getItem('ujyalo_user') || 'null'); } catch(e) { return null; }
 })();
 
 /* ── Subject switch ── */
 function switchSubject(subj) {
-  currentSubject = subj;
-  currentChapter = null;
-  questionIndex  = 0;
+  currentSubject    = subj;
+  currentChapter    = null;
+  questionIndex     = 0;
   questionsAnswered = 0;
+  gotItCount        = 0;
 
   document.querySelectorAll('.cp-subj-btn').forEach(b => b.classList.remove('on'));
   $('btn-' + subj).classList.add('on');
   $('cp-ctx-subj').textContent = CONTENT[subj].label;
-  $('cp-ctx-ch').textContent = 'Choose a chapter';
+  $('cp-ctx-ch').textContent   = 'Choose a chapter';
 
   renderChapterList();
-  resetQArea();
+  showEmpty();
 }
 
 /* ── Chapter list ── */
 function renderChapterList() {
   const list = $('cp-chapter-list');
   list.innerHTML = '<div class="cp-chapter-lbl">Chapters</div>';
-  const chapters = CONTENT[currentSubject].chapters;
-
-  chapters.forEach(ch => {
+  CONTENT[currentSubject].chapters.forEach(ch => {
     const btn = document.createElement('button');
     btn.className = 'cp-chapter-btn';
     btn.innerHTML = `<span>${ch.name}</span><span class="cp-chapter-count">${ch.qs.length}q</span>`;
@@ -417,11 +391,24 @@ function renderChapterList() {
   });
 }
 
+/* ── Show empty state ── */
+function showEmpty() {
+  $('cp-empty').classList.remove('hidden');
+  $('cp-q-card').classList.add('hidden');
+  $('cp-student-ans').classList.add('hidden');
+  $('cp-model-ans').classList.add('hidden');
+  $('cp-self-assess').classList.add('hidden');
+  $('cp-signup-nudge').classList.add('hidden');
+  $('cp-prog-fill').style.width = '0%';
+  $('cp-prog-txt').textContent = '0 / 0';
+}
+
 /* ── Start chapter ── */
 function startChapter(ch) {
-  currentChapter = ch;
-  questionIndex  = 0;
+  currentChapter    = ch;
+  questionIndex     = 0;
   questionsAnswered = 0;
+  gotItCount        = 0;
   $('cp-ctx-ch').textContent = ch.name;
   $('cp-signup-nudge').classList.add('hidden');
   updateProgress();
@@ -433,107 +420,91 @@ function loadQuestion() {
   if (!currentChapter) return;
   const q = currentChapter.qs[questionIndex % currentChapter.qs.length];
 
+  // Hide everything first
   $('cp-empty').classList.add('hidden');
-  $('cp-fb-card').classList.add('hidden');
-  $('cp-loading').classList.add('hidden');
+  $('cp-student-ans').classList.add('hidden');
+  $('cp-model-ans').classList.add('hidden');
+  $('cp-self-assess').classList.add('hidden');
 
-  $('cp-q-src').textContent = `${CONTENT[currentSubject].label} · ${currentChapter.name}`;
-  $('cp-q-marks').textContent = `${q.m} mark${q.m > 1 ? 's' : ''}`;
-  $('cp-q-text').textContent = q.q;
-  $('cp-ans').value = '';
+  // Populate and show question card
+  $('cp-q-src').textContent    = `${CONTENT[currentSubject].label} · ${currentChapter.name}`;
+  $('cp-q-marks').textContent  = `${q.m} mark${q.m > 1 ? 's' : ''}`;
+  $('cp-q-text').textContent   = q.q;
+  $('cp-ans').value            = '';
 
   const card = $('cp-q-card');
   card.classList.remove('hidden');
   card.style.animation = 'none';
   card.offsetHeight;
   card.style.animation = '';
+
+  // Scroll to top of question area
+  $('cp-q-area').scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ── Reset question area ── */
-function resetQArea() {
-  $('cp-empty').classList.remove('hidden');
-  $('cp-q-card').classList.add('hidden');
-  $('cp-fb-card').classList.add('hidden');
-  $('cp-loading').classList.add('hidden');
-  $('cp-signup-nudge').classList.add('hidden');
-  $('cp-prog-fill').style.width = '0%';
-  $('cp-prog-txt').textContent = `0 / ${SESSION_LENGTH}`;
-}
-
-/* ── Update progress bar ── */
+/* ── Update progress ── */
 function updateProgress() {
-  const pct = Math.min((questionsAnswered / SESSION_LENGTH) * 100, 100);
+  const total = currentChapter ? currentChapter.qs.length : 0;
+  const pct   = total ? Math.min((questionsAnswered / total) * 100, 100) : 0;
   $('cp-prog-fill').style.width = `${pct}%`;
-  $('cp-prog-txt').textContent = `${questionsAnswered} / ${SESSION_LENGTH}`;
+  $('cp-prog-txt').textContent  = `${questionsAnswered} / ${total}`;
 }
 
 /* ── Practice engine ── */
 const CP = {
 
-  async check() {
-    const answer = $('cp-ans').value.trim();
-    if (!answer) { $('cp-ans').focus(); return; }
-
+  showAnswer() {
+    const studentAns = $('cp-ans').value.trim();
     const q = currentChapter.qs[questionIndex % currentChapter.qs.length];
 
-    $('cp-loading').classList.remove('hidden');
-    $('cp-q-card').classList.add('hidden');
-    $('cp-fb-card').classList.add('hidden');
-
-    try {
-      const res = await fetch('/api/practice', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'evaluate',
-          subject: currentSubject,
-          chapter: currentChapter.name,
-          question: q.q,
-          studentAnswer: answer,
-        }),
-      });
-      const data = await res.json();
-      $('cp-loading').classList.add('hidden');
-
-      questionsAnswered++;
-      updateProgress();
-
-      const card = $('cp-fb-card');
-      const verdict = data.verdict || 'wrong';
-      card.className = `cp-fb-card ${verdict}`;
-
-      $('cp-fb-verdict').textContent =
-        verdict === 'correct'  ? '✅ Correct!' :
-        verdict === 'partial'  ? '~ Partially correct' :
-        '❌ Not quite right';
-
-      $('cp-fb-body').textContent = data.feedback || 'No feedback available.';
-
-      $('cp-q-card').classList.remove('hidden');
-      card.classList.remove('hidden');
-      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-      // Show signup nudge after SESSION_LENGTH questions for guests
-      if (!loggedInUser && questionsAnswered >= SESSION_LENGTH) {
-        $('cp-signup-nudge').classList.remove('hidden');
-      }
-
-    } catch(err) {
-      $('cp-loading').classList.add('hidden');
-      $('cp-q-card').classList.remove('hidden');
-      alert('Something went wrong. Please try again.');
+    // Show student's answer if they wrote something
+    if (studentAns) {
+      $('cp-student-ans-body').textContent = studentAns;
+      $('cp-student-ans').classList.remove('hidden');
     }
+
+    // Show model answer
+    $('cp-model-ans-body').textContent = q.a;
+    $('cp-model-ans').classList.remove('hidden');
+
+    // Show self-assessment
+    $('cp-self-assess').classList.remove('hidden');
+
+    // Hide check button, disable textarea
+    $('cp-ans').disabled = true;
+    $('cp-ans').style.opacity = '0.6';
+
+    questionsAnswered++;
+    updateProgress();
+
+    // Scroll to show model answer
+    $('cp-model-ans').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Show signup nudge for guests after 5 questions
+    if (!loggedInUser && questionsAnswered >= 5) {
+      $('cp-signup-nudge').classList.remove('hidden');
+    }
+  },
+
+  gotIt() {
+    gotItCount++;
+    this.next();
   },
 
   next() {
     questionIndex++;
-    $('cp-fb-card').classList.add('hidden');
+    $('cp-ans').disabled    = false;
+    $('cp-ans').style.opacity = '1';
     loadQuestion();
   },
 
   skip() {
     questionIndex++;
-    $('cp-fb-card').classList.add('hidden');
+    $('cp-student-ans').classList.add('hidden');
+    $('cp-model-ans').classList.add('hidden');
+    $('cp-self-assess').classList.add('hidden');
+    $('cp-ans').disabled    = false;
+    $('cp-ans').style.opacity = '1';
     loadQuestion();
   },
 };
