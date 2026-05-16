@@ -156,6 +156,22 @@
     </div>
   </aside>
 
+  <!-- MOBILE DROPDOWN PICKER — shown only on mobile -->
+  <div class="cp-mobile-picker" style="background:white;border-bottom:1px solid var(--ink-100);padding:12px 16px;display:none;">
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <a class="cp-subj-btn" id="mob-btn-maths" href="/chapter-practice.html?subject=maths" style="flex:1;padding:8px;border-radius:10px;border:2px solid var(--ink-100);background:white;font-family:inherit;font-size:13px;font-weight:700;color:var(--ink-500);text-align:center;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all 0.2s;">
+        <span style="font-size:20px;">🧮</span>Maths
+      </a>
+      <a class="cp-subj-btn" id="mob-btn-science" href="/chapter-practice.html?subject=science" style="flex:1;padding:8px;border-radius:10px;border:2px solid var(--ink-100);background:white;font-family:inherit;font-size:13px;font-weight:700;color:var(--ink-500);text-align:center;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all 0.2s;">
+        <span style="font-size:20px;">🔬</span>Science
+      </a>
+    </div>
+    <div style="font-size:10px;font-weight:700;color:var(--ink-400);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Choose a chapter</div>
+    <select id="cp-mobile-select" onchange="CP.mobileSelect(this.value)" style="width:100%;padding:11px 14px;border:2px solid var(--brand);border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;color:var(--brand);background:var(--brand-light);appearance:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22%3E%3Cpath fill=%22%231E5FA8%22 d=%22M7 10l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 12px center;cursor:pointer;">
+      <option value="">Select a chapter…</option>
+    </select>
+  </div>
+
   <!-- MAIN -->
   <div class="cp-main">
     <div class="cp-topbar">
@@ -274,12 +290,45 @@ let totalAnswered     = 0;
 let guestAnswered     = 0; // track for nudge
 
 function boot(subject) {
+  // Desktop sidebar
   $('btn-maths').classList.toggle('on', subject === 'maths');
   $('btn-science').classList.toggle('on', subject === 'science');
   $('cp-sidebar-title').textContent = `SEE ${CHAPTER_CONTENT.label} Practice`;
   $('cp-ctx-subj').textContent      = CHAPTER_CONTENT.label;
   $('cp-empty-icon').textContent    = CHAPTER_CONTENT.icon;
   renderChapterList();
+
+  // Mobile subject buttons
+  const mobMaths   = $('mob-btn-maths');
+  const mobScience = $('mob-btn-science');
+  if (mobMaths && mobScience) {
+    const brand = 'background:var(--brand);border-color:var(--brand);color:white;';
+    const off   = 'background:white;border-color:var(--ink-100);color:var(--ink-500);';
+    mobMaths.style.cssText   += subject === 'maths'   ? brand : off;
+    mobScience.style.cssText += subject === 'science' ? brand : off;
+  }
+
+  // Mobile dropdown
+  populateMobileSelect();
+}
+
+function populateMobileSelect() {
+  const sel = $('cp-mobile-select');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Select a chapter…</option>';
+  let idx = 0;
+  CHAPTER_CONTENT.groups.forEach(group => {
+    const optGroup = document.createElement('optgroup');
+    optGroup.label = group.name;
+    group.chapters.forEach(ch => {
+      const opt = document.createElement('option');
+      opt.value = idx;
+      opt.textContent = `${ch.name} (${ch.qs.length}q)`;
+      optGroup.appendChild(opt);
+      idx++;
+    });
+    sel.appendChild(optGroup);
+  });
 }
 
 // Build a flat chapter list from groups for easy indexing
@@ -553,6 +602,20 @@ const CP = {
       loadQuestion();
     }
     updateProgress();
+  },
+
+  mobileSelect(val) {
+    if (val === '') return;
+    const idx = parseInt(val);
+    const ch  = ALL_CHAPTERS[idx];
+    if (ch) startChapter(ch, idx);
+    // Reset dropdown label after selection
+    setTimeout(() => {
+      const sel = $('cp-mobile-select');
+      if (sel && ch) {
+        sel.value = idx;
+      }
+    }, 100);
   },
 
   retry() {
