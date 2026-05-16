@@ -6,313 +6,876 @@
 <title>SEE Chapter Practice — Ujyalo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <link rel="stylesheet" href="/styles/main.css">
 <style>
-.cp-page { display:grid; grid-template-columns:260px 1fr; min-height:calc(100vh - 56px); background:var(--ink-50); }
-.cp-sidebar { background:white; border-right:1px solid var(--ink-100); display:flex; flex-direction:column; overflow:hidden; position:sticky; top:56px; height:calc(100vh - 56px); }
-.cp-main { display:flex; flex-direction:column; }
-.cp-sidebar-top { padding:16px 14px 12px; border-bottom:1px solid var(--ink-100); flex-shrink:0; }
-.cp-sidebar-title { font-family:'Fraunces',serif; font-size:16px; font-weight:700; color:var(--ink-900); margin-bottom:4px; }
-.cp-sidebar-sub { font-size:12px; color:var(--ink-400); }
-.cp-subj-row { display:flex; gap:6px; margin-top:12px; }
-.cp-subj-btn { flex:1; padding:8px 6px; border-radius:10px; border:2px solid var(--ink-100); background:white; cursor:pointer; font-family:inherit; font-size:12px; font-weight:700; color:var(--ink-500); text-align:center; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; }
-.cp-subj-btn .si { font-size:20px; line-height:1; }
-.cp-subj-btn.on { background:var(--brand); border-color:var(--brand); color:white; }
-.cp-subj-btn:hover:not(.on) { border-color:var(--brand); color:var(--brand); }
-.cp-chapter-list { flex:1; overflow-y:auto; padding:8px 10px 20px; }
-.cp-chapter-list::-webkit-scrollbar { width:3px; }
-.cp-chapter-list::-webkit-scrollbar-thumb { background:var(--ink-200); border-radius:2px; }
-.cp-chapter-lbl { font-size:10px; text-transform:uppercase; letter-spacing:0.1em; font-weight:700; color:var(--ink-300); padding:10px 6px 6px; }
-.cp-group-header { width:100%; display:flex; align-items:center; justify-content:space-between; padding:9px 10px; border-radius:8px; border:none; background:none; cursor:pointer; font-family:inherit; font-size:13px; font-weight:700; color:var(--ink-900); text-align:left; transition:all 0.15s; gap:8px; }
-.cp-group-header:hover { background:var(--ink-50); }
-.cp-group-header .cp-group-arrow { font-size:10px; color:var(--ink-400); transition:transform 0.2s; }
-.cp-group-header.open .cp-group-arrow { transform:rotate(90deg); }
-.cp-group-chapters { display:none; padding-left:10px; }
-.cp-group-chapters.open { display:block; }
-.cp-chapter-btn { width:100%; display:flex; align-items:center; justify-content:space-between; padding:9px 10px; border-radius:8px; border:none; background:none; cursor:pointer; font-family:inherit; font-size:13px; font-weight:500; color:var(--ink-700); text-align:left; transition:all 0.15s; position:relative; gap:8px; }
-.cp-chapter-btn:hover { background:var(--ink-50); color:var(--ink-900); }
-.cp-chapter-btn.on { background:var(--brand-light); color:var(--brand); font-weight:700; }
-.cp-chapter-btn.on::before { content:''; position:absolute; left:0; top:20%; bottom:20%; width:3px; background:var(--brand); border-radius:2px; }
-.cp-chapter-btn.done .cp-chapter-count { background:var(--green); color:white; }
-.cp-chapter-count { font-size:10px; font-weight:600; color:var(--ink-300); background:var(--ink-50); padding:2px 6px; border-radius:999px; flex-shrink:0; }
-.cp-chapter-btn.on .cp-chapter-count { background:var(--brand); color:white; }
-.cp-topbar { background:white; border-bottom:1px solid var(--ink-100); padding:12px 20px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; gap:12px; }
-.cp-topbar-left { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink-500); }
-.cp-topbar-left strong { color:var(--ink-900); font-weight:700; }
-.prog-wrap { display:flex; align-items:center; gap:8px; }
-.prog-bar { width:100px; height:5px; background:var(--ink-100); border-radius:999px; overflow:hidden; }
-.prog-fill { height:100%; background:linear-gradient(90deg,var(--brand),var(--sun)); border-radius:999px; transition:width 0.5s cubic-bezier(0.16,1,0.3,1); }
-.prog-txt { font-size:11px; font-weight:700; color:var(--ink-500); min-width:36px; }
-.cp-q-area { flex:1; padding:24px; display:flex; flex-direction:column; gap:16px; max-width:700px; width:100%; margin:0 auto; }
 
-/* Empty state */
-.cp-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:var(--ink-300); gap:12px; padding:60px 24px; min-height:300px; }
-.cp-empty-icon { font-size:52px; }
-.cp-empty-title { font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:var(--ink-500); }
-.cp-empty-sub { font-size:14px; line-height:1.6; max-width:280px; color:var(--ink-400); }
+/* ─── Layout ─────────────────────────────────── */
+.cp-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 56px);
+  background: var(--ink-50);
+}
 
-/* Question card */
-.cp-q-card { background:white; border-radius:18px; border:1px solid var(--ink-100); padding:24px; box-shadow:0 2px 16px rgba(10,22,40,0.05); animation:cp-up 0.35s cubic-bezier(0.16,1,0.3,1) both; }
-@keyframes cp-up { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-.cp-q-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:6px; }
-.cp-q-num { font-size:11px; font-weight:600; color:var(--ink-400); background:var(--ink-50); padding:2px 8px; border-radius:4px; }
-.cp-q-marks { font-size:11px; font-weight:700; background:var(--sun-light); color:#854F0B; padding:3px 10px; border-radius:999px; }
-.cp-q-text { font-family:'Fraunces',serif; font-size:20px; line-height:1.55; color:var(--ink-900); margin-bottom:20px; }
-.cp-ans-area { width:100%; min-height:110px; padding:14px 16px; border:2px solid var(--ink-100); border-radius:14px; font-family:inherit; font-size:15px; color:var(--ink-900); background:var(--ink-50); resize:none; line-height:1.65; transition:all 0.2s; }
-.cp-ans-area:focus { outline:none; border-color:var(--brand); background:white; box-shadow:0 0 0 3px rgba(30,95,168,0.08); }
-.cp-ans-area::placeholder { color:var(--ink-300); }
-.cp-ans-area.shake { animation: shake 0.4s ease; border-color: var(--red) !important; }
+/* Mobile picker — shown only on mobile */
+.cp-mobile-bar {
+  background: white;
+  border-bottom: 1px solid var(--ink-100);
+  padding: 12px 16px 14px;
+  display: none;
+}
+
+.cp-mobile-subj-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.cp-mobile-subj-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 8px;
+  border-radius: 12px;
+  border: 2px solid var(--ink-100);
+  background: white;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-500);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.cp-mobile-subj-btn span { font-size: 22px; line-height: 1; }
+.cp-mobile-subj-btn.on { background: var(--brand); border-color: var(--brand); color: white; }
+
+.cp-mobile-select-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-400);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.cp-mobile-select {
+  width: 100%;
+  padding: 12px 40px 12px 14px;
+  border: 2px solid var(--brand);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--brand);
+  background: var(--brand-light);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%231E5FA8' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  cursor: pointer;
+}
+
+/* Desktop page — two column */
+.cp-page {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  flex: 1;
+}
+
+/* ─── Sidebar ─────────────────────────────────── */
+.cp-sidebar {
+  background: white;
+  border-right: 1px solid var(--ink-100);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow: hidden;
+}
+
+.cp-sidebar-top {
+  padding: 16px 14px 12px;
+  border-bottom: 1px solid var(--ink-100);
+  flex-shrink: 0;
+}
+
+.cp-sidebar-title {
+  font-family: 'Fraunces', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-900);
+  margin-bottom: 2px;
+}
+
+.cp-sidebar-sub { font-size: 12px; color: var(--ink-400); }
+
+.cp-subj-row { display: flex; gap: 6px; margin-top: 12px; }
+
+.cp-subj-btn {
+  flex: 1;
+  padding: 8px 6px;
+  border-radius: 10px;
+  border: 2px solid var(--ink-100);
+  background: white;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-500);
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.cp-subj-btn span { font-size: 20px; line-height: 1; }
+.cp-subj-btn.on { background: var(--brand); border-color: var(--brand); color: white; }
+.cp-subj-btn:hover:not(.on) { border-color: var(--brand); color: var(--brand); }
+
+.cp-chapter-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 10px 24px;
+}
+
+.cp-chapter-list::-webkit-scrollbar { width: 3px; }
+.cp-chapter-list::-webkit-scrollbar-thumb { background: var(--ink-200); border-radius: 2px; }
+
+.cp-chapter-lbl {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--ink-300);
+  padding: 10px 6px 6px;
+}
+
+.cp-group-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-900);
+  text-align: left;
+  transition: background 0.15s;
+  gap: 8px;
+}
+
+.cp-group-btn:hover { background: var(--ink-50); }
+
+.cp-group-arrow {
+  font-size: 10px;
+  color: var(--ink-400);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.cp-group-btn.open .cp-group-arrow { transform: rotate(90deg); }
+
+.cp-group-chapters { display: none; padding-left: 8px; }
+.cp-group-chapters.open { display: block; }
+
+.cp-ch-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-600);
+  text-align: left;
+  transition: all 0.15s;
+  position: relative;
+  gap: 8px;
+}
+
+.cp-ch-btn:hover { background: var(--ink-50); color: var(--ink-900); }
+
+.cp-ch-btn.on {
+  background: var(--brand-light);
+  color: var(--brand);
+  font-weight: 700;
+}
+
+.cp-ch-btn.on::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 3px;
+  background: var(--brand);
+  border-radius: 2px;
+}
+
+.cp-ch-count {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-300);
+  background: var(--ink-100);
+  padding: 2px 6px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.cp-ch-btn.on .cp-ch-count { background: var(--brand); color: white; }
+.cp-ch-btn.done .cp-ch-count { background: var(--green); color: white; }
+
+/* ─── Main area ────────────────────────────────── */
+.cp-main { display: flex; flex-direction: column; min-height: 0; }
+
+.cp-topbar {
+  background: white;
+  border-bottom: 1px solid var(--ink-100);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+.cp-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-500);
+  min-width: 0;
+}
+
+.cp-topbar-left strong { color: var(--ink-900); font-weight: 700; }
+
+.cp-prog-wrap { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+.cp-prog-bar {
+  width: 90px;
+  height: 5px;
+  background: var(--ink-100);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.cp-prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--brand), var(--sun));
+  border-radius: 999px;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cp-prog-txt { font-size: 11px; font-weight: 700; color: var(--ink-500); min-width: 36px; }
+
+.cp-q-area {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ─── Empty state ─────────────────────────────── */
+.cp-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  padding: 60px 24px;
+  min-height: 300px;
+}
+
+.cp-empty-icon { font-size: 52px; }
+.cp-empty-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: var(--ink-500); }
+.cp-empty-sub { font-size: 14px; line-height: 1.6; max-width: 280px; color: var(--ink-400); }
+
+/* ─── Question card ───────────────────────────── */
+.cp-q-card {
+  background: white;
+  border-radius: 18px;
+  border: 1px solid var(--ink-100);
+  padding: 24px;
+  box-shadow: 0 2px 16px rgba(10,22,40,0.05);
+  animation: cp-up 0.35s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes cp-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cp-q-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cp-q-num {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-400);
+  background: var(--ink-50);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.cp-q-marks {
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--sun-light);
+  color: #854F0B;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.cp-q-text {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  line-height: 1.55;
+  color: var(--ink-900);
+  margin-bottom: 20px;
+}
+
+.cp-ans {
+  width: 100%;
+  min-height: 110px;
+  padding: 14px 16px;
+  border: 2px solid var(--ink-100);
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--ink-900);
+  background: var(--ink-50);
+  resize: none;
+  line-height: 1.65;
+  transition: all 0.2s;
+}
+
+.cp-ans:focus {
+  outline: none;
+  border-color: var(--brand);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(30,95,168,0.08);
+}
+
+.cp-ans::placeholder { color: var(--ink-300); }
+
+.cp-ans.shake { animation: shake 0.4s ease; border-color: var(--red) !important; }
+
 @keyframes shake {
-  0%,100%{transform:translateX(0)}
-  20%{transform:translateX(-6px)}
-  40%{transform:translateX(6px)}
-  60%{transform:translateX(-4px)}
-  80%{transform:translateX(4px)}
+  0%,100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  40%      { transform: translateX(6px); }
+  60%      { transform: translateX(-4px); }
+  80%      { transform: translateX(4px); }
 }
-.cp-ans-warning { font-size:12px; color:var(--red); font-weight:600; margin-top:6px; display:none; }
-.cp-q-actions { display:flex; align-items:center; justify-content:space-between; margin-top:14px; flex-wrap:wrap; gap:8px; }
-.cp-btn-skip { font-size:13px; color:var(--ink-300); background:none; border:none; cursor:pointer; font-family:inherit; font-weight:500; display:flex; align-items:center; gap:4px; }
-.cp-btn-skip:hover { color:var(--ink-500); }
-.cp-btn-check { background:var(--brand); color:white; border:none; padding:12px 24px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; }
-.cp-btn-check:hover { background:var(--brand-dark); transform:translateY(-1px); }
 
-/* Student answer */
-.cp-student-ans { background:#fffbeb; border:1px solid #fde68a; border-left:3px solid #F59E0B; border-radius:12px; padding:14px 16px; animation:cp-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
-.cp-student-ans-title { font-size:11px; font-weight:700; color:#854F0B; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
-.cp-student-ans-body { font-size:14px; color:#854F0B; line-height:1.7; white-space:pre-line; }
-
-/* Model answer */
-.cp-model-ans { background:white; border:1px solid #86efac; border-left:3px solid var(--green); border-radius:12px; padding:16px 18px; animation:cp-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
-.cp-model-ans-title { font-size:11px; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; }
-.cp-model-ans-body { font-size:15px; color:var(--ink-700); line-height:1.9; white-space:pre-line; }
-
-/* Self assessment */
-.cp-self-assess { background:white; border:1px solid var(--ink-100); border-radius:14px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; animation:cp-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
-.cp-self-assess p { font-size:14px; font-weight:600; color:var(--ink-700); margin:0; }
-.cp-self-btns { display:flex; gap:8px; }
-.cp-btn-got-it { background:var(--green-light); color:var(--green); border:1.5px solid #86efac; padding:10px 18px; border-radius:999px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
-.cp-btn-got-it:hover { background:var(--green); color:white; }
-.cp-btn-next-q { background:var(--ink-50); color:var(--ink-500); border:1.5px solid var(--ink-200); padding:10px 18px; border-radius:999px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
-.cp-btn-next-q:hover { background:var(--ink-100); }
-@keyframes flash-green { 0%{background:var(--green-light)} 50%{background:#bbf7d0} 100%{background:var(--green-light)} }
-.cp-self-assess.celebrating { animation:flash-green 0.4s ease; }
-
-/* Chapter complete */
-.cp-complete { background:white; border-radius:20px; border:1px solid var(--ink-100); padding:40px 32px; text-align:center; box-shadow:0 4px 24px rgba(10,22,40,0.06); animation:cp-up 0.4s cubic-bezier(0.16,1,0.3,1) both; }
-.cp-complete-icon { font-size:56px; margin-bottom:16px; }
-.cp-complete-title { font-family:'Fraunces',serif; font-size:26px; font-weight:700; color:var(--ink-900); margin-bottom:8px; }
-.cp-complete-sub { font-size:15px; color:var(--ink-500); margin-bottom:28px; line-height:1.6; }
-.cp-score-row { display:flex; justify-content:center; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
-.cp-score-box { background:var(--ink-50); border-radius:14px; padding:18px 24px; text-align:center; min-width:100px; }
-.cp-score-box.good { background:var(--green-light); }
-.cp-score-box.ok { background:var(--sun-light); }
-.cp-score-num { font-family:'Fraunces',serif; font-size:2rem; font-weight:700; color:var(--brand); line-height:1; margin-bottom:4px; }
-.cp-score-box.good .cp-score-num { color:var(--green); }
-.cp-score-box.ok .cp-score-num { color:#92400e; }
-.cp-score-lbl { font-size:12px; color:var(--ink-500); font-weight:600; }
-.cp-complete-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
-.cp-btn-retry { background:var(--ink-50); color:var(--ink-700); border:1.5px solid var(--ink-200); padding:12px 22px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; }
-.cp-btn-retry:hover { background:var(--ink-100); }
-.cp-btn-next-ch { background:var(--brand); color:white; border:none; padding:12px 22px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px; }
-.cp-btn-next-ch:hover { background:var(--brand-dark); transform:translateY(-1px); }
-.cp-btn-next-ch.disabled { opacity:0.5; cursor:default; transform:none !important; }
-
-/* Guest nudge */
-.cp-guest-nudge { background:var(--brand-light); border:1px solid var(--brand); border-radius:12px; padding:12px 16px; font-size:13px; color:var(--brand); font-weight:600; text-align:center; }
-.cp-guest-nudge a { color:var(--brand); font-weight:700; }
-
-.hidden { display:none !important; }
-
-@media(max-width:700px) {
-  .cp-page { grid-template-columns:1fr; grid-template-rows:auto 1fr; }
-  .cp-sidebar { position:static; height:auto; max-height:240px; border-right:none; border-bottom:1px solid var(--ink-100); }
-  .cp-chapter-list { max-height:130px; }
+.cp-ans-warning {
+  font-size: 12px;
+  color: var(--red);
+  font-weight: 600;
+  margin-top: 6px;
+  display: none;
 }
+
+.cp-q-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cp-btn-skip {
+  font-size: 13px;
+  color: var(--ink-300);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cp-btn-skip:hover { color: var(--ink-500); }
+
+.cp-btn-check {
+  background: var(--brand);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cp-btn-check:hover { background: var(--brand-dark); transform: translateY(-1px); }
+
+/* ─── Answer panels ───────────────────────────── */
+.cp-student-ans {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 3px solid #F59E0B;
+  border-radius: 12px;
+  padding: 14px 16px;
+  animation: cp-up 0.3s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.cp-student-ans-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #854F0B;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.cp-student-ans-body { font-size: 14px; color: #854F0B; line-height: 1.7; white-space: pre-line; }
+
+.cp-model-ans {
+  background: white;
+  border: 1px solid #86efac;
+  border-left: 3px solid var(--green);
+  border-radius: 12px;
+  padding: 16px 18px;
+  animation: cp-up 0.3s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.cp-model-ans-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.cp-model-ans-body { font-size: 15px; color: var(--ink-700); line-height: 1.9; white-space: pre-line; }
+
+/* ─── Self assess ─────────────────────────────── */
+.cp-self-assess {
+  background: white;
+  border: 1px solid var(--ink-100);
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  animation: cp-up 0.3s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.cp-self-assess p { font-size: 14px; font-weight: 600; color: var(--ink-700); margin: 0; }
+.cp-self-btns { display: flex; gap: 8px; }
+
+.cp-btn-got-it {
+  background: var(--green-light);
+  color: var(--green);
+  border: 1.5px solid #86efac;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cp-btn-got-it:hover { background: var(--green); color: white; }
+
+.cp-btn-next-q {
+  background: var(--ink-50);
+  color: var(--ink-500);
+  border: 1.5px solid var(--ink-200);
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cp-btn-next-q:hover { background: var(--ink-100); }
+
+@keyframes flash-green {
+  0%   { background: var(--green-light); }
+  50%  { background: #bbf7d0; }
+  100% { background: var(--green-light); }
+}
+
+.cp-self-assess.celebrating { animation: flash-green 0.4s ease; }
+
+/* ─── Chapter complete ────────────────────────── */
+.cp-complete {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid var(--ink-100);
+  padding: 40px 32px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(10,22,40,0.06);
+  animation: cp-up 0.4s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.cp-complete-icon  { font-size: 56px; margin-bottom: 16px; }
+.cp-complete-title { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 700; color: var(--ink-900); margin-bottom: 8px; }
+.cp-complete-sub   { font-size: 15px; color: var(--ink-500); margin-bottom: 28px; line-height: 1.6; }
+
+.cp-score-row { display: flex; justify-content: center; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
+
+.cp-score-box { background: var(--ink-50); border-radius: 14px; padding: 18px 24px; text-align: center; min-width: 100px; }
+.cp-score-box.good { background: var(--green-light); }
+.cp-score-box.ok   { background: var(--sun-light); }
+
+.cp-score-num { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 700; color: var(--brand); line-height: 1; margin-bottom: 4px; }
+.cp-score-box.good .cp-score-num { color: var(--green); }
+.cp-score-box.ok   .cp-score-num { color: #92400e; }
+.cp-score-lbl { font-size: 12px; color: var(--ink-500); font-weight: 600; }
+
+.cp-complete-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.cp-btn-retry {
+  background: var(--ink-50);
+  color: var(--ink-700);
+  border: 1.5px solid var(--ink-200);
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cp-btn-retry:hover { background: var(--ink-100); }
+
+.cp-btn-next-ch {
+  background: var(--brand);
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cp-btn-next-ch:hover { background: var(--brand-dark); transform: translateY(-1px); }
+.cp-btn-next-ch.disabled { opacity: 0.5; cursor: default; transform: none !important; }
+
+/* ─── Guest nudge ─────────────────────────────── */
+.cp-guest-nudge {
+  background: var(--brand-light);
+  border: 1px solid var(--brand);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--brand);
+  font-weight: 600;
+  text-align: center;
+}
+
+.cp-guest-nudge a { color: var(--brand); font-weight: 700; }
+
+/* ─── Utility ─────────────────────────────────── */
+.hidden { display: none !important; }
+
+/* ─── Responsive ──────────────────────────────── */
+@media (max-width: 767px) {
+  .cp-mobile-bar { display: block; }
+  .cp-page { grid-template-columns: 1fr; }
+  .cp-sidebar { display: none; }
+  .cp-q-area { padding: 16px; }
+  .cp-q-text { font-size: 17px; }
+  .cp-complete { padding: 28px 20px; }
+}
+
 </style>
 </head>
 <body>
 <div id="site-nav"></div>
 
-<div class="cp-page">
+<div class="cp-shell">
 
-  <!-- SIDEBAR -->
-  <aside class="cp-sidebar">
-    <div class="cp-sidebar-top">
-      <div class="cp-sidebar-title" id="cp-sidebar-title">SEE Chapter Practice</div>
-      <div class="cp-sidebar-sub">Pick a chapter to start</div>
-      <div class="cp-subj-row">
-        <a class="cp-subj-btn" id="btn-maths" href="/chapter-practice.html?subject=maths">
-          <span class="si">🧮</span>Maths
-        </a>
-        <a class="cp-subj-btn" id="btn-science" href="/chapter-practice.html?subject=science">
-          <span class="si">🔬</span>Science
-        </a>
-      </div>
-    </div>
-    <div class="cp-chapter-list" id="cp-chapter-list">
-      <div class="cp-chapter-lbl">Chapters</div>
-    </div>
-  </aside>
-
-  <!-- MOBILE DROPDOWN PICKER — shown only on mobile -->
-  <div class="cp-mobile-picker" style="background:white;border-bottom:1px solid var(--ink-100);padding:12px 16px;">
-    <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <a class="cp-subj-btn" id="mob-btn-maths" href="/chapter-practice.html?subject=maths" style="flex:1;padding:8px;border-radius:10px;border:2px solid var(--ink-100);background:white;font-family:inherit;font-size:13px;font-weight:700;color:var(--ink-500);text-align:center;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all 0.2s;">
-        <span style="font-size:20px;">🧮</span>Maths
+  <!-- ── Mobile picker (hidden on desktop via CSS) ── -->
+  <div class="cp-mobile-bar">
+    <div class="cp-mobile-subj-row">
+      <a class="cp-mobile-subj-btn" id="mob-btn-maths" href="/chapter-practice.html?subject=maths">
+        <span>🧮</span>Maths
       </a>
-      <a class="cp-subj-btn" id="mob-btn-science" href="/chapter-practice.html?subject=science" style="flex:1;padding:8px;border-radius:10px;border:2px solid var(--ink-100);background:white;font-family:inherit;font-size:13px;font-weight:700;color:var(--ink-500);text-align:center;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all 0.2s;">
-        <span style="font-size:20px;">🔬</span>Science
+      <a class="cp-mobile-subj-btn" id="mob-btn-science" href="/chapter-practice.html?subject=science">
+        <span>🔬</span>Science
       </a>
     </div>
-    <div style="font-size:10px;font-weight:700;color:var(--ink-400);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Choose a chapter</div>
-    <select id="cp-mobile-select" onchange="CP.mobileSelect(this.value)" style="width:100%;padding:11px 14px;border:2px solid var(--brand);border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;color:var(--brand);background:var(--brand-light);appearance:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22%3E%3Cpath fill=%22%231E5FA8%22 d=%22M7 10l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 12px center;cursor:pointer;">
+    <div class="cp-mobile-select-label">Choose a chapter</div>
+    <select class="cp-mobile-select" id="cp-mobile-select" onchange="onMobileSelect(this.value)">
       <option value="">Select a chapter…</option>
     </select>
   </div>
 
-  <!-- MAIN -->
-  <div class="cp-main">
-    <div class="cp-topbar">
-      <div class="cp-topbar-left">
-        <span id="cp-ctx-subj">Loading…</span>
-        <span style="color:var(--ink-200);">›</span>
-        <strong id="cp-ctx-ch">Choose a chapter</strong>
-      </div>
-      <div class="prog-wrap">
-        <div class="prog-bar"><div class="prog-fill" id="cp-prog-fill" style="width:0%"></div></div>
-        <div class="prog-txt" id="cp-prog-txt">0 / 0</div>
-      </div>
-    </div>
+  <!-- ── Desktop two-column layout ── -->
+  <div class="cp-page">
 
-    <div class="cp-q-area" id="cp-q-area">
-
-      <!-- Empty state -->
-      <div id="cp-empty" class="cp-empty">
-        <div class="cp-empty-icon" id="cp-empty-icon">📚</div>
-        <div class="cp-empty-title">Pick a chapter to start</div>
-        <div class="cp-empty-sub">Choose any chapter from the left — your first SEE question appears instantly.</div>
-      </div>
-
-      <!-- Question card -->
-      <div class="cp-q-card hidden" id="cp-q-card">
-        <div class="cp-q-meta">
-          <span class="cp-q-num" id="cp-q-num">Q1</span>
-          <span class="cp-q-marks" id="cp-q-marks">2 marks</span>
+    <!-- Sidebar -->
+    <aside class="cp-sidebar">
+      <div class="cp-sidebar-top">
+        <div class="cp-sidebar-title" id="cp-sidebar-title">SEE Chapter Practice</div>
+        <div class="cp-sidebar-sub">Pick a chapter to start</div>
+        <div class="cp-subj-row">
+          <a class="cp-subj-btn" id="btn-maths" href="/chapter-practice.html?subject=maths">
+            <span>🧮</span>Maths
+          </a>
+          <a class="cp-subj-btn" id="btn-science" href="/chapter-practice.html?subject=science">
+            <span>🔬</span>Science
+          </a>
         </div>
-        <div class="cp-q-text" id="cp-q-text"></div>
-        <textarea class="cp-ans-area" id="cp-ans"
-          placeholder="Write your answer here…&#10;&#10;Show your working — just like in the real SEE exam."></textarea>
-        <div class="cp-ans-warning" id="cp-ans-warning">
-          ✏️ Please write something first — even a guess. That's how learning happens!
+      </div>
+      <div class="cp-chapter-list" id="cp-chapter-list">
+        <div class="cp-chapter-lbl">Chapters</div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="cp-main">
+      <div class="cp-topbar">
+        <div class="cp-topbar-left">
+          <span id="cp-ctx-subj">Loading…</span>
+          <span style="color:var(--ink-200);">›</span>
+          <strong id="cp-ctx-ch">Choose a chapter</strong>
         </div>
-        <div class="cp-q-actions">
-          <button class="cp-btn-skip" onclick="CP.skip()">
-            <i class="ti ti-player-skip-forward" aria-hidden="true"></i> Skip
-          </button>
-          <button class="cp-btn-check" onclick="CP.showAnswer()">
-            Check answer →
-          </button>
+        <div class="cp-prog-wrap">
+          <div class="cp-prog-bar">
+            <div class="cp-prog-fill" id="cp-prog-fill" style="width:0%"></div>
+          </div>
+          <div class="cp-prog-txt" id="cp-prog-txt">0 / 0</div>
         </div>
       </div>
 
-      <!-- Student answer -->
-      <div class="cp-student-ans hidden" id="cp-student-ans">
-        <div class="cp-student-ans-title">
-          <i class="ti ti-pencil" aria-hidden="true"></i> Your answer
-        </div>
-        <div class="cp-student-ans-body" id="cp-student-ans-body"></div>
-      </div>
+      <div class="cp-q-area" id="cp-q-area">
 
-      <!-- Model answer -->
-      <div class="cp-model-ans hidden" id="cp-model-ans">
-        <div class="cp-model-ans-title">
-          <i class="ti ti-check" aria-hidden="true"></i> Model answer
+        <!-- Empty state -->
+        <div id="cp-empty" class="cp-empty">
+          <div class="cp-empty-icon" id="cp-empty-icon">📚</div>
+          <div class="cp-empty-title">Pick a chapter to start</div>
+          <div class="cp-empty-sub" id="cp-empty-sub">Choose any chapter and your first SEE question appears instantly.</div>
         </div>
-        <div class="cp-model-ans-body" id="cp-model-ans-body"></div>
-      </div>
 
-      <!-- Self assessment — only shown AFTER student has written an answer -->
-      <div class="cp-self-assess hidden" id="cp-self-assess">
-        <p>Did you get it right?</p>
-        <div class="cp-self-btns">
-          <button class="cp-btn-got-it" onclick="CP.gotIt()">✓ Yes, I got it!</button>
-          <button class="cp-btn-next-q" onclick="CP.next()">Next question →</button>
+        <!-- Question card -->
+        <div class="cp-q-card hidden" id="cp-q-card">
+          <div class="cp-q-meta">
+            <span class="cp-q-num" id="cp-q-num">Q1</span>
+            <span class="cp-q-marks" id="cp-q-marks">2 marks</span>
+          </div>
+          <div class="cp-q-text" id="cp-q-text"></div>
+          <textarea class="cp-ans" id="cp-ans"
+            placeholder="Write your answer here…&#10;&#10;Show your working — just like in the real SEE exam."></textarea>
+          <div class="cp-ans-warning" id="cp-ans-warning">
+            ✏️ Please write something first — even a guess. That's how learning happens!
+          </div>
+          <div class="cp-q-actions">
+            <button class="cp-btn-skip" onclick="CP.skip()">
+              <i class="ti ti-player-skip-forward" aria-hidden="true"></i> Skip
+            </button>
+            <button class="cp-btn-check" onclick="CP.showAnswer()">
+              Check answer →
+            </button>
+          </div>
         </div>
-      </div>
 
-      <!-- Chapter complete -->
-      <div class="cp-complete hidden" id="cp-complete">
-        <div class="cp-complete-icon" id="cp-complete-icon">🎉</div>
-        <div class="cp-complete-title" id="cp-complete-title">Chapter Complete!</div>
-        <div class="cp-complete-sub" id="cp-complete-sub"></div>
-        <div class="cp-score-row" id="cp-score-row"></div>
-        <div class="cp-complete-actions">
-          <button class="cp-btn-retry" onclick="CP.retry()">
-            <i class="ti ti-refresh" aria-hidden="true"></i> Try again
-          </button>
-          <button class="cp-btn-next-ch" id="cp-btn-next-ch" onclick="CP.nextChapter()">
-            Next chapter <i class="ti ti-arrow-right" aria-hidden="true"></i>
-          </button>
+        <!-- Student answer -->
+        <div class="cp-student-ans hidden" id="cp-student-ans">
+          <div class="cp-student-ans-title">Your answer</div>
+          <div class="cp-student-ans-body" id="cp-student-ans-body"></div>
         </div>
-      </div>
 
+        <!-- Model answer -->
+        <div class="cp-model-ans hidden" id="cp-model-ans">
+          <div class="cp-model-ans-title">✓ Model answer</div>
+          <div class="cp-model-ans-body" id="cp-model-ans-body"></div>
+        </div>
+
+        <!-- Self assessment -->
+        <div class="cp-self-assess hidden" id="cp-self-assess">
+          <p>Did you get it right?</p>
+          <div class="cp-self-btns">
+            <button class="cp-btn-got-it" onclick="CP.gotIt()">✓ Yes, I got it!</button>
+            <button class="cp-btn-next-q" onclick="CP.next()">Next question →</button>
+          </div>
+        </div>
+
+        <!-- Chapter complete -->
+        <div class="cp-complete hidden" id="cp-complete">
+          <div class="cp-complete-icon" id="cp-complete-icon">🎉</div>
+          <div class="cp-complete-title" id="cp-complete-title">Chapter Complete!</div>
+          <div class="cp-complete-sub" id="cp-complete-sub"></div>
+          <div class="cp-score-row" id="cp-score-row"></div>
+          <div class="cp-complete-actions">
+            <button class="cp-btn-retry" onclick="CP.retry()">
+              <i class="ti ti-refresh" aria-hidden="true"></i> Try again
+            </button>
+            <button class="cp-btn-next-ch hidden" id="cp-btn-next-ch" onclick="CP.nextChapter()">
+              Next chapter <i class="ti ti-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>
 
 <div id="site-footer"></div>
 
-<!-- Load subject content based on URL param -->
+<!-- Load subject content -->
 <script>
-(function() {
-  const params  = new URLSearchParams(window.location.search);
-  const subject = params.get('subject') || 'maths';
-  const script  = document.createElement('script');
-  script.src    = `/scripts/chapter-content-${subject}.js`;
-  script.onload = () => boot(subject);
-  script.onerror = () => {
-    document.getElementById('cp-empty').innerHTML = '<div class="cp-empty-icon">⚠️</div><div class="cp-empty-title">Could not load content</div><div class="cp-empty-sub">Please refresh the page and try again.</div>';
+(function () {
+  const subject = new URLSearchParams(window.location.search).get('subject') || 'maths';
+  const s = document.createElement('script');
+  s.src = `/scripts/chapter-content-${subject}.js`;
+  s.onload = () => boot(subject);
+  s.onerror = () => {
+    document.getElementById('cp-empty').innerHTML =
+      '<div class="cp-empty-icon">⚠️</div><div class="cp-empty-title">Could not load content</div><div class="cp-empty-sub">Please refresh and try again.</div>';
   };
-  document.head.appendChild(script);
+  document.head.appendChild(s);
 })();
 </script>
 
 <script src="/scripts/components.js"></script>
 <script>
+/* ── Helpers ── */
 const $ = id => document.getElementById(id);
+
+/* ── State ── */
 let currentChapter    = null;
 let currentChapterIdx = -1;
 let questionIndex     = 0;
 let gotItCount        = 0;
 let totalAnswered     = 0;
-let guestAnswered     = 0; // track for nudge
+let guestAnswered     = 0;
+let ALL_CHAPTERS      = [];
 
+/* ── Boot ── */
 function boot(subject) {
-  // Desktop sidebar
+  // Build flat chapter list
+  ALL_CHAPTERS = [];
+  CHAPTER_CONTENT.groups.forEach(g => g.chapters.forEach(ch => ALL_CHAPTERS.push(ch)));
+
+  // Desktop sidebar subject buttons
   $('btn-maths').classList.toggle('on', subject === 'maths');
   $('btn-science').classList.toggle('on', subject === 'science');
   $('cp-sidebar-title').textContent = `SEE ${CHAPTER_CONTENT.label} Practice`;
-  $('cp-ctx-subj').textContent      = CHAPTER_CONTENT.label;
-  $('cp-empty-icon').textContent    = CHAPTER_CONTENT.icon;
-  renderChapterList();
+  $('cp-ctx-subj').textContent = CHAPTER_CONTENT.label;
+  $('cp-empty-icon').textContent = CHAPTER_CONTENT.icon;
 
   // Mobile subject buttons
-  const mobMaths   = $('mob-btn-maths');
-  const mobScience = $('mob-btn-science');
-  if (mobMaths && mobScience) {
-    const brand = 'background:var(--brand);border-color:var(--brand);color:white;';
-    const off   = 'background:white;border-color:var(--ink-100);color:var(--ink-500);';
-    mobMaths.style.cssText   += subject === 'maths'   ? brand : off;
-    mobScience.style.cssText += subject === 'science' ? brand : off;
-  }
+  $('mob-btn-maths').classList.toggle('on', subject === 'maths');
+  $('mob-btn-science').classList.toggle('on', subject === 'science');
 
-  // Mobile dropdown
-  populateMobileSelect();
+  // Render
+  renderSidebar();
+  renderMobileSelect();
 }
 
-function populateMobileSelect() {
+/* ── Desktop sidebar ── */
+function renderSidebar() {
+  const list = $('cp-chapter-list');
+  list.innerHTML = '<div class="cp-chapter-lbl">Chapters</div>';
+  let idx = 0;
+
+  CHAPTER_CONTENT.groups.forEach((group, gIdx) => {
+    // Group header button
+    const header = document.createElement('button');
+    header.className = 'cp-group-btn';
+    header.id = `grp-${gIdx}`;
+    header.innerHTML = `<span>${group.icon || ''} ${group.name}</span><span class="cp-group-arrow">▶</span>`;
+    header.onclick = () => toggleGroup(gIdx);
+    list.appendChild(header);
+
+    // Chapters container
+    const container = document.createElement('div');
+    container.className = 'cp-group-chapters';
+    container.id = `grp-chs-${gIdx}`;
+
+    group.chapters.forEach(ch => {
+      const chIdx = idx;
+      const btn = document.createElement('button');
+      btn.className = 'cp-ch-btn';
+      btn.id = `ch-btn-${chIdx}`;
+      btn.innerHTML = `<span>${ch.name}</span><span class="cp-ch-count">${ch.qs.length}q</span>`;
+      btn.onclick = () => startChapter(ch, chIdx);
+      container.appendChild(btn);
+      idx++;
+    });
+
+    list.appendChild(container);
+  });
+}
+
+function toggleGroup(gIdx) {
+  const header    = $(`grp-${gIdx}`);
+  const container = $(`grp-chs-${gIdx}`);
+  const isOpen    = container.classList.contains('open');
+  header.classList.toggle('open', !isOpen);
+  container.classList.toggle('open', !isOpen);
+}
+
+function openGroupForChapter(chIdx) {
+  let count = 0;
+  CHAPTER_CONTENT.groups.forEach((group, gIdx) => {
+    group.chapters.forEach(() => {
+      if (count === chIdx) {
+        $(`grp-${gIdx}`)?.classList.add('open');
+        $(`grp-chs-${gIdx}`)?.classList.add('open');
+      }
+      count++;
+    });
+  });
+}
+
+/* ── Mobile select ── */
+function renderMobileSelect() {
   const sel = $('cp-mobile-select');
   if (!sel) return;
   sel.innerHTML = '<option value="">Select a chapter…</option>';
@@ -331,75 +894,14 @@ function populateMobileSelect() {
   });
 }
 
-// Build a flat chapter list from groups for easy indexing
-let ALL_CHAPTERS = [];
-
-function buildChapterIndex() {
-  ALL_CHAPTERS = [];
-  CHAPTER_CONTENT.groups.forEach(g => {
-    g.chapters.forEach(ch => {
-      ALL_CHAPTERS.push(ch);
-    });
-  });
+function onMobileSelect(val) {
+  if (val === '') return;
+  const idx = parseInt(val);
+  const ch  = ALL_CHAPTERS[idx];
+  if (ch) startChapter(ch, idx);
 }
 
-function renderChapterList() {
-  buildChapterIndex();
-  const list = $('cp-chapter-list');
-  list.innerHTML = '<div class="cp-chapter-lbl">Chapters</div>';
-  let chIdx = 0;
-  CHAPTER_CONTENT.groups.forEach((group, gIdx) => {
-    // Group header
-    const header = document.createElement('button');
-    header.className = 'cp-group-header';
-    header.id = `grp-${gIdx}`;
-    header.innerHTML = `<span>${group.icon || ''} ${group.name}</span><span class="cp-group-arrow">▶</span>`;
-    header.onclick = () => toggleGroup(gIdx);
-    list.appendChild(header);
-
-    // Chapters container
-    const container = document.createElement('div');
-    container.className = 'cp-group-chapters';
-    container.id = `grp-chs-${gIdx}`;
-
-    group.chapters.forEach(ch => {
-      const idx = chIdx;
-      const btn = document.createElement('button');
-      btn.className = 'cp-chapter-btn';
-      btn.id = `ch-btn-${idx}`;
-      btn.innerHTML = `<span>${ch.name}</span><span class="cp-chapter-count">${ch.qs.length}q</span>`;
-      btn.onclick = () => startChapter(ch, idx);
-      container.appendChild(btn);
-      chIdx++;
-    });
-
-    list.appendChild(container);
-  });
-}
-
-function toggleGroup(gIdx) {
-  const header = $(`grp-${gIdx}`);
-  const container = $(`grp-chs-${gIdx}`);
-  const isOpen = container.classList.contains('open');
-  header.classList.toggle('open', !isOpen);
-  container.classList.toggle('open', !isOpen);
-}
-
-function openGroupForChapter(chIdx) {
-  let count = 0;
-  CHAPTER_CONTENT.groups.forEach((group, gIdx) => {
-    group.chapters.forEach(() => {
-      if (count === chIdx) {
-        const header = $(`grp-${gIdx}`);
-        const container = $(`grp-chs-${gIdx}`);
-        if (header) header.classList.add('open');
-        if (container) container.classList.add('open');
-      }
-      count++;
-    });
-  });
-}
-
+/* ── Start chapter ── */
 function startChapter(ch, idx) {
   currentChapter    = ch;
   currentChapterIdx = idx;
@@ -407,9 +909,9 @@ function startChapter(ch, idx) {
   gotItCount        = 0;
   totalAnswered     = 0;
 
-  document.querySelectorAll('.cp-chapter-btn').forEach(b => b.classList.remove('on'));
-  const activeBtn = $(`ch-btn-${idx}`);
-  if (activeBtn) activeBtn.classList.add('on');
+  // Sidebar active state
+  document.querySelectorAll('.cp-ch-btn').forEach(b => b.classList.remove('on'));
+  $(`ch-btn-${idx}`)?.classList.add('on');
   openGroupForChapter(idx);
 
   $('cp-ctx-ch').textContent = ch.name;
@@ -417,9 +919,8 @@ function startChapter(ch, idx) {
   loadQuestion();
 }
 
+/* ── Load question ── */
 function loadQuestion() {
-  if (!currentChapter) return;
-
   $('cp-empty').classList.add('hidden');
   $('cp-complete').classList.add('hidden');
   $('cp-student-ans').classList.add('hidden');
@@ -444,16 +945,18 @@ function loadQuestion() {
   card.offsetHeight;
   card.style.animation = '';
 
-  $('cp-q-area').scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+/* ── Progress ── */
 function updateProgress() {
-  const total = currentChapter ? currentChapter.qs.length : 0;
+  const total = currentChapter?.qs.length || 0;
   const pct   = total ? Math.min((questionIndex / total) * 100, 100) : 0;
   $('cp-prog-fill').style.width = `${pct}%`;
   $('cp-prog-txt').textContent  = total ? `${questionIndex} / ${total}` : '0 / 0';
 }
 
+/* ── Chapter complete ── */
 function showComplete() {
   $('cp-q-card').classList.add('hidden');
   $('cp-student-ans').classList.add('hidden');
@@ -463,19 +966,15 @@ function showComplete() {
   const total = currentChapter.qs.length;
   const pct   = total ? Math.round((gotItCount / total) * 100) : 0;
 
-  let icon, title, sub;
-  if (pct >= 80) {
-    icon  = '🎉'; title = 'Excellent work!';
-    sub   = `You got ${gotItCount} out of ${total} correct in ${currentChapter.name}. That's ${pct}% — brilliant!`;
-  } else if (pct >= 50) {
-    icon  = '👍'; title = 'Good effort!';
-    sub   = `You got ${gotItCount} out of ${total} correct. Try again to improve your score.`;
-  } else {
-    icon  = '📖'; title = 'Keep practising!';
-    sub   = `You got ${gotItCount} out of ${total}. Read the model answers carefully and try again — you'll improve.`;
-  }
+  const icon  = pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '📖';
+  const title = pct >= 80 ? 'Excellent work!' : pct >= 50 ? 'Good effort!' : 'Keep practising!';
+  const sub   = pct >= 80
+    ? `You got ${gotItCount} out of ${total} correct — ${pct}%! Brilliant.`
+    : pct >= 50
+    ? `You got ${gotItCount} out of ${total} correct. Try again to improve.`
+    : `You got ${gotItCount} out of ${total}. Read the model answers and try again.`;
 
-  $('cp-complete-icon').textContent = icon;
+  $('cp-complete-icon').textContent  = icon;
   $('cp-complete-title').textContent = title;
   $('cp-complete-sub').textContent   = sub;
 
@@ -489,86 +988,59 @@ function showComplete() {
       <div class="cp-score-lbl">Score</div>
     </div>`;
 
-  const nextBtn = $('cp-btn-next-ch');
-  const hasNext = currentChapterIdx < ALL_CHAPTERS.length - 1;
+  const hasNext  = currentChapterIdx < ALL_CHAPTERS.length - 1;
+  const nextBtn  = $('cp-btn-next-ch');
   if (hasNext) {
     const nextName = ALL_CHAPTERS[currentChapterIdx + 1].name;
     nextBtn.innerHTML = `${nextName} <i class="ti ti-arrow-right" aria-hidden="true"></i>`;
-    nextBtn.classList.remove('disabled');
+    nextBtn.classList.remove('hidden', 'disabled');
   } else {
-    nextBtn.textContent = 'All chapters done! 🎓';
-    nextBtn.classList.add('disabled');
+    nextBtn.classList.add('hidden');
   }
 
-  const chBtn = $(`ch-btn-${currentChapterIdx}`);
-  if (chBtn) chBtn.classList.add('done');
-
+  $(`ch-btn-${currentChapterIdx}`)?.classList.add('done');
   $('cp-prog-fill').style.width = '100%';
   $('cp-prog-txt').textContent  = `${total} / ${total}`;
-
   $('cp-complete').classList.remove('hidden');
-  $('cp-complete').scrollIntoView({ behavior:'smooth', block:'start' });
+  $('cp-complete').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 /* ── Practice engine ── */
 const CP = {
 
   showAnswer() {
-    const studentAns = $('cp-ans').value.trim();
-
-    // ── Empty answer check ──
-    // Student must write something before seeing the answer.
-    // This forces genuine engagement — even a wrong guess is fine.
-    if (!studentAns) {
+    const ans = $('cp-ans').value.trim();
+    if (!ans) {
       const area = $('cp-ans');
-      const warning = $('cp-ans-warning');
-
-      // Shake the textarea
       area.classList.remove('shake');
-      area.offsetHeight; // force reflow to restart animation
+      area.offsetHeight;
       area.classList.add('shake');
-
-      // Show warning message
-      warning.style.display = 'block';
-
-      // Focus the textarea
+      $('cp-ans-warning').style.display = 'block';
       area.focus();
-      return; // stop here — do not show answer
+      return;
     }
 
-    // Student wrote something — proceed
+    const q = currentChapter.qs[questionIndex];
     $('cp-ans-warning').style.display = 'none';
     $('cp-ans').classList.remove('shake');
-
-    const q = currentChapter.qs[questionIndex];
-
-    // Show student's answer
-    $('cp-student-ans-body').textContent = studentAns;
+    $('cp-student-ans-body').textContent = ans;
     $('cp-student-ans').classList.remove('hidden');
-
-    // Show model answer
     $('cp-model-ans-body').textContent = q.a;
     $('cp-model-ans').classList.remove('hidden');
-
-    // Show self-assessment
     $('cp-self-assess').classList.remove('hidden');
-
-    // Disable textarea
     $('cp-ans').disabled      = true;
     $('cp-ans').style.opacity = '0.6';
 
     totalAnswered++;
     guestAnswered++;
     updateProgress();
+    $('cp-model-ans').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-    $('cp-model-ans').scrollIntoView({ behavior:'smooth', block:'nearest' });
-
-    // Guest nudge after 5 answered questions
-    const loggedIn = !!localStorage.getItem('ujyalo_user');
-    if (!loggedIn && guestAnswered === 5) {
+    // Guest nudge after 5 questions
+    if (!localStorage.getItem('ujyalo_user') && guestAnswered === 5) {
       const nudge = document.createElement('div');
       nudge.className = 'cp-guest-nudge';
-      nudge.innerHTML = '💡 <a href="/signup.html">Create a free account</a> to save your progress and track which chapters you\'ve mastered.';
+      nudge.innerHTML = '💡 <a href="/signup.html">Create a free account</a> to save your progress and track your improvement.';
       $('cp-q-area').appendChild(nudge);
     }
   },
@@ -584,57 +1056,30 @@ const CP = {
     questionIndex++;
     $('cp-ans').disabled      = false;
     $('cp-ans').style.opacity = '1';
-    if (questionIndex >= currentChapter.qs.length) {
-      showComplete();
-    } else {
-      loadQuestion();
-    }
+    questionIndex >= currentChapter.qs.length ? showComplete() : loadQuestion();
     updateProgress();
   },
 
   skip() {
     questionIndex++;
-    if (questionIndex >= currentChapter.qs.length) {
-      showComplete();
-    } else {
-      $('cp-ans').disabled      = false;
-      $('cp-ans').style.opacity = '1';
-      loadQuestion();
-    }
+    $('cp-ans').disabled      = false;
+    $('cp-ans').style.opacity = '1';
+    questionIndex >= currentChapter.qs.length ? showComplete() : loadQuestion();
     updateProgress();
   },
 
-  mobileSelect(val) {
-    if (val === '') return;
-    const idx = parseInt(val);
-    const ch  = ALL_CHAPTERS[idx];
-    if (ch) startChapter(ch, idx);
-    // Reset dropdown label after selection
-    setTimeout(() => {
-      const sel = $('cp-mobile-select');
-      if (sel && ch) {
-        sel.value = idx;
-      }
-    }, 100);
-  },
-
   retry() {
-    const ch  = currentChapter;
-    const idx = currentChapterIdx;
     $('cp-complete').classList.add('hidden');
-    const chBtn = $(`ch-btn-${idx}`);
-    if (chBtn) chBtn.classList.remove('done');
-    startChapter(ch, idx);
+    $(`ch-btn-${currentChapterIdx}`)?.classList.remove('done');
+    startChapter(currentChapter, currentChapterIdx);
   },
 
   nextChapter() {
     const nextIdx = currentChapterIdx + 1;
     if (nextIdx >= ALL_CHAPTERS.length) return;
     $('cp-complete').classList.add('hidden');
-    const nextCh = ALL_CHAPTERS[nextIdx];
-    startChapter(nextCh, nextIdx);
-    const nextBtn = $(`ch-btn-${nextIdx}`);
-    if (nextBtn) nextBtn.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    startChapter(ALL_CHAPTERS[nextIdx], nextIdx);
+    $(`ch-btn-${nextIdx}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   },
 };
 </script>
