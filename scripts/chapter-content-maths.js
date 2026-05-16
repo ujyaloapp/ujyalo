@@ -14,7 +14,7 @@ const CHAPTER_CONTENT = {
       icon: '⊂',
       chapters: [
         {
-          name: 'Sets — Two Sets',
+          name: 'Sets',
           qs: [
             {
               q: 'In a class of 40 students, 25 like Maths and 30 like Science. If every student likes at least one subject, how many like both?',
@@ -36,11 +36,6 @@ const CHAPTER_CONTENT = {
               a: 'Those who like at least one = 100% − 20% = 80%\n\nn(T∪C) = n(T) + n(C) − n(T∩C)\n80 = 70 + 60 − n(T∩C)\nn(T∩C) = 130 − 80 = 50%\n\n50% like both.',
               m: 4
             },
-          ]
-        },
-        {
-          name: 'Sets — Three Sets',
-          qs: [
             {
               q: 'In a survey of 60 students: 30 like cricket, 25 football, 20 volleyball. 10 like cricket and football, 8 football and volleyball, 7 cricket and volleyball, 5 like all three. How many like at least one?',
               a: 'n(C∪F∪V) = n(C) + n(F) + n(V) − n(C∩F) − n(F∩V) − n(C∩V) + n(C∩F∩V)\n= 30 + 25 + 20 − 10 − 8 − 7 + 5\n= 75 − 25 + 5\n= 55 students',
@@ -53,7 +48,7 @@ const CHAPTER_CONTENT = {
             },
             {
               q: 'In a survey of 100 students, 60% like mathematics, 55% like science and 45% like English. 30% like maths and science, 25% like science and English, 20% like maths and English. If 5% like none, find the percentage who like all three.',
-              a: 'Those who like at least one = 100 − 5 = 95%\n\nn(M∪S∪E) = n(M)+n(S)+n(E) − n(M∩S) − n(S∩E) − n(M∩E) + n(M∩S∩E)\n95 = 60 + 55 + 45 − 30 − 25 − 20 + n(M∩S∩E)\n95 = 160 − 75 + n(M∩S∩E)\n95 = 85 + n(M∩S∩E)\nn(M∩S∩E) = 10%\n\n10% like all three subjects.',
+              a: 'Those who like at least one = 100 − 5 = 95%\n\nn(M∪S∪E) = n(M)+n(S)+n(E) − n(M∩S) − n(S∩E) − n(M∩E) + n(M∩S∩E)\n95 = 60 + 55 + 45 − 30 − 25 − 20 + n(M∩S∩E)\n95 = 85 + n(M∩S∩E)\nn(M∩S∩E) = 10%',
               m: 4
             },
           ]
