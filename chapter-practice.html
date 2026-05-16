@@ -618,6 +618,81 @@
 
 .cp-guest-nudge a { color: var(--brand); font-weight: 700; }
 
+/* ─── Formulas & Tips panel ──────────────────── */
+.cp-tips-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: white;
+  border: 1.5px solid var(--ink-100);
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-700);
+  cursor: pointer;
+  transition: all 0.2s;
+  gap: 8px;
+}
+
+.cp-tips-toggle:hover { border-color: var(--brand); color: var(--brand); }
+.cp-tips-toggle.open { border-color: var(--brand); background: var(--brand-light); color: var(--brand); border-radius: 14px 14px 0 0; }
+.cp-tips-toggle-arrow { font-size: 11px; transition: transform 0.2s; }
+.cp-tips-toggle.open .cp-tips-toggle-arrow { transform: rotate(180deg); }
+
+.cp-tips-panel {
+  background: white;
+  border: 1.5px solid var(--brand);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  padding: 16px;
+  display: none;
+  gap: 16px;
+  flex-direction: column;
+}
+
+.cp-tips-panel.open { display: flex; }
+
+.cp-tips-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.cp-formulas-title { color: var(--brand); }
+.cp-mistakes-title { color: #C25B2A; }
+
+.cp-formula-item {
+  font-size: 13px;
+  color: var(--ink-700);
+  line-height: 1.7;
+  padding: 6px 10px;
+  background: var(--ink-50);
+  border-radius: 6px;
+  margin-bottom: 4px;
+  font-family: 'Courier New', monospace;
+}
+
+.cp-mistake-item {
+  font-size: 13px;
+  color: var(--ink-700);
+  line-height: 1.6;
+  padding: 6px 10px 6px 28px;
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.cp-mistake-item::before {
+  content: '⚠️';
+  position: absolute;
+  left: 6px;
+  font-size: 12px;
+}
+
 /* ─── Utility ─────────────────────────────────── */
 .hidden { display: none !important; }
 
@@ -699,6 +774,18 @@
           <div class="cp-empty-icon" id="cp-empty-icon">📚</div>
           <div class="cp-empty-title">Pick a chapter to start</div>
           <div class="cp-empty-sub" id="cp-empty-sub">Choose any chapter and your first SEE question appears instantly.</div>
+        </div>
+
+        <!-- Formulas & Tips toggle -->
+        <div class="hidden" id="cp-tips-wrap">
+          <button class="cp-tips-toggle" id="cp-tips-toggle" onclick="toggleTips()">
+            <span>📋 Key Formulas & Common Mistakes</span>
+            <span class="cp-tips-toggle-arrow">▼</span>
+          </button>
+          <div class="cp-tips-panel" id="cp-tips-panel">
+            <div id="cp-formulas-section"></div>
+            <div id="cp-mistakes-section"></div>
+          </div>
         </div>
 
         <!-- Question card -->
@@ -901,6 +988,56 @@ function onMobileSelect(val) {
   if (ch) startChapter(ch, idx);
 }
 
+/* ── Toggle tips panel ── */
+function toggleTips() {
+  const toggle = $('cp-tips-toggle');
+  const panel  = $('cp-tips-panel');
+  const isOpen = panel.classList.contains('open');
+  toggle.classList.toggle('open', !isOpen);
+  panel.classList.toggle('open', !isOpen);
+}
+
+/* ── Render formulas and mistakes for current chapter ── */
+function renderTips(ch) {
+  const wrap = $('cp-tips-wrap');
+
+  // Hide panel if no formulas and no mistakes
+  if ((!ch.formulas || ch.formulas.length === 0) && (!ch.mistakes || ch.mistakes.length === 0)) {
+    wrap.classList.add('hidden');
+    return;
+  }
+
+  wrap.classList.remove('hidden');
+
+  // Reset panel state — closed by default
+  $('cp-tips-toggle').classList.remove('open');
+  $('cp-tips-panel').classList.remove('open');
+
+  // Formulas section
+  const formulasSection = $('cp-formulas-section');
+  if (ch.formulas && ch.formulas.length > 0) {
+    formulasSection.innerHTML = `
+      <div>
+        <div class="cp-tips-section-title cp-formulas-title">📋 Key Formulas</div>
+        ${ch.formulas.map(f => `<div class="cp-formula-item">${f}</div>`).join('')}
+      </div>`;
+  } else {
+    formulasSection.innerHTML = '';
+  }
+
+  // Mistakes section
+  const mistakesSection = $('cp-mistakes-section');
+  if (ch.mistakes && ch.mistakes.length > 0) {
+    mistakesSection.innerHTML = `
+      <div>
+        <div class="cp-tips-section-title cp-mistakes-title">⚠️ Common Mistakes</div>
+        ${ch.mistakes.map(m => `<div class="cp-mistake-item">${m}</div>`).join('')}
+      </div>`;
+  } else {
+    mistakesSection.innerHTML = '';
+  }
+}
+
 /* ── Start chapter ── */
 function startChapter(ch, idx) {
   currentChapter    = ch;
@@ -915,6 +1052,7 @@ function startChapter(ch, idx) {
   openGroupForChapter(idx);
 
   $('cp-ctx-ch').textContent = ch.name;
+  renderTips(ch);
   updateProgress();
   loadQuestion();
 }
