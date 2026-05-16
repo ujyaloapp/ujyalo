@@ -5,7 +5,7 @@
 
 const ANNOUNCEMENT = `
 <div class="announcement-bar">
-  🎉 Ujyalo is completely free during beta — all past papers, all subjects, AI feedback. <a href="/signup.html">Join free →</a>
+  🇳🇵 Ujyalo is here! Free SEE chapter practice for every Nepali student. No signup needed. <a href="/chapter-practice.html">Start now →</a>
 </div>`;
 
 const NAV = `
