@@ -1080,6 +1080,9 @@ const CP = {
     $('cp-complete').classList.add('hidden');
     startChapter(ALL_CHAPTERS[nextIdx], nextIdx);
     $(`ch-btn-${nextIdx}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // Sync mobile dropdown
+    const sel = $('cp-mobile-select');
+    if (sel) sel.value = nextIdx;
   },
 };
 </script>
