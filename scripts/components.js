@@ -90,9 +90,7 @@ const NAV_STYLES = `
 .nav-mobile-menu a:hover { background: var(--ink-50); color: var(--brand); }
 .nav-mobile-menu a.active { color: var(--brand); font-weight: 700; }
 .nav-mobile-divider { height: 1px; background: var(--ink-100); margin: 8px 0; }
-.nav-mobile-login {
-  color: var(--ink-700) !important;
-}
+.nav-mobile-login { color: var(--ink-700) !important; }
 .nav-mobile-signup {
   background: var(--ink-900) !important;
   color: white !important;
@@ -223,11 +221,18 @@ document.addEventListener('DOMContentLoaded', function () {
   // Inject nav styles
   document.head.insertAdjacentHTML('beforeend', NAV_STYLES);
 
-  // Favicon
+  // Favicon — SVG works on all modern browsers, sharp at any size
   const favicon = document.createElement('link');
-  favicon.rel = 'icon';
-  favicon.href = '/favicon.ico';
+  favicon.rel   = 'icon';
+  favicon.type  = 'image/svg+xml';
+  favicon.href  = '/favicon.svg';
   document.head.appendChild(favicon);
+
+  // Fallback favicon for older browsers (optional — create favicon.ico if needed)
+  const faviconFallback = document.createElement('link');
+  faviconFallback.rel  = 'icon';
+  faviconFallback.href = '/favicon.ico';
+  document.head.appendChild(faviconFallback);
 
   // Nav
   const navEl = document.getElementById('site-nav');
