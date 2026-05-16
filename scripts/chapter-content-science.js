@@ -17,6 +17,17 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Force',
+          formulas: [
+            'F = ma  (Newton's Second Law)',
+            'W = mg  (Weight = mass × gravitational acceleration)',
+            'p = mv  (Momentum = mass × velocity)',
+            'g = 10 m/s² (gravitational acceleration on Earth)',
+          ],
+          mistakes: [
+            'Mass is in kg, weight is in Newtons — they are not the same',
+            'F = ma requires mass in kg and acceleration in m/s²',
+            'Always find acceleration first before finding force',
+          ],
           qs: [
             {
               q: "State Newton's First Law of Motion and give one real-life example.",
@@ -48,6 +59,16 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Pressure',
+          formulas: [
+            'P = F/A  (Pressure = Force / Area)',
+            'P = hρg  (Liquid pressure = depth × density × g)',
+            '1 atm = 101,325 Pa (atmospheric pressure at sea level)',
+          ],
+          mistakes: [
+            'Smaller area = greater pressure for same force (knife vs flat stone)',
+            'Liquid pressure depends on DEPTH not on the total volume of liquid',
+            'Atmospheric pressure DECREASES with altitude — not increases',
+          ],
           qs: [
             {
               q: "Define pressure and write its formula. A force of 50 N acts on an area of 2 m². Find the pressure.",
@@ -74,6 +95,18 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Energy',
+          formulas: [
+            'KE = ½mv²  (Kinetic Energy)',
+            'PE = mgh  (Potential Energy)',
+            'P = W/t  (Power = Work / time)',
+            'W = F × d  (Work = Force × distance)',
+            'Efficiency = (Useful output / Total input) × 100%',
+          ],
+          mistakes: [
+            'KE depends on v² — doubling speed quadruples kinetic energy',
+            'Power is in Watts (W) = Joules per second',
+            'Energy is conserved — it changes form, never disappears',
+          ],
           qs: [
             {
               q: "What is kinetic energy? Find the kinetic energy of a ball of mass 2 kg moving at 5 m/s.",
@@ -100,6 +133,16 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Heat',
+          formulas: [
+            'Q = mcΔT  (Heat = mass × specific heat capacity × temperature change)',
+            'Specific heat of water = 4200 J/kg°C',
+            'K = °C + 273  (Kelvin = Celsius + 273)',
+          ],
+          mistakes: [
+            'Heat and temperature are different — a swimming pool has more heat than a cup of boiling water',
+            'Temperature stays CONSTANT during change of state (melting/boiling)',
+            'Heat flows from HOT to COLD — never the reverse naturally',
+          ],
           qs: [
             {
               q: "What is the difference between heat and temperature?",
@@ -126,6 +169,17 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Light',
+          formulas: [
+            '∠i = ∠r  (angle of incidence = angle of reflection)',
+            'n = sin i / sin r  (refractive index)',
+            'Speed of light = 3 × 10⁸ m/s',
+            '1/f = 1/v + 1/u  (lens formula)',
+          ],
+          mistakes: [
+            'Angles are always measured from the NORMAL, not from the surface',
+            'Real image can be projected on screen — virtual image cannot',
+            'Light bends TOWARDS normal going into denser medium',
+          ],
           qs: [
             {
               q: "State the two laws of reflection of light.",
@@ -152,6 +206,19 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Current Electricity and Magnetism',
+          formulas: [
+            'V = IR  (Ohm's Law)',
+            'P = VI = I²R = V²/R  (Power)',
+            'Series: R = R₁ + R₂ + R₃',
+            'Parallel: 1/R = 1/R₁ + 1/R₂ + 1/R₃',
+            'E = Pt  (Energy = Power × time)',
+            '1 kWh = 3,600,000 J',
+          ],
+          mistakes: [
+            'In parallel, total resistance is LESS than smallest individual resistor',
+            'In series, current is same throughout — voltage divides',
+            'In parallel, voltage is same throughout — current divides',
+          ],
           qs: [
             {
               q: "State Ohm's Law and write its formula. A 6V battery is connected to a 3Ω resistor. Find the current.",
@@ -186,6 +253,17 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Classification of Elements',
+          formulas: [
+            'Atomic number = number of protons',
+            'Mass number = protons + neutrons',
+            'Electrons in outer shell = group number (for main groups)',
+            'Number of electron shells = period number',
+          ],
+          mistakes: [
+            'Elements in same GROUP have similar properties — not same period',
+            'Atomic number never changes for an element — it defines the element',
+            'Metals are on the LEFT of the periodic table — non-metals on the RIGHT',
+          ],
           qs: [
             {
               q: "What is the Modern Periodic Table? State the Modern Periodic Law.",
@@ -207,6 +285,17 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Chemical Reaction',
+          formulas: [
+            'Reactants → Products',
+            'Oxidation = loss of electrons / gain of oxygen',
+            'Reduction = gain of electrons / loss of oxygen',
+            'OIL RIG: Oxidation Is Loss, Reduction Is Gain (of electrons)',
+          ],
+          mistakes: [
+            'Oxidation and reduction always happen TOGETHER in a redox reaction',
+            'A catalyst speeds up reaction but is NOT used up',
+            'Exothermic = heat OUT, Endothermic = heat IN',
+          ],
           qs: [
             {
               q: "What is a chemical reaction? Write the word equation and balanced symbol equation for burning magnesium.",
@@ -233,6 +322,17 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Acid, Base and Salt',
+          formulas: [
+            'Acid + Base → Salt + Water  (neutralisation)',
+            'Acid + Metal → Salt + Hydrogen gas',
+            'Acid + Carbonate → Salt + Water + CO₂',
+            'pH < 7 = acidic, pH = 7 = neutral, pH > 7 = alkaline',
+          ],
+          mistakes: [
+            'pH decreases as acidity increases — lower pH = stronger acid',
+            'Neutralisation always produces SALT and WATER',
+            'Strong acid ≠ concentrated acid — they are different things',
+          ],
           qs: [
             {
               q: "What is an acid? Give three properties and two examples.",
@@ -254,6 +354,18 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Some Gases',
+          formulas: [
+            'Oxygen test: relights a glowing splint',
+            'Hydrogen test: squeaky pop with burning splint',
+            'CO₂ test: turns lime water milky  Ca(OH)₂ + CO₂ → CaCO₃ + H₂O',
+            'Ammonia test: turns damp red litmus paper blue',
+          ],
+          mistakes: [
+            'Never confuse the tests — each gas has ONE specific test',
+            'CO₂ does NOT support combustion — used in fire extinguishers',
+            'Hydrogen is lighter than air — collected by downward displacement',
+            'Oxygen is denser than air — collected by upward displacement',
+          ],
           qs: [
             {
               q: "How is oxygen prepared in the laboratory? Write the equation.",
@@ -275,6 +387,16 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Metals',
+          formulas: [
+            'Reactivity series (most to least): K, Na, Ca, Mg, Al, Zn, Fe, Cu, Au',
+            'More reactive metal displaces less reactive from solution',
+            'Rusting: Fe + O₂ + H₂O → Fe₂O₃ (needs BOTH oxygen AND water)',
+          ],
+          mistakes: [
+            'Rusting needs BOTH oxygen AND water — not just one of them',
+            'More reactive metals are harder to extract from their ores',
+            'Gold does not rust or corrode — it is the least reactive common metal',
+          ],
           qs: [
             {
               q: "What is the reactivity series of metals? List five metals in order from most to least reactive.",
@@ -296,6 +418,18 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Hydrocarbon and its Compounds',
+          formulas: [
+            'Alkanes: CₙH₂ₙ₊₂  (saturated — single bonds only)',
+            'Alkenes: CₙH₂ₙ  (unsaturated — contain C=C double bond)',
+            'Methane CH₄, Ethane C₂H₆, Propane C₃H₈, Butane C₄H₁₀',
+            'Ethene C₂H₄, Propene C₃H₆',
+            'Combustion: hydrocarbon + O₂ → CO₂ + H₂O',
+          ],
+          mistakes: [
+            'Alkanes are saturated (single bonds) — alkenes are unsaturated (double bond)',
+            'Test for alkene: decolourises bromine water — alkanes do NOT',
+            'Complete combustion produces CO₂ and H₂O — incomplete produces CO (poisonous)',
+          ],
           qs: [
             {
               q: "What are hydrocarbons? What is the difference between alkanes and alkenes?",
@@ -317,6 +451,16 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Materials Used in Daily Life',
+          formulas: [
+            'Saponification: Fat/Oil + NaOH → Soap + Glycerol',
+            'Cement main component: Calcium silicate',
+            'Concrete = Cement + Sand + Gravel + Water',
+          ],
+          mistakes: [
+            'Thermoplastics can be remelted — thermosetting plastics cannot',
+            'Soap does not work well in hard water — forms scum instead of lather',
+            'Synthetic fibres are made from petroleum — natural fibres from plants/animals',
+          ],
           qs: [
             {
               q: "What are polymers? Give two examples of natural and two of synthetic polymers.",
@@ -346,6 +490,18 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Invertebrates',
+          formulas: [
+            'Invertebrates = animals WITHOUT a backbone',
+            'Vertebrates = animals WITH a backbone',
+            'Arthropoda = largest animal group (jointed legs, exoskeleton)',
+            'Complete metamorphosis: Egg → Larva → Pupa → Adult',
+            'Incomplete metamorphosis: Egg → Nymph → Adult',
+          ],
+          mistakes: [
+            'Insects have 3 body parts and 6 legs — spiders have 2 parts and 8 legs',
+            'Earthworms are Annelida not Arthropoda',
+            'Complete metamorphosis has 4 stages — incomplete has 3',
+          ],
           qs: [
             {
               q: "What are invertebrates? Name four major groups with one example of each.",
@@ -367,6 +523,16 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Human Nervous and Glandular Systems',
+          formulas: [
+            'Reflex arc: Stimulus → Receptor → Sensory nerve → Spinal cord → Motor nerve → Effector → Response',
+            'CNS = Brain + Spinal cord',
+            'PNS = All nerves outside CNS',
+          ],
+          mistakes: [
+            'Reflex actions do NOT involve the brain — processed in spinal cord',
+            'Endocrine glands are DUCTLESS — release hormones into bloodstream',
+            'Insulin LOWERS blood sugar — glucagon RAISES blood sugar',
+          ],
           qs: [
             {
               q: "What is the nervous system? Name its two main divisions.",
@@ -388,6 +554,17 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Blood Circulation in Human Body',
+          formulas: [
+            'Normal blood pressure = 120/80 mmHg',
+            'Normal heart rate = 70 beats per minute',
+            'Blood path: Body → Right Atrium → Right Ventricle → Lungs → Left Atrium → Left Ventricle → Body',
+          ],
+          mistakes: [
+            'Left ventricle has thickest walls — pumps to whole body',
+            'Right side of heart carries DEOXYGENATED blood',
+            'Left side of heart carries OXYGENATED blood',
+            'Arteries carry blood AWAY from heart — veins carry blood TOWARDS heart',
+          ],
           qs: [
             {
               q: "Describe the structure and function of the human heart.",
@@ -409,6 +586,17 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Chromosome and Sex Determination',
+          formulas: [
+            'Human body cells: 46 chromosomes = 23 pairs',
+            'Gametes (sperm/egg): 23 chromosomes',
+            'Female: XX, Male: XY',
+            'Father determines sex: X sperm → girl (XX), Y sperm → boy (XY)',
+          ],
+          mistakes: [
+            'Sex is determined by the FATHER not the mother',
+            'Gametes have HALF the normal chromosome number (23 not 46)',
+            'XX = female, XY = male — not the other way around',
+          ],
           qs: [
             {
               q: "What are chromosomes? How many chromosomes do human body cells have?",
@@ -425,6 +613,16 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Asexual and Sexual Reproduction',
+          formulas: [
+            'Asexual: 1 parent, no gametes, identical offspring (clones)',
+            'Sexual: 2 parents, gametes fuse, genetically varied offspring',
+            'Binary fission: 1 cell divides into 2 identical cells',
+          ],
+          mistakes: [
+            'Asexual reproduction produces IDENTICAL offspring — sexual produces varied',
+            'Variation from sexual reproduction is important for evolution',
+            'Budding (yeast) and binary fission (bacteria) are both asexual',
+          ],
           qs: [
             {
               q: "What is the difference between asexual and sexual reproduction?",
@@ -441,6 +639,16 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Artificial Vegetative Propagation',
+          formulas: [
+            'Methods: Cutting, Grafting, Layering, Budding',
+            'Grafting: Scion (shoot) joined to Rootstock (rooted stem)',
+            'All artificial propagation produces plants identical to parent',
+          ],
+          mistakes: [
+            'Grafting combines TWO different plants — not one',
+            'Vegetative propagation does not use seeds',
+            'Cutting uses stem or leaf — not root (in most cases)',
+          ],
           qs: [
             {
               q: "What is artificial vegetative propagation? Name four methods.",
@@ -457,6 +665,18 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Heredity',
+          formulas: [
+            'Dominant allele (capital letter) expressed over recessive (lowercase)',
+            'Homozygous: AA or aa (two same alleles)',
+            'Heterozygous: Aa (two different alleles)',
+            'Phenotype = physical appearance, Genotype = genetic makeup',
+            'Monohybrid cross: use Punnett square (2×2 grid)',
+          ],
+          mistakes: [
+            'Dominant does not mean more common — just expressed over recessive',
+            'Recessive trait is hidden in Aa — shown only in aa',
+            'Two heterozygous parents (Aa × Aa) give 3:1 ratio (3 dominant : 1 recessive)',
+          ],
           qs: [
             {
               q: "What is heredity? Define the terms gene, allele, dominant and recessive.",
@@ -473,6 +693,16 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Environmental Pollution and Management',
+          formulas: [
+            'Greenhouse gases: CO₂, CH₄, N₂O, water vapour, CFCs',
+            'Ozone formula: O₃',
+            'pH of acid rain < 5.6 (normal rain pH ≈ 5.6)',
+          ],
+          mistakes: [
+            'Greenhouse effect is NATURAL and necessary — enhanced greenhouse effect causes climate change',
+            'Ozone layer is in the STRATOSPHERE not the troposphere',
+            'CFCs destroy ozone — not CO₂',
+          ],
           qs: [
             {
               q: "What is environmental pollution? Name the four main types.",
@@ -502,6 +732,16 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'History of the Earth',
+          formulas: [
+            'Age of Earth ≈ 4.6 billion years',
+            'Rock types: Igneous (from magma), Sedimentary (from sediments), Metamorphic (heat + pressure)',
+            'Igneous: Granite (slow) and Basalt (fast cooling)',
+          ],
+          mistakes: [
+            'Sedimentary rocks often contain fossils — igneous and metamorphic rarely do',
+            'Metamorphic rocks are CHANGED existing rocks — not new from magma',
+            'Fossils form in SEDIMENTARY rocks as layers build up over time',
+          ],
           qs: [
             {
               q: "What is the age of the Earth and how was it formed?",
@@ -523,6 +763,16 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'Climate Change and Atmosphere',
+          formulas: [
+            'Atmosphere layers (low to high): Troposphere, Stratosphere, Mesosphere, Thermosphere, Exosphere',
+            'Ozone layer: in the Stratosphere (15–35 km)',
+            'CFCs destroy ozone: CF₂Cl₂ → Cl• (chlorine radical attacks ozone)',
+          ],
+          mistakes: [
+            'Weather occurs in TROPOSPHERE — ozone layer is in STRATOSPHERE',
+            'Ozone depletion ≠ greenhouse effect — they are different problems',
+            'Montreal Protocol addressed ozone — Kyoto Protocol addressed CO₂',
+          ],
           qs: [
             {
               q: "Describe the layers of the Earth's atmosphere.",
@@ -544,6 +794,18 @@ const CHAPTER_CONTENT = {
 
         {
           name: 'The Earth in the Universe',
+          formulas: [
+            'Planets in order: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune',
+            'Earth rotation (day/night) = 24 hours',
+            'Earth revolution (year) = 365.25 days',
+            'Speed of light = 3 × 10⁸ m/s',
+            '1 light year = distance light travels in one year',
+          ],
+          mistakes: [
+            'Seasons are caused by Earth's AXIAL TILT — not distance from Sun',
+            'Day and night caused by Earth's ROTATION — seasons by REVOLUTION',
+            'The Sun is a STAR not a planet',
+          ],
           qs: [
             {
               q: "Describe the structure of the Solar System.",
