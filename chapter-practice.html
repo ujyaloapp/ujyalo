@@ -25,6 +25,12 @@
 .cp-chapter-list::-webkit-scrollbar { width:3px; }
 .cp-chapter-list::-webkit-scrollbar-thumb { background:var(--ink-200); border-radius:2px; }
 .cp-chapter-lbl { font-size:10px; text-transform:uppercase; letter-spacing:0.1em; font-weight:700; color:var(--ink-300); padding:10px 6px 6px; }
+.cp-group-header { width:100%; display:flex; align-items:center; justify-content:space-between; padding:9px 10px; border-radius:8px; border:none; background:none; cursor:pointer; font-family:inherit; font-size:13px; font-weight:700; color:var(--ink-900); text-align:left; transition:all 0.15s; gap:8px; }
+.cp-group-header:hover { background:var(--ink-50); }
+.cp-group-header .cp-group-arrow { font-size:10px; color:var(--ink-400); transition:transform 0.2s; }
+.cp-group-header.open .cp-group-arrow { transform:rotate(90deg); }
+.cp-group-chapters { display:none; padding-left:10px; }
+.cp-group-chapters.open { display:block; }
 .cp-chapter-btn { width:100%; display:flex; align-items:center; justify-content:space-between; padding:9px 10px; border-radius:8px; border:none; background:none; cursor:pointer; font-family:inherit; font-size:13px; font-weight:500; color:var(--ink-700); text-align:left; transition:all 0.15s; position:relative; gap:8px; }
 .cp-chapter-btn:hover { background:var(--ink-50); color:var(--ink-900); }
 .cp-chapter-btn.on { background:var(--brand-light); color:var(--brand); font-weight:700; }
@@ -276,16 +282,72 @@ function boot(subject) {
   renderChapterList();
 }
 
+// Build a flat chapter list from groups for easy indexing
+let ALL_CHAPTERS = [];
+
+function buildChapterIndex() {
+  ALL_CHAPTERS = [];
+  CHAPTER_CONTENT.groups.forEach(g => {
+    g.chapters.forEach(ch => {
+      ALL_CHAPTERS.push(ch);
+    });
+  });
+}
+
 function renderChapterList() {
+  buildChapterIndex();
   const list = $('cp-chapter-list');
   list.innerHTML = '<div class="cp-chapter-lbl">Chapters</div>';
-  CHAPTER_CONTENT.chapters.forEach((ch, idx) => {
-    const btn = document.createElement('button');
-    btn.className = 'cp-chapter-btn';
-    btn.id = `ch-btn-${idx}`;
-    btn.innerHTML = `<span>${ch.name}</span><span class="cp-chapter-count">${ch.qs.length}q</span>`;
-    btn.onclick = () => startChapter(ch, idx);
-    list.appendChild(btn);
+  let chIdx = 0;
+  CHAPTER_CONTENT.groups.forEach((group, gIdx) => {
+    // Group header
+    const header = document.createElement('button');
+    header.className = 'cp-group-header';
+    header.id = `grp-${gIdx}`;
+    header.innerHTML = `<span>${group.icon || ''} ${group.name}</span><span class="cp-group-arrow">▶</span>`;
+    header.onclick = () => toggleGroup(gIdx);
+    list.appendChild(header);
+
+    // Chapters container
+    const container = document.createElement('div');
+    container.className = 'cp-group-chapters';
+    container.id = `grp-chs-${gIdx}`;
+
+    group.chapters.forEach(ch => {
+      const idx = chIdx;
+      const btn = document.createElement('button');
+      btn.className = 'cp-chapter-btn';
+      btn.id = `ch-btn-${idx}`;
+      btn.innerHTML = `<span>${ch.name}</span><span class="cp-chapter-count">${ch.qs.length}q</span>`;
+      btn.onclick = () => startChapter(ch, idx);
+      container.appendChild(btn);
+      chIdx++;
+    });
+
+    list.appendChild(container);
+  });
+}
+
+function toggleGroup(gIdx) {
+  const header = $(`grp-${gIdx}`);
+  const container = $(`grp-chs-${gIdx}`);
+  const isOpen = container.classList.contains('open');
+  header.classList.toggle('open', !isOpen);
+  container.classList.toggle('open', !isOpen);
+}
+
+function openGroupForChapter(chIdx) {
+  let count = 0;
+  CHAPTER_CONTENT.groups.forEach((group, gIdx) => {
+    group.chapters.forEach(() => {
+      if (count === chIdx) {
+        const header = $(`grp-${gIdx}`);
+        const container = $(`grp-chs-${gIdx}`);
+        if (header) header.classList.add('open');
+        if (container) container.classList.add('open');
+      }
+      count++;
+    });
   });
 }
 
@@ -299,6 +361,7 @@ function startChapter(ch, idx) {
   document.querySelectorAll('.cp-chapter-btn').forEach(b => b.classList.remove('on'));
   const activeBtn = $(`ch-btn-${idx}`);
   if (activeBtn) activeBtn.classList.add('on');
+  openGroupForChapter(idx);
 
   $('cp-ctx-ch').textContent = ch.name;
   updateProgress();
@@ -378,9 +441,9 @@ function showComplete() {
     </div>`;
 
   const nextBtn = $('cp-btn-next-ch');
-  const hasNext = currentChapterIdx < CHAPTER_CONTENT.chapters.length - 1;
+  const hasNext = currentChapterIdx < ALL_CHAPTERS.length - 1;
   if (hasNext) {
-    const nextName = CHAPTER_CONTENT.chapters[currentChapterIdx + 1].name;
+    const nextName = ALL_CHAPTERS[currentChapterIdx + 1].name;
     nextBtn.innerHTML = `${nextName} <i class="ti ti-arrow-right" aria-hidden="true"></i>`;
     nextBtn.classList.remove('disabled');
   } else {
@@ -503,9 +566,9 @@ const CP = {
 
   nextChapter() {
     const nextIdx = currentChapterIdx + 1;
-    if (nextIdx >= CHAPTER_CONTENT.chapters.length) return;
+    if (nextIdx >= ALL_CHAPTERS.length) return;
     $('cp-complete').classList.add('hidden');
-    const nextCh = CHAPTER_CONTENT.chapters[nextIdx];
+    const nextCh = ALL_CHAPTERS[nextIdx];
     startChapter(nextCh, nextIdx);
     const nextBtn = $(`ch-btn-${nextIdx}`);
     if (nextBtn) nextBtn.scrollIntoView({ behavior:'smooth', block:'nearest' });
