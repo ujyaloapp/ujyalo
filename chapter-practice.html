@@ -29,7 +29,7 @@
 .cp-chapter-btn:hover { background:var(--ink-50); color:var(--ink-900); }
 .cp-chapter-btn.on { background:var(--brand-light); color:var(--brand); font-weight:700; }
 .cp-chapter-btn.on::before { content:''; position:absolute; left:0; top:20%; bottom:20%; width:3px; background:var(--brand); border-radius:2px; }
-.cp-chapter-btn.done::after { content:'✓'; font-size:11px; color:var(--green); font-weight:700; margin-left:auto; }
+.cp-chapter-btn.done .cp-chapter-count { background:var(--green); color:white; }
 .cp-chapter-count { font-size:10px; font-weight:600; color:var(--ink-300); background:var(--ink-50); padding:2px 6px; border-radius:999px; flex-shrink:0; }
 .cp-chapter-btn.on .cp-chapter-count { background:var(--brand); color:white; }
 .cp-topbar { background:white; border-bottom:1px solid var(--ink-100); padding:12px 20px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; gap:12px; }
@@ -57,7 +57,16 @@
 .cp-ans-area { width:100%; min-height:110px; padding:14px 16px; border:2px solid var(--ink-100); border-radius:14px; font-family:inherit; font-size:15px; color:var(--ink-900); background:var(--ink-50); resize:none; line-height:1.65; transition:all 0.2s; }
 .cp-ans-area:focus { outline:none; border-color:var(--brand); background:white; box-shadow:0 0 0 3px rgba(30,95,168,0.08); }
 .cp-ans-area::placeholder { color:var(--ink-300); }
-.cp-q-actions { display:flex; align-items:center; justify-content:space-between; margin-top:16px; flex-wrap:wrap; gap:8px; }
+.cp-ans-area.shake { animation: shake 0.4s ease; border-color: var(--red) !important; }
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+}
+.cp-ans-warning { font-size:12px; color:var(--red); font-weight:600; margin-top:6px; display:none; }
+.cp-q-actions { display:flex; align-items:center; justify-content:space-between; margin-top:14px; flex-wrap:wrap; gap:8px; }
 .cp-btn-skip { font-size:13px; color:var(--ink-300); background:none; border:none; cursor:pointer; font-family:inherit; font-weight:500; display:flex; align-items:center; gap:4px; }
 .cp-btn-skip:hover { color:var(--ink-500); }
 .cp-btn-check { background:var(--brand); color:white; border:none; padding:12px 24px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; }
@@ -65,32 +74,26 @@
 
 /* Student answer */
 .cp-student-ans { background:#fffbeb; border:1px solid #fde68a; border-left:3px solid #F59E0B; border-radius:12px; padding:14px 16px; animation:cp-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
-.cp-student-ans-title { font-size:11px; font-weight:700; color:#854F0B; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; display:flex; align-items:center; gap:5px; }
+.cp-student-ans-title { font-size:11px; font-weight:700; color:#854F0B; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
 .cp-student-ans-body { font-size:14px; color:#854F0B; line-height:1.7; white-space:pre-line; }
 
 /* Model answer */
 .cp-model-ans { background:white; border:1px solid #86efac; border-left:3px solid var(--green); border-radius:12px; padding:16px 18px; animation:cp-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
-.cp-model-ans-title { font-size:11px; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; display:flex; align-items:center; gap:5px; }
-.cp-model-ans-body { font-size:14px; color:var(--ink-700); line-height:1.9; white-space:pre-line; }
+.cp-model-ans-title { font-size:11px; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; }
+.cp-model-ans-body { font-size:15px; color:var(--ink-700); line-height:1.9; white-space:pre-line; }
 
 /* Self assessment */
 .cp-self-assess { background:white; border:1px solid var(--ink-100); border-radius:14px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; animation:cp-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
-.cp-self-assess p { font-size:13px; font-weight:600; color:var(--ink-700); margin:0; }
+.cp-self-assess p { font-size:14px; font-weight:600; color:var(--ink-700); margin:0; }
 .cp-self-btns { display:flex; gap:8px; }
-.cp-btn-got-it { background:var(--green-light); color:var(--green); border:1.5px solid #86efac; padding:8px 16px; border-radius:999px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.cp-btn-got-it { background:var(--green-light); color:var(--green); border:1.5px solid #86efac; padding:10px 18px; border-radius:999px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
 .cp-btn-got-it:hover { background:var(--green); color:white; }
-.cp-btn-next-q { background:var(--ink-50); color:var(--ink-500); border:1.5px solid var(--ink-200); padding:8px 16px; border-radius:999px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.cp-btn-next-q { background:var(--ink-50); color:var(--ink-500); border:1.5px solid var(--ink-200); padding:10px 18px; border-radius:999px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
 .cp-btn-next-q:hover { background:var(--ink-100); }
+@keyframes flash-green { 0%{background:var(--green-light)} 50%{background:#bbf7d0} 100%{background:var(--green-light)} }
+.cp-self-assess.celebrating { animation:flash-green 0.4s ease; }
 
-/* Got it celebration flash */
-@keyframes flash-green {
-  0% { background: var(--green-light); }
-  50% { background: #bbf7d0; }
-  100% { background: var(--green-light); }
-}
-.cp-self-assess.celebrating { animation: flash-green 0.4s ease; }
-
-/* ── Chapter complete screen ── */
+/* Chapter complete */
 .cp-complete { background:white; border-radius:20px; border:1px solid var(--ink-100); padding:40px 32px; text-align:center; box-shadow:0 4px 24px rgba(10,22,40,0.06); animation:cp-up 0.4s cubic-bezier(0.16,1,0.3,1) both; }
 .cp-complete-icon { font-size:56px; margin-bottom:16px; }
 .cp-complete-title { font-family:'Fraunces',serif; font-size:26px; font-weight:700; color:var(--ink-900); margin-bottom:8px; }
@@ -108,7 +111,11 @@
 .cp-btn-retry:hover { background:var(--ink-100); }
 .cp-btn-next-ch { background:var(--brand); color:white; border:none; padding:12px 22px; border-radius:999px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px; }
 .cp-btn-next-ch:hover { background:var(--brand-dark); transform:translateY(-1px); }
-.cp-btn-next-ch.disabled { opacity:0.5; cursor:default; transform:none; }
+.cp-btn-next-ch.disabled { opacity:0.5; cursor:default; transform:none !important; }
+
+/* Guest nudge */
+.cp-guest-nudge { background:var(--brand-light); border:1px solid var(--brand); border-radius:12px; padding:12px 16px; font-size:13px; color:var(--brand); font-weight:600; text-align:center; }
+.cp-guest-nudge a { color:var(--brand); font-weight:700; }
 
 .hidden { display:none !important; }
 
@@ -175,6 +182,9 @@
         <div class="cp-q-text" id="cp-q-text"></div>
         <textarea class="cp-ans-area" id="cp-ans"
           placeholder="Write your answer here…&#10;&#10;Show your working — just like in the real SEE exam."></textarea>
+        <div class="cp-ans-warning" id="cp-ans-warning">
+          ✏️ Please write something first — even a guess. That's how learning happens!
+        </div>
         <div class="cp-q-actions">
           <button class="cp-btn-skip" onclick="CP.skip()">
             <i class="ti ti-player-skip-forward" aria-hidden="true"></i> Skip
@@ -201,11 +211,11 @@
         <div class="cp-model-ans-body" id="cp-model-ans-body"></div>
       </div>
 
-      <!-- Self assessment -->
+      <!-- Self assessment — only shown AFTER student has written an answer -->
       <div class="cp-self-assess hidden" id="cp-self-assess">
-        <p>How did you do?</p>
+        <p>Did you get it right?</p>
         <div class="cp-self-btns">
-          <button class="cp-btn-got-it" onclick="CP.gotIt()">✓ Got it right</button>
+          <button class="cp-btn-got-it" onclick="CP.gotIt()">✓ Yes, I got it!</button>
           <button class="cp-btn-next-q" onclick="CP.next()">Next question →</button>
         </div>
       </div>
@@ -214,7 +224,7 @@
       <div class="cp-complete hidden" id="cp-complete">
         <div class="cp-complete-icon" id="cp-complete-icon">🎉</div>
         <div class="cp-complete-title" id="cp-complete-title">Chapter Complete!</div>
-        <div class="cp-complete-sub" id="cp-complete-sub">You've finished all questions in this chapter.</div>
+        <div class="cp-complete-sub" id="cp-complete-sub"></div>
         <div class="cp-score-row" id="cp-score-row"></div>
         <div class="cp-complete-actions">
           <button class="cp-btn-retry" onclick="CP.retry()">
@@ -234,10 +244,6 @@
 
 <!-- Load subject content based on URL param -->
 <script>
-/* ── No login required for chapter practice ── */
-/* Progress saving only activates when logged in  */
-
-/* ── Load correct content file based on ?subject= param ── */
 (function() {
   const params  = new URLSearchParams(window.location.search);
   const subject = params.get('subject') || 'maths';
@@ -253,33 +259,26 @@
 
 <script src="/scripts/components.js"></script>
 <script>
-/* ── State ── */
 const $ = id => document.getElementById(id);
 let currentChapter    = null;
 let currentChapterIdx = -1;
 let questionIndex     = 0;
 let gotItCount        = 0;
 let totalAnswered     = 0;
+let guestAnswered     = 0; // track for nudge
 
-/* ── Boot — called after content script loads ── */
 function boot(subject) {
-  // Highlight active subject button
-  document.getElementById('btn-maths').classList.toggle('on', subject === 'maths');
-  document.getElementById('btn-science').classList.toggle('on', subject === 'science');
-
-  // Update sidebar title and empty state icon
+  $('btn-maths').classList.toggle('on', subject === 'maths');
+  $('btn-science').classList.toggle('on', subject === 'science');
   $('cp-sidebar-title').textContent = `SEE ${CHAPTER_CONTENT.label} Practice`;
   $('cp-ctx-subj').textContent      = CHAPTER_CONTENT.label;
   $('cp-empty-icon').textContent    = CHAPTER_CONTENT.icon;
-
   renderChapterList();
 }
 
-/* ── Chapter list ── */
 function renderChapterList() {
   const list = $('cp-chapter-list');
   list.innerHTML = '<div class="cp-chapter-lbl">Chapters</div>';
-
   CHAPTER_CONTENT.chapters.forEach((ch, idx) => {
     const btn = document.createElement('button');
     btn.className = 'cp-chapter-btn';
@@ -290,7 +289,6 @@ function renderChapterList() {
   });
 }
 
-/* ── Start chapter ── */
 function startChapter(ch, idx) {
   currentChapter    = ch;
   currentChapterIdx = idx;
@@ -298,7 +296,6 @@ function startChapter(ch, idx) {
   gotItCount        = 0;
   totalAnswered     = 0;
 
-  // Update sidebar active state
   document.querySelectorAll('.cp-chapter-btn').forEach(b => b.classList.remove('on'));
   const activeBtn = $(`ch-btn-${idx}`);
   if (activeBtn) activeBtn.classList.add('on');
@@ -308,11 +305,9 @@ function startChapter(ch, idx) {
   loadQuestion();
 }
 
-/* ── Load question ── */
 function loadQuestion() {
   if (!currentChapter) return;
 
-  // Hide all answer/result elements
   $('cp-empty').classList.add('hidden');
   $('cp-complete').classList.add('hidden');
   $('cp-student-ans').classList.add('hidden');
@@ -328,6 +323,8 @@ function loadQuestion() {
   $('cp-ans').value           = '';
   $('cp-ans').disabled        = false;
   $('cp-ans').style.opacity   = '1';
+  $('cp-ans').classList.remove('shake');
+  $('cp-ans-warning').style.display = 'none';
 
   const card = $('cp-q-card');
   card.classList.remove('hidden');
@@ -338,7 +335,6 @@ function loadQuestion() {
   $('cp-q-area').scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ── Update progress bar ── */
 function updateProgress() {
   const total = currentChapter ? currentChapter.qs.length : 0;
   const pct   = total ? Math.min((questionIndex / total) * 100, 100) : 0;
@@ -346,40 +342,32 @@ function updateProgress() {
   $('cp-prog-txt').textContent  = total ? `${questionIndex} / ${total}` : '0 / 0';
 }
 
-/* ── Show chapter complete screen ── */
 function showComplete() {
   $('cp-q-card').classList.add('hidden');
   $('cp-student-ans').classList.add('hidden');
   $('cp-model-ans').classList.add('hidden');
   $('cp-self-assess').classList.add('hidden');
 
-  const total    = currentChapter.qs.length;
-  const skipped  = total - totalAnswered;
-  const pct      = total ? Math.round((gotItCount / total) * 100) : 0;
+  const total = currentChapter.qs.length;
+  const pct   = total ? Math.round((gotItCount / total) * 100) : 0;
 
-  // Pick icon and message based on score
   let icon, title, sub;
   if (pct >= 80) {
-    icon  = '🎉';
-    title = 'Excellent work!';
-    sub   = `You got ${gotItCount} out of ${total} correct in ${currentChapter.name}. That\'s ${pct}% — brilliant!`;
+    icon  = '🎉'; title = 'Excellent work!';
+    sub   = `You got ${gotItCount} out of ${total} correct in ${currentChapter.name}. That's ${pct}% — brilliant!`;
   } else if (pct >= 50) {
-    icon  = '👍';
-    title = 'Good effort!';
-    sub   = `You got ${gotItCount} out of ${total} correct in ${currentChapter.name}. Try again to improve your score.`;
+    icon  = '👍'; title = 'Good effort!';
+    sub   = `You got ${gotItCount} out of ${total} correct. Try again to improve your score.`;
   } else {
-    icon  = '📖';
-    title = 'Keep practising!';
-    sub   = `You got ${gotItCount} out of ${total} correct in ${currentChapter.name}. Review the model answers and try again.`;
+    icon  = '📖'; title = 'Keep practising!';
+    sub   = `You got ${gotItCount} out of ${total}. Read the model answers carefully and try again — you'll improve.`;
   }
 
   $('cp-complete-icon').textContent = icon;
   $('cp-complete-title').textContent = title;
   $('cp-complete-sub').textContent   = sub;
 
-  // Score boxes
-  const scoreRow = $('cp-score-row');
-  scoreRow.innerHTML = `
+  $('cp-score-row').innerHTML = `
     <div class="cp-score-box ${pct >= 80 ? 'good' : pct >= 50 ? 'ok' : ''}">
       <div class="cp-score-num">${gotItCount}/${total}</div>
       <div class="cp-score-lbl">Got right</div>
@@ -387,32 +375,27 @@ function showComplete() {
     <div class="cp-score-box">
       <div class="cp-score-num">${pct}%</div>
       <div class="cp-score-lbl">Score</div>
-    </div>
-    ${skipped > 0 ? `<div class="cp-score-box"><div class="cp-score-num">${skipped}</div><div class="cp-score-lbl">Skipped</div></div>` : ''}
-  `;
+    </div>`;
 
-  // Next chapter button
   const nextBtn = $('cp-btn-next-ch');
   const hasNext = currentChapterIdx < CHAPTER_CONTENT.chapters.length - 1;
   if (hasNext) {
-    const nextChName = CHAPTER_CONTENT.chapters[currentChapterIdx + 1].name;
-    nextBtn.innerHTML = `${nextChName} <i class="ti ti-arrow-right" aria-hidden="true"></i>`;
+    const nextName = CHAPTER_CONTENT.chapters[currentChapterIdx + 1].name;
+    nextBtn.innerHTML = `${nextName} <i class="ti ti-arrow-right" aria-hidden="true"></i>`;
     nextBtn.classList.remove('disabled');
   } else {
     nextBtn.textContent = 'All chapters done! 🎓';
     nextBtn.classList.add('disabled');
   }
 
-  // Mark chapter as done in sidebar
   const chBtn = $(`ch-btn-${currentChapterIdx}`);
   if (chBtn) chBtn.classList.add('done');
 
-  // Progress to 100%
   $('cp-prog-fill').style.width = '100%';
   $('cp-prog-txt').textContent  = `${total} / ${total}`;
 
   $('cp-complete').classList.remove('hidden');
-  $('cp-complete').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $('cp-complete').scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 /* ── Practice engine ── */
@@ -420,13 +403,36 @@ const CP = {
 
   showAnswer() {
     const studentAns = $('cp-ans').value.trim();
+
+    // ── Empty answer check ──
+    // Student must write something before seeing the answer.
+    // This forces genuine engagement — even a wrong guess is fine.
+    if (!studentAns) {
+      const area = $('cp-ans');
+      const warning = $('cp-ans-warning');
+
+      // Shake the textarea
+      area.classList.remove('shake');
+      area.offsetHeight; // force reflow to restart animation
+      area.classList.add('shake');
+
+      // Show warning message
+      warning.style.display = 'block';
+
+      // Focus the textarea
+      area.focus();
+      return; // stop here — do not show answer
+    }
+
+    // Student wrote something — proceed
+    $('cp-ans-warning').style.display = 'none';
+    $('cp-ans').classList.remove('shake');
+
     const q = currentChapter.qs[questionIndex];
 
-    // Show student's answer if they wrote something
-    if (studentAns) {
-      $('cp-student-ans-body').textContent = studentAns;
-      $('cp-student-ans').classList.remove('hidden');
-    }
+    // Show student's answer
+    $('cp-student-ans-body').textContent = studentAns;
+    $('cp-student-ans').classList.remove('hidden');
 
     // Show model answer
     $('cp-model-ans-body').textContent = q.a;
@@ -440,42 +446,32 @@ const CP = {
     $('cp-ans').style.opacity = '0.6';
 
     totalAnswered++;
+    guestAnswered++;
     updateProgress();
 
-    $('cp-model-ans').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    $('cp-model-ans').scrollIntoView({ behavior:'smooth', block:'nearest' });
 
-    // Nudge guests to sign up after 5 answered questions
-    const user = localStorage.getItem('ujyalo_user');
-    if (!user && totalAnswered >= 5) {
-      // Show a gentle signup reminder in the self-assess row
-      const assess = document.getElementById('cp-self-assess');
-      if (assess && !document.getElementById('cp-guest-nudge')) {
-        const nudge = document.createElement('p');
-        nudge.id = 'cp-guest-nudge';
-        nudge.style.cssText = 'font-size:12px;color:var(--brand);margin-top:8px;width:100%;text-align:center;';
-        nudge.innerHTML = '💡 <a href="/signup.html" style="color:var(--brand);font-weight:700;">Create a free account</a> to save your progress.';
-        assess.appendChild(nudge);
-      }
+    // Guest nudge after 5 answered questions
+    const loggedIn = !!localStorage.getItem('ujyalo_user');
+    if (!loggedIn && guestAnswered === 5) {
+      const nudge = document.createElement('div');
+      nudge.className = 'cp-guest-nudge';
+      nudge.innerHTML = '💡 <a href="/signup.html">Create a free account</a> to save your progress and track which chapters you\'ve mastered.';
+      $('cp-q-area').appendChild(nudge);
     }
   },
 
   gotIt() {
     gotItCount++;
-
-    // Small celebration flash
     const assess = $('cp-self-assess');
     assess.classList.add('celebrating');
-    setTimeout(() => assess.classList.remove('celebrating'), 400);
-
-    // Move to next after brief delay so flash is visible
-    setTimeout(() => this.next(), 350);
+    setTimeout(() => { assess.classList.remove('celebrating'); this.next(); }, 400);
   },
 
   next() {
     questionIndex++;
     $('cp-ans').disabled      = false;
     $('cp-ans').style.opacity = '1';
-
     if (questionIndex >= currentChapter.qs.length) {
       showComplete();
     } else {
@@ -497,28 +493,22 @@ const CP = {
   },
 
   retry() {
-    // Restart current chapter
     const ch  = currentChapter;
     const idx = currentChapterIdx;
     $('cp-complete').classList.add('hidden');
-
-    // Remove done mark for retry
     const chBtn = $(`ch-btn-${idx}`);
     if (chBtn) chBtn.classList.remove('done');
-
     startChapter(ch, idx);
   },
 
   nextChapter() {
     const nextIdx = currentChapterIdx + 1;
     if (nextIdx >= CHAPTER_CONTENT.chapters.length) return;
-    const nextCh = CHAPTER_CONTENT.chapters[nextIdx];
     $('cp-complete').classList.add('hidden');
+    const nextCh = CHAPTER_CONTENT.chapters[nextIdx];
     startChapter(nextCh, nextIdx);
-
-    // Scroll sidebar to show next chapter
     const nextBtn = $(`ch-btn-${nextIdx}`);
-    if (nextBtn) nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (nextBtn) nextBtn.scrollIntoView({ behavior:'smooth', block:'nearest' });
   },
 };
 </script>
