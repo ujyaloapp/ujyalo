@@ -15,6 +15,16 @@ const CHAPTER_CONTENT = {
       chapters: [
         {
           name: 'Sets',
+          formulas: [
+            'n(A∪B) = n(A) + n(B) − n(A∩B)',
+            'n(A∪B∪C) = n(A) + n(B) + n(C) − n(A∩B) − n(B∩C) − n(A∩C) + n(A∩B∩C)',
+            'Neither = Total − n(A∪B)',
+          ],
+          mistakes: [
+            'Always subtract the "both" group — students forget this and double count',
+            'Draw a Venn diagram first — it makes the problem much clearer',
+            'For percentage problems, treat the total as 100 not the actual number',
+          ],
           qs: [
             {
               q: 'In a class of 40 students, 25 like Maths and 30 like Science. If every student likes at least one subject, how many like both?',
@@ -62,6 +72,18 @@ const CHAPTER_CONTENT = {
       chapters: [
         {
           name: 'Tax and Money Exchange',
+          formulas: [
+            'Discount = Marked Price × Discount% / 100',
+            'Selling Price = Marked Price − Discount',
+            'VAT = Selling Price × VAT% / 100',
+            'Total Price = Selling Price + VAT',
+            'Income Tax = Taxable Income × Rate / 100',
+          ],
+          mistakes: [
+            'VAT is always calculated on the price AFTER discount, not on the marked price',
+            'When finding the marked price, work backwards — divide by (1 − discount%/100) × (1 + VAT%/100)',
+            'Never add VAT and discount to the marked price directly',
+          ],
           qs: [
             {
               q: 'The marked price of a mobile is Rs 15,000. A shopkeeper gives 10% discount and charges 13% VAT. How much does the customer pay?',
@@ -87,6 +109,18 @@ const CHAPTER_CONTENT = {
         },
         {
           name: 'Compound Interest',
+          formulas: [
+            'Compound Amount (CA) = P(1 + R/100)ᵀ',
+            'Compound Interest (CI) = CA − P',
+            'Simple Interest (SI) = (P × R × T) / 100',
+            'Half-yearly: Rate = R/2, Time = 2T',
+            'Quarterly: Rate = R/4, Time = 4T',
+          ],
+          mistakes: [
+            'CI is the interest only — CA is the total amount. Do not confuse them',
+            'For half-yearly compounding, divide rate by 2 AND multiply periods by 2',
+            'SI is always calculated on original principal — CI grows each period',
+          ],
           qs: [
             {
               q: 'Find the compound interest on Rs 20,000 at 10% per annum for 2 years.',
@@ -112,6 +146,16 @@ const CHAPTER_CONTENT = {
         },
         {
           name: 'Population Growth & Depreciation',
+          formulas: [
+            'Population after T years: PT = P₀(1 + R/100)ᵀ',
+            'Population T years ago: P₀ = PT / (1 + R/100)ᵀ',
+            'Depreciated Value: VT = V₀(1 − R/100)ᵀ',
+          ],
+          mistakes: [
+            'Population growth uses (1 + R/100) — depreciation uses (1 − R/100)',
+            'To find past population, divide by the growth factor instead of multiplying',
+            'The formula is identical to compound interest — just different context',
+          ],
           qs: [
             {
               q: 'The population of a village was 45,000 in 2070 BS. If the growth rate is 2.5%, find the population in 2073 BS.',
@@ -144,6 +188,19 @@ const CHAPTER_CONTENT = {
       chapters: [
         {
           name: 'Plane Surface (Area)',
+          formulas: [
+            'Equilateral triangle: Area = (√3/4) × side²',
+            'Isosceles triangle: Area = (b/4)√(4a² − b²) or ½ × base × height',
+            'Scalene triangle (Heron): Area = √[s(s−a)(s−b)(s−c)], s = (a+b+c)/2',
+            'Trapezium: Area = ½ × (sum of parallel sides) × height',
+            'Rhombus: Area = ½ × d₁ × d₂',
+            'Parallelogram: Area = base × height',
+          ],
+          mistakes: [
+            'For equilateral triangle, use the special formula — do not use ½ × base × height without finding height first',
+            'Rhombus area uses DIAGONALS not sides',
+            'Trapezium: add BOTH parallel sides, not just one',
+          ],
           qs: [
             {
               q: 'Find the area of an equilateral triangle with side 8 cm.',
@@ -169,6 +226,21 @@ const CHAPTER_CONTENT = {
         },
         {
           name: 'Cylinder and Sphere',
+          formulas: [
+            'Cylinder CSA = 2πrh',
+            'Cylinder TSA = 2πr(r + h)',
+            'Cylinder Volume = πr²h',
+            'Sphere SA = 4πr²',
+            'Sphere Volume = (4/3)πr³',
+            'Hemisphere CSA = 2πr²',
+            'Hemisphere TSA = 3πr²',
+            'Hemisphere Volume = (2/3)πr³',
+          ],
+          mistakes: [
+            'TSA of cylinder includes TWO circular ends — CSA does not',
+            'Hemisphere TSA = curved surface + ONE circular base (not two)',
+            'Always use radius not diameter in formulas',
+          ],
           qs: [
             {
               q: 'Find the total surface area and volume of a cylinder with radius 7 cm and height 10 cm. (π = 22/7)',
@@ -189,6 +261,19 @@ const CHAPTER_CONTENT = {
         },
         {
           name: 'Prism and Pyramid',
+          formulas: [
+            'Prism Lateral SA = Perimeter of base × height',
+            'Prism TSA = Lateral SA + 2 × Base Area',
+            'Prism Volume = Base Area × height',
+            'Pyramid Lateral SA = ½ × Perimeter of base × slant height',
+            'Pyramid TSA = Lateral SA + Base Area',
+            'Pyramid Volume = ⅓ × Base Area × vertical height',
+          ],
+          mistakes: [
+            'Pyramid uses SLANT height for surface area but VERTICAL height for volume',
+            'Prism volume uses vertical height, not slant',
+            'Always find the base area first before calculating volume',
+          ],
           qs: [
             {
               q: 'A triangular prism has base triangle with sides 6, 8, 10 cm and length 15 cm. Find the lateral surface area and volume.',
@@ -216,6 +301,16 @@ const CHAPTER_CONTENT = {
       chapters: [
         {
           name: 'HCF and LCM',
+          formulas: [
+            'HCF × LCM = Product of the two expressions',
+            'To find HCF: factorise both, take COMMON factors with LOWEST power',
+            'To find LCM: factorise both, take ALL factors with HIGHEST power',
+          ],
+          mistakes: [
+            'Always factorise completely before finding HCF or LCM',
+            'HCF takes the LOWEST power of common factors — LCM takes the HIGHEST',
+            'HCF × LCM = product of two expressions (useful shortcut)',
+          ],
           qs: [
             {
               q: 'Find the HCF of x² − 4 and x² + x − 6.',
@@ -236,6 +331,18 @@ const CHAPTER_CONTENT = {
         },
         {
           name: 'Radical and Surd',
+          formulas: [
+            '√(a×b) = √a × √b',
+            '√(a/b) = √a / √b',
+            'Conjugate of (a + √b) is (a − √b)',
+            '(a + √b)(a − √b) = a² − b',
+            'Rationalise: multiply top and bottom by the conjugate',
+          ],
+          mistakes: [
+            'Only surds with the same number under the root can be added or subtracted',
+            '√4 + √9 ≠ √13 — you cannot add under the root sign',
+            'To rationalise, multiply by the conjugate — not just the surd part',
+          ],
           qs: [
             {
               q: 'Simplify: √48 + √75 − √27',
@@ -261,6 +368,19 @@ const CHAPTER_CONTENT = {
         },
         {
           name: 'Indices',
+          formulas: [
+            'aᵐ × aⁿ = aᵐ⁺ⁿ  (product law)',
+            'aᵐ ÷ aⁿ = aᵐ⁻ⁿ  (division law)',
+            '(aᵐ)ⁿ = aᵐⁿ  (power law)',
+            'a⁰ = 1  (zero index)',
+            'a⁻ⁿ = 1/aⁿ  (negative index)',
+            'a^(m/n) = ⁿ√(aᵐ)  (fractional index)',
+          ],
+          mistakes: [
+            'aᵐ × aⁿ = aᵐ⁺ⁿ NOT aᵐⁿ — add the powers, do not multiply',
+            'a⁰ = 1 for any value of a (except 0)',
+            'For fractional index x^(m/n): take the nth root first, then raise to power m',
+          ],
           qs: [
             {
               q: 'Simplify: (2³ × 2⁴) ÷ 2⁵',
@@ -286,6 +406,17 @@ const CHAPTER_CONTENT = {
         },
         {
           name: 'Algebraic Fractions',
+          formulas: [
+            'To simplify: factorise top and bottom, then cancel common factors',
+            'To add/subtract: find common denominator first',
+            'To multiply: multiply tops and bottoms, then simplify',
+            'To divide: flip the second fraction, then multiply',
+          ],
+          mistakes: [
+            'Always factorise before cancelling — never cancel terms that are added/subtracted',
+            'x/(x+1) cannot be simplified to 1/1 — the x is part of addition, not multiplication',
+            'Find the LCD before adding fractions — do not just multiply denominators',
+          ],
           qs: [
             {
               q: 'Simplify: (x² − 9) / (x² + 5x + 6)',
@@ -306,6 +437,18 @@ const CHAPTER_CONTENT = {
         },
         {
           name: 'Equations',
+          formulas: [
+            'Substitution method: express one variable in terms of the other, substitute',
+            'Elimination method: multiply equations to match coefficients, then add/subtract',
+            'Cross multiplication: a₁x + b₁y = c₁ and a₂x + b₂y = c₂',
+            'x = (b₁c₂ − b₂c₁)/(a₁b₂ − a₂b₁)',
+            'y = (a₂c₁ − a₁c₂)/(a₁b₂ − a₂b₁)',
+          ],
+          mistakes: [
+            'Always check your answer by substituting back into BOTH original equations',
+            'When multiplying an equation, multiply EVERY term including the right side',
+            'Set up equations carefully from word problems — define variables clearly first',
+          ],
           qs: [
             {
               q: 'Solve simultaneously: 2x + 3y = 12 and x − y = 1.',
@@ -333,6 +476,17 @@ const CHAPTER_CONTENT = {
       chapters: [
         {
           name: 'Area of Triangles & Quadrilaterals',
+          formulas: [
+            'Triangle = ½ × base × height',
+            'Parallelogram = base × height',
+            'Triangle on same base and between same parallels = ½ × parallelogram area',
+            'Triangles on same base and between same parallels are equal in area',
+          ],
+          mistakes: [
+            'Height must be PERPENDICULAR to the base — not the slant side',
+            'Triangles equal in area does not mean they are congruent',
+            'Same base and same parallels is the key condition for equal areas',
+          ],
           qs: [
             {
               q: 'A parallelogram has base 14 cm and height 9 cm. A diagonal divides it into two triangles. Find the area of each triangle.',
@@ -353,6 +507,17 @@ const CHAPTER_CONTENT = {
         },
         {
           name: 'Circle Theorems',
+          formulas: [
+            'Central angle = 2 × Inscribed angle (on same arc)',
+            'Inscribed angles on same arc are equal',
+            'Angle in semicircle = 90°',
+            'Opposite angles of cyclic quadrilateral add up to 180°',
+          ],
+          mistakes: [
+            'Central angle is at the CENTRE — inscribed angle is at the CIRCUMFERENCE',
+            'The theorem only applies when both angles stand on the SAME arc',
+            'Angle in semicircle is always exactly 90° — no exceptions',
+          ],
           qs: [
             {
               q: 'The central angle AOB = 120°. Find the inscribed angle ACB standing on the same arc AB.',
@@ -385,6 +550,21 @@ const CHAPTER_CONTENT = {
       chapters: [
         {
           name: 'Trigonometry',
+          formulas: [
+            'sin θ = Opposite / Hypotenuse  (SOH)',
+            'cos θ = Adjacent / Hypotenuse  (CAH)',
+            'tan θ = Opposite / Adjacent    (TOA)',
+            'sin²θ + cos²θ = 1',
+            'sin 30° = ½, cos 30° = √3/2, tan 30° = 1/√3',
+            'sin 45° = 1/√2, cos 45° = 1/√2, tan 45° = 1',
+            'sin 60° = √3/2, cos 60° = ½, tan 60° = √3',
+            'sin 90° = 1, cos 90° = 0, tan 90° = undefined',
+          ],
+          mistakes: [
+            'Angles are measured from the NORMAL/HYPOTENUSE — draw the triangle first',
+            'sin²θ means (sin θ)² not sin(θ²)',
+            'Memorise the standard angle values — they appear in every SEE exam',
+          ],
           qs: [
             {
               q: 'In a right-angled triangle, opposite = 5 cm and hypotenuse = 13 cm. Find sin θ, cos θ and tan θ.',
@@ -417,6 +597,18 @@ const CHAPTER_CONTENT = {
       chapters: [
         {
           name: 'Statistics',
+          formulas: [
+            'Mean = Sum of all values / Number of values',
+            'Mean from frequency table = Σfx / Σf',
+            'Median = middle value (after sorting)',
+            'Even count: Median = average of (n/2)th and (n/2 + 1)th values',
+            'Mode = most frequently occurring value',
+          ],
+          mistakes: [
+            'Always SORT data before finding median — this is the most common mistake',
+            'Mean uses ALL values — outliers affect it greatly',
+            'A data set can have more than one mode, or no mode at all',
+          ],
           qs: [
             {
               q: 'Find the mean of: 15, 22, 18, 30, 25, 14, 20.',
@@ -449,6 +641,19 @@ const CHAPTER_CONTENT = {
       chapters: [
         {
           name: 'Probability',
+          formulas: [
+            'P(Event) = Favourable outcomes / Total outcomes',
+            'P(A) + P(not A) = 1',
+            'P(not A) = 1 − P(A)  (complement rule)',
+            'P(A and B) = P(A) × P(B)  (independent events)',
+            'Total outcomes for 2 dice = 36',
+            'Total outcomes for 2 coins = 4',
+          ],
+          mistakes: [
+            'Always list ALL possible outcomes before counting favourable ones',
+            'Probability is always between 0 and 1 — never greater than 1',
+            'HT and TH are DIFFERENT outcomes when tossing two coins',
+          ],
           qs: [
             {
               q: 'A bag has 4 red, 5 blue and 3 green balls. Find the probability of: (a) red ball (b) not green.',
