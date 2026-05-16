@@ -18,7 +18,7 @@ const CHAPTER_CONTENT = {
         {
           name: 'Force',
           formulas: [
-            'F = ma  (Newton's Second Law)',
+            'F = ma  (Newton\'s Second Law)',
             'W = mg  (Weight = mass × gravitational acceleration)',
             'p = mv  (Momentum = mass × velocity)',
             'g = 10 m/s² (gravitational acceleration on Earth)',
@@ -207,7 +207,7 @@ const CHAPTER_CONTENT = {
         {
           name: 'Current Electricity and Magnetism',
           formulas: [
-            'V = IR  (Ohm's Law)',
+            'V = IR  (Ohm\'s Law)',
             'P = VI = I²R = V²/R  (Power)',
             'Series: R = R₁ + R₂ + R₃',
             'Parallel: 1/R = 1/R₁ + 1/R₂ + 1/R₃',
@@ -802,8 +802,8 @@ const CHAPTER_CONTENT = {
             '1 light year = distance light travels in one year',
           ],
           mistakes: [
-            'Seasons are caused by Earth's AXIAL TILT — not distance from Sun',
-            'Day and night caused by Earth's ROTATION — seasons by REVOLUTION',
+            'Seasons are caused by Earth\'s AXIAL TILT — not distance from Sun',
+            'Day and night caused by Earth\'s ROTATION — seasons by REVOLUTION',
             'The Sun is a STAR not a planet',
           ],
           qs: [
