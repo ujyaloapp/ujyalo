@@ -29,7 +29,7 @@
     /* ── WIDGET ── */
     .widget-section { padding:64px 0; background:#F5F0E8; position:relative; overflow:hidden; }
     .widget-section::before { content:''; position:absolute; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; opacity:0.6; }
-    .widget-inner { max-width:680px; margin:0 auto; padding:0 24px; position:relative; }
+    .widget-inner { max-width:960px; margin:0 auto; padding:0 24px; position:relative; }
     .widget-label { text-align:center; margin-bottom:28px; }
     .widget-label-top { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#8B7355; background:#EDE5D4; border:1px solid #D4C4A0; border-radius:999px; padding:6px 16px; margin-bottom:12px; }
     .widget-label-top::before { content:''; width:6px; height:6px; border-radius:50%; background:#C25B2A; animation:wpulse 2s infinite; }
@@ -141,6 +141,11 @@
 
     .hidden { display:none !important; }
 
+    @media(max-width:900px) {
+      .widget-inner > div[style*="grid"] { grid-template-columns:1fr !important; }
+      .widget-heading { text-align:center !important; }
+      .widget-label { text-align:center !important; }
+    }
     @media(max-width:767px) {
       .parents-inner { grid-template-columns:1fr; gap:32px; padding:48px 24px; }
       .problem-section-inner { grid-template-columns:1fr; }
@@ -254,10 +259,7 @@
 
     </div>
 
-    <div class="widget-hint">
-      5 free questions · No signup needed ·
-      <a href="/chapter-practice.html">See all chapters →</a>
-    </div>
+    </div><!-- end grid -->
 
   </div>
 </section>
