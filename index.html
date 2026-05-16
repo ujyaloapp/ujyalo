@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Practice SEE exam questions chapter by chapter with instant AI feedback. Free for Nepali students. No signup needed to start." />
+  <meta name="description" content="Practice SEE exam questions chapter by chapter with instant answers. Free for Nepali students. No signup needed to start." />
   <title>Ujyalo — SEE Exam Practice, Free</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles/main.css" />
   <style>
+    /* ── HERO ── */
     .hero-home { position:relative; padding:80px 0 64px; background:radial-gradient(at 15% 0%,var(--sun-50) 0px,transparent 55%),radial-gradient(at 85% 10%,var(--brand-50) 0px,transparent 55%),white; text-align:center; overflow:hidden; }
     .hero-badge { display:inline-flex; align-items:center; gap:6px; background:var(--brand-light); border:1px solid var(--brand); color:var(--brand); font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:6px 14px; border-radius:999px; margin-bottom:24px; }
     .hero-paper-card { display:inline-flex; align-items:center; gap:14px; background:white; border:1.5px solid var(--green); border-radius:16px; padding:14px 20px; box-shadow:0 4px 24px rgba(10,22,40,0.07); margin:28px auto 10px; text-align:left; max-width:440px; width:100%; }
@@ -24,6 +25,62 @@
     .cs-pill .dot { width:6px; height:6px; border-radius:50%; background:var(--ink-300); flex-shrink:0; }
     .cs-pill.live { background:var(--green-light); border-color:#86efac; color:var(--green); }
     .cs-pill.live .dot { background:var(--green); }
+
+    /* ── WIDGET ── */
+    .widget-section { padding:64px 0; background:#F5F0E8; position:relative; overflow:hidden; }
+    .widget-section::before { content:''; position:absolute; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; opacity:0.6; }
+    .widget-inner { max-width:680px; margin:0 auto; padding:0 24px; position:relative; }
+    .widget-label { text-align:center; margin-bottom:28px; }
+    .widget-label-top { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#8B7355; background:#EDE5D4; border:1px solid #D4C4A0; border-radius:999px; padding:6px 16px; margin-bottom:12px; }
+    .widget-label-top::before { content:''; width:6px; height:6px; border-radius:50%; background:#C25B2A; animation:wpulse 2s infinite; }
+    @keyframes wpulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.5)} }
+    .widget-heading { font-family:'Fraunces',serif; font-size:clamp(1.6rem,3vw,2.2rem); font-weight:700; color:#2C1810; line-height:1.2; text-align:center; }
+    .widget-heading em { font-style:italic; color:#C25B2A; }
+    .exam-paper { background:#FFFDF5; border-radius:4px; box-shadow:0 1px 1px rgba(0,0,0,0.06),0 4px 8px rgba(0,0,0,0.06),0 16px 48px rgba(0,0,0,0.1),4px 4px 0 #E8DFC8,8px 8px 0 #DDD4BC; overflow:hidden; position:relative; }
+    .exam-paper::before { content:''; position:absolute; left:64px; top:0; bottom:0; width:1.5px; background:rgba(194,91,42,0.2); }
+    .exam-paper::after { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(transparent,transparent 31px,rgba(0,0,0,0.04) 31px,rgba(0,0,0,0.04) 32px); pointer-events:none; }
+    .exam-paper-top { background:#2C1810; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; position:relative; z-index:1; }
+    .exam-paper-title { font-family:'Fraunces',serif; font-size:13px; font-weight:600; color:#F5F0E8; letter-spacing:0.06em; text-transform:uppercase; }
+    .exam-paper-meta { display:flex; align-items:center; gap:8px; }
+    .exam-badge { font-size:10px; font-weight:700; padding:3px 10px; border-radius:4px; letter-spacing:0.05em; }
+    .exam-badge-group { background:#C25B2A; color:white; }
+    .exam-badge-marks { background:rgba(255,255,255,0.15); color:#F5F0E8; border:1px solid rgba(255,255,255,0.2); }
+    .exam-paper-body { padding:28px 28px 28px 80px; position:relative; z-index:1; }
+    .exam-q-num { position:absolute; left:20px; top:30px; font-family:'Fraunces',serif; font-size:18px; font-weight:700; color:#8B7355; }
+    .exam-q-text { font-family:'Fraunces',serif; font-size:clamp(17px,2.5vw,21px); line-height:1.6; color:#2C1810; margin-bottom:20px; }
+    .exam-ans { width:100%; min-height:96px; padding:12px 14px; border:none; border-bottom:2px solid #C8B89A; background:transparent; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; color:#1A0F08; line-height:1.7; resize:none; outline:none; transition:border-color 0.2s; }
+    .exam-ans:focus { border-bottom-color:#C25B2A; }
+    .exam-ans::placeholder { color:#B8A990; font-style:italic; }
+    .exam-ans.shake { animation:wshake 0.4s ease; border-bottom-color:#C25B2A !important; }
+    @keyframes wshake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-3px)} 80%{transform:translateX(3px)} }
+    .exam-ans-warning { font-size:12px; color:#C25B2A; font-weight:600; margin-top:6px; font-style:italic; display:none; }
+    .exam-actions { display:flex; align-items:center; justify-content:space-between; margin-top:20px; flex-wrap:wrap; gap:10px; }
+    .exam-q-counter { font-size:12px; color:#8B7355; font-weight:600; display:flex; align-items:center; gap:8px; }
+    .exam-dots { display:flex; gap:4px; }
+    .exam-dot { width:7px; height:7px; border-radius:50%; background:#D4C4A0; cursor:pointer; transition:background 0.2s; }
+    .exam-dot.active { background:#C25B2A; }
+    .exam-btn-reveal { background:#2C1810; color:#F5F0E8; border:none; padding:12px 28px; border-radius:4px; font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.02em; display:flex; align-items:center; gap:8px; }
+    .exam-btn-reveal:hover { background:#C25B2A; transform:translateY(-2px); box-shadow:0 6px 20px rgba(194,91,42,0.3); }
+    .exam-answer-reveal { border-top:2px dashed #C8B89A; margin-top:20px; padding-top:20px; animation:slidedown 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes slidedown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+    .exam-answer-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:#2C8A4A; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+    .exam-answer-label::before { content:'✓'; width:18px; height:18px; background:#2C8A4A; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:900; flex-shrink:0; }
+    .exam-answer-text { font-size:15px; color:#1A3A27; line-height:1.9; white-space:pre-line; background:rgba(44,138,74,0.06); border-radius:4px; padding:14px 16px; border-left:3px solid #2C8A4A; }
+    .exam-after-cta { display:flex; align-items:center; justify-content:space-between; margin-top:20px; padding-top:16px; border-top:1px solid #E8DFC8; flex-wrap:wrap; gap:12px; animation:slidedown 0.4s 0.15s cubic-bezier(0.16,1,0.3,1) both; }
+    .exam-after-cta-left { font-size:13px; color:#8B7355; font-weight:500; }
+    .exam-after-cta-left strong { color:#2C1810; }
+    .exam-btn-next { background:#C25B2A; color:white; border:none; padding:10px 22px; border-radius:4px; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px; }
+    .exam-btn-next:hover { background:#A34820; transform:translateY(-1px); }
+    .exam-btn-practice { background:#2C1810; color:#F5F0E8; text-decoration:none; padding:10px 22px; border-radius:4px; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:700; transition:all 0.2s; display:inline-flex; align-items:center; gap:6px; }
+    .exam-btn-practice:hover { background:#C25B2A; transform:translateY(-1px); }
+    .exam-paper-footer { background:#F0E8D8; border-top:1px solid #E0D4BE; padding:10px 24px 10px 80px; display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
+    .exam-paper-footer-txt { font-size:11px; color:#8B7355; font-style:italic; }
+    .exam-paper-footer-subj { font-size:11px; font-weight:700; color:#8B7355; letter-spacing:0.06em; text-transform:uppercase; }
+    .widget-hint { text-align:center; margin-top:20px; font-size:13px; color:#8B7355; }
+    .widget-hint a { color:#C25B2A; font-weight:700; text-decoration:none; }
+    .widget-hint a:hover { text-decoration:underline; }
+
+    /* ── PROBLEM ── */
     .problem-section-inner { display:grid; grid-template-columns:1fr 300px; gap:24px; align-items:start; }
     .problem-box { background:white; border:1px solid var(--ink-100); border-radius:var(--radius-xl); padding:36px 40px; text-align:left; }
     .problem-box .emoji { font-size:2.4rem; margin-bottom:12px; display:block; }
@@ -37,6 +94,8 @@
     .problem-stat-card.highlight { background:var(--brand); border-color:var(--brand); }
     .problem-stat-card.highlight .ps-num { color:white; }
     .problem-stat-card.highlight .ps-lbl { color:rgba(255,255,255,0.8); }
+
+    /* ── LIVE NOW ── */
     .live-now-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
     .live-now-card { background:white; border:1.5px solid var(--ink-100); border-radius:var(--radius-lg); padding:24px; display:flex; flex-direction:column; gap:12px; }
     .live-now-card.is-live { border-color:var(--green); }
@@ -44,6 +103,8 @@
     .live-now-card h3 { font-size:16px; font-weight:700; color:var(--ink-900); }
     .live-now-card p { font-size:13px; color:var(--ink-500); line-height:1.6; }
     .live-now-card .action-row { margin-top:auto; padding-top:8px; }
+
+    /* ── FEATURES ── */
     .home-features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1px; background:var(--ink-200); border:1px solid var(--ink-200); border-radius:var(--radius-xl); overflow:hidden; }
     .feature-cell { background:white; padding:36px; transition:background 0.2s; }
     .feature-cell:hover { background:var(--ink-50); }
@@ -54,12 +115,18 @@
     .feat-live { background:var(--green-light); color:var(--green); }
     .feat-soon { background:var(--ink-100); color:var(--ink-400); }
     .feat-building { background:#FEF3C7; color:#92400e; }
+
+    /* ── HOW IT WORKS ── */
     .steps-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:24px; }
     .step-card { background:white; border:1px solid var(--ink-100); border-radius:var(--radius-lg); padding:32px 24px; text-align:center; }
     .step-num-circle { width:52px; height:52px; background:var(--brand); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:1.4rem; font-weight:700; margin:0 auto 16px; }
     .step-card h3 { font-size:15px; font-weight:700; margin-bottom:8px; }
     .step-card p { font-size:13px; color:var(--ink-500); line-height:1.65; }
+
+    /* ── SUBJECTS ── */
     .subjects-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+
+    /* ── PARENTS ── */
     .parents-section { background:linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%); color:white; }
     .parents-inner { display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; max-width:960px; margin:0 auto; padding:80px 24px; }
     .parents-text h2 { font-family:'Fraunces',serif; font-size:clamp(1.8rem,4vw,2.6rem); font-weight:700; line-height:1.2; color:white; margin-bottom:16px; }
@@ -71,30 +138,37 @@
     .report-preview-coming { text-align:center; padding:24px 16px; background:var(--ink-50); border-radius:12px; border:2px dashed var(--ink-200); }
     .report-preview-coming .rp-icon { font-size:36px; margin-bottom:10px; }
     .report-preview-coming p { font-size:13px; color:var(--ink-500); line-height:1.6; margin:0; }
+
+    .hidden { display:none !important; }
+
     @media(max-width:767px) {
       .parents-inner { grid-template-columns:1fr; gap:32px; padding:48px 24px; }
       .problem-section-inner { grid-template-columns:1fr; }
       .problem-stats { flex-direction:row; flex-wrap:wrap; }
       .problem-stat-card { flex:1; min-width:130px; }
       .hero-paper-card { flex-wrap:wrap; }
+      .exam-paper-body { padding:20px 16px 20px 48px; }
+      .exam-paper::before { left:36px; }
+      .exam-q-num { left:10px; font-size:14px; }
+      .exam-paper-footer { padding-left:48px; }
     }
   </style>
 </head>
 <body>
 <div id="site-nav"></div>
 
-<!-- HERO -->
+<!-- ══ HERO ══ -->
 <div class="hero-home">
   <div class="container">
     <div class="hero-badge">🇳🇵 Built for Nepali students · Free during beta</div>
     <h1 class="hero-title">Practice for SEE.<br><em>Chapter by chapter. Free.</em></h1>
-    <p class="hero-sub" style="max-width:520px;margin:0 auto;">Pick a chapter, answer real SEE-style questions, get instant AI feedback. Built specifically for Nepal's exam — free to start, no signup needed.</p>
+    <p class="hero-sub" style="max-width:520px;margin:0 auto;">Pick a chapter, answer real SEE-style questions, see the model answer instantly. Built for Nepal's exam — free, no signup needed.</p>
     <div style="display:flex;justify-content:center;">
       <div class="hero-paper-card">
         <div class="hero-paper-icon">📚</div>
         <div>
           <div class="hero-paper-name">SEE Chapter Practice</div>
-          <div class="hero-paper-meta">Maths & Science · All chapters · AI feedback</div>
+          <div class="hero-paper-meta">Maths & Science · All chapters · Free</div>
         </div>
         <div class="hero-paper-badge">✓ Live now</div>
       </div>
@@ -117,7 +191,78 @@
   </div>
 </div>
 
-<!-- PROBLEM -->
+<!-- ══ WIDGET — Try a real question ══ -->
+<section class="widget-section">
+  <div class="widget-inner">
+
+    <div class="widget-label">
+      <div class="widget-label-top">Try a real SEE question now</div>
+      <h2 class="widget-heading">See how Ujyalo <em>actually works.</em></h2>
+    </div>
+
+    <div class="exam-paper" id="widget-paper">
+
+      <div class="exam-paper-top">
+        <div class="exam-paper-title" id="w-paper-title">SEE Examination · Compulsory Mathematics</div>
+        <div class="exam-paper-meta">
+          <span class="exam-badge exam-badge-group" id="w-group-badge">Group B</span>
+          <span class="exam-badge exam-badge-marks" id="w-marks-badge">2 Marks</span>
+        </div>
+      </div>
+
+      <div class="exam-paper-body">
+        <div class="exam-q-num" id="w-q-num">Q12.</div>
+        <div class="exam-q-text" id="w-q-text">Solve: 3x + 7 = 22. Show your working.</div>
+
+        <textarea class="exam-ans" id="w-ans"
+          placeholder="Write your answer here and show your working…"></textarea>
+        <div class="exam-ans-warning" id="w-warning">
+          ✏️ Write your answer first — even a guess counts!
+        </div>
+
+        <div class="exam-actions">
+          <div class="exam-q-counter">
+            <div class="exam-dots" id="w-dots"></div>
+            <span id="w-counter">Question 1 of 5</span>
+          </div>
+          <button class="exam-btn-reveal" id="w-reveal-btn" onclick="W.reveal()">
+            Check answer →
+          </button>
+        </div>
+
+        <div class="hidden" id="w-reveal-area">
+          <div class="exam-answer-reveal">
+            <div class="exam-answer-label">Model Answer</div>
+            <div class="exam-answer-text" id="w-answer-text"></div>
+          </div>
+          <div class="exam-after-cta">
+            <div class="exam-after-cta-left">
+              <strong id="w-next-label">Try the next question?</strong>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="exam-btn-next" id="w-next-btn" onclick="W.next()">Next →</button>
+              <a href="/chapter-practice.html" class="exam-btn-practice">Practice all chapters →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="exam-paper-footer">
+        <div class="exam-paper-footer-txt">Answer all questions. Show full working.</div>
+        <div class="exam-paper-footer-subj" id="w-footer-subj">Mathematics</div>
+      </div>
+
+    </div>
+
+    <div class="widget-hint">
+      5 free questions · No signup needed ·
+      <a href="/chapter-practice.html">See all chapters →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ PROBLEM ══ -->
 <section class="section section-bg-soft">
   <div class="container">
     <div class="problem-section-inner">
@@ -126,7 +271,7 @@
         <h3>The pressure is <em>real.</em><br>The tools haven't kept up.</h3>
         <p>Every year, hundreds of thousands of Nepali students face their most important exam carrying the weight of their family on their shoulders. It is not just an exam — it is pride, honour, and hope.</p>
         <div class="highlight-quote">"Most families sacrifice everything for tuition. But even tuition doesn't always work. And for those who can't afford it — their child faces the exam essentially alone."</div>
-        <p>Ujyalo exists to change that. Real SEE-style practice questions, instant correct answers, AI feedback — available any time you open your phone. Free.</p>
+        <p>Ujyalo exists to change that. Real SEE-style practice questions, instant correct answers — available any time you open your phone. Free.</p>
       </div>
       <div class="problem-stats">
         <div class="problem-stat-card highlight">
@@ -150,7 +295,7 @@
   </div>
 </section>
 
-<!-- WHAT'S LIVE NOW -->
+<!-- ══ WHAT'S LIVE NOW ══ -->
 <section class="section">
   <div class="container">
     <div class="text-center mb-8">
@@ -166,7 +311,7 @@
         </div>
         <div>
           <h3>SEE Chapter Practice</h3>
-          <p>Practice by chapter — Algebra, Electricity, Trigonometry and more. Answer questions, get instant AI feedback on your answer.</p>
+          <p>Practice by chapter — Algebra, Electricity, Trigonometry and more. Answer questions and see the full model answer with step-by-step explanation.</p>
         </div>
         <div class="action-row">
           <a href="/chapter-practice.html" class="btn btn-primary btn-sm">Start practising →</a>
@@ -202,7 +347,7 @@
   </div>
 </section>
 
-<!-- FEATURES -->
+<!-- ══ FEATURES ══ -->
 <section class="section section-bg-soft">
   <div class="container">
     <div class="text-center mb-8">
@@ -218,9 +363,9 @@
         <span class="feat-status feat-live">✓ Live now</span>
       </div>
       <div class="feature-cell">
-        <div class="icon">🤖</div>
-        <h3>AI feedback on every answer</h3>
-        <p>Write your answer and get personalised feedback instantly — not just right or wrong, but exactly why.</p>
+        <div class="icon">✅</div>
+        <h3>Full model answers</h3>
+        <p>Every question has a complete model answer with working steps explained in simple language — like a teacher sitting next to you.</p>
         <span class="feat-status feat-live">✓ Live now</span>
       </div>
       <div class="feature-cell">
@@ -251,7 +396,7 @@
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
+<!-- ══ HOW IT WORKS ══ -->
 <section class="section">
   <div class="container">
     <div class="text-center mb-8">
@@ -267,19 +412,19 @@
       </div>
       <div class="step-card">
         <div class="step-num-circle">02</div>
-        <h3>Answer the question</h3>
+        <h3>Write your answer</h3>
         <p>Real SEE-style questions. Type your answer and show your working — just like in the actual exam.</p>
       </div>
       <div class="step-card">
         <div class="step-num-circle">03</div>
-        <h3>Get AI feedback</h3>
-        <p>Instant personalised feedback. Understand exactly what you got right, what you missed, and why.</p>
+        <h3>See the model answer</h3>
+        <p>Full solution with working steps shown immediately. Understand exactly where you went right or wrong.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SUBJECTS -->
+<!-- ══ SUBJECTS ══ -->
 <section class="section section-bg-soft">
   <div class="container">
     <div class="text-center mb-8">
@@ -288,11 +433,11 @@
       <p class="text-muted mt-4" style="max-width:420px;margin-left:auto;margin-right:auto;font-size:15px;">Maths and Science are live now. The rest are being prepared and added week by week.</p>
     </div>
     <div class="subjects-row">
-      <a href="/chapter-practice.html" class="subject-pill-link" style="border-color:var(--green);background:var(--green-light);">
+      <a href="/chapter-practice.html?subject=maths" class="subject-pill-link" style="border-color:var(--green);background:var(--green-light);">
         <span class="pill-emoji">🧮</span>
         <span>Maths<span class="pill-sub" style="color:var(--green);">✓ Live now</span></span>
       </a>
-      <a href="/chapter-practice.html" class="subject-pill-link" style="border-color:var(--green);background:var(--green-light);">
+      <a href="/chapter-practice.html?subject=science" class="subject-pill-link" style="border-color:var(--green);background:var(--green-light);">
         <span class="pill-emoji">🔬</span>
         <span>Science<span class="pill-sub" style="color:var(--green);">✓ Live now</span></span>
       </a>
@@ -312,7 +457,7 @@
   </div>
 </section>
 
-<!-- PARENTS -->
+<!-- ══ PARENTS ══ -->
 <div class="parents-section">
   <div class="parents-inner">
     <div class="parents-text">
@@ -334,7 +479,7 @@
   </div>
 </div>
 
-<!-- FINAL CTA -->
+<!-- ══ FINAL CTA ══ -->
 <section class="cta-section">
   <div class="container">
     <h2>No signup. No credit card.<br><em>Just start.</em></h2>
@@ -349,5 +494,120 @@
 
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
+
+<!-- ══ WIDGET SCRIPT ══ -->
+<script>
+const W_QUESTIONS = [
+  {
+    subject:'Compulsory Mathematics', footerSubj:'Mathematics',
+    group:'B', marks:2, qNum:'Q12.',
+    q:'Solve: 3x + 7 = 22. Show your working.',
+    a:'Move 7 to the other side by subtracting it:\n3x = 22 − 7\n3x = 15\n\nDivide both sides by 3:\nx = 5\n\nCheck: 3 × 5 + 7 = 15 + 7 = 22 ✓'
+  },
+  {
+    subject:'Compulsory Mathematics', footerSubj:'Mathematics',
+    group:'A', marks:1, qNum:'Q5.',
+    q:'What is the probability of getting a head when a fair coin is tossed?',
+    a:'A coin has 2 sides: Head and Tail.\nOnly 1 side is a head.\n\nP(Head) = 1/2\n\nThis means there\'s a 50% chance of getting a head.'
+  },
+  {
+    subject:'Compulsory Science', footerSubj:'Science',
+    group:'A', marks:1, qNum:'Q3.',
+    q:'Write the word equation for photosynthesis.',
+    a:'Carbon dioxide + Water → Glucose + Oxygen\n(This needs sunlight and chlorophyll.)\n\nPlants take CO₂ from air and water from soil, then use sunlight to make glucose — their food. As a result they release oxygen, which we breathe.'
+  },
+  {
+    subject:'Compulsory Mathematics', footerSubj:'Mathematics',
+    group:'B', marks:2, qNum:'Q14.',
+    q:'Find the area of a circle with radius 7 cm. (Use π = 22/7)',
+    a:'Formula: Area = πr²\n\n= (22/7) × 7 × 7\n= (22/7) × 49\n= 22 × 7   ← the 7s cancel nicely!\n= 154 cm²\n\nAlways write cm² for area — the little ² matters.'
+  },
+  {
+    subject:'Compulsory Science', footerSubj:'Science',
+    group:'B', marks:2, qNum:'Q12.',
+    q:"State Ohm's Law and write its formula.",
+    a:"Ohm's Law: The current through a wire is directly proportional to the voltage across it (as long as temperature stays constant).\n\nFormula: V = IR\nV = Voltage (volts)\nI = Current (amperes)\nR = Resistance (ohms)\n\nThink of voltage as water pressure and current as how much water flows."
+  },
+];
+
+const W = {
+  idx: 0,
+
+  init() {
+    this.idx = Math.floor(Math.random() * W_QUESTIONS.length);
+    this.buildDots();
+    this.load();
+  },
+
+  buildDots() {
+    const dots = document.getElementById('w-dots');
+    dots.innerHTML = '';
+    W_QUESTIONS.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'exam-dot';
+      d.title = `Question ${i + 1}`;
+      d.onclick = () => { this.idx = i; this.load(); };
+      dots.appendChild(d);
+    });
+  },
+
+  load() {
+    const q = W_QUESTIONS[this.idx];
+
+    document.getElementById('w-paper-title').textContent = `SEE Examination · ${q.subject}`;
+    document.getElementById('w-group-badge').textContent = `Group ${q.group}`;
+    document.getElementById('w-marks-badge').textContent = `${q.marks} Mark${q.marks > 1 ? 's' : ''}`;
+    document.getElementById('w-q-num').textContent       = q.qNum;
+    document.getElementById('w-q-text').textContent      = q.q;
+    document.getElementById('w-footer-subj').textContent = q.footerSubj;
+    document.getElementById('w-counter').textContent     = `Question ${this.idx + 1} of ${W_QUESTIONS.length}`;
+    document.getElementById('w-ans').value               = '';
+    document.getElementById('w-ans').disabled            = false;
+    document.getElementById('w-ans').style.opacity       = '1';
+    document.getElementById('w-ans').classList.remove('shake');
+    document.getElementById('w-warning').style.display   = 'none';
+    document.getElementById('w-reveal-area').classList.add('hidden');
+    document.getElementById('w-reveal-btn').style.display = 'flex';
+
+    document.querySelectorAll('.exam-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === this.idx);
+    });
+
+    const isLast = this.idx >= W_QUESTIONS.length - 1;
+    document.getElementById('w-next-label').textContent = isLast ? 'You\'ve seen all 5 questions!' : 'Try the next question?';
+    document.getElementById('w-next-btn').style.display = isLast ? 'none' : 'flex';
+  },
+
+  reveal() {
+    const ans = document.getElementById('w-ans').value.trim();
+    if (!ans) {
+      const area = document.getElementById('w-ans');
+      area.classList.remove('shake');
+      area.offsetHeight;
+      area.classList.add('shake');
+      document.getElementById('w-warning').style.display = 'block';
+      area.focus();
+      return;
+    }
+
+    const q = W_QUESTIONS[this.idx];
+    document.getElementById('w-answer-text').textContent = q.a;
+    document.getElementById('w-reveal-area').classList.remove('hidden');
+    document.getElementById('w-reveal-btn').style.display = 'none';
+    document.getElementById('w-ans').disabled = true;
+    document.getElementById('w-ans').style.opacity = '0.7';
+    document.getElementById('w-warning').style.display = 'none';
+    document.getElementById('w-reveal-area').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  },
+
+  next() {
+    this.idx = (this.idx + 1) % W_QUESTIONS.length;
+    this.load();
+    document.getElementById('widget-paper').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => W.init());
+</script>
 </body>
 </html>
