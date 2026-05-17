@@ -64,15 +64,15 @@ export default async function handler(req, res) {
             <p style="font-size:14px;color:#374151;line-height:1.6;margin:0;font-style:italic;">"${message.trim()}"</p>
           </td></tr>
         </table>
-        <p style="font-size:15px;color:#4B5563;line-height:1.7;margin:0 0 24px;">While you wait, you can start practising with our SEE past papers — it's completely free.</p>
-        <a href="https://ujyalo.app/practice.html" style="display:inline-block;background:#185FA5;color:#ffffff;padding:13px 28px;border-radius:8px;font-size:15px;font-weight:500;text-decoration:none;margin-bottom:28px;">Go to practice →</a>
+        <p style="font-size:15px;color:#4B5563;line-height:1.7;margin:0 0 24px;">While you wait, you can start practising with our SEE chapter practice — it's completely free.</p>
+        <a href="https://ujyalo.app/chapter-practice.html" style="display:inline-block;background:#185FA5;color:#ffffff;padding:13px 28px;border-radius:8px;font-size:15px;font-weight:500;text-decoration:none;margin-bottom:28px;">Start practising →</a>
         <hr style="border:none;border-top:1px solid #E5E7EB;margin:0 0 20px;">
         <p style="font-size:13px;color:#9CA3AF;line-height:1.6;margin:0;">To reach us directly, email <a href="mailto:hello@ujyalo.app" style="color:#9CA3AF;">hello@ujyalo.app</a>.</p>
       </td></tr>
       <tr><td style="background:#F9FAFB;border:1px solid #E5E7EB;border-top:none;padding:20px 32px;border-radius:0 0 10px 10px;text-align:center;">
         <p style="font-size:14px;font-weight:500;color:#6B7280;margin:0 0 8px;">ujyalo</p>
         <p style="margin:0 0 8px;">
-          <a href="https://ujyalo.app/practice.html" style="font-size:12px;color:#9CA3AF;text-decoration:none;margin:0 8px;">Practice</a>
+          <a href="https://ujyalo.app/chapter-practice.html" style="font-size:12px;color:#9CA3AF;text-decoration:none;margin:0 8px;">Practice</a>
           <a href="https://ujyalo.app/contact.html" style="font-size:12px;color:#9CA3AF;text-decoration:none;margin:0 8px;">Contact</a>
           <a href="https://ujyalo.app/privacy.html" style="font-size:12px;color:#9CA3AF;text-decoration:none;margin:0 8px;">Privacy</a>
         </p>
@@ -84,7 +84,7 @@ export default async function handler(req, res) {
 </body>
 </html>`;
 
-    // 3. Send internal notification to hello@ujyalo.app
+    // 3. Internal notification to hello@ujyalo.app
     const notificationEmail = `
 <!DOCTYPE html>
 <html lang="en">
@@ -132,7 +132,7 @@ export default async function handler(req, res) {
           html: confirmationEmail,
         })
       }),
-      // Notification to admin
+      // Notification to admin — reply_to set to the person who contacted
       fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -142,7 +142,8 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           from: 'Ujyalo Contact <hello@ujyalo.app>',
           to: ['hello@ujyalo.app'],
-          subject: `New message from ${full_name.trim()}`,
+          reply_to: email.trim().toLowerCase(),
+          subject: `New message from ${full_name.trim()} — ${email.trim()}`,
           html: notificationEmail,
         })
       })
