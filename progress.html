@@ -6,245 +6,600 @@
 <title>Progress — Ujyalo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.css">
+<style>
+
+.prog-page { background: var(--ink-50); min-height: 100vh; }
+
+/* ── Header ── */
+.prog-header {
+  background: white;
+  border-bottom: 1px solid var(--ink-100);
+  padding: 32px 0 24px;
+}
+
+.prog-header-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.prog-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  color: var(--ink-900);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.prog-title em { font-style: italic; color: var(--brand); }
+.prog-subtitle { font-size: 14px; color: var(--ink-400); }
+
+/* ── Stats row ── */
+.prog-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 24px 0;
+}
+
+.prog-stat {
+  background: white;
+  border: 1px solid var(--ink-100);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.prog-stat-num {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--ink-900);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.prog-stat-num.green { color: var(--green); }
+.prog-stat-num.blue  { color: var(--brand); }
+.prog-stat-num.amber { color: #854F0B; }
+
+.prog-stat-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-400);
+}
+
+/* ── Main grid ── */
+.prog-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  padding-bottom: 48px;
+}
+
+/* ── Cards ── */
+.prog-card {
+  background: white;
+  border: 1px solid var(--ink-100);
+  border-radius: 18px;
+  padding: 24px;
+}
+
+.prog-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prog-card-sub {
+  font-size: 12px;
+  color: var(--ink-400);
+  margin-bottom: 20px;
+}
+
+/* ── Chapter list ── */
+.prog-chapter-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ink-50);
+  gap: 12px;
+}
+
+.prog-chapter-item:last-child { border-bottom: none; }
+
+.prog-chapter-left { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.prog-chapter-name { font-size: 14px; font-weight: 600; color: var(--ink-900); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prog-chapter-meta { font-size: 11px; color: var(--ink-400); }
+
+.prog-chapter-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+.prog-bar-wrap { width: 80px; height: 6px; background: var(--ink-100); border-radius: 999px; overflow: hidden; }
+.prog-bar-fill { height: 100%; border-radius: 999px; transition: width 0.6s cubic-bezier(0.16,1,0.3,1); }
+.prog-bar-fill.good { background: var(--green); }
+.prog-bar-fill.ok   { background: var(--sun); }
+.prog-bar-fill.weak { background: var(--red); }
+
+.prog-pct {
+  font-size: 13px;
+  font-weight: 700;
+  min-width: 36px;
+  text-align: right;
+}
+
+.prog-pct.good { color: var(--green); }
+.prog-pct.ok   { color: #854F0B; }
+.prog-pct.weak { color: var(--red); }
+
+/* ── Subject breakdown ── */
+.prog-subject-item {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--ink-50);
+}
+
+.prog-subject-item:last-child { border-bottom: none; }
+
+.prog-subject-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.prog-subject-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prog-subject-meta { font-size: 12px; color: var(--ink-400); }
+
+.prog-subject-bar { height: 8px; background: var(--ink-100); border-radius: 999px; overflow: hidden; }
+.prog-subject-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--brand) 0%, var(--sun) 100%);
+  transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ── Tip card ── */
+.prog-tip {
+  background: var(--sun-light);
+  border: 1px solid #fde68a;
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 16px;
+}
+
+.prog-tip-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #854F0B;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prog-tip-text {
+  font-size: 14px;
+  color: #7C4A00;
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+.prog-tip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #854F0B;
+  color: white;
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.prog-tip-btn:hover { background: #6B3C06; transform: translateY(-1px); }
+
+/* ── Recent activity ── */
+.prog-activity-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--ink-50);
+}
+
+.prog-activity-item:last-child { border-bottom: none; }
+
+.prog-activity-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.prog-activity-icon.maths   { background: var(--brand-light); }
+.prog-activity-icon.science { background: var(--green-light); }
+
+.prog-activity-info { flex: 1; min-width: 0; }
+.prog-activity-name { font-size: 13px; font-weight: 600; color: var(--ink-900); }
+.prog-activity-meta { font-size: 11px; color: var(--ink-400); }
+.prog-activity-score { font-size: 13px; font-weight: 700; flex-shrink: 0; }
+
+/* ── Empty state ── */
+.prog-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--ink-400);
+}
+
+.prog-empty-icon { font-size: 48px; margin-bottom: 12px; }
+.prog-empty-title { font-size: 16px; font-weight: 700; color: var(--ink-600); margin-bottom: 8px; }
+.prog-empty-sub { font-size: 14px; line-height: 1.6; margin-bottom: 20px; max-width: 260px; margin-left: auto; margin-right: auto; }
+
+/* ── Loading ── */
+.prog-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: var(--ink-400);
+  font-size: 14px;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .prog-stats { grid-template-columns: repeat(2, 1fr); }
+  .prog-grid  { grid-template-columns: 1fr; }
+}
+
+</style>
 </head>
-<body style="background: var(--ink-50); min-height: 100vh;">
+<body class="prog-page">
+<div id="site-nav"></div>
 
-<!-- ═══ NAV ═══ -->
-<nav class="nav-app">
-  <div class="container nav-inner">
-    <a href="/dashboard.html" class="logo">
-      <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="6" fill="#F59E0B"/>
-        <g stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round">
-          <line x1="16" y1="2" x2="16" y2="6"/><line x1="16" y1="26" x2="16" y2="30"/>
-          <line x1="2" y1="16" x2="6" y2="16"/><line x1="26" y1="16" x2="30" y2="16"/>
-          <line x1="6" y1="6" x2="9" y2="9"/><line x1="23" y1="23" x2="26" y2="26"/>
-          <line x1="26" y1="6" x2="23" y2="9"/><line x1="9" y1="23" x2="6" y2="26"/>
-        </g>
-      </svg>
-      ujyalo
-    </a>
-    <div class="nav-links">
-      <a href="/dashboard.html">Home</a>
-      <a href="/practice.html">Practice</a>
-      <a href="/progress.html" class="active">Progress</a>
-      <a href="/profile.html">Profile</a>
-    </div>
-    <div class="nav-actions">
-      <span class="streak-pill">🔥 <span id="nav-streak">7</span></span>
-      <div id="nav-avatar" style="width:32px;height:32px;border-radius:50%;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;">S</div>
-      <button onclick="logout()" style="font-size:13px;color:var(--ink-500);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:500;padding:0 4px;">Log out</button>
-    </div>
-  </div>
-</nav>
-
-<main class="container" style="padding: 48px 24px;">
-
-  <!-- Header -->
-  <div class="animate-up mb-8">
-    <h1 class="font-display" style="font-size: 36px; font-weight: 600; letter-spacing: -1px; margin-bottom: 4px;">
-      Your <em style="color: var(--brand); font-style: italic;">progress.</em>
-    </h1>
-    <p class="text-muted" style="font-size: 16px;">Last 30 days · Across all subjects</p>
-  </div>
-
-  <!-- Big stats -->
-  <div class="grid-4 animate-up delay-1 mb-8">
-    <div class="card" style="padding: 20px;">
-      <div class="stat-num">142</div>
-      <div class="stat-label">Total questions</div>
-    </div>
-    <div class="card" style="padding: 20px;">
-      <div class="stat-num">68%</div>
-      <div class="stat-label">Accuracy</div>
-    </div>
-    <div class="card" style="padding: 20px;">
-      <div class="stat-num" style="color: var(--green);">+12%</div>
-      <div class="stat-label">vs last week</div>
-    </div>
-    <div class="card" style="padding: 20px;">
-      <div class="stat-num" style="color: #854F0B;">7 🔥</div>
-      <div class="stat-label">Day streak</div>
-    </div>
-  </div>
-
-  <!-- Chart -->
-  <div class="card animate-up delay-2 mb-8">
-    <div class="flex items-center justify-between mb-6">
+<div class="prog-header">
+  <div class="container">
+    <div class="prog-header-inner">
       <div>
-        <h3 class="font-display" style="font-size: 20px; font-weight: 600;">Accuracy over time</h3>
-        <p class="text-muted" style="font-size: 13px;">Last 4 weeks of practice</p>
+        <div class="prog-title">Your <em>progress.</em></div>
+        <div class="prog-subtitle" id="prog-subtitle">Loading your data…</div>
       </div>
-      <span class="badge badge-green">Improving steadily</span>
-    </div>
-    <div style="position: relative;">
-      <svg width="100%" height="200" viewBox="0 0 800 200" preserveAspectRatio="none">
-        <line x1="0" y1="50" x2="800" y2="50" stroke="#EDF1F7" stroke-width="1"/>
-        <line x1="0" y1="100" x2="800" y2="100" stroke="#EDF1F7" stroke-width="1"/>
-        <line x1="0" y1="150" x2="800" y2="150" stroke="#EDF1F7" stroke-width="1"/>
-        <defs>
-          <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#1E5FA8" stop-opacity="0.2"/>
-            <stop offset="100%" stop-color="#1E5FA8" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <polygon points="0,160 100,150 200,130 300,140 400,110 500,100 600,80 700,70 800,60 800,200 0,200" fill="url(#areaGrad)"/>
-        <polyline points="0,160 100,150 200,130 300,140 400,110 500,100 600,80 700,70 800,60" fill="none" stroke="#1E5FA8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="100" cy="150" r="4" fill="#1E5FA8"/>
-        <circle cx="300" cy="140" r="4" fill="#1E5FA8"/>
-        <circle cx="500" cy="100" r="4" fill="#1E5FA8"/>
-        <circle cx="700" cy="70" r="4" fill="#1E5FA8"/>
-        <circle cx="800" cy="60" r="6" fill="#F59E0B" stroke="white" stroke-width="2"/>
-      </svg>
-      <div class="flex justify-between" style="font-size: 11px; color: var(--ink-300); padding-top: 8px;">
-        <span>Week 1</span><span>Week 2</span><span>Week 3</span><span>Week 4</span><span style="color: var(--sun); font-weight: 600;">Today</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Two column: weak/strong -->
-  <div class="grid-2 animate-up delay-3 mb-8" style="gap: 16px;">
-    <div class="card">
-      <div class="flex items-center gap-2 mb-4">
-        <span style="font-size: 18px;">✓</span>
-        <h3 class="font-display" style="font-size: 18px; font-weight: 600;">Strong chapters</h3>
-      </div>
-      <div>
-        <div class="chapter-row">
-          <div>
-            <div style="font-weight: 500; font-size: 14px;">Algebra</div>
-            <div class="text-tiny">Maths · 24 questions</div>
-          </div>
-          <span class="badge badge-green">88%</span>
-        </div>
-        <div class="chapter-row">
-          <div>
-            <div style="font-weight: 500; font-size: 14px;">Geometry</div>
-            <div class="text-tiny">Maths · 18 questions</div>
-          </div>
-          <span class="badge badge-green">82%</span>
-        </div>
-        <div class="chapter-row">
-          <div>
-            <div style="font-weight: 500; font-size: 14px;">Trigonometry</div>
-            <div class="text-tiny">Maths · 12 questions</div>
-          </div>
-          <span class="badge badge-green">76%</span>
-        </div>
-      </div>
+      <a href="/chapter-practice.html" class="btn btn-primary" style="font-size:13px;padding:10px 20px;">
+        Keep practising →
+      </a>
     </div>
 
-    <div class="card">
-      <div class="flex items-center gap-2 mb-4">
-        <span style="font-size: 18px;">⚠</span>
-        <h3 class="font-display" style="font-size: 18px; font-weight: 600;">Needs more practice</h3>
+    <!-- Stats -->
+    <div class="prog-stats">
+      <div class="prog-stat">
+        <div class="prog-stat-num blue" id="stat-chapters">—</div>
+        <div class="prog-stat-label">Chapters completed</div>
       </div>
-      <div>
-        <div class="chapter-row">
-          <div>
-            <div style="font-weight: 500; font-size: 14px;">Statistics</div>
-            <div class="text-tiny">Maths · 8 questions</div>
-          </div>
-          <span class="badge badge-red">42%</span>
-        </div>
-        <div class="chapter-row">
-          <div>
-            <div style="font-weight: 500; font-size: 14px;">Sets & Functions</div>
-            <div class="text-tiny">Maths · 14 questions</div>
-          </div>
-          <span class="badge badge-red">51%</span>
-        </div>
-        <div class="chapter-row">
-          <div>
-            <div style="font-weight: 500; font-size: 14px;">Mensuration</div>
-            <div class="text-tiny">Maths · 10 questions</div>
-          </div>
-          <span class="badge badge-sun">58%</span>
-        </div>
+      <div class="prog-stat">
+        <div class="prog-stat-num green" id="stat-accuracy">—</div>
+        <div class="prog-stat-label">Overall accuracy</div>
+      </div>
+      <div class="prog-stat">
+        <div class="prog-stat-num" id="stat-questions">—</div>
+        <div class="prog-stat-label">Questions answered</div>
+      </div>
+      <div class="prog-stat">
+        <div class="prog-stat-num amber" id="stat-streak">0 🔥</div>
+        <div class="prog-stat-label">Day streak</div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- AI tip -->
-  <div class="animate-up delay-4 mb-8">
-    <div style="background: linear-gradient(135deg, var(--sun-50) 0%, var(--sun-light) 100%); border: 1px solid var(--sun-light); border-radius: var(--radius-lg); padding: 24px;">
-      <div class="flex gap-3 items-start">
-        <span style="font-size: 24px;">💡</span>
-        <div>
-          <div class="font-display" style="font-size: 18px; font-weight: 600; color: #854F0B; margin-bottom: 6px;">
-            Personalised tip
+<div class="container" style="padding-top:24px;">
+  <div id="prog-loading" class="prog-loading">
+    <div class="dot-loader"><span></span><span></span><span></span></div>
+    Loading your progress…
+  </div>
+
+  <div id="prog-content" style="display:none;">
+    <div class="prog-grid">
+
+      <!-- Left column -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+
+        <!-- Strong vs Weak chapters -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+          <div class="prog-card">
+            <div class="prog-card-title">✓ Strong chapters</div>
+            <div class="prog-card-sub">Scored 70% or above</div>
+            <div id="strong-chapters"></div>
           </div>
-          <div style="color: #854F0B; font-size: 14px; line-height: 1.6; margin-bottom: 12px;">
-            Statistics is your weakest area at 42%. Spend 15 minutes on it tomorrow — focus on mean, median, and mode problems. You've improved Algebra by 23% in the last 2 weeks doing exactly this kind of focused practice.
+
+          <div class="prog-card">
+            <div class="prog-card-title">⚠ Needs more practice</div>
+            <div class="prog-card-sub">Scored below 70%</div>
+            <div id="weak-chapters"></div>
           </div>
-          <a href="/practice.html" class="btn btn-sun" style="font-size: 13px; padding: 10px 18px;">Practice Statistics now →</a>
+
         </div>
+
+        <!-- Personalised tip -->
+        <div id="prog-tip-wrap"></div>
+
+        <!-- Subject breakdown -->
+        <div class="prog-card">
+          <div class="prog-card-title">📊 Subject breakdown</div>
+          <div class="prog-card-sub">Your accuracy across all subjects</div>
+          <div id="subject-breakdown"></div>
+        </div>
+
       </div>
+
+      <!-- Right column -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+
+        <!-- Recent activity -->
+        <div class="prog-card">
+          <div class="prog-card-title">🕐 Recent activity</div>
+          <div class="prog-card-sub">Your last 10 completed chapters</div>
+          <div id="recent-activity"></div>
+        </div>
+
+        <!-- All chapters -->
+        <div class="prog-card">
+          <div class="prog-card-title">📚 All chapters</div>
+          <div class="prog-card-sub">Every chapter you've attempted</div>
+          <div id="all-chapters"></div>
+        </div>
+
+      </div>
+
     </div>
   </div>
 
-  <!-- Subject breakdown -->
-  <div class="animate-up" style="animation-delay: 0.5s;">
-    <div class="label-tiny mb-4">Subject breakdown</div>
-    <div class="card" style="padding: 24px;">
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-2">
-          <div style="font-weight: 500; font-size: 14px;">🧮 Compulsory Maths</div>
-          <span style="font-size: 13px; color: var(--ink-500);">68% · 84 questions</span>
-        </div>
-        <div class="progress-bar"><div class="progress-bar-fill" style="width: 68%;"></div></div>
-      </div>
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-2">
-          <div style="font-weight: 500; font-size: 14px;">🔬 Science</div>
-          <span style="font-size: 13px; color: var(--ink-500);">71% · 42 questions</span>
-        </div>
-        <div class="progress-bar"><div class="progress-bar-fill" style="width: 71%;"></div></div>
-      </div>
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-2">
-          <div style="font-weight: 500; font-size: 14px;">📖 Compulsory English</div>
-          <span style="font-size: 13px; color: var(--ink-500);">82% · 16 questions</span>
-        </div>
-        <div class="progress-bar"><div class="progress-bar-fill" style="width: 82%;"></div></div>
-      </div>
-      <div>
-        <div class="flex items-center justify-between mb-2">
-          <div style="font-weight: 500; font-size: 14px;">🌏 Social Studies</div>
-          <span style="font-size: 13px; color: var(--ink-500);">— Not started</span>
-        </div>
-        <div class="progress-bar"><div class="progress-bar-fill" style="width: 0%;"></div></div>
-      </div>
+  <!-- Empty state — shown if no data -->
+  <div id="prog-empty" style="display:none;" class="prog-card" style="margin-top:0;">
+    <div class="prog-empty">
+      <div class="prog-empty-icon">📚</div>
+      <div class="prog-empty-title">No practice yet</div>
+      <div class="prog-empty-sub">Complete your first chapter to see your progress here. Every chapter you finish is tracked.</div>
+      <a href="/chapter-practice.html" class="btn btn-primary">Start practising now →</a>
     </div>
   </div>
 
-</main>
+</div>
 
-<a href="/contact.html" class="help-bubble"><span class="help-bubble-icon">?</span>Need help?</a>
-
+<div id="site-footer"></div>
+<script src="/scripts/components.js"></script>
 <script>
-/* ── Session check ── */
+
+/* ── Auth check ── */
 const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
 const token = localStorage.getItem('ujyalo_token');
+if (!user || !token) window.location.href = '/login.html';
 
-if (!user || !token) {
-  window.location.href = '/login.html';
+/* ── Helpers ── */
+const $ = id => document.getElementById(id);
+
+function pctClass(pct) {
+  return pct >= 70 ? 'good' : pct >= 50 ? 'ok' : 'weak';
 }
 
-/* ── Populate nav ── */
-if (user) {
-  const firstName = user.full_name ? user.full_name.split(' ')[0] : user.email.split('@')[0];
-  document.getElementById('nav-avatar').textContent = firstName.charAt(0).toUpperCase();
+function timeAgo(dateStr) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins  = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days  = Math.floor(diff / 86400000);
+  if (mins < 60)  return `${mins}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  return `${days}d ago`;
 }
 
-/* ── Logout ── */
-function logout() {
-  localStorage.removeItem('ujyalo_token');
-  localStorage.removeItem('ujyalo_user');
-  window.location.href = '/index.html';
+/* ── Load progress from database ── */
+async function loadProgress() {
+  try {
+    const res = await fetch(
+      `${window.SUPABASE_URL || ''}/rest/v1/chapter_attempts?user_id=eq.${user.id}&order=completed_at.desc`,
+      {
+        headers: {
+          'apikey': window.SUPABASE_ANON_KEY || '',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    );
+
+    // Use Supabase directly via env — fetch from API instead
+    const apiRes = await fetch('/api/get-chapter-progress', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!apiRes.ok) throw new Error('Failed to load');
+    const attempts = await apiRes.json();
+
+    $('prog-loading').style.display = 'none';
+
+    if (!attempts || attempts.length === 0) {
+      $('prog-empty').style.display = 'block';
+      updateStats(0, 0, 0);
+      return;
+    }
+
+    $('prog-content').style.display = 'block';
+    renderAll(attempts);
+
+  } catch (e) {
+    console.error('Progress load error:', e);
+    $('prog-loading').style.display = 'none';
+    $('prog-empty').style.display = 'block';
+    updateStats(0, 0, 0);
+  }
 }
+
+function updateStats(chapters, accuracy, totalQuestions) {
+  $('stat-chapters').textContent = chapters;
+  $('stat-accuracy').textContent = chapters > 0 ? accuracy + '%' : '—';
+  $('stat-questions').textContent = totalQuestions;
+  $('prog-subtitle').textContent = chapters > 0
+    ? `${chapters} chapter${chapters !== 1 ? 's' : ''} completed · All subjects`
+    : 'Start practising to see your progress here.';
+}
+
+function renderAll(attempts) {
+  // Calculate stats
+  const totalChapters  = attempts.length;
+  const totalQuestions = attempts.reduce((s, a) => s + a.total, 0);
+  const totalCorrect   = attempts.reduce((s, a) => s + a.score, 0);
+  const overallPct     = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+
+  updateStats(totalChapters, overallPct, totalQuestions);
+
+  // Get best attempt per chapter
+  const bestByChapter = {};
+  attempts.forEach(a => {
+    const key = `${a.subject}-${a.chapter_name}`;
+    if (!bestByChapter[key] || a.pct > bestByChapter[key].pct) {
+      bestByChapter[key] = a;
+    }
+  });
+  const bestAttempts = Object.values(bestByChapter);
+
+  // Strong vs weak
+  const strong = bestAttempts.filter(a => a.pct >= 70).sort((a,b) => b.pct - a.pct).slice(0, 5);
+  const weak   = bestAttempts.filter(a => a.pct < 70).sort((a,b) => a.pct - b.pct).slice(0, 5);
+
+  renderChapterList($('strong-chapters'), strong, true);
+  renderChapterList($('weak-chapters'), weak, false);
+
+  // Personalised tip
+  if (weak.length > 0) {
+    const weakest = weak[0];
+    $('prog-tip-wrap').innerHTML = `
+      <div class="prog-tip">
+        <div class="prog-tip-label">💡 Personalised tip</div>
+        <div class="prog-tip-text">
+          <strong>${weakest.chapter_name}</strong> is your weakest chapter at ${weakest.pct}%.
+          Spend 15 minutes on it today — review the key formulas and try again.
+          Focused practice on weak chapters is the fastest way to improve your SEE score.
+        </div>
+        <a href="/chapter-practice.html?subject=${weakest.subject}" class="prog-tip-btn">
+          Practice ${weakest.chapter_name} now →
+        </a>
+      </div>`;
+  }
+
+  // Subject breakdown
+  const subjects = {};
+  attempts.forEach(a => {
+    if (!subjects[a.subject]) subjects[a.subject] = { score: 0, total: 0, chapters: 0 };
+    subjects[a.subject].score    += a.score;
+    subjects[a.subject].total    += a.total;
+    subjects[a.subject].chapters += 1;
+  });
+
+  const subjectIcons = { maths: '🧮', science: '🔬' };
+  const subjectNames = { maths: 'Compulsory Maths', science: 'Compulsory Science' };
+
+  let subjectHTML = '';
+  Object.entries(subjects).forEach(([subj, data]) => {
+    const pct = data.total > 0 ? Math.round((data.score / data.total) * 100) : 0;
+    subjectHTML += `
+      <div class="prog-subject-item">
+        <div class="prog-subject-header">
+          <div class="prog-subject-name">
+            ${subjectIcons[subj] || '📚'} ${subjectNames[subj] || subj}
+          </div>
+          <div class="prog-subject-meta">${pct}% · ${data.chapters} chapter${data.chapters !== 1 ? 's' : ''}</div>
+        </div>
+        <div class="prog-subject-bar">
+          <div class="prog-subject-fill" style="width:${pct}%"></div>
+        </div>
+      </div>`;
+  });
+
+  $('subject-breakdown').innerHTML = subjectHTML || '<div class="prog-empty"><div class="prog-empty-sub">No data yet.</div></div>';
+
+  // Recent activity
+  const recent = attempts.slice(0, 10);
+  let recentHTML = '';
+  recent.forEach(a => {
+    const cls   = pctClass(a.pct);
+    const icon  = a.subject === 'maths' ? '🧮' : '🔬';
+    const iCls  = a.subject === 'maths' ? 'maths' : 'science';
+    recentHTML += `
+      <div class="prog-activity-item">
+        <div class="prog-activity-icon ${iCls}">${icon}</div>
+        <div class="prog-activity-info">
+          <div class="prog-activity-name">${a.chapter_name}</div>
+          <div class="prog-activity-meta">${a.subject === 'maths' ? 'Maths' : 'Science'} · ${timeAgo(a.completed_at)}</div>
+        </div>
+        <div class="prog-activity-score ${cls}">${a.score}/${a.total}</div>
+      </div>`;
+  });
+
+  $('recent-activity').innerHTML = recentHTML;
+
+  // All chapters
+  renderChapterList($('all-chapters'), bestAttempts.sort((a,b) => b.pct - a.pct), null);
+}
+
+function renderChapterList(container, chapters, isStrong) {
+  if (chapters.length === 0) {
+    container.innerHTML = `
+      <div class="prog-empty" style="padding:24px 0;">
+        <div class="prog-empty-sub" style="margin:0;">${
+          isStrong === true  ? 'No strong chapters yet — keep practising!' :
+          isStrong === false ? 'Great — no weak chapters!' :
+          'No chapters attempted yet.'
+        }</div>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = chapters.map(a => {
+    const cls = pctClass(a.pct);
+    return `
+      <div class="prog-chapter-item">
+        <div class="prog-chapter-left">
+          <div class="prog-chapter-name">${a.chapter_name}</div>
+          <div class="prog-chapter-meta">${a.subject === 'maths' ? 'Maths' : 'Science'} · ${a.score}/${a.total} correct</div>
+        </div>
+        <div class="prog-chapter-right">
+          <div class="prog-bar-wrap">
+            <div class="prog-bar-fill ${cls}" style="width:${a.pct}%"></div>
+          </div>
+          <div class="prog-pct ${cls}">${a.pct}%</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ── Boot ── */
+loadProgress();
+
 </script>
 </body>
 </html>
