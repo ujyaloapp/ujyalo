@@ -16,7 +16,7 @@ const NAV_PUBLIC = `
       <img src="/ujyalo-logo-transparent.png" style="height:38px;width:auto;" alt="Ujyalo">
     </a>
     <div class="nav-links" id="nav-links">
-      <a href="/chapter-practice.html">Practice</a>
+      <a href="/practice.html">Practice</a>
       <a href="/features.html">Features</a>
       <a href="/pricing.html">Pricing</a>
       <a href="/about.html">About</a>
@@ -30,7 +30,7 @@ const NAV_PUBLIC = `
     </button>
   </div>
   <div class="nav-mobile-menu" id="nav-mobile-menu" style="display:none;">
-    <a href="/chapter-practice.html">Practice</a>
+    <a href="/practice.html">Practice</a>
     <a href="/features.html">Features</a>
     <a href="/pricing.html">Pricing</a>
     <a href="/about.html">About</a>
@@ -45,12 +45,12 @@ function buildAppNav(firstName, initials) {
   return `
 <nav class="nav-app" style="background:white;border-bottom:1px solid var(--ink-100);padding:12px 0;position:sticky;top:0;z-index:50;">
   <div class="container nav-inner">
-    <a href="/dashboard.html" class="logo" style="font-family:'Fraunces',serif;font-weight:700;font-size:22px;color:var(--brand);letter-spacing:-0.4px;display:flex;align-items:center;gap:8px;">
+    <a href="/dashboard.html" class="logo">
       <img src="/ujyalo-logo-transparent.png" style="height:38px;width:auto;" alt="Ujyalo">
     </a>
     <div class="nav-links" id="nav-links" style="display:flex;gap:24px;font-size:14px;font-weight:500;">
       <a href="/dashboard.html">Dashboard</a>
-      <a href="/chapter-practice.html">Practice</a>
+      <a href="/practice.html">Practice</a>
       <a href="/progress.html">Progress</a>
       <a href="/profile.html">Profile</a>
     </div>
@@ -65,7 +65,7 @@ function buildAppNav(firstName, initials) {
   </div>
   <div class="nav-mobile-menu" id="nav-mobile-menu" style="display:none;">
     <a href="/dashboard.html">Dashboard</a>
-    <a href="/chapter-practice.html">Practice</a>
+    <a href="/practice.html">Practice</a>
     <a href="/progress.html">Progress</a>
     <a href="/profile.html">Profile</a>
     <div class="nav-mobile-divider"></div>
@@ -160,7 +160,7 @@ const FOOTER = `
       <div class="footer-col">
         <h4>Product</h4>
         <ul>
-          <li><a href="/chapter-practice.html">Practice</a></li>
+          <li><a href="/practice.html">Practice</a></li>
           <li><a href="/features.html">Features</a></li>
           <li><a href="/pricing.html">Pricing</a></li>
           <li><a href="/for-schools.html">For schools</a></li>
