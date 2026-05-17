@@ -604,19 +604,75 @@
 .cp-btn-next-ch:hover { background: var(--brand-dark); transform: translateY(-1px); }
 .cp-btn-next-ch.disabled { opacity: 0.5; cursor: default; transform: none !important; }
 
-/* ─── Guest nudge ─────────────────────────────── */
-.cp-guest-nudge {
-  background: var(--brand-light);
-  border: 1px solid var(--brand);
-  border-radius: 12px;
-  padding: 12px 16px;
+/* ─── Signup nudge card (chapter complete) ────── */
+.cp-signup-card {
+  background: white;
+  border: 1px solid var(--ink-100);
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 16px rgba(10,22,40,0.05);
+  animation: cp-up 0.4s 0.2s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.cp-signup-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-900);
+  margin-bottom: 4px;
+}
+
+.cp-signup-card-sub {
   font-size: 13px;
-  color: var(--brand);
+  color: var(--ink-500);
+  margin-bottom: 16px;
+}
+
+.cp-signup-benefits {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.cp-signup-benefit {
+  background: var(--ink-50);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
   font-weight: 600;
+  color: var(--ink-700);
+}
+
+.cp-signup-benefit i { color: var(--brand); font-size: 16px; flex-shrink: 0; }
+
+.cp-signup-btn {
+  width: 100%;
+  background: var(--brand);
+  color: white;
+  border: none;
+  padding: 13px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
   text-align: center;
 }
 
-.cp-guest-nudge a { color: var(--brand); font-weight: 700; }
+.cp-signup-btn:hover { background: var(--brand-dark); transform: translateY(-1px); }
+
+.cp-signup-note {
+  font-size: 12px;
+  color: var(--ink-400);
+  text-align: center;
+  margin-top: 10px;
+}
 
 /* ─── Formulas & Tips panel ──────────────────── */
 .cp-tips-toggle {
@@ -880,7 +936,6 @@ let currentChapterIdx = -1;
 let questionIndex     = 0;
 let gotItCount        = 0;
 let totalAnswered     = 0;
-let guestAnswered     = 0;
 let ALL_CHAPTERS      = [];
 
 /* ── Boot ── */
@@ -1140,6 +1195,31 @@ function showComplete() {
   $('cp-prog-fill').style.width = '100%';
   $('cp-prog-txt').textContent  = `${total} / ${total}`;
   $('cp-complete').classList.remove('hidden');
+
+  // Show signup nudge card if not logged in
+  const loggedIn = !!localStorage.getItem('ujyalo_user');
+  const existingCard = $('cp-signup-nudge-card');
+  if (existingCard) existingCard.remove();
+
+  if (!loggedIn) {
+    const card = document.createElement('div');
+    card.id = 'cp-signup-nudge-card';
+    card.className = 'cp-signup-card';
+    card.innerHTML = `
+      <div class="cp-signup-card-title">You scored ${gotItCount}/${currentChapter.qs.length} — great work!</div>
+      <div class="cp-signup-card-sub">Don't let this progress disappear. A free account saves everything.</div>
+      <div class="cp-signup-benefits">
+        <div class="cp-signup-benefit"><i class="ti ti-chart-bar" aria-hidden="true"></i>Track all chapters</div>
+        <div class="cp-signup-benefit"><i class="ti ti-bell" aria-hidden="true"></i>Past paper alerts</div>
+        <div class="cp-signup-benefit"><i class="ti ti-trophy" aria-hidden="true"></i>See improvement</div>
+        <div class="cp-signup-benefit"><i class="ti ti-lock-open" aria-hidden="true"></i>Always free</div>
+      </div>
+      <a href="/signup.html" class="cp-signup-btn">Save my progress — it's free</a>
+      <div class="cp-signup-note">No credit card. No spam. Ever.</div>
+    `;
+    $('cp-q-area').appendChild(card);
+  }
+
   $('cp-complete').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -1170,17 +1250,8 @@ const CP = {
     $('cp-ans').style.opacity = '0.6';
 
     totalAnswered++;
-    guestAnswered++;
     updateProgress();
     $('cp-model-ans').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    // Guest nudge after 5 questions
-    if (!localStorage.getItem('ujyalo_user') && guestAnswered === 5) {
-      const nudge = document.createElement('div');
-      nudge.className = 'cp-guest-nudge';
-      nudge.innerHTML = '💡 <a href="/signup.html">Create a free account</a> to save your progress and track your improvement.';
-      $('cp-q-area').appendChild(nudge);
-    }
   },
 
   gotIt() {
