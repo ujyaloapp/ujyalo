@@ -1196,6 +1196,9 @@ function showComplete() {
   $('cp-prog-txt').textContent  = `${total} / ${total}`;
   $('cp-complete').classList.remove('hidden');
 
+  // Save progress if logged in
+  saveChapterProgress(currentChapter, gotItCount, total);
+
   // Show signup nudge card if not logged in
   const loggedIn = !!localStorage.getItem('ujyalo_user');
   const existingCard = $('cp-signup-nudge-card');
@@ -1221,6 +1224,42 @@ function showComplete() {
   }
 
   $('cp-complete').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ── Save chapter progress to database ── */
+async function saveChapterProgress(ch, score, total) {
+  const token = localStorage.getItem('ujyalo_token');
+  if (!token) return; // not logged in — skip
+
+  try {
+    await fetch('/api/save-chapter-progress', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        subject:      CHAPTER_CONTENT.subject,
+        group_name:   findGroupForChapter(ch.name),
+        chapter_name: ch.name,
+        score:        score,
+        total:        total
+      })
+    });
+  } catch (e) {
+    // Silent fail — don't interrupt student experience
+    console.error('Progress save failed:', e);
+  }
+}
+
+/* ── Find group name for a chapter ── */
+function findGroupForChapter(chapterName) {
+  for (const group of CHAPTER_CONTENT.groups) {
+    for (const ch of group.chapters) {
+      if (ch.name === chapterName) return group.name;
+    }
+  }
+  return '';
 }
 
 /* ── Practice engine ── */
