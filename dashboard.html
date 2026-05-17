@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Home — Ujyalo</title>
+<title>Dashboard — Ujyalo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -11,10 +11,10 @@
 </head>
 <body>
 
-<!-- ═══ NAV (student app) ═══ -->
+<!-- ═══ NAV ═══ -->
 <nav class="nav-app">
   <div class="container nav-inner">
-    <a href="/index.html" class="logo">
+    <a href="/dashboard.html" class="logo">
       <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
         <circle cx="16" cy="16" r="6" fill="#F59E0B"/>
         <g stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round">
@@ -26,9 +26,9 @@
       </svg>
       ujyalo
     </a>
-    <div class="nav-links">
-      <a href="/index.html" class="active">Home</a>
-      <a href="/practice.html">Practice</a>
+    <div class="nav-links" id="nav-links">
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/chapter-practice.html">Practice</a>
       <a href="/progress.html">Progress</a>
       <a href="/profile.html">Profile</a>
     </div>
@@ -48,7 +48,7 @@
     <h1 class="welcome-title">
       <span id="greeting">Good morning</span>, <em id="user-name">there.</em>
     </h1>
-    <p class="text-muted" style="font-size:16px;" id="welcome-sub">Start practising to track your progress.</p>
+    <p class="text-muted" style="font-size:16px;" id="welcome-sub">Welcome to Ujyalo. Start practising to track your progress.</p>
   </div>
 
   <!-- Stats grid -->
@@ -67,15 +67,15 @@
     </div>
   </div>
 
-  <!-- Today's challenge -->
+  <!-- CTA card -->
   <div class="challenge-card animate-up delay-2 mb-8">
     <div class="flex items-center justify-between flex-wrap gap-4" style="position:relative;z-index:1;">
       <div>
         <div style="font-size:13px;opacity:0.85;margin-bottom:4px;">✦ Ready to practise?</div>
         <h2 class="font-display" style="font-size:26px;font-weight:600;margin-bottom:4px;">Start your practice session</h2>
-        <p style="font-size:14px;opacity:0.85;">Past papers, chapter practice, or mock tests — you choose.</p>
+        <p style="font-size:14px;opacity:0.85;">Chapter practice for Maths and Science — free, no limits.</p>
       </div>
-      <a href="/practice.html" class="btn" style="background:white;color:var(--brand);padding:12px 24px;">
+      <a href="/chapter-practice.html" class="btn" style="background:white;color:var(--brand);padding:12px 24px;">
         Start now →
       </a>
     </div>
@@ -83,68 +83,89 @@
 
   <!-- Practice modes -->
   <div class="animate-up delay-3 mb-8">
-    <div class="label-tiny mb-4">Practice modes</div>
+    <div class="label-tiny mb-4">What's available</div>
     <div class="grid-2" style="gap:16px;">
-      <a href="/practice.html" class="card card-hover" style="display:flex;gap:16px;align-items:start;padding:20px;">
-        <div style="width:44px;height:44px;border-radius:10px;background:var(--sun-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">📜</div>
-        <div>
-          <h3 class="font-display" style="font-size:17px;font-weight:600;margin-bottom:4px;">Past papers</h3>
-          <p class="text-muted" style="font-size:13px;">Practice real past papers from the last 10 years.</p>
-        </div>
-      </a>
-      <a href="/practice.html" class="card card-hover" style="display:flex;gap:16px;align-items:start;padding:20px;">
-        <div style="width:44px;height:44px;border-radius:10px;background:var(--brand-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">⏱️</div>
-        <div>
-          <h3 class="font-display" style="font-size:17px;font-weight:600;margin-bottom:4px;">Mock tests</h3>
-          <p class="text-muted" style="font-size:13px;">3-hour timed exams. Test yourself like the real day.</p>
-        </div>
-      </a>
-      <a href="/practice.html" class="card card-hover" style="display:flex;gap:16px;align-items:start;padding:20px;">
+
+      <!-- Chapter practice — LIVE -->
+      <a href="/chapter-practice.html" class="card card-hover" style="display:flex;gap:16px;align-items:start;padding:20px;border-color:var(--green);">
         <div style="width:44px;height:44px;border-radius:10px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">📚</div>
         <div>
-          <h3 class="font-display" style="font-size:17px;font-weight:600;margin-bottom:4px;">Chapter practice</h3>
-          <p class="text-muted" style="font-size:13px;">Pick a chapter. Practice as many questions as you want.</p>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <h3 class="font-display" style="font-size:17px;font-weight:600;">Chapter practice</h3>
+            <span class="badge badge-green" style="font-size:10px;padding:2px 8px;">✓ Live</span>
+          </div>
+          <p class="text-muted" style="font-size:13px;">Pick a chapter. Practice as many questions as you want. Maths and Science available now.</p>
         </div>
       </a>
-      <a href="/practice.html" class="card card-hover" style="display:flex;gap:16px;align-items:start;padding:20px;">
+
+      <!-- Past papers — coming soon -->
+      <div class="card" style="display:flex;gap:16px;align-items:start;padding:20px;opacity:0.7;">
+        <div style="width:44px;height:44px;border-radius:10px;background:var(--sun-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">📜</div>
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <h3 class="font-display" style="font-size:17px;font-weight:600;">Past papers</h3>
+            <span class="badge badge-sun" style="font-size:10px;padding:2px 8px;">Coming soon</span>
+          </div>
+          <p class="text-muted" style="font-size:13px;">Real SEE past papers from previous years. Being prepared now.</p>
+        </div>
+      </div>
+
+      <!-- Mock tests — coming soon -->
+      <div class="card" style="display:flex;gap:16px;align-items:start;padding:20px;opacity:0.7;">
+        <div style="width:44px;height:44px;border-radius:10px;background:var(--brand-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">⏱️</div>
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <h3 class="font-display" style="font-size:17px;font-weight:600;">Mock tests</h3>
+            <span class="badge" style="font-size:10px;padding:2px 8px;">Coming soon</span>
+          </div>
+          <p class="text-muted" style="font-size:13px;">Full timed exam experience. Practice under real exam conditions.</p>
+        </div>
+      </div>
+
+      <!-- AI quick practice — coming soon -->
+      <div class="card" style="display:flex;gap:16px;align-items:start;padding:20px;opacity:0.7;">
         <div style="width:44px;height:44px;border-radius:10px;background:var(--sun-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">⚡</div>
         <div>
-          <h3 class="font-display" style="font-size:17px;font-weight:600;margin-bottom:4px;">Quick practice</h3>
-          <p class="text-muted" style="font-size:13px;">5 quick questions. AI generated. Perfect for breaks.</p>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <h3 class="font-display" style="font-size:17px;font-weight:600;">AI quick practice</h3>
+            <span class="badge" style="font-size:10px;padding:2px 8px;">Coming soon</span>
+          </div>
+          <p class="text-muted" style="font-size:13px;">5 AI-generated questions tailored to your weak chapters. Perfect for quick revision.</p>
         </div>
-      </a>
+      </div>
+
     </div>
   </div>
 
   <!-- Subjects -->
   <div class="animate-up delay-4 mb-8">
-    <div class="label-tiny mb-4">Pick a subject</div>
+    <div class="label-tiny mb-4">Subjects</div>
     <div class="grid-5">
-      <a href="/practice.html" class="card card-hover text-center" style="padding:20px 12px;">
+      <a href="/chapter-practice.html?subject=maths" class="card card-hover text-center" style="padding:20px 12px;">
         <div style="font-size:24px;margin-bottom:8px;">🧮</div>
         <div class="font-display" style="font-size:15px;font-weight:600;">Maths</div>
-        <div class="text-tiny mt-2">10 chapters</div>
+        <div class="text-tiny mt-2" style="color:var(--green);font-weight:600;">17 chapters</div>
       </a>
-      <a href="/practice.html" class="card card-hover text-center" style="padding:20px 12px;">
+      <a href="/chapter-practice.html?subject=science" class="card card-hover text-center" style="padding:20px 12px;">
         <div style="font-size:24px;margin-bottom:8px;">🔬</div>
         <div class="font-display" style="font-size:15px;font-weight:600;">Science</div>
-        <div class="text-tiny mt-2">8 chapters</div>
+        <div class="text-tiny mt-2" style="color:var(--green);font-weight:600;">23 chapters</div>
       </a>
-      <a href="/practice.html" class="card card-hover text-center" style="padding:20px 12px;">
+      <div class="card text-center" style="padding:20px 12px;opacity:0.6;">
         <div style="font-size:24px;margin-bottom:8px;">📖</div>
         <div class="font-display" style="font-size:15px;font-weight:600;">English</div>
         <div class="text-tiny mt-2">Coming soon</div>
-      </a>
-      <a href="/practice.html" class="card card-hover text-center" style="padding:20px 12px;">
+      </div>
+      <div class="card text-center" style="padding:20px 12px;opacity:0.6;">
         <div style="font-size:24px;margin-bottom:8px;">🌏</div>
         <div class="font-display" style="font-size:15px;font-weight:600;">Social</div>
         <div class="text-tiny mt-2">Coming soon</div>
-      </a>
-      <a href="/practice.html" class="card card-hover text-center" style="padding:20px 12px;">
+      </div>
+      <div class="card text-center" style="padding:20px 12px;opacity:0.6;">
         <div style="font-size:24px;margin-bottom:8px;">📝</div>
         <div class="font-display" style="font-size:15px;font-weight:600;">Nepali</div>
         <div class="text-tiny mt-2">Coming soon</div>
-      </a>
+      </div>
     </div>
   </div>
 
@@ -171,40 +192,34 @@
 
 <script>
 /* ── Session check ── */
-const user = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
+const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
 const token = localStorage.getItem('ujyalo_token');
 
-// If not logged in — redirect to login
 if (!user || !token) {
   window.location.href = '/login.html';
 }
 
+/* ── Active nav link ── */
+const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
+document.querySelectorAll('.nav-links a').forEach(link => {
+  const linkPage = link.getAttribute('href').split('/').pop();
+  if (linkPage === currentPage) link.classList.add('active');
+});
+
 /* ── Populate user data ── */
 if (user) {
-  // Get first name only
   const firstName = user.full_name
     ? user.full_name.split(' ')[0]
     : user.email.split('@')[0];
 
-  // Greeting based on time of day
-  const hour = new Date().getHours();
+  const hour     = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
-  // Set name and greeting
-  document.getElementById('greeting').textContent = greeting;
-  document.getElementById('user-name').textContent = firstName + '.';
-
-  // Set avatar initials
-  const initials = firstName.charAt(0).toUpperCase();
-  document.getElementById('nav-avatar').textContent = initials;
-
-  // Set account info
-  document.getElementById('account-name').textContent = user.full_name || firstName;
+  document.getElementById('greeting').textContent    = greeting;
+  document.getElementById('user-name').textContent   = firstName + '.';
+  document.getElementById('nav-avatar').textContent  = firstName.charAt(0).toUpperCase();
+  document.getElementById('account-name').textContent  = user.full_name || firstName;
   document.getElementById('account-email').textContent = user.email;
-
-  // Welcome message
-  document.getElementById('welcome-sub').textContent =
-    'Welcome to Ujyalo. Start practising to track your progress.';
 }
 
 /* ── Logout ── */
