@@ -8,14 +8,15 @@ const ANNOUNCEMENT = `
   🇳🇵 Ujyalo is here! Free SEE chapter practice for every Nepali student. No signup needed. <a href="/chapter-practice.html">Start now →</a>
 </div>`;
 
-const NAV = `
+/* ── Public nav — for logged out visitors ── */
+const NAV_PUBLIC = `
 <nav class="nav-public">
   <div class="container nav-inner">
     <a href="/index.html" class="logo">
       <img src="/ujyalo-logo-transparent.png" style="height:38px;width:auto;" alt="Ujyalo">
     </a>
     <div class="nav-links" id="nav-links">
-      <a href="/practice.html">Practice</a>
+      <a href="/chapter-practice.html">Practice</a>
       <a href="/features.html">Features</a>
       <a href="/pricing.html">Pricing</a>
       <a href="/about.html">About</a>
@@ -25,14 +26,11 @@ const NAV = `
       <a href="/signup.html" class="btn btn-primary">Sign up free →</a>
     </div>
     <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" onclick="toggleMobileNav()">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </button>
   </div>
-  <!-- Mobile menu -->
   <div class="nav-mobile-menu" id="nav-mobile-menu" style="display:none;">
-    <a href="/practice.html">Practice</a>
+    <a href="/chapter-practice.html">Practice</a>
     <a href="/features.html">Features</a>
     <a href="/pricing.html">Pricing</a>
     <a href="/about.html">About</a>
@@ -41,6 +39,40 @@ const NAV = `
     <a href="/signup.html" class="nav-mobile-signup">Sign up free →</a>
   </div>
 </nav>`;
+
+/* ── App nav — for logged in students ── */
+function buildAppNav(firstName, initials) {
+  return `
+<nav class="nav-app" style="background:white;border-bottom:1px solid var(--ink-100);padding:12px 0;position:sticky;top:0;z-index:50;">
+  <div class="container nav-inner">
+    <a href="/dashboard.html" class="logo" style="font-family:'Fraunces',serif;font-weight:700;font-size:22px;color:var(--brand);letter-spacing:-0.4px;display:flex;align-items:center;gap:8px;">
+      <img src="/ujyalo-logo-transparent.png" style="height:38px;width:auto;" alt="Ujyalo">
+    </a>
+    <div class="nav-links" id="nav-links" style="display:flex;gap:24px;font-size:14px;font-weight:500;">
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/chapter-practice.html">Practice</a>
+      <a href="/progress.html">Progress</a>
+      <a href="/profile.html">Profile</a>
+    </div>
+    <div class="nav-actions" style="display:flex;align-items:center;gap:10px;">
+      <span class="streak-pill">🔥 <span id="nav-streak">0</span></span>
+      <div style="width:32px;height:32px;border-radius:50%;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">${initials}</div>
+      <button onclick="ujyaloLogout()" style="font-size:13px;color:var(--ink-500);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:500;">Log out</button>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-mobile-menu" id="nav-mobile-menu" style="display:none;">
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/chapter-practice.html">Practice</a>
+    <a href="/progress.html">Progress</a>
+    <a href="/profile.html">Profile</a>
+    <div class="nav-mobile-divider"></div>
+    <button onclick="ujyaloLogout()" style="background:var(--ink-100);color:var(--ink-700);border:none;border-radius:999px;padding:12px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;width:100%;margin-top:4px;">Log out</button>
+  </div>
+</nav>`;
+}
 
 const NAV_STYLES = `
 <style>
@@ -128,9 +160,8 @@ const FOOTER = `
       <div class="footer-col">
         <h4>Product</h4>
         <ul>
-          <li><a href="/practice.html">Practice</a></li>
+          <li><a href="/chapter-practice.html">Practice</a></li>
           <li><a href="/features.html">Features</a></li>
-          <li><a href="/how-it-works.html">How it works</a></li>
           <li><a href="/pricing.html">Pricing</a></li>
           <li><a href="/for-schools.html">For schools</a></li>
         </ul>
@@ -171,7 +202,7 @@ const FOOTER = `
 // Toggle mobile nav
 function toggleMobileNav() {
   const menu = document.getElementById('nav-mobile-menu');
-  const btn   = document.getElementById('nav-hamburger');
+  const btn  = document.getElementById('nav-hamburger');
   if (!menu || !btn) return;
   const isOpen = menu.style.display === 'flex';
   menu.style.display = isOpen ? 'none' : 'flex';
@@ -181,7 +212,7 @@ function toggleMobileNav() {
 // Close mobile nav when clicking outside
 document.addEventListener('click', function(e) {
   const menu = document.getElementById('nav-mobile-menu');
-  const btn   = document.getElementById('nav-hamburger');
+  const btn  = document.getElementById('nav-hamburger');
   if (!menu || !btn) return;
   if (menu.style.display === 'flex' && !menu.contains(e.target) && !btn.contains(e.target)) {
     menu.style.display = 'none';
@@ -221,64 +252,47 @@ document.addEventListener('DOMContentLoaded', function () {
   // Inject nav styles
   document.head.insertAdjacentHTML('beforeend', NAV_STYLES);
 
-  // Favicon — SVG works on all modern browsers, sharp at any size
+  // Favicon
   const favicon = document.createElement('link');
   favicon.rel   = 'icon';
   favicon.type  = 'image/svg+xml';
   favicon.href  = '/favicon.svg';
   document.head.appendChild(favicon);
 
-  // Fallback favicon for older browsers (optional — create favicon.ico if needed)
   const faviconFallback = document.createElement('link');
   faviconFallback.rel  = 'icon';
   faviconFallback.href = '/favicon.ico';
   document.head.appendChild(faviconFallback);
 
-  // Nav
-  const navEl = document.getElementById('site-nav');
-  if (navEl) navEl.innerHTML = ANNOUNCEMENT + NAV;
-
-  // Footer
-  const footerEl = document.getElementById('site-footer');
-  if (footerEl) footerEl.innerHTML = FOOTER;
-
-  // Active nav link — both desktop and mobile
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.nav-links a, .nav-mobile-menu a').forEach(link => {
-    if (link.getAttribute('href').split('/').pop() === currentPage) {
-      link.classList.add('active');
-    }
-  });
-
-  // Check if logged in — update nav
+  // Check if logged in
   const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
   const token = localStorage.getItem('ujyalo_token');
-  const navActions = document.getElementById('nav-actions');
+
+  const navEl = document.getElementById('site-nav');
 
   if (user && token) {
+    // ── LOGGED IN — show app nav, no announcement bar ──
     const firstName = user.full_name
       ? user.full_name.split(' ')[0]
       : user.email.split('@')[0];
     const initials = firstName.charAt(0).toUpperCase();
 
-    // Update desktop nav
-    if (navActions) {
-      navActions.innerHTML = `
-        <a href="/dashboard.html" class="btn btn-ghost">Dashboard</a>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div style="width:32px;height:32px;border-radius:50%;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">${initials}</div>
-          <button onclick="ujyaloLogout()" style="font-size:13px;color:var(--ink-500);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:500;">Log out</button>
-        </div>`;
-    }
+    if (navEl) navEl.innerHTML = buildAppNav(firstName, initials);
 
-    // Update mobile menu
-    const mobileMenu = document.getElementById('nav-mobile-menu');
-    if (mobileMenu) {
-      const mobileActions = mobileMenu.querySelector('.nav-mobile-login');
-      const mobileSignup  = mobileMenu.querySelector('.nav-mobile-signup');
-      if (mobileActions) mobileActions.outerHTML = `<a href="/dashboard.html">Dashboard</a>`;
-      if (mobileSignup)  mobileSignup.outerHTML  = `<button onclick="ujyaloLogout()" style="background:var(--ink-100);color:var(--ink-700);border:none;border-radius:999px;padding:12px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;width:100%;margin-top:4px;">Log out</button>`;
-    }
+  } else {
+    // ── LOGGED OUT — show public nav + announcement bar ──
+    if (navEl) navEl.innerHTML = ANNOUNCEMENT + NAV_PUBLIC;
   }
+
+  // Footer
+  const footerEl = document.getElementById('site-footer');
+  if (footerEl) footerEl.innerHTML = FOOTER;
+
+  // Active nav link
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links a, .nav-mobile-menu a').forEach(link => {
+    const linkPage = link.getAttribute('href') && link.getAttribute('href').split('/').pop();
+    if (linkPage === currentPage) link.classList.add('active');
+  });
 
 });
