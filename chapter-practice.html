@@ -910,19 +910,69 @@
 
 <div id="site-footer"></div>
 
-<!-- Load subject content -->
+<!-- Load subject content from database -->
 <script>
 (function () {
   const subject = new URLSearchParams(window.location.search).get('subject') || 'maths';
-  const s = document.createElement('script');
-  s.src = `/scripts/chapter-content-${subject}.js`;
-  s.onload = () => boot(subject);
-  s.onerror = () => {
-    document.getElementById('cp-empty').innerHTML =
-      '<div class="cp-empty-icon">⚠️</div><div class="cp-empty-title">Could not load content</div><div class="cp-empty-sub">Please refresh and try again.</div>';
-  };
-  document.head.appendChild(s);
+  window._SUBJECT = subject;
+  // Boot will be called after we fetch the structure
+  fetchSubjectStructure(subject);
 })();
+
+// Subject structure — groups and chapters (no questions yet)
+// Questions are loaded per-chapter from the database
+const SUBJECT_STRUCTURE = {
+  maths: {
+    subject: 'maths', label: 'Maths', icon: '🧮',
+    groups: [
+      { name: 'Sets', icon: '⊂', chapters: ['Sets'] },
+      { name: 'Arithmetic', icon: '💰', chapters: ['Tax and Money Exchange','Compound Interest','Population Growth & Depreciation'] },
+      { name: 'Mensuration', icon: '📐', chapters: ['Plane Surface (Area)','Cylinder and Sphere','Prism and Pyramid'] },
+      { name: 'Algebra', icon: '🔣', chapters: ['HCF and LCM','Radical and Surd','Indices','Algebraic Fractions','Equations'] },
+      { name: 'Geometry', icon: '📏', chapters: ['Area of Triangles & Quadrilaterals','Circle Theorems'] },
+      { name: 'Trigonometry', icon: '📐', chapters: ['Trigonometry'] },
+      { name: 'Statistics', icon: '📊', chapters: ['Statistics'] },
+      { name: 'Probability', icon: '🎲', chapters: ['Probability'] },
+    ]
+  },
+  science: {
+    subject: 'science', label: 'Science', icon: '🔬',
+    groups: [
+      { name: 'Physics', icon: '⚡', chapters: ['Force','Pressure','Energy','Heat','Light','Current Electricity and Magnetism'] },
+      { name: 'Chemistry', icon: '🧪', chapters: ['Classification of Elements','Chemical Reaction','Acid, Base and Salt','Some Gases','Metals','Hydrocarbon and its Compounds','Materials Used in Daily Life'] },
+      { name: 'Biology', icon: '🌿', chapters: ['Invertebrates','Human Nervous and Glandular Systems','Blood Circulation in Human Body','Chromosome and Sex Determination','Asexual and Sexual Reproduction','Artificial Vegetative Propagation','Heredity','Environmental Pollution and Management'] },
+      { name: 'Astronomy & Geology', icon: '🌍', chapters: ['History of the Earth','Climate Change and Atmosphere','The Earth in the Universe'] },
+    ]
+  }
+};
+
+function fetchSubjectStructure(subject) {
+  const structure = SUBJECT_STRUCTURE[subject];
+  if (!structure) {
+    document.getElementById('cp-empty').innerHTML =
+      '<div class="cp-empty-icon">⚠️</div><div class="cp-empty-title">Subject not found</div><div class="cp-empty-sub">Please go back and try again.</div>';
+    return;
+  }
+
+  // Convert structure to CHAPTER_CONTENT format with empty questions
+  window.CHAPTER_CONTENT = {
+    subject: structure.subject,
+    label: structure.label,
+    icon: structure.icon,
+    groups: structure.groups.map(g => ({
+      name: g.name,
+      icon: g.icon,
+      chapters: g.chapters.map(chName => ({
+        name: chName,
+        qs: [], // loaded on demand
+        formulas: [],
+        mistakes: []
+      }))
+    }))
+  };
+
+  boot(subject);
+}
 </script>
 
 <script src="/scripts/components.js"></script>
@@ -1113,12 +1163,45 @@ function startChapter(ch, idx) {
 }
 
 /* ── Load question ── */
-function loadQuestion() {
+async function loadQuestion() {
   $('cp-empty').classList.add('hidden');
   $('cp-complete').classList.add('hidden');
   $('cp-student-ans').classList.add('hidden');
   $('cp-model-ans').classList.add('hidden');
   $('cp-self-assess').classList.add('hidden');
+
+  // Load questions from DB if not yet loaded
+  if (currentChapter.qs.length === 0) {
+    $('cp-q-card').classList.add('hidden');
+    $('cp-empty').classList.remove('hidden');
+    $('cp-empty-icon').textContent = '⏳';
+    document.querySelector('.cp-empty-title').textContent = 'Loading questions…';
+
+    try {
+      const res = await fetch(`/api/get-chapter-questions?subject=${encodeURIComponent(CHAPTER_CONTENT.subject)}&chapter=${encodeURIComponent(currentChapter.name)}`);
+      const data = await res.json();
+
+      if (data && data.length > 0) {
+        currentChapter.qs = data.map(q => ({
+          q: q.question_text,
+          a: q.answer_text,
+          m: q.marks
+        }));
+      } else {
+        $('cp-empty-icon').textContent = '📝';
+        document.querySelector('.cp-empty-title').textContent = 'Questions coming soon';
+        document.querySelector('.cp-empty-sub').textContent = 'We are adding questions for this chapter. Check back soon.';
+        return;
+      }
+    } catch (e) {
+      $('cp-empty-icon').textContent = '⚠️';
+      document.querySelector('.cp-empty-title').textContent = 'Could not load questions';
+      document.querySelector('.cp-empty-sub').textContent = 'Check your internet connection and try again.';
+      return;
+    }
+
+    $('cp-empty').classList.add('hidden');
+  }
 
   const q = currentChapter.qs[questionIndex];
   if (!q) { showComplete(); return; }
