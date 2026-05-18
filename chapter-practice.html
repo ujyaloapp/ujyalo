@@ -1017,17 +1017,17 @@ function renderSidebar() {
   let idx = 0;
 
   CHAPTER_CONTENT.groups.forEach((group, gIdx) => {
-    // Group header button
+    // Group header — open by default
     const header = document.createElement('button');
-    header.className = 'cp-group-btn';
+    header.className = 'cp-group-btn open';
     header.id = `grp-${gIdx}`;
     header.innerHTML = `<span>${group.icon || ''} ${group.name}</span><span class="cp-group-arrow">▶</span>`;
     header.onclick = () => toggleGroup(gIdx);
     list.appendChild(header);
 
-    // Chapters container
+    // Chapters container — open by default
     const container = document.createElement('div');
-    container.className = 'cp-group-chapters';
+    container.className = 'cp-group-chapters open';
     container.id = `grp-chs-${gIdx}`;
 
     group.chapters.forEach(ch => {
@@ -1035,7 +1035,7 @@ function renderSidebar() {
       const btn = document.createElement('button');
       btn.className = 'cp-ch-btn';
       btn.id = `ch-btn-${chIdx}`;
-      btn.innerHTML = `<span>${ch.name}</span><span class="cp-ch-count">${ch.qs.length}q</span>`;
+      btn.innerHTML = `<span>${ch.name}</span><span class="cp-ch-count" id="qc-${chIdx}">...</span>`;
       btn.onclick = () => startChapter(ch, chIdx);
       container.appendChild(btn);
       idx++;
@@ -1043,6 +1043,30 @@ function renderSidebar() {
 
     list.appendChild(container);
   });
+
+  // Fetch question counts from DB
+  fetchQuestionCounts();
+}
+
+async function fetchQuestionCounts() {
+  let idx = 0;
+  for (const group of CHAPTER_CONTENT.groups) {
+    for (const ch of group.chapters) {
+      const chIdx = idx;
+      try {
+        const res = await fetch(`/api/practice?action=get-questions&subject=${encodeURIComponent(CHAPTER_CONTENT.subject)}&chapter=${encodeURIComponent(ch.name)}`);
+        const qs = await res.json();
+        const count = Array.isArray(qs) ? qs.length : 0;
+        ch.qs = qs.map ? qs.map(q => ({ q: q.question_text, a: q.answer_text, m: q.marks })) : [];
+        const el = $(`qc-${chIdx}`);
+        if (el) el.textContent = count > 0 ? `${count}q` : '—';
+      } catch(e) {
+        const el = $(`qc-${chIdx}`);
+        if (el) el.textContent = '—';
+      }
+      idx++;
+    }
+  }
 }
 
 function toggleGroup(gIdx) {
@@ -1171,7 +1195,7 @@ async function loadQuestion() {
   $('cp-self-assess').classList.add('hidden');
 
   // Load questions from DB if not yet loaded
-  if (currentChapter.qs.length === 0) {
+  if (!currentChapter.qs || currentChapter.qs.length === 0) {
     $('cp-q-card').classList.add('hidden');
     $('cp-empty').classList.remove('hidden');
     $('cp-empty-icon').textContent = '⏳';
