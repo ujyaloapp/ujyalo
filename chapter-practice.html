@@ -1108,11 +1108,9 @@ const SUBJECT_STRUCTURE = {
   }
 };
 
-// Boot — runs after SUBJECT_STRUCTURE is defined
+// Store subject — boot called after all scripts load
 (function () {
-  const subject = new URLSearchParams(window.location.search).get('subject') || 'maths';
-  window._SUBJECT = subject;
-  fetchSubjectStructure(subject);
+  window._SUBJECT = new URLSearchParams(window.location.search).get('subject') || 'maths';
 })();
 
 function fetchSubjectStructure(subject) {
@@ -1123,7 +1121,6 @@ function fetchSubjectStructure(subject) {
     return;
   }
 
-  // Convert structure to CHAPTER_CONTENT format with empty questions
   window.CHAPTER_CONTENT = {
     subject: structure.subject,
     label: structure.label,
@@ -1133,15 +1130,15 @@ function fetchSubjectStructure(subject) {
       icon: g.icon,
       chapters: g.chapters.map(chName => ({
         name: chName,
-        qs: [], // loaded on demand
+        qs: [],
         formulas: (CHAPTER_META[chName] || {}).formulas || [],
         mistakes: (CHAPTER_META[chName] || {}).mistakes || []
       }))
     }))
   };
 
-  // Defer boot until after components.js is loaded
-  window._pendingSubject = subject;
+  // Only call boot if it exists (second script block loaded)
+  if (typeof boot === 'function') boot(subject);
 }
 </script>
 
@@ -1158,17 +1155,11 @@ let gotItCount        = 0;
 let totalAnswered     = 0;
 let ALL_CHAPTERS      = [];
 
-// Boot now that all scripts are loaded
-if (window._pendingSubject) {
-  boot(window._pendingSubject);
-}
-
 /* ── Switch subject without page reload ── */
 function switchSubject(subject) {
-  if (CHAPTER_CONTENT.subject === subject) return; // already on this subject
+  if (window.CHAPTER_CONTENT && window.CHAPTER_CONTENT.subject === subject) return;
   window.history.replaceState({}, '', `/chapter-practice.html?subject=${subject}`);
   fetchSubjectStructure(subject);
-  // Reset question area
   $('cp-empty').classList.remove('hidden');
   $('cp-q-card').classList.add('hidden');
   $('cp-student-ans').classList.add('hidden');
@@ -1183,6 +1174,9 @@ function switchSubject(subject) {
   $('cp-prog-fill').style.width = '0%';
   $('cp-prog-txt').textContent = '0 / 0';
 }
+
+// Initial boot — all scripts now loaded
+fetchSubjectStructure(window._SUBJECT || 'maths');
 
 /* ── Boot ── */
 function boot(subject) {
