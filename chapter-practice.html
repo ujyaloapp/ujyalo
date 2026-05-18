@@ -1235,30 +1235,29 @@ function renderSidebar() {
   });
 
   // Fetch question counts from DB
-  // Only fetch counts if not already cached for this subject
   if (!window._countsCached) window._countsCached = {};
   if (!window._countsCached[CHAPTER_CONTENT.subject]) {
-    window._countsCached[CHAPTER_CONTENT.subject] = true;
-    fetchQuestionCounts();
+    fetchQuestionCounts(CHAPTER_CONTENT.subject);
   }
 }
 
-async function fetchQuestionCounts() {
+async function fetchQuestionCounts(subject) {
   try {
-    // One single API call for ALL chapters in this subject
-    const res = await fetch(`/api/practice?action=get-all-questions&subject=${encodeURIComponent(CHAPTER_CONTENT.subject)}`);
+    const res = await fetch(`/api/practice?action=get-all-questions&subject=${encodeURIComponent(subject)}`);
     const allQs = await res.json();
 
     if (!Array.isArray(allQs)) return;
 
-    // Group questions by chapter name
+    // Group by chapter
     const byChapter = {};
     allQs.forEach(q => {
       if (!byChapter[q.chapter_name]) byChapter[q.chapter_name] = [];
       byChapter[q.chapter_name].push({ q: q.question_text, a: q.answer_text, m: q.marks });
     });
 
-    // Update each chapter with its questions and show count
+    // Only update UI if still on same subject
+    if (CHAPTER_CONTENT.subject !== subject) return;
+
     let idx = 0;
     CHAPTER_CONTENT.groups.forEach(group => {
       group.chapters.forEach(ch => {
@@ -1270,7 +1269,10 @@ async function fetchQuestionCounts() {
       });
     });
 
-    // Also update mobile select with correct counts
+    // Mark as cached only after success
+    window._countsCached[subject] = true;
+
+    // Update mobile select with correct counts
     renderMobileSelect();
 
   } catch(e) {
