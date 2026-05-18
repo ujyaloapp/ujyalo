@@ -914,6 +914,175 @@
 <script>
 // Subject structure — groups and chapters (no questions yet)
 // Questions are loaded per-chapter from the database
+const CHAPTER_META = {
+  // Maths formulas and mistakes
+  'Sets': {
+    formulas: ['n(A∪B) = n(A) + n(B) − n(A∩B)','n(A∪B∪C) = n(A)+n(B)+n(C)−n(A∩B)−n(B∩C)−n(A∩C)+n(A∩B∩C)','Neither = Total − n(A∪B)'],
+    mistakes: ['Always subtract the "both" group — students forget this and double count','Draw a Venn diagram first — it makes the problem much clearer','For percentage problems, treat the total as 100 not the actual number']
+  },
+  'Tax and Money Exchange': {
+    formulas: ['Discount = Marked Price × Discount% / 100','Selling Price = Marked Price − Discount','VAT = Selling Price × VAT% / 100','Total Price = Selling Price + VAT'],
+    mistakes: ['VAT is always calculated on the price AFTER discount, not on the marked price','When finding the marked price, work backwards — divide by (1 − discount%/100) × (1 + VAT%/100)']
+  },
+  'Compound Interest': {
+    formulas: ['CA = P(1 + R/100)ᵀ','CI = CA − P','SI = (P × R × T) / 100','Half-yearly: Rate = R/2, Time = 2T'],
+    mistakes: ['CI is the interest only — CA is the total amount. Do not confuse them','For half-yearly compounding, divide rate by 2 AND multiply periods by 2']
+  },
+  'Population Growth & Depreciation': {
+    formulas: ['Growth: PT = P₀(1 + R/100)ᵀ','Past population: P₀ = PT / (1 + R/100)ᵀ','Depreciation: VT = V₀(1 − R/100)ᵀ'],
+    mistakes: ['Population growth uses (1 + R/100) — depreciation uses (1 − R/100)','To find past population, divide by the growth factor instead of multiplying']
+  },
+  'Plane Surface (Area)': {
+    formulas: ['Equilateral triangle: Area = (√3/4) × side²','Heron\'s formula: Area = √[s(s−a)(s−b)(s−c)], s = (a+b+c)/2','Trapezium: Area = ½ × (sum of parallel sides) × height','Rhombus: Area = ½ × d₁ × d₂'],
+    mistakes: ['For equilateral triangle, use the special formula — not ½ × base × height without finding height first','Rhombus area uses DIAGONALS not sides','Trapezium: add BOTH parallel sides, not just one']
+  },
+  'Cylinder and Sphere': {
+    formulas: ['Cylinder CSA = 2πrh','Cylinder TSA = 2πr(r+h)','Cylinder Volume = πr²h','Sphere SA = 4πr²','Sphere Volume = (4/3)πr³','Hemisphere TSA = 3πr²'],
+    mistakes: ['TSA of cylinder includes TWO circular ends — CSA does not','Always use radius not diameter in formulas']
+  },
+  'Prism and Pyramid': {
+    formulas: ['Prism LSA = Perimeter of base × height','Prism Volume = Base Area × height','Pyramid LSA = ½ × Perimeter × slant height','Pyramid Volume = ⅓ × Base Area × vertical height'],
+    mistakes: ['Pyramid uses SLANT height for surface area but VERTICAL height for volume','Always find the base area first before calculating volume']
+  },
+  'HCF and LCM': {
+    formulas: ['HCF × LCM = Product of the two expressions','HCF: take COMMON factors with LOWEST power','LCM: take ALL factors with HIGHEST power'],
+    mistakes: ['Always factorise completely before finding HCF or LCM','HCF takes the LOWEST power — LCM takes the HIGHEST']
+  },
+  'Radical and Surd': {
+    formulas: ['√(a×b) = √a × √b','Conjugate of (a+√b) is (a−√b)','(a+√b)(a−√b) = a² − b','Rationalise: multiply by the conjugate'],
+    mistakes: ['Only surds with the same number under the root can be added or subtracted','√4 + √9 ≠ √13 — you cannot add under the root sign']
+  },
+  'Indices': {
+    formulas: ['aᵐ × aⁿ = aᵐ⁺ⁿ','aᵐ ÷ aⁿ = aᵐ⁻ⁿ','(aᵐ)ⁿ = aᵐⁿ','a⁰ = 1','a⁻ⁿ = 1/aⁿ','a^(m/n) = ⁿ√(aᵐ)'],
+    mistakes: ['aᵐ × aⁿ = aᵐ⁺ⁿ NOT aᵐⁿ — add the powers, do not multiply','a⁰ = 1 for any value of a (except 0)']
+  },
+  'Algebraic Fractions': {
+    formulas: ['To simplify: factorise top and bottom, then cancel common factors','To add/subtract: find common denominator first','To divide: flip the second fraction, then multiply'],
+    mistakes: ['Always factorise before cancelling — never cancel terms that are added/subtracted','x/(x+1) cannot be simplified to 1/1 — the x is part of addition']
+  },
+  'Equations': {
+    formulas: ['Substitution: express one variable in terms of the other, substitute','Elimination: multiply equations to match coefficients, then add/subtract'],
+    mistakes: ['Always check your answer by substituting back into BOTH original equations','When multiplying an equation, multiply EVERY term including the right side']
+  },
+  'Area of Triangles & Quadrilaterals': {
+    formulas: ['Triangle = ½ × base × height','Parallelogram = base × height','Triangles on same base and between same parallels are equal in area'],
+    mistakes: ['Height must be PERPENDICULAR to the base — not the slant side','Triangles equal in area does not mean they are congruent']
+  },
+  'Circle Theorems': {
+    formulas: ['Central angle = 2 × Inscribed angle (on same arc)','Inscribed angles on same arc are equal','Angle in semicircle = 90°','Opposite angles of cyclic quadrilateral = 180°'],
+    mistakes: ['Central angle is at the CENTRE — inscribed angle is at the CIRCUMFERENCE','The theorem only applies when both angles stand on the SAME arc']
+  },
+  'Trigonometry': {
+    formulas: ['sin θ = Opposite/Hypotenuse','cos θ = Adjacent/Hypotenuse','tan θ = Opposite/Adjacent','sin²θ + cos²θ = 1','sin 30°=½, cos 30°=√3/2, tan 30°=1/√3','sin 45°=1/√2, cos 45°=1/√2, tan 45°=1','sin 60°=√3/2, cos 60°=½, tan 60°=√3'],
+    mistakes: ['Angles are measured from the NORMAL/HYPOTENUSE — draw the triangle first','sin²θ means (sin θ)² not sin(θ²)']
+  },
+  'Statistics': {
+    formulas: ['Mean = Σfx / Σf','Median = middle value (after sorting)','Mode = most frequently occurring value'],
+    mistakes: ['Always SORT data before finding median — the most common mistake','Mean uses ALL values — outliers affect it greatly']
+  },
+  'Probability': {
+    formulas: ['P(Event) = Favourable outcomes / Total outcomes','P(A) + P(not A) = 1','P(A and B) = P(A) × P(B) for independent events','Total outcomes for 2 dice = 36','Total outcomes for 2 coins = 4'],
+    mistakes: ['Always list ALL possible outcomes before counting favourable ones','Probability is always between 0 and 1 — never greater than 1']
+  },
+  // Science formulas and mistakes
+  'Force': {
+    formulas: ['F = ma (Newton\'s Second Law)','W = mg (Weight)','p = mv (Momentum)','g = 10 m/s²'],
+    mistakes: ['Mass is in kg, weight is in Newtons — they are not the same','Always find acceleration first before finding force']
+  },
+  'Pressure': {
+    formulas: ['P = F/A','P = hρg (liquid pressure)','1 atm = 101,325 Pa'],
+    mistakes: ['Smaller area = greater pressure for same force','Liquid pressure depends on DEPTH not total volume','Atmospheric pressure DECREASES with altitude']
+  },
+  'Energy': {
+    formulas: ['KE = ½mv²','PE = mgh','P = W/t (Power)','W = F × d'],
+    mistakes: ['KE depends on v² — doubling speed quadruples kinetic energy','Power is in Watts = Joules per second']
+  },
+  'Heat': {
+    formulas: ['Q = mcΔT','Specific heat of water = 4200 J/kg°C','K = °C + 273'],
+    mistakes: ['Heat and temperature are different things','Temperature stays CONSTANT during change of state']
+  },
+  'Light': {
+    formulas: ['∠i = ∠r (reflection)','n = sin i / sin r (Snell\'s Law)','Speed of light = 3 × 10⁸ m/s'],
+    mistakes: ['Angles are always measured from the NORMAL, not from the surface','Real image can be projected — virtual image cannot']
+  },
+  'Current Electricity and Magnetism': {
+    formulas: ['V = IR (Ohm\'s Law)','P = VI = I²R = V²/R','Series: R = R₁+R₂+R₃','Parallel: 1/R = 1/R₁+1/R₂+1/R₃'],
+    mistakes: ['In parallel, total resistance is LESS than smallest individual resistor','In series, current is same throughout — voltage divides']
+  },
+  'Classification of Elements': {
+    formulas: ['Atomic number = number of protons','Mass number = protons + neutrons','Electrons in outer shell = group number'],
+    mistakes: ['Elements in same GROUP have similar properties — not same period','Metals are on the LEFT of the periodic table']
+  },
+  'Chemical Reaction': {
+    formulas: ['OIL RIG: Oxidation Is Loss, Reduction Is Gain (of electrons)','Exothermic: releases heat. Endothermic: absorbs heat'],
+    mistakes: ['Oxidation and reduction always happen TOGETHER in a redox reaction','A catalyst speeds up reaction but is NOT used up']
+  },
+  'Acid, Base and Salt': {
+    formulas: ['Acid + Base → Salt + Water','Acid + Metal → Salt + Hydrogen gas','pH < 7 = acidic, pH = 7 = neutral, pH > 7 = alkaline'],
+    mistakes: ['pH decreases as acidity increases — lower pH = stronger acid','Neutralisation always produces SALT and WATER']
+  },
+  'Some Gases': {
+    formulas: ['Oxygen test: relights a glowing splint','Hydrogen test: squeaky pop with burning splint','CO₂ test: turns lime water milky','Ammonia test: turns damp red litmus paper blue'],
+    mistakes: ['Never confuse the tests — each gas has ONE specific test','CO₂ does NOT support combustion — used in fire extinguishers']
+  },
+  'Metals': {
+    formulas: ['Reactivity series: K > Na > Ca > Mg > Al > Zn > Fe > Cu > Au','Rusting: Fe + O₂ + H₂O → Fe₂O₃'],
+    mistakes: ['Rusting needs BOTH oxygen AND water — not just one of them','More reactive metals displace less reactive ones from solutions']
+  },
+  'Hydrocarbon and its Compounds': {
+    formulas: ['Alkanes: CₙH₂ₙ₊₂ (saturated, single bonds)','Alkenes: CₙH₂ₙ (unsaturated, double bond C=C)','Methane CH₄, Ethane C₂H₆, Propane C₃H₈, Butane C₄H₁₀'],
+    mistakes: ['Alkanes are saturated (single bonds) — alkenes are unsaturated (double bond)','Test for alkene: decolourises bromine water — alkanes do NOT']
+  },
+  'Materials Used in Daily Life': {
+    formulas: ['Saponification: Fat + NaOH → Soap + Glycerol','Concrete = Cement + Sand + Gravel + Water'],
+    mistakes: ['Thermoplastics can be remelted — thermosetting plastics cannot','Soap does not work well in hard water — forms scum']
+  },
+  'Invertebrates': {
+    formulas: ['Complete metamorphosis: Egg → Larva → Pupa → Adult (4 stages)','Incomplete metamorphosis: Egg → Nymph → Adult (3 stages)','Insects: 3 body parts, 6 legs. Spiders: 2 parts, 8 legs'],
+    mistakes: ['Earthworms are Annelida not Arthropoda','Complete metamorphosis has 4 stages — incomplete has 3']
+  },
+  'Human Nervous and Glandular Systems': {
+    formulas: ['Reflex arc: Stimulus→Receptor→Sensory nerve→Spinal cord→Motor nerve→Effector→Response','CNS = Brain + Spinal cord'],
+    mistakes: ['Reflex actions do NOT involve the brain — processed in spinal cord','Endocrine glands are DUCTLESS — release hormones into bloodstream']
+  },
+  'Blood Circulation in Human Body': {
+    formulas: ['Normal blood pressure = 120/80 mmHg','Blood path: Body→Right Atrium→Right Ventricle→Lungs→Left Atrium→Left Ventricle→Body'],
+    mistakes: ['Left ventricle has thickest walls — pumps to whole body','Arteries carry blood AWAY from heart — veins carry blood TOWARDS heart']
+  },
+  'Chromosome and Sex Determination': {
+    formulas: ['Human body cells: 46 chromosomes = 23 pairs','Gametes: 23 chromosomes','Female: XX, Male: XY'],
+    mistakes: ['Sex is determined by the FATHER not the mother','Gametes have HALF the normal chromosome number (23 not 46)']
+  },
+  'Asexual and Sexual Reproduction': {
+    formulas: ['Asexual: 1 parent, identical offspring','Sexual: 2 parents, varied offspring','Binary fission: 1 cell → 2 identical cells'],
+    mistakes: ['Asexual reproduction produces IDENTICAL offspring — sexual produces varied','Variation from sexual reproduction is important for evolution']
+  },
+  'Artificial Vegetative Propagation': {
+    formulas: ['Methods: Cutting, Grafting, Layering, Budding','Grafting: Scion (shoot) joined to Rootstock'],
+    mistakes: ['Grafting combines TWO different plants — not one','Vegetative propagation does not use seeds']
+  },
+  'Heredity': {
+    formulas: ['Dominant allele (capital letter) expressed over recessive (lowercase)','Homozygous: AA or aa. Heterozygous: Aa','Tt × Tt gives 3:1 ratio (3 dominant : 1 recessive)'],
+    mistakes: ['Dominant does not mean more common — just expressed over recessive','Two heterozygous parents (Aa × Aa) give 3:1 ratio']
+  },
+  'Environmental Pollution and Management': {
+    formulas: ['Greenhouse gases: CO₂, CH₄, N₂O, water vapour, CFCs','pH of acid rain < 5.6'],
+    mistakes: ['Greenhouse effect is NATURAL — enhanced greenhouse effect causes climate change','CFCs destroy ozone — not CO₂']
+  },
+  'History of the Earth': {
+    formulas: ['Age of Earth ≈ 4.6 billion years','Rock types: Igneous (magma), Sedimentary (sediments), Metamorphic (heat+pressure)'],
+    mistakes: ['Sedimentary rocks often contain fossils — igneous rarely do','Metamorphic rocks are CHANGED existing rocks — not new from magma']
+  },
+  'Climate Change and Atmosphere': {
+    formulas: ['Layers: Troposphere→Stratosphere→Mesosphere→Thermosphere→Exosphere','Ozone layer: in Stratosphere (15-35 km)'],
+    mistakes: ['Weather occurs in TROPOSPHERE — ozone layer is in STRATOSPHERE','Ozone depletion ≠ greenhouse effect — different problems']
+  },
+  'The Earth in the Universe': {
+    formulas: ['Planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune','Earth rotation (day/night) = 24 hours','Earth revolution (year) = 365.25 days','Speed of light = 3 × 10⁸ m/s'],
+    mistakes: ['Seasons are caused by Earth\'s AXIAL TILT — not distance from Sun','Day and night caused by ROTATION — seasons by REVOLUTION']
+  },
+};
+
 const SUBJECT_STRUCTURE = {
   maths: {
     subject: 'maths', label: 'Maths', icon: '🧮',
@@ -965,8 +1134,8 @@ function fetchSubjectStructure(subject) {
       chapters: g.chapters.map(chName => ({
         name: chName,
         qs: [], // loaded on demand
-        formulas: [],
-        mistakes: []
+        formulas: (CHAPTER_META[chName] || {}).formulas || [],
+        mistakes: (CHAPTER_META[chName] || {}).mistakes || []
       }))
     }))
   };
@@ -1321,9 +1490,15 @@ function showComplete() {
     const card = document.createElement('div');
     card.id = 'cp-signup-nudge-card';
     card.className = 'cp-signup-card';
+    const _pct = currentChapter.qs.length > 0 ? Math.round((gotItCount / currentChapter.qs.length) * 100) : 0;
+    const _msg = _pct === 0   ? 'Review the model answers and try again — that\'s how learning happens.'
+               : _pct < 50   ? 'Good start! Keep practising to improve your score.'
+               : _pct < 75   ? 'Good effort! A free account helps you track your improvement.'
+               : _pct < 100  ? 'Great work! You\'re almost there.'
+               :                'Perfect score! Excellent work.';
     card.innerHTML = `
-      <div class="cp-signup-card-title">You scored ${gotItCount}/${currentChapter.qs.length} — great work!</div>
-      <div class="cp-signup-card-sub">Don't let this progress disappear. A free account saves everything.</div>
+      <div class="cp-signup-card-title">You scored ${gotItCount}/${currentChapter.qs.length}</div>
+      <div class="cp-signup-card-sub">${_msg} A free account saves everything.</div>
       <div class="cp-signup-benefits">
         <div class="cp-signup-benefit"><i class="ti ti-chart-bar" aria-hidden="true"></i>Track all chapters</div>
         <div class="cp-signup-benefit"><i class="ti ti-bell" aria-hidden="true"></i>Past paper alerts</div>
