@@ -1178,7 +1178,7 @@ async function loadQuestion() {
     document.querySelector('.cp-empty-title').textContent = 'Loading questions…';
 
     try {
-      const res = await fetch(`/api/get-chapter-questions?subject=${encodeURIComponent(CHAPTER_CONTENT.subject)}&chapter=${encodeURIComponent(currentChapter.name)}`);
+      const res = await fetch(`/api/practice?action=get-questions&subject=${encodeURIComponent(CHAPTER_CONTENT.subject)}&chapter=${encodeURIComponent(currentChapter.name)}`);
       const data = await res.json();
 
       if (data && data.length > 0) {
@@ -1315,7 +1315,7 @@ async function saveChapterProgress(ch, score, total) {
   if (!token) return; // not logged in — skip
 
   try {
-    await fetch('/api/save-chapter-progress', {
+    await fetch('/api/practice?action=save-progress', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
