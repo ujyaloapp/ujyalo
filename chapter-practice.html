@@ -971,7 +971,8 @@ function fetchSubjectStructure(subject) {
     }))
   };
 
-  boot(subject);
+  // Defer boot until after components.js is loaded
+  window._pendingSubject = subject;
 }
 </script>
 
@@ -987,6 +988,11 @@ let questionIndex     = 0;
 let gotItCount        = 0;
 let totalAnswered     = 0;
 let ALL_CHAPTERS      = [];
+
+// Boot now that all scripts are loaded
+if (window._pendingSubject) {
+  boot(window._pendingSubject);
+}
 
 /* ── Boot ── */
 function boot(subject) {
