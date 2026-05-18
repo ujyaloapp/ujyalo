@@ -912,13 +912,6 @@
 
 <!-- Load subject content from database -->
 <script>
-(function () {
-  const subject = new URLSearchParams(window.location.search).get('subject') || 'maths';
-  window._SUBJECT = subject;
-  // Boot will be called after we fetch the structure
-  fetchSubjectStructure(subject);
-})();
-
 // Subject structure — groups and chapters (no questions yet)
 // Questions are loaded per-chapter from the database
 const SUBJECT_STRUCTURE = {
@@ -945,6 +938,13 @@ const SUBJECT_STRUCTURE = {
     ]
   }
 };
+
+// Boot — runs after SUBJECT_STRUCTURE is defined
+(function () {
+  const subject = new URLSearchParams(window.location.search).get('subject') || 'maths';
+  window._SUBJECT = subject;
+  fetchSubjectStructure(subject);
+})();
 
 function fetchSubjectStructure(subject) {
   const structure = SUBJECT_STRUCTURE[subject];
