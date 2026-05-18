@@ -1194,7 +1194,7 @@ function renderSidebar() {
   CHAPTER_CONTENT.groups.forEach((group, gIdx) => {
     // Group header — open by default
     const header = document.createElement('button');
-    header.className = 'cp-group-btn open';
+    header.className = 'cp-group-btn';
     header.id = `grp-${gIdx}`;
     header.innerHTML = `<span>${group.icon || ''} ${group.name}</span><span class="cp-group-arrow">▶</span>`;
     header.onclick = () => toggleGroup(gIdx);
@@ -1202,7 +1202,7 @@ function renderSidebar() {
 
     // Chapters container — open by default
     const container = document.createElement('div');
-    container.className = 'cp-group-chapters open';
+    container.className = 'cp-group-chapters';
     container.id = `grp-chs-${gIdx}`;
 
     group.chapters.forEach(ch => {
@@ -1220,7 +1220,12 @@ function renderSidebar() {
   });
 
   // Fetch question counts from DB
-  fetchQuestionCounts();
+  // Only fetch counts if not already cached for this subject
+  if (!window._countsCached) window._countsCached = {};
+  if (!window._countsCached[CHAPTER_CONTENT.subject]) {
+    window._countsCached[CHAPTER_CONTENT.subject] = true;
+    fetchQuestionCounts();
+  }
 }
 
 async function fetchQuestionCounts() {
