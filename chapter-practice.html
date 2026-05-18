@@ -772,12 +772,12 @@
   <!-- ── Mobile picker (hidden on desktop via CSS) ── -->
   <div class="cp-mobile-bar">
     <div class="cp-mobile-subj-row">
-      <a class="cp-mobile-subj-btn" id="mob-btn-maths" href="/chapter-practice.html?subject=maths">
+      <button class="cp-mobile-subj-btn" id="mob-btn-maths" onclick="switchSubject('maths')">
         <span>🧮</span>Maths
-      </a>
-      <a class="cp-mobile-subj-btn" id="mob-btn-science" href="/chapter-practice.html?subject=science">
+      </button>
+      <button class="cp-mobile-subj-btn" id="mob-btn-science" onclick="switchSubject('science')">
         <span>🔬</span>Science
-      </a>
+      </button>
     </div>
     <div class="cp-mobile-select-label">Choose a chapter</div>
     <select class="cp-mobile-select" id="cp-mobile-select" onchange="onMobileSelect(this.value)">
@@ -794,12 +794,12 @@
         <div class="cp-sidebar-title" id="cp-sidebar-title">SEE Chapter Practice</div>
         <div class="cp-sidebar-sub">Pick a chapter to start</div>
         <div class="cp-subj-row">
-          <a class="cp-subj-btn" id="btn-maths" href="/chapter-practice.html?subject=maths">
+          <button class="cp-subj-btn" id="btn-maths" onclick="switchSubject('maths')">
             <span>🧮</span>Maths
-          </a>
-          <a class="cp-subj-btn" id="btn-science" href="/chapter-practice.html?subject=science">
+          </button>
+          <button class="cp-subj-btn" id="btn-science" onclick="switchSubject('science')">
             <span>🔬</span>Science
-          </a>
+          </button>
         </div>
       </div>
       <div class="cp-chapter-list" id="cp-chapter-list">
@@ -1161,6 +1161,27 @@ let ALL_CHAPTERS      = [];
 // Boot now that all scripts are loaded
 if (window._pendingSubject) {
   boot(window._pendingSubject);
+}
+
+/* ── Switch subject without page reload ── */
+function switchSubject(subject) {
+  if (CHAPTER_CONTENT.subject === subject) return; // already on this subject
+  window.history.replaceState({}, '', `/chapter-practice.html?subject=${subject}`);
+  fetchSubjectStructure(subject);
+  // Reset question area
+  $('cp-empty').classList.remove('hidden');
+  $('cp-q-card').classList.add('hidden');
+  $('cp-student-ans').classList.add('hidden');
+  $('cp-model-ans').classList.add('hidden');
+  $('cp-self-assess').classList.add('hidden');
+  $('cp-complete').classList.add('hidden');
+  $('cp-tips-wrap').classList.add('hidden');
+  currentChapter = null;
+  currentChapterIdx = -1;
+  questionIndex = 0;
+  $('cp-ctx-ch').textContent = 'Choose a chapter';
+  $('cp-prog-fill').style.width = '0%';
+  $('cp-prog-txt').textContent = '0 / 0';
 }
 
 /* ── Boot ── */
