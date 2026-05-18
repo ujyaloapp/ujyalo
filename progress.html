@@ -433,7 +433,7 @@ async function loadProgress() {
     );
 
     // Use Supabase directly via env — fetch from API instead
-    const apiRes = await fetch('/api/get-chapter-progress', {
+    const apiRes = await fetch('/api/practice?action=get-progress', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
 
