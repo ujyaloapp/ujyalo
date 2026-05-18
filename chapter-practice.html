@@ -1250,23 +1250,37 @@ function renderSidebar() {
 }
 
 async function fetchQuestionCounts() {
-  let idx = 0;
-  for (const group of CHAPTER_CONTENT.groups) {
-    for (const ch of group.chapters) {
-      const chIdx = idx;
-      try {
-        const res = await fetch(`/api/practice?action=get-questions&subject=${encodeURIComponent(CHAPTER_CONTENT.subject)}&chapter=${encodeURIComponent(ch.name)}`);
-        const qs = await res.json();
-        const count = Array.isArray(qs) ? qs.length : 0;
-        ch.qs = qs.map ? qs.map(q => ({ q: q.question_text, a: q.answer_text, m: q.marks })) : [];
-        const el = $(`qc-${chIdx}`);
-        if (el) el.textContent = count > 0 ? `${count}q` : '—';
-      } catch(e) {
-        const el = $(`qc-${chIdx}`);
-        if (el) el.textContent = '—';
-      }
-      idx++;
-    }
+  try {
+    // One single API call for ALL chapters in this subject
+    const res = await fetch(`/api/practice?action=get-all-questions&subject=${encodeURIComponent(CHAPTER_CONTENT.subject)}`);
+    const allQs = await res.json();
+
+    if (!Array.isArray(allQs)) return;
+
+    // Group questions by chapter name
+    const byChapter = {};
+    allQs.forEach(q => {
+      if (!byChapter[q.chapter_name]) byChapter[q.chapter_name] = [];
+      byChapter[q.chapter_name].push({ q: q.question_text, a: q.answer_text, m: q.marks });
+    });
+
+    // Update each chapter with its questions and show count
+    let idx = 0;
+    CHAPTER_CONTENT.groups.forEach(group => {
+      group.chapters.forEach(ch => {
+        const qs = byChapter[ch.name] || [];
+        ch.qs = qs;
+        const el = $(`qc-${idx}`);
+        if (el) el.textContent = qs.length > 0 ? `${qs.length}q` : '—';
+        idx++;
+      });
+    });
+
+    // Also update mobile select with correct counts
+    renderMobileSelect();
+
+  } catch(e) {
+    console.error('fetchQuestionCounts error:', e);
   }
 }
 
