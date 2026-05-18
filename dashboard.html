@@ -6,219 +6,351 @@
 <title>Dashboard — Ujyalo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.css">
+<style>
+.db-page { background: var(--ink-50); min-height: 100vh; padding: 40px 0 60px; }
+.db-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: clamp(1.6rem, 3vw, 2rem); font-weight: 800; letter-spacing: -1.5px; color: var(--ink-900); margin-bottom: 4px; }
+.db-title em { font-style: italic; color: var(--brand); }
+.db-readiness { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); border-radius: 18px; padding: 24px 28px; display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+.db-readiness-score { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 3rem; font-weight: 800; color: white; line-height: 1; letter-spacing: -2px; }
+.db-readiness-score span { font-size: 1.4rem; font-weight: 400; opacity: 0.7; }
+.db-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+.db-stat { background: white; border: 1px solid var(--ink-100); border-radius: 14px; padding: 18px; }
+.db-stat-num { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; color: var(--ink-900); line-height: 1; margin-bottom: 4px; }
+.db-stat-num.blue { color: var(--brand); }
+.db-stat-num.green { color: var(--green); }
+.db-stat-num.amber { color: #854F0B; }
+.db-stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-400); }
+.db-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.db-mission { background: #EAF3DE; border-radius: 16px; padding: 20px; }
+.db-mission-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #3B6D11; margin-bottom: 8px; }
+.db-mission-title { font-size: 15px; font-weight: 700; color: #1a4008; margin-bottom: 4px; }
+.db-mission-sub { font-size: 13px; color: #3B6D11; margin-bottom: 14px; line-height: 1.5; }
+.db-mission-btn { background: #27500A; color: white; border: none; border-radius: 999px; padding: 9px 18px; font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.2s; }
+.db-mission-btn:hover { background: #173404; }
+.db-heatmap { background: white; border: 1px solid var(--ink-100); border-radius: 16px; padding: 20px; }
+.db-heatmap-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-400); margin-bottom: 12px; }
+.db-heatmap-row { display: flex; gap: 6px; margin-bottom: 8px; }
+.db-heatmap-day { flex: 1; aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.db-heatmap-day.done { background: var(--brand); color: white; }
+.db-heatmap-day.today-done { background: var(--brand); color: white; box-shadow: 0 0 0 2px white, 0 0 0 4px var(--brand); }
+.db-heatmap-day.missed { background: var(--ink-100); color: var(--ink-400); }
+.db-subjects { background: white; border: 1px solid var(--ink-100); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+.db-subject-item { margin-bottom: 14px; }
+.db-subject-item:last-child { margin-bottom: 0; }
+.db-subject-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+.db-subject-bar { height: 6px; background: var(--ink-100); border-radius: 999px; overflow: hidden; }
+.db-subject-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--brand) 0%, var(--sun) 100%); transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
+.db-modes { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-bottom: 20px; }
+.db-mode { background: white; border: 1px solid var(--ink-100); border-radius: 14px; padding: 18px; display: flex; gap: 14px; align-items: flex-start; transition: all 0.2s; text-decoration: none; color: inherit; }
+.db-mode:hover { border-color: var(--brand); transform: translateY(-1px); }
+.db-mode.live { border-color: var(--green); }
+.db-mode-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.db-mode-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; color: var(--ink-900); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.db-mode-sub { font-size: 12px; color: var(--ink-400); line-height: 1.5; }
+.db-badge-live { background: var(--green-light); color: var(--green); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.db-badge-soon { background: var(--ink-100); color: var(--ink-500); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+@media (max-width: 768px) {
+  .db-stats { grid-template-columns: repeat(2,1fr); }
+  .db-row { grid-template-columns: 1fr; }
+  .db-modes { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
+<div id="site-nav"></div>
+<div class="db-page">
+  <div class="container">
 
-<!-- ═══ NAV ═══ -->
-<nav class="nav-app">
-  <div class="container nav-inner">
-    <a href="/dashboard.html" class="logo">
-      <img src="/ujyalo-logo-transparent.png" style="height:38px;width:auto;" alt="Ujyalo">
-    </a>
-    <div class="nav-links" id="nav-links">
-      <a href="/dashboard.html">Dashboard</a>
-      <a href="/practice.html">Practice</a>
-      <a href="/progress.html">Progress</a>
-      <a href="/profile.html">Profile</a>
+    <div style="margin-bottom:28px;">
+      <div class="db-title"><span id="greeting">Good morning</span>, <em id="user-name">there.</em></div>
+      <div style="font-size:14px;color:var(--ink-400);" id="db-subtitle">Loading your progress…</div>
     </div>
-    <div class="nav-actions">
-      <span class="streak-pill">🔥 <span id="nav-streak">0</span></span>
-      <div id="nav-avatar" style="width:32px;height:32px;border-radius:50%;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;cursor:pointer;" title="My profile">?</div>
-      <button onclick="logout()" style="font-size:12px;color:var(--ink-500);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:500;margin-left:8px;">Log out</button>
-    </div>
-  </div>
-</nav>
 
-<!-- ═══ MAIN ═══ -->
-<main class="container" style="padding:48px 24px;">
-
-  <!-- Welcome -->
-  <div class="animate-up mb-8">
-    <h1 class="welcome-title">
-      <span id="greeting">Good morning</span>, <em id="user-name">there.</em>
-    </h1>
-    <p class="text-muted" style="font-size:16px;" id="welcome-sub">Welcome to Ujyalo. Start practising to track your progress.</p>
-  </div>
-
-  <!-- Stats grid -->
-  <div class="grid-3 animate-up delay-1 mb-8">
-    <div class="stat-card">
-      <div class="stat-num" id="stat-questions">0</div>
-      <div class="stat-label">Questions this week</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" id="stat-accuracy">—</div>
-      <div class="stat-label">Accuracy</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" style="color:#854F0B;" id="stat-streak">0 🔥</div>
-      <div class="stat-label">Day streak</div>
-    </div>
-  </div>
-
-  <!-- CTA card -->
-  <div class="challenge-card animate-up delay-2 mb-8">
-    <div class="flex items-center justify-between flex-wrap gap-4" style="position:relative;z-index:1;">
+    <!-- SEE Readiness -->
+    <div class="db-readiness">
       <div>
-        <div style="font-size:13px;opacity:0.85;margin-bottom:4px;">✦ Ready to practise?</div>
-        <h2 class="font-display" style="font-size:26px;font-weight:600;margin-bottom:4px;">Start your practice session</h2>
-        <p style="font-size:14px;opacity:0.85;">Chapter practice for Maths and Science — free, no limits.</p>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:6px;">SEE readiness score</div>
+        <div class="db-readiness-score" id="readiness-score">—<span>%</span></div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px;" id="readiness-desc">Calculating…</div>
       </div>
-      <a href="/chapter-practice.html" class="btn" style="background:white;color:var(--brand);padding:12px 24px;">
-        Start now →
-      </a>
-    </div>
-  </div>
-
-  <!-- Practice modes -->
-  <div class="animate-up delay-3 mb-8">
-    <div class="label-tiny mb-4">What's available</div>
-    <div class="grid-2" style="gap:16px;">
-
-      <!-- Chapter practice — LIVE -->
-      <a href="/practice.html" class="card card-hover" style="display:flex;gap:16px;align-items:start;padding:20px;border-color:var(--green);">
-        <div style="width:44px;height:44px;border-radius:10px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">📚</div>
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <h3 class="font-display" style="font-size:17px;font-weight:600;">Chapter practice</h3>
-            <span class="badge badge-green" style="font-size:10px;padding:2px 8px;">✓ Live</span>
-          </div>
-          <p class="text-muted" style="font-size:13px;">Pick a chapter. Practice as many questions as you want. Maths and Science available now.</p>
+      <div style="flex:1;min-width:200px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:6px;"><span>0%</span><span>100% ready</span></div>
+        <div style="height:8px;background:rgba(255,255,255,0.2);border-radius:999px;overflow:hidden;">
+          <div id="readiness-fill" style="height:100%;background:#fcd34d;border-radius:999px;width:0%;transition:width 1s cubic-bezier(0.16,1,0.3,1);"></div>
         </div>
-      </a>
-
-      <!-- Past papers — coming soon -->
-      <div class="card" style="display:flex;gap:16px;align-items:start;padding:20px;opacity:0.7;">
-        <div style="width:44px;height:44px;border-radius:10px;background:var(--sun-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">📜</div>
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <h3 class="font-display" style="font-size:17px;font-weight:600;">Past papers</h3>
-            <span class="badge badge-sun" style="font-size:10px;padding:2px 8px;">Coming soon</span>
-          </div>
-          <p class="text-muted" style="font-size:13px;">Real SEE past papers from previous years. Being prepared now.</p>
-        </div>
-      </div>
-
-      <!-- Mock tests — coming soon -->
-      <div class="card" style="display:flex;gap:16px;align-items:start;padding:20px;opacity:0.7;">
-        <div style="width:44px;height:44px;border-radius:10px;background:var(--brand-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">⏱️</div>
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <h3 class="font-display" style="font-size:17px;font-weight:600;">Mock tests</h3>
-            <span class="badge" style="font-size:10px;padding:2px 8px;">Coming soon</span>
-          </div>
-          <p class="text-muted" style="font-size:13px;">Full timed exam experience. Practice under real exam conditions.</p>
-        </div>
-      </div>
-
-      <!-- AI quick practice — coming soon -->
-      <div class="card" style="display:flex;gap:16px;align-items:start;padding:20px;opacity:0.7;">
-        <div style="width:44px;height:44px;border-radius:10px;background:var(--sun-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">⚡</div>
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <h3 class="font-display" style="font-size:17px;font-weight:600;">AI quick practice</h3>
-            <span class="badge" style="font-size:10px;padding:2px 8px;">Coming soon</span>
-          </div>
-          <p class="text-muted" style="font-size:13px;">5 AI-generated questions tailored to your weak chapters. Perfect for quick revision.</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Subjects -->
-  <div class="animate-up delay-4 mb-8">
-    <div class="label-tiny mb-4">Subjects</div>
-    <div class="grid-5">
-      <a href="/chapter-practice.html?subject=maths" class="card card-hover text-center" style="padding:20px 12px;">
-        <div style="font-size:24px;margin-bottom:8px;">🧮</div>
-        <div class="font-display" style="font-size:15px;font-weight:600;">Maths</div>
-        <div class="text-tiny mt-2" style="color:var(--green);font-weight:600;">17 chapters</div>
-      </a>
-      <a href="/chapter-practice.html?subject=science" class="card card-hover text-center" style="padding:20px 12px;">
-        <div style="font-size:24px;margin-bottom:8px;">🔬</div>
-        <div class="font-display" style="font-size:15px;font-weight:600;">Science</div>
-        <div class="text-tiny mt-2" style="color:var(--green);font-weight:600;">23 chapters</div>
-      </a>
-      <div class="card text-center" style="padding:20px 12px;opacity:0.6;">
-        <div style="font-size:24px;margin-bottom:8px;">📖</div>
-        <div class="font-display" style="font-size:15px;font-weight:600;">English</div>
-        <div class="text-tiny mt-2">Coming soon</div>
-      </div>
-      <div class="card text-center" style="padding:20px 12px;opacity:0.6;">
-        <div style="font-size:24px;margin-bottom:8px;">🌏</div>
-        <div class="font-display" style="font-size:15px;font-weight:600;">Social</div>
-        <div class="text-tiny mt-2">Coming soon</div>
-      </div>
-      <div class="card text-center" style="padding:20px 12px;opacity:0.6;">
-        <div style="font-size:24px;margin-bottom:8px;">📝</div>
-        <div class="font-display" style="font-size:15px;font-weight:600;">Nepali</div>
-        <div class="text-tiny mt-2">Coming soon</div>
+        <div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.6);" id="readiness-hint"></div>
       </div>
     </div>
-  </div>
 
-  <!-- Account info -->
-  <div class="animate-up mb-8">
-    <div class="label-tiny mb-4">Your account</div>
-    <div class="card" style="padding:20px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-        <div>
-          <div style="font-size:14px;font-weight:600;" id="account-name">—</div>
-          <div class="text-muted" style="font-size:12px;" id="account-email">—</div>
-        </div>
-        <div style="display:flex;gap:8px;">
-          <a href="/profile.html" class="btn btn-ghost" style="font-size:13px;padding:8px 16px;">Edit profile</a>
-          <button onclick="logout()" class="btn" style="font-size:13px;padding:8px 16px;background:var(--red-light);color:var(--red);border:none;border-radius:999px;cursor:pointer;font-family:inherit;font-weight:600;">Log out</button>
-        </div>
+    <!-- Stats -->
+    <div class="db-stats">
+      <div class="db-stat"><div class="db-stat-num blue" id="stat-chapters">—</div><div class="db-stat-label">Chapters done</div></div>
+      <div class="db-stat"><div class="db-stat-num green" id="stat-accuracy">—</div><div class="db-stat-label">Accuracy</div></div>
+      <div class="db-stat"><div class="db-stat-num" id="stat-questions">—</div><div class="db-stat-label">Questions this week</div></div>
+      <div class="db-stat"><div class="db-stat-num amber" id="stat-streak">— 🔥</div><div class="db-stat-label">Day streak</div></div>
+    </div>
+
+    <!-- Mission + Heatmap -->
+    <div class="db-row">
+      <div class="db-mission">
+        <div class="db-mission-label">Today's mission</div>
+        <div class="db-mission-title" id="mission-title">Loading…</div>
+        <div class="db-mission-sub" id="mission-sub"></div>
+        <a href="/chapter-practice.html" class="db-mission-btn" id="mission-btn">Start now →</a>
+      </div>
+      <div class="db-heatmap">
+        <div class="db-heatmap-label">This week</div>
+        <div class="db-heatmap-row" id="heatmap-row"></div>
+        <div style="font-size:12px;color:var(--ink-400);" id="heatmap-sub">Loading…</div>
       </div>
     </div>
-  </div>
 
-</main>
+    <!-- Subject progress -->
+    <div class="db-subjects">
+      <div style="font-size:14px;font-weight:700;color:var(--ink-900);margin-bottom:16px;">Subject progress</div>
+      <div id="subject-progress"></div>
+    </div>
+
+    <!-- Practice modes -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-400);margin-bottom:12px;">What's available</div>
+    <div class="db-modes">
+      <a href="/chapter-practice.html" class="db-mode live">
+        <div class="db-mode-icon" style="background:var(--green-light);">📚</div>
+        <div><div class="db-mode-title">Chapter practice <span class="db-badge-live">✓ Live</span></div><div class="db-mode-sub">Maths (17 chapters) and Science (23 chapters) available now.</div></div>
+      </a>
+      <div class="db-mode" style="opacity:0.6;cursor:default;">
+        <div class="db-mode-icon" style="background:var(--sun-light);">📜</div>
+        <div><div class="db-mode-title">Past papers <span class="db-badge-soon">Coming soon</span></div><div class="db-mode-sub">Real SEE past papers from previous years. Being prepared now.</div></div>
+      </div>
+      <div class="db-mode" style="opacity:0.6;cursor:default;">
+        <div class="db-mode-icon" style="background:var(--brand-light);">⏱️</div>
+        <div><div class="db-mode-title">Mock tests <span class="db-badge-soon">Coming soon</span></div><div class="db-mode-sub">Full timed exam experience under real conditions.</div></div>
+      </div>
+      <div class="db-mode" style="opacity:0.6;cursor:default;">
+        <div class="db-mode-icon" style="background:var(--sun-light);">⚡</div>
+        <div><div class="db-mode-title">AI quick practice <span class="db-badge-soon">Coming soon</span></div><div class="db-mode-sub">5 questions tailored to your weak chapters.</div></div>
+      </div>
+    </div>
+
+    <!-- Account -->
+    <div style="background:white;border:1px solid var(--ink-100);border-radius:14px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-size:14px;font-weight:700;" id="account-name">—</div>
+        <div style="font-size:12px;color:var(--ink-400);" id="account-email">—</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <a href="/profile.html" class="btn btn-ghost" style="font-size:13px;padding:8px 16px;">Edit profile</a>
+        <button onclick="logout()" style="font-size:13px;padding:8px 16px;background:var(--red-light);color:var(--red);border:none;border-radius:999px;cursor:pointer;font-family:inherit;font-weight:600;">Log out</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <a href="/contact.html" class="help-bubble"><span class="help-bubble-icon">?</span>Need help?</a>
-
+<div id="site-footer"></div>
+<script src="/scripts/components.js"></script>
 <script>
-/* ── Session check ── */
 const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
 const token = localStorage.getItem('ujyalo_token');
+if (!user || !token) window.location.href = '/login.html';
 
-if (!user || !token) {
-  window.location.href = '/login.html';
-}
+const $ = id => document.getElementById(id);
 
-/* ── Active nav link ── */
-const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
-document.querySelectorAll('.nav-links a').forEach(link => {
-  const linkPage = link.getAttribute('href').split('/').pop();
-  if (linkPage === currentPage) link.classList.add('active');
-});
+const MATHS_CHAPTERS   = ['Sets','Tax and Money Exchange','Compound Interest','Population Growth & Depreciation','Plane Surface (Area)','Cylinder and Sphere','Prism and Pyramid','HCF and LCM','Radical and Surd','Indices','Algebraic Fractions','Equations','Area of Triangles & Quadrilaterals','Circle Theorems','Trigonometry','Statistics','Probability'];
+const SCIENCE_CHAPTERS = ['Force','Pressure','Energy','Heat','Light','Current Electricity and Magnetism','Classification of Elements','Chemical Reaction','Acid, Base and Salt','Some Gases','Metals','Hydrocarbon and its Compounds','Materials Used in Daily Life','Invertebrates','Human Nervous and Glandular Systems','Blood Circulation in Human Body','Chromosome and Sex Determination','Asexual and Sexual Reproduction','Artificial Vegetative Propagation','Heredity','Environmental Pollution and Management','History of the Earth','Climate Change and Atmosphere','The Earth in the Universe'];
+const TOTAL_CHAPTERS   = MATHS_CHAPTERS.length + SCIENCE_CHAPTERS.length;
 
-/* ── Populate user data ── */
 if (user) {
-  const firstName = user.full_name
-    ? user.full_name.split(' ')[0]
-    : user.email.split('@')[0];
-
-  const hour     = new Date().getHours();
-  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-
-  document.getElementById('greeting').textContent    = greeting;
-  document.getElementById('user-name').textContent   = firstName + '.';
-  document.getElementById('nav-avatar').textContent  = firstName.charAt(0).toUpperCase();
-  document.getElementById('account-name').textContent  = user.full_name || firstName;
-  document.getElementById('account-email').textContent = user.email;
+  const firstName = user.full_name ? user.full_name.split(' ')[0] : user.email.split('@')[0];
+  const hour = new Date().getHours();
+  $('greeting').textContent = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  $('user-name').textContent = firstName + '.';
+  $('account-name').textContent = user.full_name || firstName;
+  $('account-email').textContent = user.email;
 }
 
-/* ── Logout ── */
+async function loadDashboard() {
+  try {
+    const res = await fetch('/api/practice?action=get-progress', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('Failed');
+    const attempts = await res.json();
+    if (!attempts || attempts.length === 0) { renderEmpty(); return; }
+    renderDashboard(attempts);
+  } catch(e) {
+    renderEmpty();
+  }
+}
+
+function renderEmpty() {
+  $('db-subtitle').textContent = 'Start practising to see your stats here.';
+  $('readiness-score').innerHTML = '0<span>%</span>';
+  $('readiness-desc').textContent = 'Complete your first chapter to start tracking.';
+  $('stat-chapters').textContent = '0/' + TOTAL_CHAPTERS;
+  $('stat-accuracy').textContent = '—';
+  $('stat-questions').textContent = '0';
+  $('stat-streak').textContent = '0 🔥';
+  $('mission-title').textContent = 'Start with Sets';
+  $('mission-sub').textContent = 'Pick any chapter and answer your first question. Your journey starts now.';
+  renderHeatmap([]);
+  renderSubjects({});
+}
+
+function renderDashboard(attempts) {
+  const now = new Date();
+
+  // Best per chapter
+  const best = {};
+  attempts.forEach(a => {
+    if (!best[a.chapter_name] || a.pct > best[a.chapter_name].pct) best[a.chapter_name] = a;
+  });
+  const bestList = Object.values(best);
+
+  const totalChapters = bestList.length;
+  const totalScore    = bestList.reduce((s,a) => s + a.score, 0);
+  const totalQs       = bestList.reduce((s,a) => s + a.total, 0);
+  const accuracy      = totalQs > 0 ? Math.round((totalScore / totalQs) * 100) : 0;
+
+  // Questions this week
+  const weekAgo = new Date(now - 7*24*60*60*1000);
+  const qsWeek  = attempts.filter(a => new Date(a.completed_at) >= weekAgo).reduce((s,a) => s + a.total, 0);
+
+  // Streak
+  const streak = calcStreak(attempts);
+
+  // Readiness
+  const compPct  = Math.round((totalChapters / TOTAL_CHAPTERS) * 100);
+  const readiness = totalChapters > 0 ? Math.round(compPct * 0.6 + accuracy * 0.4) : 0;
+
+  $('db-subtitle').textContent = totalChapters + ' chapter' + (totalChapters !== 1 ? 's' : '') + ' completed · ' + streak + ' day streak';
+  $('readiness-score').innerHTML = readiness + '<span>%</span>';
+  $('readiness-fill').style.width = readiness + '%';
+  $('readiness-desc').textContent = readiness < 30 ? 'Just getting started — keep going!' : readiness < 60 ? 'Making good progress — don\'t stop now.' : readiness < 80 ? 'You\'re getting close — almost there!' : 'Excellent preparation — you\'re ready!';
+  $('readiness-hint').textContent = totalChapters + '/' + TOTAL_CHAPTERS + ' chapters completed';
+  $('stat-chapters').textContent = totalChapters + '/' + TOTAL_CHAPTERS;
+  $('stat-accuracy').textContent = totalQs > 0 ? accuracy + '%' : '—';
+  $('stat-questions').textContent = qsWeek;
+  $('stat-streak').textContent = streak + ' 🔥';
+
+  renderMission(bestList);
+  renderHeatmap(attempts);
+  renderSubjects(best);
+}
+
+function calcStreak(attempts) {
+  if (!attempts.length) return 0;
+  const days = new Set(attempts.map(a => new Date(a.completed_at).toDateString()));
+  let streak = 0;
+  const d = new Date();
+  while (days.has(d.toDateString())) {
+    streak++;
+    d.setDate(d.getDate() - 1);
+  }
+  return streak;
+}
+
+function renderMission(bestList) {
+  const done = new Set(bestList.map(a => a.chapter_name));
+  const weak = bestList.filter(a => a.pct < 70).sort((a,b) => a.pct - b.pct)[0];
+  let notStarted = null;
+
+  for (const ch of MATHS_CHAPTERS) {
+    if (!done.has(ch)) { notStarted = { chapter: ch, subject: 'maths' }; break; }
+  }
+  if (!notStarted) {
+    for (const ch of SCIENCE_CHAPTERS) {
+      if (!done.has(ch)) { notStarted = { chapter: ch, subject: 'science' }; break; }
+    }
+  }
+
+  if (weak) {
+    $('mission-title').textContent = 'Improve ' + weak.chapter_name;
+    $('mission-sub').textContent = 'You scored ' + weak.pct + '% last time. A little more practice here will lift your overall score.';
+    $('mission-btn').href = '/chapter-practice.html?subject=' + weak.subject;
+    $('mission-btn').textContent = 'Practice ' + weak.chapter_name + ' →';
+  } else if (notStarted) {
+    $('mission-title').textContent = 'Start ' + notStarted.chapter;
+    $('mission-sub').textContent = 'You haven\'t tried this chapter yet. Add it to your completed chapters today.';
+    $('mission-btn').href = '/chapter-practice.html?subject=' + notStarted.subject;
+    $('mission-btn').textContent = 'Start ' + notStarted.chapter + ' →';
+  } else {
+    $('mission-title').textContent = 'Keep the streak going!';
+    $('mission-sub').textContent = 'You\'ve covered every chapter. Go back and improve your weakest scores.';
+    $('mission-btn').href = '/chapter-practice.html';
+    $('mission-btn').textContent = 'Keep practising →';
+  }
+}
+
+function renderHeatmap(attempts) {
+  const dayNames = ['M','T','W','T','F','S','S'];
+  const now      = new Date();
+  const todayIdx = (now.getDay() + 6) % 7;
+  const practiced = new Set(attempts.map(a => new Date(a.completed_at).toDateString()));
+
+  const row = $('heatmap-row');
+  row.innerHTML = '';
+  let doneCount = 0;
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - todayIdx + i);
+    const done    = practiced.has(d.toDateString());
+    const isToday = i === todayIdx;
+    if (done) doneCount++;
+    const div = document.createElement('div');
+    div.className = 'db-heatmap-day ' + (isToday && done ? 'today-done' : done ? 'done' : 'missed');
+    div.textContent = dayNames[i];
+    row.appendChild(div);
+  }
+
+  $('heatmap-sub').textContent = doneCount === 7 ? 'Perfect week! All 7 days. 🔥' : doneCount === 0 ? 'No practice this week — start today!' : doneCount + ' of 7 days practiced.';
+}
+
+function renderSubjects(best) {
+  const bySubject = {};
+  Object.values(best).forEach(a => {
+    if (!bySubject[a.subject]) bySubject[a.subject] = { score:0, total:0, chapters:0 };
+    bySubject[a.subject].score    += a.score;
+    bySubject[a.subject].total    += a.total;
+    bySubject[a.subject].chapters += 1;
+  });
+
+  const config = {
+    maths:   { icon:'🧮', name:'Compulsory Maths',    total: MATHS_CHAPTERS.length },
+    science: { icon:'🔬', name:'Compulsory Science',  total: SCIENCE_CHAPTERS.length }
+  };
+
+  const container = $('subject-progress');
+  container.innerHTML = '';
+
+  ['maths','science'].forEach(subj => {
+    const data = bySubject[subj] || { score:0, total:0, chapters:0 };
+    const cfg  = config[subj];
+    const pct  = data.total > 0 ? Math.round((data.score / data.total) * 100) : 0;
+    const prog = Math.round((data.chapters / cfg.total) * 100);
+
+    container.innerHTML += `
+      <div class="db-subject-item">
+        <div class="db-subject-row">
+          <span style="font-weight:600;color:var(--ink-900);">${cfg.icon} ${cfg.name}</span>
+          <span style="color:var(--ink-400);">${data.chapters > 0 ? pct + '% · ' + data.chapters + '/' + cfg.total + ' chapters' : 'Not started yet'}</span>
+        </div>
+        <div class="db-subject-bar"><div class="db-subject-fill" style="width:${prog}%"></div></div>
+      </div>`;
+  });
+}
+
 function logout() {
   localStorage.removeItem('ujyalo_token');
   localStorage.removeItem('ujyalo_user');
   window.location.href = '/index.html';
 }
+
+loadDashboard();
 </script>
 </body>
 </html>
