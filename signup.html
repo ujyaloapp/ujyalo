@@ -93,7 +93,7 @@ async function submitSignup() {
   btn.textContent = 'Creating account...';
 
   try {
-    const res = await fetch('/api/auth-signup', {
+    const res = await fetch('/api/auth?action=signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ full_name: name, email, password })
