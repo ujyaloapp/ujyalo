@@ -7,6 +7,35 @@
 export default async function handler(req, res) {
   const action = req.query.action || req.body?.action;
 
+  // ── Get ALL questions for a subject (GET) ────────────────
+  if (req.method === 'GET' && action === 'get-all-questions') {
+    const { subject } = req.query;
+
+    if (!subject) {
+      return res.status(400).json({ error: 'Missing subject.' });
+    }
+
+    try {
+      const url = `${process.env.SUPABASE_URL}/rest/v1/chapter_questions?subject=eq.${encodeURIComponent(subject)}&status=eq.live&order=sort_order.asc`;
+
+      const dbRes = await fetch(url, {
+        headers: {
+          'apikey': process.env.SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+        }
+      });
+
+      if (!dbRes.ok) throw new Error(await dbRes.text());
+
+      const questions = await dbRes.json();
+      return res.status(200).json(questions);
+
+    } catch (error) {
+      console.error('Get all questions error:', error);
+      return res.status(500).json({ error: 'Failed to load questions.' });
+    }
+  }
+
   // ── Get chapter questions (GET) ───────────────────────────
   if (req.method === 'GET' && action === 'get-questions') {
     const { subject, chapter } = req.query;
