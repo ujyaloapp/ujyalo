@@ -1234,46 +1234,46 @@ function renderSidebar() {
     list.appendChild(container);
   });
 
-  // Fetch question counts from DB
-  if (!window._countsCached) window._countsCached = {};
-  if (!window._countsCached[CHAPTER_CONTENT.subject]) {
+  // Fetch question counts — use cache if available
+  if (!window._qCache) window._qCache = {};
+  if (window._qCache[CHAPTER_CONTENT.subject]) {
+    applyQuestionCache(CHAPTER_CONTENT.subject);
+  } else {
     fetchQuestionCounts(CHAPTER_CONTENT.subject);
   }
 }
 
+function applyQuestionCache(subject) {
+  const byChapter = window._qCache[subject];
+  if (!byChapter) return;
+  let idx = 0;
+  CHAPTER_CONTENT.groups.forEach(group => {
+    group.chapters.forEach(ch => {
+      const qs = byChapter[ch.name] || [];
+      ch.qs = qs;
+      const el = $('qc-' + idx);
+      if (el) el.textContent = qs.length > 0 ? qs.length + 'q' : '—';
+      idx++;
+    });
+  });
+  renderMobileSelect();
+}
+
 async function fetchQuestionCounts(subject) {
   try {
-    const res = await fetch(`/api/practice?action=get-all-questions&subject=${encodeURIComponent(subject)}`);
+    const res = await fetch('/api/practice?action=get-all-questions&subject=' + encodeURIComponent(subject));
     const allQs = await res.json();
-
     if (!Array.isArray(allQs)) return;
 
-    // Group by chapter
     const byChapter = {};
-    allQs.forEach(q => {
+    allQs.forEach(function(q) {
       if (!byChapter[q.chapter_name]) byChapter[q.chapter_name] = [];
       byChapter[q.chapter_name].push({ q: q.question_text, a: q.answer_text, m: q.marks });
     });
 
-    // Only update UI if still on same subject
+    window._qCache[subject] = byChapter;
     if (CHAPTER_CONTENT.subject !== subject) return;
-
-    let idx = 0;
-    CHAPTER_CONTENT.groups.forEach(group => {
-      group.chapters.forEach(ch => {
-        const qs = byChapter[ch.name] || [];
-        ch.qs = qs;
-        const el = $(`qc-${idx}`);
-        if (el) el.textContent = qs.length > 0 ? `${qs.length}q` : '—';
-        idx++;
-      });
-    });
-
-    // Mark as cached only after success
-    window._countsCached[subject] = true;
-
-    // Update mobile select with correct counts
-    renderMobileSelect();
+    applyQuestionCache(subject);
 
   } catch(e) {
     console.error('fetchQuestionCounts error:', e);
