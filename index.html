@@ -25,7 +25,6 @@
       max-width: 1200px;
       margin: 0 auto;
       display: grid;
-      /* text col narrower, image col wider so photo fills properly */
       grid-template-columns: 480px 1fr;
       align-items: stretch;
       min-height: 620px;
@@ -34,22 +33,16 @@
     /* ── LEFT: text ── */
     .hero-text {
       padding: 80px 48px 80px 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      display: flex; flex-direction: column; justify-content: center;
     }
-
     .hero-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      background: var(--brand-light,#eff6ff);
-      border: 1px solid var(--brand,#2563eb);
-      color: var(--brand,#2563eb);
-      font-size: 11px; font-weight: 700;
+      background: var(--brand-light,#eff6ff); border: 1px solid var(--brand,#2563eb);
+      color: var(--brand,#2563eb); font-size: 11px; font-weight: 700;
       letter-spacing: 0.07em; text-transform: uppercase;
       padding: 5px 14px; border-radius: 999px;
       margin-bottom: 24px; align-self: flex-start;
     }
-
     .hero-promise {
       font-family: 'Fraunces', serif;
       font-size: clamp(2.2rem, 3.8vw, 3.2rem);
@@ -58,48 +51,49 @@
       letter-spacing: -0.025em; margin-bottom: 20px;
     }
     .hero-promise em { font-style: italic; color: var(--brand,#2563eb); }
-
     .hero-promise-sub {
       font-size: 15px; color: var(--ink-500,#64748b);
       line-height: 1.75; margin-bottom: 32px; max-width: 400px;
     }
-
-    .hero-cta-row {
-      display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
-    }
-
-    .hero-trust {
-      display: flex; gap: 16px; flex-wrap: wrap;
-      font-size: 12px; color: var(--ink-400,#94a3b8);
-    }
+    .hero-cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .hero-trust { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--ink-400,#94a3b8); }
 
     /* ── RIGHT: image ── */
     .hero-image-wrap {
       position: relative;
       overflow: hidden;
-      /* stretch full height of hero */
       align-self: stretch;
     }
 
-    /* Desktop image — show left portion (empty wall) near text, face in centre */
+    /* Desktop image
+       object-position: show student face
+       The landscape image has: empty wall left half, student right half
+       We want to show the student's face — push right to ~55% so face is centred */
     .hero-img-desktop {
       position: absolute; top: 0; left: 0;
       width: 100%; height: 100%;
       object-fit: cover;
-      /* left: show wall on left, face in centre of column */
-      object-position: 20% center;
+      object-position: 55% center;
       display: block;
     }
     .hero-img-mobile { display: none; }
 
-    /* soft left fade — blends image into white background */
+    /* Desktop: fade LEFT edge (blends into white text bg)
+               fade RIGHT edge (soft exit instead of hard cut) */
     .hero-image-wrap::before {
       content: '';
       position: absolute; top: 0; left: 0;
-      width: 160px; height: 100%;
+      width: 180px; height: 100%;
       background: linear-gradient(to right, white 0%, transparent 100%);
-      z-index: 1;
-      pointer-events: none;
+      z-index: 1; pointer-events: none;
+    }
+    /* Right fade — requested by user */
+    .hero-image-wrap::after {
+      content: '';
+      position: absolute; top: 0; right: 0;
+      width: 220px; height: 100%;
+      background: linear-gradient(to left, white 0%, transparent 100%);
+      z-index: 1; pointer-events: none;
     }
 
     /* ── Floating cards ── */
@@ -117,15 +111,14 @@
       to   { opacity:1; transform:translateY(0); }
     }
 
-    /* streak card — top left of image column, not on his face */
+    /* Desktop: streak top-left, today bottom-left — both clear of his face */
     .hfc-streak {
-      top: 40px; left: 24px;
+      top: 40px; left: 28px;
       display: flex; align-items: center; gap: 10px;
       animation-delay: 0.3s;
     }
-    /* today card — bottom left of image, above the books */
     .hfc-today {
-      bottom: 48px; left: 24px;
+      bottom: 48px; left: 28px;
       min-width: 190px;
       animation-delay: 0.5s;
     }
@@ -150,17 +143,17 @@
       overflow-x: auto; scrollbar-width: none;
     }
     .path-strip-inner::-webkit-scrollbar { display: none; }
-    .ps-label  { font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.1em; white-space: nowrap; margin-right: 20px; flex-shrink: 0; }
-    .ps-node   { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
-    .psn-done  { background: #1D9E75; color: white; }
-    .psn-active{ background: #2563EB; color: white; box-shadow: 0 0 0 4px rgba(37,99,235,0.25); }
-    .psn-next  { background: #f59e0b; color: white; }
-    .psn-lock  { background: #1e293b; color: #475569; border: 1.5px dashed #334155; }
-    .ps-name   { font-size: 11px; color: #64748b; white-space: nowrap; margin: 0 10px 0 7px; }
+    .ps-label   { font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.1em; white-space: nowrap; margin-right: 20px; flex-shrink: 0; }
+    .ps-node    { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .psn-done   { background: #1D9E75; color: white; }
+    .psn-active { background: #2563EB; color: white; box-shadow: 0 0 0 4px rgba(37,99,235,0.25); }
+    .psn-next   { background: #f59e0b; color: white; }
+    .psn-lock   { background: #1e293b; color: #475569; border: 1.5px dashed #334155; }
+    .ps-name    { font-size: 11px; color: #64748b; white-space: nowrap; margin: 0 10px 0 7px; }
     .ps-name.active { color: white; font-weight: 700; }
-    .ps-arr    { color: #334155; font-size: 13px; margin-right: 7px; flex-shrink: 0; }
-    .ps-you    { font-size: 10px; font-weight: 700; background: #2563EB; color: white; padding: 1px 7px; border-radius: 999px; margin-left: 4px; }
-    .ps-exam   { display: flex; align-items: center; gap: 8px; background: #1e293b; border-radius: 8px; padding: 6px 14px; flex-shrink: 0; margin-left: 8px; }
+    .ps-arr     { color: #334155; font-size: 13px; margin-right: 7px; flex-shrink: 0; }
+    .ps-you     { font-size: 10px; font-weight: 700; background: #2563EB; color: white; padding: 1px 7px; border-radius: 999px; margin-left: 4px; }
+    .ps-exam    { display: flex; align-items: center; gap: 8px; background: #1e293b; border-radius: 8px; padding: 6px 14px; flex-shrink: 0; margin-left: 8px; }
     .ps-exam-lbl { font-size: 11px; color: #64748b; }
     .ps-exam-val { font-size: 12px; font-weight: 700; color: #f59e0b; }
 
@@ -273,11 +266,10 @@
         grid-template-columns: 1fr;
         min-height: auto;
       }
-      /* image on top, text below on mobile */
       .hero-image-wrap {
         order: -1;
-        height: 340px;
-        min-height: 340px;
+        height: 380px;
+        min-height: 380px;
       }
       .hero-img-desktop { display: none; }
       .hero-img-mobile {
@@ -285,31 +277,32 @@
         position: absolute; top: 0; left: 0;
         width: 100%; height: 100%;
         object-fit: cover;
-        /* show face — centre-top of portrait image */
-        object-position: 60% 20%;
+        /* Mobile portrait image: shift right+down to show face clearly */
+        object-position: 75% 35%;
       }
-      /* remove left fade, add bottom fade */
+
+      /* Mobile: remove left fade, keep only bottom fade */
       .hero-image-wrap::before { display: none; }
       .hero-image-wrap::after {
-        content: '';
-        position: absolute; bottom: 0; left: 0; right: 0;
-        height: 100px;
-        background: linear-gradient(to top, white 20%, transparent 100%);
-        z-index: 1;
-        pointer-events: none;
+        top: auto; right: 0; left: 0;
+        width: 100%; height: 120px;
+        background: linear-gradient(to top, white 15%, transparent 100%);
       }
-      /* reposition float cards on mobile */
-      .hfc-streak {
-        top: auto;
-        bottom: 24px; left: 12px;
-        padding: 8px 12px;
-        border-radius: 10px;
-      }
+
+      /* Mobile float cards:
+         TODAY top-right — so student face (left/centre) is visible
+         STREAK bottom-left — small, out of the way */
       .hfc-today {
-        bottom: 24px; left: auto; right: 12px;
-        min-width: 160px;
-        padding: 9px 12px;
-        border-radius: 10px;
+        top: 20px; bottom: auto;
+        left: auto; right: 12px;
+        min-width: 170px;
+        animation-delay: 0.3s;
+      }
+      .hfc-streak {
+        top: auto; bottom: 28px;
+        left: 12px; right: auto;
+        animation-delay: 0.5s;
+        padding: 8px 12px;
       }
       .hfc-value { font-size: 18px; }
       .hfc-icon  { font-size: 20px; }
@@ -334,7 +327,7 @@
       .exam-paper::before{left:36px;}
       .exam-q-num{left:10px;font-size:14px;}
       .exam-paper-footer{padding-left:48px;}
-      .path-strip-inner { padding: 0 16px; }
+      .path-strip-inner{padding:0 16px;}
     }
   </style>
 </head>
@@ -377,6 +370,7 @@
         alt="A Nepali Grade 10 student focused on studying for SEE exam"
       />
 
+      <!-- Streak — desktop: top-left, mobile: bottom-left -->
       <div class="hero-float-card hfc-streak">
         <div class="hfc-icon">🔥</div>
         <div>
@@ -386,6 +380,7 @@
         </div>
       </div>
 
+      <!-- Today plan — desktop: bottom-left, mobile: top-right -->
       <div class="hero-float-card hfc-today">
         <div class="hfc-label">Today's study plan</div>
         <div class="hfc-row">
@@ -655,14 +650,7 @@ R = Resistance (ohms)
 
 Think of voltage as water pressure and current as how much water flows."},
 ];
-const W={
-  idx:0,
-  init(){this.idx=Math.floor(Math.random()*W_QUESTIONS.length);this.buildDots();this.load();},
-  buildDots(){const d=document.getElementById('w-dots');d.innerHTML='';W_QUESTIONS.forEach((_,i)=>{const b=document.createElement('div');b.className='exam-dot';b.onclick=()=>{this.idx=i;this.load();};d.appendChild(b);});},
-  load(){const q=W_QUESTIONS[this.idx];document.getElementById('w-paper-title').textContent=`SEE Examination · ${q.subject}`;document.getElementById('w-group-badge').textContent=`Group ${q.group}`;document.getElementById('w-marks-badge').textContent=`${q.marks} Mark${q.marks>1?'s':''}`;document.getElementById('w-q-num').textContent=q.qNum;document.getElementById('w-q-text').textContent=q.q;document.getElementById('w-footer-subj').textContent=q.footerSubj;document.getElementById('w-counter').textContent=`Question ${this.idx+1} of ${W_QUESTIONS.length}`;document.getElementById('w-ans').value='';document.getElementById('w-ans').disabled=false;document.getElementById('w-ans').style.opacity='1';document.getElementById('w-ans').classList.remove('shake');document.getElementById('w-warning').style.display='none';document.getElementById('w-reveal-area').classList.add('hidden');document.getElementById('w-reveal-btn').style.display='flex';document.querySelectorAll('.exam-dot').forEach((d,i)=>d.classList.toggle('active',i===this.idx));const isLast=this.idx>=W_QUESTIONS.length-1;document.getElementById('w-next-label').textContent=isLast?'You've seen all 5 questions!':'Try the next question?';document.getElementById('w-next-btn').style.display=isLast?'none':'flex';},
-  reveal(){const ans=document.getElementById('w-ans').value.trim();if(!ans){const a=document.getElementById('w-ans');a.classList.remove('shake');a.offsetHeight;a.classList.add('shake');document.getElementById('w-warning').style.display='block';a.focus();return;}const q=W_QUESTIONS[this.idx];document.getElementById('w-answer-text').textContent=q.a;document.getElementById('w-reveal-area').classList.remove('hidden');document.getElementById('w-reveal-btn').style.display='none';document.getElementById('w-ans').disabled=true;document.getElementById('w-ans').style.opacity='0.7';document.getElementById('w-warning').style.display='none';document.getElementById('w-reveal-area').scrollIntoView({behavior:'smooth',block:'nearest'});},
-  next(){this.idx=(this.idx+1)%W_QUESTIONS.length;this.load();document.getElementById('widget-paper').scrollIntoView({behavior:'smooth',block:'nearest'});}
-};
+const W={idx:0,init(){this.idx=Math.floor(Math.random()*W_QUESTIONS.length);this.buildDots();this.load();},buildDots(){const d=document.getElementById('w-dots');d.innerHTML='';W_QUESTIONS.forEach((_,i)=>{const b=document.createElement('div');b.className='exam-dot';b.onclick=()=>{this.idx=i;this.load();};d.appendChild(b);});},load(){const q=W_QUESTIONS[this.idx];document.getElementById('w-paper-title').textContent=`SEE Examination · ${q.subject}`;document.getElementById('w-group-badge').textContent=`Group ${q.group}`;document.getElementById('w-marks-badge').textContent=`${q.marks} Mark${q.marks>1?'s':''}`;document.getElementById('w-q-num').textContent=q.qNum;document.getElementById('w-q-text').textContent=q.q;document.getElementById('w-footer-subj').textContent=q.footerSubj;document.getElementById('w-counter').textContent=`Question ${this.idx+1} of ${W_QUESTIONS.length}`;document.getElementById('w-ans').value='';document.getElementById('w-ans').disabled=false;document.getElementById('w-ans').style.opacity='1';document.getElementById('w-ans').classList.remove('shake');document.getElementById('w-warning').style.display='none';document.getElementById('w-reveal-area').classList.add('hidden');document.getElementById('w-reveal-btn').style.display='flex';document.querySelectorAll('.exam-dot').forEach((d,i)=>d.classList.toggle('active',i===this.idx));const isLast=this.idx>=W_QUESTIONS.length-1;document.getElementById('w-next-label').textContent=isLast?'You've seen all 5 questions!':'Try the next question?';document.getElementById('w-next-btn').style.display=isLast?'none':'flex';},reveal(){const ans=document.getElementById('w-ans').value.trim();if(!ans){const a=document.getElementById('w-ans');a.classList.remove('shake');a.offsetHeight;a.classList.add('shake');document.getElementById('w-warning').style.display='block';a.focus();return;}const q=W_QUESTIONS[this.idx];document.getElementById('w-answer-text').textContent=q.a;document.getElementById('w-reveal-area').classList.remove('hidden');document.getElementById('w-reveal-btn').style.display='none';document.getElementById('w-ans').disabled=true;document.getElementById('w-ans').style.opacity='0.7';document.getElementById('w-warning').style.display='none';document.getElementById('w-reveal-area').scrollIntoView({behavior:'smooth',block:'nearest'});},next(){this.idx=(this.idx+1)%W_QUESTIONS.length;this.load();document.getElementById('widget-paper').scrollIntoView({behavior:'smooth',block:'nearest'});}};
 document.addEventListener('DOMContentLoaded',()=>W.init());
 </script>
 </body>
