@@ -6,289 +6,495 @@
 <title>Profile — Ujyalo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.css">
 <style>
-  .success-msg { background: var(--green-light); color: var(--green); padding: 10px 14px; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; margin-top: 12px; display: none; }
-  .error-msg   { background: var(--red-light);   color: var(--red);   padding: 10px 14px; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; margin-top: 12px; display: none; }
+
+.pf-page { background: var(--ink-50); min-height: 100vh; padding: 0 0 60px; }
+
+/* ── Hero header ── */
+.pf-hero {
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+  padding: 36px 0 80px;
+  position: relative;
+  overflow: hidden;
+}
+.pf-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 48px;
+  background: var(--ink-50);
+  border-radius: 48px 48px 0 0;
+}
+.pf-hero-inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+}
+.pf-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.pf-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 3px solid rgba(255,255,255,0.4);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 700;
+  backdrop-filter: blur(8px);
+}
+.pf-hero-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  font-weight: 800;
+  color: white;
+  letter-spacing: -1px;
+  margin-bottom: 4px;
+}
+.pf-hero-email { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px; }
+.pf-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  backdrop-filter: blur(8px);
+}
+
+/* ── Content area ── */
+.pf-content {
+  margin-top: -32px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Section cards ── */
+.pf-card {
+  background: white;
+  border: 1px solid var(--ink-100);
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.pf-card-header {
+  padding: 20px 24px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.pf-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.pf-card-title { font-size: 15px; font-weight: 700; color: var(--ink-900); margin-bottom: 2px; }
+.pf-card-sub   { font-size: 12px; color: var(--ink-400); }
+.pf-card-body  { padding: 0 24px 24px; }
+
+/* ── Form fields ── */
+.pf-field { margin-bottom: 16px; }
+.pf-field:last-of-type { margin-bottom: 0; }
+.pf-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-500);
+  margin-bottom: 6px;
+}
+.pf-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--ink-200);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--ink-900);
+  background: var(--ink-50);
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+.pf-input:focus { outline: none; border-color: var(--brand); background: white; box-shadow: 0 0 0 3px rgba(24,95,165,0.1); }
+.pf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* ── Save button ── */
+.pf-save-btn {
+  width: 100%;
+  padding: 13px;
+  background: var(--brand);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.pf-save-btn:hover { background: var(--brand-dark); transform: translateY(-1px); }
+.pf-save-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ── Toast messages ── */
+.pf-toast {
+  display: none;
+  padding: 11px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 12px;
+}
+.pf-toast.success { background: var(--green-light); color: var(--green); }
+.pf-toast.error   { background: var(--red-light);   color: var(--red);   }
+
+/* ── Account rows ── */
+.pf-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--ink-50);
+  gap: 12px;
+}
+.pf-row:last-child { border-bottom: none; }
+.pf-row-label { font-size: 14px; font-weight: 600; color: var(--ink-900); margin-bottom: 3px; }
+.pf-row-sub   { font-size: 12px; color: var(--ink-400); }
+.pf-row-action {
+  background: var(--ink-100);
+  color: var(--ink-700);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+.pf-row-action:hover { background: var(--ink-200); }
+.pf-row-action.danger { background: var(--red-light); color: var(--red); }
+.pf-row-action.danger:hover { background: #fecaca; }
+
+/* ── Password form ── */
+.pf-pw-form {
+  display: none;
+  background: var(--ink-50);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+/* ── Free badge ── */
+.pf-free-badge {
+  background: var(--green-light);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+@media (max-width: 600px) {
+  .pf-grid { grid-template-columns: 1fr; }
+  .pf-avatar { width: 64px; height: 64px; font-size: 24px; }
+}
+
 </style>
 </head>
-<body style="background:var(--ink-50);min-height:100vh;">
+<body class="pf-page">
+<div id="site-nav"></div>
 
-<nav class="nav-app">
-  <div class="container nav-inner">
-    <a href="/dashboard.html" class="logo">
-      <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="6" fill="#F59E0B"/>
-        <g stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round">
-          <line x1="16" y1="2" x2="16" y2="6"/><line x1="16" y1="26" x2="16" y2="30"/>
-          <line x1="2" y1="16" x2="6" y2="16"/><line x1="26" y1="16" x2="30" y2="16"/>
-          <line x1="6" y1="6" x2="9" y2="9"/><line x1="23" y1="23" x2="26" y2="26"/>
-          <line x1="26" y1="6" x2="23" y2="9"/><line x1="9" y1="23" x2="6" y2="26"/>
-        </g>
-      </svg>
-      ujyalo
-    </a>
-    <div class="nav-links">
-      <a href="/dashboard.html">Home</a>
-      <a href="/practice.html">Practice</a>
-      <a href="/progress.html">Progress</a>
-      <a href="/profile.html" class="active">Profile</a>
-    </div>
-    <div class="nav-actions">
-      <span class="streak-pill">🔥 <span id="nav-streak">0</span></span>
-      <div id="nav-avatar" style="width:32px;height:32px;border-radius:50%;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;">?</div>
-      <button onclick="logout()" style="font-size:13px;color:var(--ink-500);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:500;padding:0 4px;">Log out</button>
-    </div>
-  </div>
-</nav>
-
-<main class="container-narrow" style="padding:48px 24px;">
-
-  <div class="animate-up mb-8">
-    <h1 class="font-display" style="font-size:36px;font-weight:600;letter-spacing:-1px;">
-      Your <em style="color:var(--brand);">profile.</em>
-    </h1>
-  </div>
-
-  <!-- Profile card -->
-  <div class="card animate-up delay-1 mb-6">
-    <div class="flex items-center gap-4 mb-6">
-      <div id="profile-avatar" style="width:64px;height:64px;border-radius:50%;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:24px;font-family:'Fraunces',serif;">?</div>
+<!-- Hero -->
+<div class="pf-hero">
+  <div class="container">
+    <div class="pf-hero-inner">
+      <div class="pf-avatar-wrap">
+        <div class="pf-avatar" id="pf-avatar">?</div>
+      </div>
       <div>
-        <div class="font-display" style="font-size:22px;font-weight:600;" id="profile-name">Loading...</div>
-        <div class="text-muted" style="font-size:14px;" id="profile-meta">—</div>
+        <div class="pf-hero-name" id="pf-name">Loading…</div>
+        <div class="pf-hero-email" id="pf-email">—</div>
+        <div class="pf-hero-badge">🎓 Grade 10 · SEE 2082</div>
       </div>
     </div>
+  </div>
+</div>
 
-    <div class="field">
-      <label>Full name</label>
-      <input type="text" class="input" id="input-fullname" placeholder="Your full name">
-    </div>
-    <div class="field">
-      <label>School</label>
-      <input type="text" class="input" id="input-school" placeholder="Your school name">
-    </div>
-    <div class="grid-2" style="gap:12px;">
-      <div class="field">
-        <label>Grade</label>
-        <select class="select" id="input-grade">
-          <option value="Grade 10 (SEE)">Grade 10 (SEE)</option>
-          <option value="Grade 11">Grade 11</option>
-          <option value="Grade 12">Grade 12</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>City</label>
-        <select class="select" id="input-city">
-          <option value="Kathmandu">Kathmandu</option>
-          <option value="Pokhara">Pokhara</option>
-          <option value="Lalitpur">Lalitpur</option>
-          <option value="Bhaktapur">Bhaktapur</option>
-          <option value="Biratnagar">Biratnagar</option>
-          <option value="Birgunj">Birgunj</option>
-          <option value="Butwal">Butwal</option>
-          <option value="Dharan">Dharan</option>
-          <option value="Chitwan">Chitwan</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-    </div>
+<!-- Content -->
+<div class="container pf-content">
 
-    <button class="btn btn-blue mt-4" id="save-profile-btn" onclick="saveProfile()">Save changes</button>
-    <div class="success-msg" id="profile-success">✓ Profile saved successfully!</div>
-    <div class="error-msg"   id="profile-error"></div>
+  <!-- Profile info -->
+  <div class="pf-card">
+    <div class="pf-card-header">
+      <div class="pf-card-icon" style="background:var(--brand-light);">👤</div>
+      <div>
+        <div class="pf-card-title">Personal details</div>
+        <div class="pf-card-sub">Your name, school and location</div>
+      </div>
+    </div>
+    <div class="pf-card-body">
+      <div class="pf-field">
+        <label class="pf-label">Full name</label>
+        <input type="text" class="pf-input" id="input-fullname" placeholder="Your full name">
+      </div>
+      <div class="pf-field">
+        <label class="pf-label">School name</label>
+        <input type="text" class="pf-input" id="input-school" placeholder="e.g. Budhanilkantha School">
+      </div>
+      <div class="pf-grid">
+        <div class="pf-field">
+          <label class="pf-label">Grade</label>
+          <select class="pf-input" id="input-grade">
+            <option value="Grade 10 (SEE)">Grade 10 (SEE)</option>
+            <option value="Grade 11">Grade 11</option>
+            <option value="Grade 12">Grade 12</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="pf-field">
+          <label class="pf-label">City</label>
+          <select class="pf-input" id="input-city">
+            <option value="Kathmandu">Kathmandu</option>
+            <option value="Pokhara">Pokhara</option>
+            <option value="Lalitpur">Lalitpur</option>
+            <option value="Bhaktapur">Bhaktapur</option>
+            <option value="Biratnagar">Biratnagar</option>
+            <option value="Birgunj">Birgunj</option>
+            <option value="Butwal">Butwal</option>
+            <option value="Dharan">Dharan</option>
+            <option value="Chitwan">Chitwan</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <button class="pf-save-btn" id="save-profile-btn" onclick="saveProfile()">Save changes</button>
+      <div class="pf-toast success" id="profile-success">✓ Profile saved successfully!</div>
+      <div class="pf-toast error"   id="profile-error"></div>
+    </div>
   </div>
 
   <!-- Parent reports -->
-  <div class="card animate-up delay-2 mb-6">
-    <h3 class="font-display" style="font-size:18px;font-weight:600;margin-bottom:6px;">Parent reports</h3>
-    <p class="text-muted mb-4" style="font-size:14px;">Weekly progress emails sent to your parent every Sunday.</p>
-
-    <div class="field">
-      <label>Parent email</label>
-      <input type="email" class="input" id="input-parent-email" placeholder="parent@example.com">
-    </div>
-    <div class="text-muted mb-4" style="font-size:12px;">Leave blank to stop parent reports.</div>
-
-    <button class="btn btn-secondary" id="save-parent-btn" onclick="saveParentEmail()">Update</button>
-    <div class="success-msg" id="parent-success">✓ Parent email updated!</div>
-    <div class="error-msg"   id="parent-error"></div>
-  </div>
-
-  <!-- Account -->
-  <div class="card animate-up" style="animation-delay:0.3s;">
-    <h3 class="font-display" style="font-size:18px;font-weight:600;margin-bottom:16px;">Account</h3>
-
-    <!-- Email -->
-    <div class="flex justify-between items-center" style="padding:12px 0;border-bottom:1px solid var(--ink-100);">
+  <div class="pf-card">
+    <div class="pf-card-header">
+      <div class="pf-card-icon" style="background:#FEF3C7;">📧</div>
       <div>
-        <div style="font-size:14px;font-weight:500;">Email address</div>
-        <div class="text-tiny mt-2" id="account-email">—</div>
+        <div class="pf-card-title">Parent reports</div>
+        <div class="pf-card-sub">Weekly progress emails sent to your parent every Sunday</div>
       </div>
     </div>
+    <div class="pf-card-body">
+      <div class="pf-field">
+        <label class="pf-label">Parent's email address</label>
+        <input type="email" class="pf-input" id="input-parent-email" placeholder="parent@example.com">
+      </div>
+      <div style="font-size:12px;color:var(--ink-400);margin-top:6px;margin-bottom:16px;">Leave blank to stop parent reports. Your parent will receive a summary of your weekly practice.</div>
+      <button class="pf-save-btn" id="save-parent-btn" onclick="saveParentEmail()" style="background:var(--ink-800);">Update parent email</button>
+      <div class="pf-toast success" id="parent-success">✓ Parent email updated!</div>
+      <div class="pf-toast error"   id="parent-error"></div>
+    </div>
+  </div>
 
-    <!-- Change password -->
-    <div style="padding:12px 0;border-bottom:1px solid var(--ink-100);">
-      <div class="flex justify-between items-center">
+  <!-- Account settings -->
+  <div class="pf-card">
+    <div class="pf-card-header">
+      <div class="pf-card-icon" style="background:var(--ink-100);">⚙️</div>
+      <div>
+        <div class="pf-card-title">Account settings</div>
+        <div class="pf-card-sub">Email, password and subscription</div>
+      </div>
+    </div>
+    <div class="pf-card-body">
+
+      <!-- Email -->
+      <div class="pf-row">
         <div>
-          <div style="font-size:14px;font-weight:500;">Password</div>
-          <div class="text-tiny mt-2">Change your account password</div>
+          <div class="pf-row-label">Email address</div>
+          <div class="pf-row-sub" id="account-email">—</div>
         </div>
-        <button class="btn btn-secondary" style="font-size:13px;" onclick="togglePasswordForm()">Change →</button>
       </div>
 
-      <!-- Password change form — hidden by default -->
-      <div id="password-form" style="display:none;margin-top:16px;">
-        <div class="field">
-          <label>New password</label>
-          <input type="password" class="input" id="input-new-password" placeholder="At least 8 characters">
+      <!-- Password -->
+      <div class="pf-row" style="flex-direction:column;align-items:stretch;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div>
+            <div class="pf-row-label">Password</div>
+            <div class="pf-row-sub">Change your account password</div>
+          </div>
+          <button class="pf-row-action" onclick="togglePasswordForm()">Change →</button>
         </div>
-        <div class="field">
-          <label>Confirm new password</label>
-          <input type="password" class="input" id="input-confirm-password" placeholder="Same password again">
+        <div class="pf-pw-form" id="password-form">
+          <div class="pf-field" style="margin-bottom:12px;">
+            <label class="pf-label">New password</label>
+            <input type="password" class="pf-input" id="input-new-password" placeholder="At least 8 characters">
+          </div>
+          <div class="pf-field" style="margin-bottom:12px;">
+            <label class="pf-label">Confirm new password</label>
+            <input type="password" class="pf-input" id="input-confirm-password" placeholder="Same password again">
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="pf-save-btn" id="change-pw-btn" onclick="changePassword()" style="margin-top:0;flex:1;">Save new password</button>
+            <button onclick="togglePasswordForm()" style="padding:13px 16px;background:var(--ink-100);color:var(--ink-700);border:none;border-radius:12px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;">Cancel</button>
+          </div>
+          <div class="pf-toast success" id="pw-success">✓ Password updated!</div>
+          <div class="pf-toast error"   id="pw-error"></div>
         </div>
-        <button class="btn btn-blue" id="change-pw-btn" onclick="changePassword()">Save new password</button>
-        <button class="btn btn-ghost" style="margin-left:8px;" onclick="togglePasswordForm()">Cancel</button>
-        <div class="success-msg" id="pw-success">✓ Password updated successfully!</div>
-        <div class="error-msg"   id="pw-error"></div>
       </div>
-    </div>
 
-    <!-- Subscription -->
-    <div class="flex justify-between items-center" style="padding:12px 0;border-bottom:1px solid var(--ink-100);">
-      <div>
-        <div style="font-size:14px;font-weight:500;">Subscription</div>
-        <div class="text-tiny mt-2">Currently on the Free plan</div>
+      <!-- Plan -->
+      <div class="pf-row">
+        <div>
+          <div class="pf-row-label">Your plan</div>
+          <div class="pf-row-sub">All features free — no credit card ever</div>
+        </div>
+        <span class="pf-free-badge">✓ Free forever</span>
       </div>
-      <button class="btn btn-secondary" style="font-size:13px;">Upgrade</button>
-    </div>
 
-    <!-- Logout -->
-    <div class="flex justify-between items-center" style="padding:12px 0;">
-      <div>
-        <div style="font-size:14px;font-weight:500;color:var(--red);">Log out</div>
-        <div class="text-tiny mt-2">Sign out of your account</div>
+      <!-- Member since -->
+      <div class="pf-row">
+        <div>
+          <div class="pf-row-label">Member since</div>
+          <div class="pf-row-sub" id="member-since">—</div>
+        </div>
       </div>
-      <button class="btn btn-ghost" style="color:var(--red);" onclick="logout()">Log out →</button>
+
+      <!-- Log out -->
+      <div class="pf-row">
+        <div>
+          <div class="pf-row-label" style="color:var(--red);">Log out</div>
+          <div class="pf-row-sub">Sign out of your Ujyalo account</div>
+        </div>
+        <button class="pf-row-action danger" onclick="logout()">Log out →</button>
+      </div>
+
     </div>
   </div>
 
-</main>
+</div>
 
 <a href="/contact.html" class="help-bubble"><span class="help-bubble-icon">?</span>Need help?</a>
-
+<div id="site-footer"></div>
+<script src="/scripts/components.js"></script>
 <script>
-/* ── Session check ── */
+
 const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
 const token = localStorage.getItem('ujyalo_token');
+if (!user || !token) window.location.href = '/login.html';
 
-if (!user || !token) {
-  window.location.href = '/login.html';
-}
+const $ = id => document.getElementById(id);
 
-/* ── Populate nav ── */
+/* ── Populate header from localStorage immediately ── */
 if (user) {
-  const firstName = user.full_name ? user.full_name.split(' ')[0] : user.email.split('@')[0];
-  document.getElementById('nav-avatar').textContent = firstName.charAt(0).toUpperCase();
+  const name = user.full_name || user.email.split('@')[0];
+  $('pf-avatar').textContent = name.charAt(0).toUpperCase();
+  $('pf-name').textContent   = user.full_name || name;
+  $('pf-email').textContent  = user.email;
+  $('account-email').textContent = user.email;
+  $('member-since').textContent  = formatDate(user.created_at || new Date());
 }
 
 /* ── Load profile from database ── */
 async function loadProfile() {
   try {
-    const res = await fetch(`/api/profile?user_id=${user.id}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
+    const res  = await fetch('/api/profile?user_id=' + user.id, {
+      headers: { 'Authorization': 'Bearer ' + token }
     });
     const data = await res.json();
 
     if (data.success && data.profile) {
       const p = data.profile;
+      $('input-fullname').value     = p.full_name    || user.full_name || '';
+      $('input-school').value       = p.school       || '';
+      $('input-parent-email').value = p.parent_email || '';
 
-      document.getElementById('input-fullname').value      = p.full_name    || user.full_name || '';
-      document.getElementById('input-school').value        = p.school       || '';
-      document.getElementById('input-parent-email').value  = p.parent_email || '';
-
-      if (p.grade) {
-        const gradeSelect = document.getElementById('input-grade');
-        for (let option of gradeSelect.options) {
-          if (option.value === p.grade) { option.selected = true; break; }
-        }
-      }
-
-      if (p.city) {
-        const citySelect = document.getElementById('input-city');
-        for (let option of citySelect.options) {
-          if (option.value === p.city) { option.selected = true; break; }
-        }
-      }
+      if (p.grade) setSelect('input-grade', p.grade);
+      if (p.city)  setSelect('input-city',  p.city);
 
       const name = p.full_name || user.full_name || user.email;
-      document.getElementById('profile-name').textContent    = name;
-      document.getElementById('profile-avatar').textContent  = name.charAt(0).toUpperCase();
-      document.getElementById('profile-meta').textContent    = `${user.email} · Member since ${formatDate(user.created_at || new Date())}`;
-      document.getElementById('account-email').textContent   = user.email;
-
+      $('pf-avatar').textContent = name.charAt(0).toUpperCase();
+      $('pf-name').textContent   = name;
     } else {
-      const name = user.full_name || user.email;
-      document.getElementById('input-fullname').value        = user.full_name || '';
-      document.getElementById('profile-name').textContent    = name;
-      document.getElementById('profile-avatar').textContent  = name.charAt(0).toUpperCase();
-      document.getElementById('profile-meta').textContent    = `${user.email}`;
-      document.getElementById('account-email').textContent   = user.email;
+      $('input-fullname').value = user.full_name || '';
     }
-  } catch (e) {
-    const name = user.full_name || user.email;
-    document.getElementById('input-fullname').value       = user.full_name || '';
-    document.getElementById('profile-name').textContent   = name;
-    document.getElementById('profile-avatar').textContent = name.charAt(0).toUpperCase();
-    document.getElementById('account-email').textContent  = user.email;
+  } catch(e) {
+    $('input-fullname').value = user.full_name || '';
+  }
+}
+
+function setSelect(id, value) {
+  const sel = $(id);
+  for (const opt of sel.options) {
+    if (opt.value === value) { opt.selected = true; break; }
   }
 }
 
 /* ── Save profile ── */
 async function saveProfile() {
-  const btn = document.getElementById('save-profile-btn');
+  const btn = $('save-profile-btn');
   btn.disabled = true;
-  btn.textContent = 'Saving...';
-  hideMessages('profile');
+  btn.textContent = 'Saving…';
+  hide('profile-success'); hide('profile-error');
 
   try {
-    const res = await fetch('/api/profile', {
+    const res  = await fetch('/api/profile', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({
         user_id:      user.id,
         email:        user.email,
-        full_name:    document.getElementById('input-fullname').value.trim(),
-        school:       document.getElementById('input-school').value.trim(),
-        grade:        document.getElementById('input-grade').value,
-        city:         document.getElementById('input-city').value,
-        parent_email: document.getElementById('input-parent-email').value.trim(),
+        full_name:    $('input-fullname').value.trim(),
+        school:       $('input-school').value.trim(),
+        grade:        $('input-grade').value,
+        city:         $('input-city').value,
+        parent_email: $('input-parent-email').value.trim(),
       })
     });
-
     const data = await res.json();
 
     if (data.success) {
-      const newName = document.getElementById('input-fullname').value.trim();
+      const newName = $('input-fullname').value.trim();
       if (newName) {
         user.full_name = newName;
         localStorage.setItem('ujyalo_user', JSON.stringify(user));
-        document.getElementById('profile-name').textContent   = newName;
-        document.getElementById('profile-avatar').textContent = newName.charAt(0).toUpperCase();
-        document.getElementById('nav-avatar').textContent     = newName.charAt(0).toUpperCase();
+        $('pf-avatar').textContent = newName.charAt(0).toUpperCase();
+        $('pf-name').textContent   = newName;
       }
       show('profile-success');
     } else {
-      document.getElementById('profile-error').textContent = data.error || 'Something went wrong.';
+      $('profile-error').textContent = data.error || 'Something went wrong.';
       show('profile-error');
     }
-  } catch (e) {
-    document.getElementById('profile-error').textContent = 'Something went wrong. Please try again.';
+  } catch(e) {
+    $('profile-error').textContent = 'Something went wrong. Please try again.';
     show('profile-error');
   }
 
@@ -298,112 +504,83 @@ async function saveProfile() {
 
 /* ── Save parent email ── */
 async function saveParentEmail() {
-  const btn = document.getElementById('save-parent-btn');
+  const btn = $('save-parent-btn');
   btn.disabled = true;
-  btn.textContent = 'Saving...';
-  hideMessages('parent');
+  btn.textContent = 'Saving…';
+  hide('parent-success'); hide('parent-error');
 
   try {
-    const res = await fetch('/api/profile', {
+    const res  = await fetch('/api/profile', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        user_id:      user.id,
-        parent_email: document.getElementById('input-parent-email').value.trim(),
-      })
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ user_id: user.id, parent_email: $('input-parent-email').value.trim() })
     });
-
     const data = await res.json();
-    if (data.success) {
-      show('parent-success');
-    } else {
-      document.getElementById('parent-error').textContent = data.error || 'Something went wrong.';
-      show('parent-error');
-    }
-  } catch (e) {
-    document.getElementById('parent-error').textContent = 'Something went wrong. Please try again.';
+    if (data.success) { show('parent-success'); }
+    else { $('parent-error').textContent = data.error || 'Something went wrong.'; show('parent-error'); }
+  } catch(e) {
+    $('parent-error').textContent = 'Something went wrong. Please try again.';
     show('parent-error');
   }
 
   btn.disabled = false;
-  btn.textContent = 'Update';
+  btn.textContent = 'Update parent email';
 }
 
 /* ── Change password ── */
 function togglePasswordForm() {
-  const form = document.getElementById('password-form');
-  form.style.display = form.style.display === 'none' ? 'block' : 'none';
-  // Clear fields when toggling
-  document.getElementById('input-new-password').value = '';
-  document.getElementById('input-confirm-password').value = '';
-  hideMessages('pw');
+  const form = $('password-form');
+  const open = form.style.display === 'block';
+  form.style.display = open ? 'none' : 'block';
+  $('input-new-password').value     = '';
+  $('input-confirm-password').value = '';
+  hide('pw-success'); hide('pw-error');
 }
 
 async function changePassword() {
-  const newPw    = document.getElementById('input-new-password').value;
-  const confirmPw = document.getElementById('input-confirm-password').value;
-  const btn      = document.getElementById('change-pw-btn');
-  hideMessages('pw');
+  const newPw  = $('input-new-password').value;
+  const confirm = $('input-confirm-password').value;
+  const btn    = $('change-pw-btn');
+  hide('pw-success'); hide('pw-error');
 
-  if (!newPw)              { showPwError('Please enter a new password.'); return; }
-  if (newPw.length < 8)    { showPwError('Password must be at least 8 characters.'); return; }
-  if (newPw !== confirmPw) { showPwError('Passwords do not match.'); return; }
+  if (!newPw)              { showErr('pw-error','Please enter a new password.'); return; }
+  if (newPw.length < 8)    { showErr('pw-error','Password must be at least 8 characters.'); return; }
+  if (newPw !== confirm)   { showErr('pw-error','Passwords do not match.'); return; }
 
-  btn.disabled = true;
-  btn.textContent = 'Saving...';
+  btn.disabled = true; btn.textContent = 'Saving…';
 
   try {
-    const res = await fetch('/api/auth-change-password', {
+    const res  = await fetch('/api/auth?action=change-password', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ password: newPw })
     });
-
     const data = await res.json();
-
     if (data.success) {
       show('pw-success');
-      document.getElementById('input-new-password').value = '';
-      document.getElementById('input-confirm-password').value = '';
+      $('input-new-password').value     = '';
+      $('input-confirm-password').value = '';
     } else {
-      showPwError(data.error || 'Something went wrong. Please try again.');
+      showErr('pw-error', data.error || 'Something went wrong.');
     }
-  } catch (e) {
-    showPwError('Something went wrong. Please try again.');
+  } catch(e) {
+    showErr('pw-error', 'Something went wrong. Please try again.');
   }
 
-  btn.disabled = false;
-  btn.textContent = 'Save new password';
+  btn.disabled = false; btn.textContent = 'Save new password';
 }
 
-function showPwError(msg) {
-  const el = document.getElementById('pw-error');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
-/* ── Logout ── */
 function logout() {
   localStorage.removeItem('ujyalo_token');
   localStorage.removeItem('ujyalo_user');
   window.location.href = '/index.html';
 }
 
-/* ── Helpers ── */
-function show(id) { document.getElementById(id).style.display = 'block'; }
-function hideMessages(prefix) {
-  document.getElementById(prefix + '-success').style.display = 'none';
-  document.getElementById(prefix + '-error').style.display   = 'none';
-}
-function formatDate(dateStr) {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+function show(id)  { $(id).style.display = 'block'; }
+function hide(id)  { $(id).style.display = 'none';  }
+function showErr(id, msg) { $(id).textContent = msg; show(id); }
+function formatDate(str) {
+  return new Date(str).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 }
 
 loadProfile();
