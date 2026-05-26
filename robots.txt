@@ -11,5 +11,5 @@ Disallow: /confirm.html
 Disallow: /forgot-password.html
 Disallow: /api/
 
-# Sitemap location
+# Sitemap — dynamically generated
 Sitemap: https://ujyalo.app/sitemap.xml
