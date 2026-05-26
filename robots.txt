@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Block app pages — no value for Google to index these
+Disallow: /dashboard.html
+Disallow: /progress.html
+Disallow: /profile.html
+Disallow: /admin.html
+Disallow: /reset-password.html
+Disallow: /confirm.html
+Disallow: /forgot-password.html
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://ujyalo.app/sitemap.xml
