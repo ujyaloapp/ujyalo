@@ -1094,7 +1094,7 @@ function logout() {
 async function init() {
   if (!checkAccess()) return;
   try {
-    const res  = await fetch('/api/auth-config');
+    const res  = await fetch('/api/auth?action=config');
     const data = await res.json();
     window._sbKey = data.anon_key;
   } catch(e) { console.error('Config error:', e); }
