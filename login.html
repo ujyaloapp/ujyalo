@@ -43,14 +43,16 @@
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
 <script>
-  // If already logged in — redirect to correct page
-  const ADMIN_EMAILS = ['hello@ujyalo.app']; // keep in sync with auth-login.js
+  // If already logged in — redirect based on role
   const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
   const token = localStorage.getItem('ujyalo_token');
   if (user && token) {
-    window.location.href = ADMIN_EMAILS.includes(user.email?.toLowerCase())
-      ? '/admin.html'
-      : '/dashboard.html';
+    const role = user.role || 'student';
+    let dest = '/dashboard.html';
+    if (role === 'admin')   dest = '/admin.html';
+    if (role === 'teacher') dest = '/teacher.html';
+    if (role === 'parent')  dest = '/parent.html';
+    window.location.href = dest;
   }
 </script>
 <script>

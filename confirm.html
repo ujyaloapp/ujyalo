@@ -81,7 +81,7 @@ async function handleConfirmation() {
 
   // EMAIL CONFIRMATION
   try {
-    // Step 1: Get auth user
+    // Step 1: Get auth user data using the access token
     const res = await fetch(`${window._sbUrl}/auth/v1/user`, {
       headers: {
         'apikey': window._sbKey,
@@ -95,25 +95,22 @@ async function handleConfirmation() {
       return;
     }
 
-    // Step 2: Get role from users table
+    // Step 2: Get role securely via our API (uses service role key server-side)
     const roleRes = await fetch(
-      `${window._sbUrl}/rest/v1/users?id=eq.${userData.id}&select=role,full_name`,
+      `/api/auth?action=get-role&id=${userData.id}`,
       {
-        headers: {
-          'apikey': window._sbKey,
-          'Authorization': `Bearer ${window._sbKey}`
-        }
+        headers: { 'Authorization': `Bearer ${accessToken}` }
       }
     );
     const roleData = await roleRes.json();
-    const role = roleData?.[0]?.role || 'student';
+    const role = roleData?.role || 'student';
 
     // Step 3: Save to localStorage
     localStorage.setItem('ujyalo_token', accessToken);
     localStorage.setItem('ujyalo_user', JSON.stringify({
       id:        userData.id,
       email:     userData.email,
-      full_name: roleData?.[0]?.full_name || userData.user_metadata?.full_name || '',
+      full_name: roleData?.full_name || userData.user_metadata?.full_name || '',
       role
     }));
 

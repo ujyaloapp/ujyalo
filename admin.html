@@ -450,11 +450,6 @@ tr:hover td { background:var(--ink-50); }
    CONFIG — Edit admin emails here
    Add more emails to the array to grant access
    ============================================================ */
-const ADMIN_EMAILS = [
-  'hello@ujyalo.app',
-  // 'friend1@ujyalo.app', // uncomment to add Friend 1
-];
-
 const SUPABASE_URL = 'https://uigausnyrlxxyosxjgvi.supabase.co';
 
 /* ============================================================
@@ -520,7 +515,7 @@ let subjectsCache = [];
 /* ── Access check ── */
 function checkAccess() {
   if (!user || !token) { window.location.href = '/login.html'; return false; }
-  if (!ADMIN_EMAILS.includes(user.email)) {
+  if (user.role !== 'admin') {
     document.getElementById('access-denied').classList.remove('hidden');
     return false;
   }

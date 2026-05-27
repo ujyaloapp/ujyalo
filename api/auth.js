@@ -58,12 +58,13 @@ export default async function handler(req, res) {
       }
 
       // Step 2: Get role from users table
+      // Uses service role key — server side only, never exposed to browser
       const userRow = await fetch(
         `${process.env.SUPABASE_URL}/rest/v1/users?id=eq.${data.user.id}&select=role,full_name,streak,questions_count`,
         {
           headers: {
-            'apikey': process.env.SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+            'apikey': process.env.SUPABASE_SERVICE_KEY,
+            'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
           }
         }
       );
@@ -212,6 +213,49 @@ export default async function handler(req, res) {
     } catch (err) {
       console.error('Change password error:', err);
       return res.status(500).json({ error: 'Something went wrong. Please try again.' });
+    }
+  }
+
+  // ── Get role (GET) — used by confirm.html after email verification ──
+  if (req.method === 'GET' && action === 'get-role') {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const token = authHeader.split(' ')[1];
+    const { id } = req.query;
+    if (!id) return res.status(400).json({ error: 'Missing id' });
+
+    try {
+      // Verify the token belongs to this user
+      const verify = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
+        headers: {
+          'apikey': process.env.SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const authUser = await verify.json();
+      if (authUser.id !== id) {
+        return res.status(403).json({ error: 'Forbidden' });
+      }
+
+      // Get role using service key — secure, server side only
+      const userRes = await fetch(
+        `${process.env.SUPABASE_URL}/rest/v1/users?id=eq.${id}&select=role,full_name`,
+        {
+          headers: {
+            'apikey': process.env.SUPABASE_SERVICE_KEY,
+            'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`
+          }
+        }
+      );
+      const userData = await userRes.json();
+      return res.status(200).json({
+        role:      userData?.[0]?.role || 'student',
+        full_name: userData?.[0]?.full_name || ''
+      });
+    } catch(err) {
+      return res.status(500).json({ error: 'Something went wrong.' });
     }
   }
 
