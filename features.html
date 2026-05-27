@@ -15,43 +15,237 @@
   <meta name="twitter:title" content="Features — Free SEE Exam Prep | Ujyalo Nepal" />
   <meta name="twitter:description" content="SEE chapter practice, AI model answers, progress tracking, personalised study path, past papers and more. Built specifically for Nepal SEE exam. Free for students forever." />
   <link rel="canonical" href="https://ujyalo.app/features.html" />
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,700;9..144,1,400;9..144,1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/main.css" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    .page-dark-hero{position:relative;padding:100px 0 80px;background:#0a0f1e;overflow:hidden;text-align:center;}
+    .page-dark-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(37,99,235,0.2) 0%,transparent 60%);pointer-events:none;}
+    .page-dark-hero-inner{position:relative;z-index:2;max-width:720px;margin:0 auto;padding:0 24px;}
+    .page-dark-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.3);color:#93c5fd;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:24px;}
+    .page-dark-title{font-family:'Fraunces',serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:700;line-height:1.1;color:white;letter-spacing:-.03em;margin-bottom:20px;}
+    .page-dark-title em{font-style:italic;background:linear-gradient(135deg,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-dark-sub{font-size:17px;color:rgba(255,255,255,.5);line-height:1.7;max-width:540px;margin:0 auto 32px;}
+    .section-tiny-label{font-size:11px;font-weight:700;color:#2563EB;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;display:block;}
+    .section-fraunces-title{font-family:'Fraunces',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;color:#0f172a;letter-spacing:-.02em;line-height:1.15;margin-bottom:16px;}
+    .section-fraunces-title em{font-style:italic;color:#2563EB;}
 
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles/main.css">
+    /* Feature grid */
+    .feat-section{padding:80px 0;background:white;}
+    .feat-section-alt{padding:80px 0;background:#f8fafc;}
+    .feat-inner{max-width:1100px;margin:0 auto;padding:0 24px;}
+    .feat-header{text-align:center;margin-bottom:52px;}
+    .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+    .feat-card{background:white;border:1px solid #e2e8f0;border-radius:20px;padding:28px;transition:all .25s;position:relative;overflow:hidden;}
+    .feat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#2563EB,#1D9E75);opacity:0;transition:opacity .25s;}
+    .feat-card:hover{box-shadow:0 12px 40px rgba(0,0,0,.08);transform:translateY(-3px);}
+    .feat-card:hover::after{opacity:1;}
+    .feat-card-alt{background:#f8fafc;}
+    .fc-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;}
+    .fc-title{font-size:16px;font-weight:700;color:#0f172a;margin-bottom:8px;}
+    .fc-body{font-size:14px;color:#64748b;line-height:1.65;margin-bottom:10px;}
+    .fc-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;}
+    .badge-live{background:#E1F5EE;color:#085041;}
+    .badge-soon{background:#EFF6FF;color:#1d4ed8;}
+    .badge-hot{background:#FEF3C7;color:#92400e;}
 
+    /* Highlight row */
+    .feat-highlight{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding:60px 0;max-width:1100px;margin:0 auto;}
+    .fh-text{}
+    .fh-text h2{font-family:'Fraunces',serif;font-size:clamp(1.8rem,3vw,2.4rem);font-weight:700;color:#0f172a;line-height:1.2;margin-bottom:16px;}
+    .fh-text h2 em{font-style:italic;color:#2563EB;}
+    .fh-text p{font-size:15px;color:#64748b;line-height:1.8;margin-bottom:12px;}
+    .fh-cards{display:flex;flex-direction:column;gap:12px;}
+    .fh-card{background:white;border:1px solid #e2e8f0;border-radius:16px;padding:20px;display:flex;gap:14px;align-items:flex-start;}
+    .fhc-icon{font-size:22px;flex-shrink:0;}
+    .fhc-title{font-size:14px;font-weight:700;color:#0f172a;margin-bottom:4px;}
+    .fhc-body{font-size:13px;color:#64748b;line-height:1.6;}
+
+    /* Coming soon */
+    .coming-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;}
+    .coming-card{background:white;border:1.5px dashed #e2e8f0;border-radius:16px;padding:24px;text-align:center;}
+    .coming-icon{font-size:36px;margin-bottom:12px;}
+    .coming-title{font-size:15px;font-weight:700;color:#0f172a;margin-bottom:6px;}
+    .coming-body{font-size:13px;color:#64748b;line-height:1.6;margin-bottom:12px;}
+    .coming-tag{font-size:11px;font-weight:700;color:#2563EB;background:#EFF6FF;padding:3px 10px;border-radius:999px;}
+
+    /* CTA */
+    .page-dark-cta{padding:100px 0;background:#0a0f1e;text-align:center;position:relative;overflow:hidden;}
+    .page-dark-cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,rgba(29,158,117,.15) 0%,transparent 60%);pointer-events:none;}
+    .page-dark-cta-inner{max-width:560px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+    .page-dark-cta-title{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;color:white;letter-spacing:-.02em;margin-bottom:14px;}
+    .page-dark-cta-title em{font-style:italic;background:linear-gradient(135deg,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-dark-cta-sub{font-size:16px;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:32px;}
+    .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+
+    @media(max-width:768px){.feat-highlight{grid-template-columns:1fr;}.page-dark-hero{padding:72px 0 56px;}}
+  </style>
 </head>
 <body>
 <div id="site-nav"></div>
-<div class="page-hero"><div class="container"><div class="page-hero-label">Features</div><h1>Everything you need<br><em>to pass SEE.</em></h1><p>Built specifically for Nepali students. Every feature designed with one goal: help you understand and pass.</p></div></div>
 
-<section class="section"><div class="container">
-  <div class="text-center mb-8"><span class="label-tiny">What's included</span><h2 class="section-title mt-2">Everything in <em>one place.</em></h2></div>
-  <div class="feature-grid">
-    <div class="feature-cell"><div class="feature-icon" style="background:var(--brand-light);">📜</div><h3>10 years past papers</h3><p class="mt-2" style="font-size:14px;color:var(--ink-500);line-height:1.65;">Real SEE papers from 2070 to today. Practice exactly what you'll face in the actual exam.</p><span class="badge badge-sun mt-4">⭐ Most popular</span></div>
-    <div class="feature-cell"><div class="feature-icon" style="background:var(--brand-light);">⏱️</div><h3>Full mock tests</h3><p class="mt-2" style="font-size:14px;color:var(--ink-500);line-height:1.65;">3-hour timed exams in real SEE format. Build confidence before the big day.</p></div>
-    <div class="feature-cell"><div class="feature-icon" style="background:var(--brand-light);">📚</div><h3>Chapter-wise practice</h3><p class="mt-2" style="font-size:14px;color:var(--ink-500);line-height:1.65;">Pick exactly the chapter your teacher just covered. No random questions.</p></div>
-    <div class="feature-cell"><div class="feature-icon" style="background:var(--brand-light);">⚡</div><h3>Instant AI feedback</h3><p class="mt-2" style="font-size:14px;color:var(--ink-500);line-height:1.65;">No more waiting until tomorrow's class. Detailed explanations the moment you submit.</p></div>
-    <div class="feature-cell"><div class="feature-icon" style="background:var(--brand-light);">📈</div><h3>Progress tracking</h3><p class="mt-2" style="font-size:14px;color:var(--ink-500);line-height:1.65;">See yourself improve. Daily streaks. Weak chapters identified automatically.</p></div>
-    <div class="feature-cell"><div class="feature-icon" style="background:var(--sun-light);">📧</div><h3>Weekly parent reports</h3><p class="mt-2" style="font-size:14px;color:var(--ink-500);line-height:1.65;">Parents get beautiful weekly emails. They see your progress. They cheer you on.</p><span class="badge badge-sun mt-4">💛 Killer feature</span></div>
-    <div class="feature-cell"><div class="feature-icon" style="background:var(--brand-light);">🔥</div><h3>Daily streaks</h3><p class="mt-2" style="font-size:14px;color:var(--ink-500);line-height:1.65;">Stay motivated. Practice every day. Build the discipline that passes SEE.</p></div>
-    <div class="feature-cell"><div class="feature-icon" style="background:var(--brand-light);">🎯</div><h3>Personalised tips</h3><p class="mt-2" style="font-size:14px;color:var(--ink-500);line-height:1.65;">AI identifies your weak topics and tells you exactly what to focus on next.</p></div>
-    <div class="feature-cell"><div class="feature-icon" style="background:var(--brand-light);">🇳🇵</div><h3>Made for Nepal</h3><p class="mt-2" style="font-size:14px;color:var(--ink-500);line-height:1.65;">CDC curriculum. Nepali names and context. Built by people who understand SEE.</p></div>
+<!-- HERO -->
+<div class="page-dark-hero">
+  <div class="page-dark-hero-inner">
+    <div class="page-dark-badge">✨ Features</div>
+    <h1 class="page-dark-title">Everything you need<br><em>to pass SEE.</em></h1>
+    <p class="page-dark-sub">Built specifically for Nepali students. Every feature designed with one goal — help you understand and pass.</p>
+    <a href="/chapter-practice.html" class="btn btn-primary btn-large">Start practising free →</a>
   </div>
-</div></section>
+</div>
 
-<section class="section section-bg-soft"><div class="container">
-  <div class="text-center mb-8"><span class="label-tiny">Coming soon</span><h2 class="section-title mt-2">More on <em>the way.</em></h2></div>
-  <div class="grid-3">
-    <div class="card"><span class="card-icon">📷</span><h3>Photo doubt solver</h3><p class="mt-2">Stuck on a textbook problem? Take a photo. AI explains step by step.</p><span class="badge badge-blue mt-4">Coming soon</span></div>
-    <div class="card"><span class="card-icon">🏆</span><h3>School leaderboard</h3><p class="mt-2">Compete with classmates. See who's practising the most this week.</p><span class="badge badge-blue mt-4">Coming soon</span></div>
-    <div class="card"><span class="card-icon">🎓</span><h3>Optional subjects</h3><p class="mt-2">Computer Science, Accounting, Economics — coming based on demand.</p><span class="badge badge-blue mt-4">Coming soon</span></div>
+<!-- LIVE NOW -->
+<section class="feat-section">
+  <div class="feat-inner">
+    <div class="feat-header">
+      <span class="section-tiny-label">Available right now</span>
+      <h2 class="section-fraunces-title">Live <em>today.</em></h2>
+      <p style="font-size:15px;color:#64748b;max-width:480px;margin:0 auto;">No waiting. Start practising any of these features right now — no signup needed.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="fc-icon" style="background:#EFF6FF">📚</div>
+        <div class="fc-title">Chapter-by-chapter practice</div>
+        <div class="fc-body">Focus on exactly what you are studying in school. Algebra today. Electricity tomorrow. All 41 chapters covered — Maths and Science.</div>
+        <span class="fc-badge badge-live">✓ Live now</span>
+      </div>
+      <div class="feat-card">
+        <div class="fc-icon" style="background:#F0FDF4">✅</div>
+        <div class="fc-title">Full model answers</div>
+        <div class="fc-body">Every question has a complete model answer with working steps explained in simple language. Like a teacher sitting next to you.</div>
+        <span class="fc-badge badge-live">✓ Live now</span>
+      </div>
+      <div class="feat-card">
+        <div class="fc-icon" style="background:#EFF6FF">📈</div>
+        <div class="fc-title">Progress tracking</div>
+        <div class="fc-body">Every question you answer is saved. See which chapters you have covered, your scores, and where you need more work.</div>
+        <span class="fc-badge badge-live">✓ Free account</span>
+      </div>
+      <div class="feat-card">
+        <div class="fc-icon" style="background:#FEF3C7">🔥</div>
+        <div class="fc-title">Daily streaks</div>
+        <div class="fc-body">Stay motivated. Practice every day and build the consistency that actually leads to passing SEE. Your streak is your best motivation.</div>
+        <span class="fc-badge badge-live">✓ Live now</span>
+      </div>
+      <div class="feat-card">
+        <div class="fc-icon" style="background:#F0FDF4">🇳🇵</div>
+        <div class="fc-title">Built for Nepal SEE</div>
+        <div class="fc-body">CDC curriculum. Real SEE marking patterns. Nepali names and context. Built by people who understand SEE — not a global tool adapted.</div>
+        <span class="fc-badge badge-live">✓ 100% SEE aligned</span>
+      </div>
+      <div class="feat-card">
+        <div class="fc-icon" style="background:#EFF6FF">📱</div>
+        <div class="fc-title">Works on any phone</div>
+        <div class="fc-body">No app to download. Just open ujyalo.app in your browser. Works on any phone, tablet or computer — even on slow internet connections.</div>
+        <span class="fc-badge badge-live">✓ Mobile first</span>
+      </div>
+    </div>
   </div>
-</div></section>
+</section>
 
-<section class="cta-section"><div class="container"><h2>Ready to try it?<br><em>Free to start.</em></h2><p>No credit card. No commitment.</p><a href="/signup.html" class="btn btn-primary btn-large">Sign up free →</a></div></section>
+<!-- HIGHLIGHT — Parent reports -->
+<section class="feat-section-alt">
+  <div style="max-width:1100px;margin:0 auto;padding:0 24px;">
+    <div class="feat-highlight">
+      <div class="fh-text">
+        <span class="section-tiny-label">For parents</span>
+        <h2>Parents see everything.<br><em>Every week.</em></h2>
+        <p>Most Nepali parents sacrifice everything for their child's education without ever knowing if it's actually working. Ujyalo changes that.</p>
+        <p>Every Sunday, parents get a clear email showing exactly what their child practised, which subjects improved, and what needs more work. No guessing. No hoping. Just honest progress.</p>
+        <span class="fc-badge badge-soon" style="margin-top:8px;">⚙ Building now</span>
+      </div>
+      <div class="fh-cards">
+        <div class="fh-card">
+          <div class="fhc-icon">📊</div>
+          <div>
+            <div class="fhc-title">Weekly progress email</div>
+            <div class="fhc-body">Simple, clear email every Sunday. Which chapters done, scores, study time. Parents feel involved without needing to understand technology.</div>
+          </div>
+        </div>
+        <div class="fh-card">
+          <div class="fhc-icon">⚠️</div>
+          <div>
+            <div class="fhc-title">Weak chapter alerts</div>
+            <div class="fhc-body">If your child scores below 60% on a chapter, parents are notified so they can encourage more practice in that area.</div>
+          </div>
+        </div>
+        <div class="fh-card">
+          <div class="fhc-icon">🎯</div>
+          <div>
+            <div class="fhc-title">Exam countdown</div>
+            <div class="fhc-body">Always visible — how many days until SEE, how much of the syllabus is covered, whether the pace is on track.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMING SOON -->
+<section class="feat-section">
+  <div class="feat-inner">
+    <div class="feat-header">
+      <span class="section-tiny-label">Coming soon</span>
+      <h2 class="section-fraunces-title">More on <em>the way.</em></h2>
+      <p style="font-size:15px;color:#64748b;max-width:480px;margin:0 auto;">Being built right now. Sign up to be the first to know when each feature goes live.</p>
+    </div>
+    <div class="coming-grid">
+      <div class="coming-card">
+        <div class="coming-icon">📜</div>
+        <div class="coming-title">SEE Past Papers</div>
+        <div class="coming-body">Full past papers from SEE 2082, 2081, 2080 and earlier. Practice under real exam conditions.</div>
+        <span class="coming-tag">Coming soon</span>
+      </div>
+      <div class="coming-card">
+        <div class="coming-icon">⏱️</div>
+        <div class="coming-title">Timed Mock Exams</div>
+        <div class="coming-body">Full 3-hour SEE simulation. Timer, real format, score report. Build confidence before the big day.</div>
+        <span class="coming-tag">Coming soon</span>
+      </div>
+      <div class="coming-card">
+        <div class="coming-icon">🔤</div>
+        <div class="coming-title">MCQ Practice Mode</div>
+        <div class="coming-body">Multiple choice A B C D. Instant feedback. Faster practice. Perfect for revision before the exam.</div>
+        <span class="coming-tag">Coming soon</span>
+      </div>
+      <div class="coming-card">
+        <div class="coming-icon">🏫</div>
+        <div class="coming-title">School Dashboard</div>
+        <div class="coming-body">Teachers see every student's progress. Class analytics. Weak chapter reports. The data teachers have never had before.</div>
+        <span class="coming-tag">Coming soon</span>
+      </div>
+      <div class="coming-card">
+        <div class="coming-icon">🗺️</div>
+        <div class="coming-title">Personalised Study Path</div>
+        <div class="coming-body">Ujyalo tells you exactly which chapter to study today based on your exam date and progress. No more guessing what to do next.</div>
+        <span class="coming-tag">Building now</span>
+      </div>
+      <div class="coming-card">
+        <div class="coming-icon">📖</div>
+        <div class="coming-title">English, Social & Nepali</div>
+        <div class="coming-body">All five SEE subjects. Being added subject by subject. Maths and Science are live — the rest follow soon.</div>
+        <span class="coming-tag">Coming soon</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="page-dark-cta">
+  <div class="page-dark-cta-inner">
+    <h2 class="page-dark-cta-title">Ready to try it?<br><em>Free to start.</em></h2>
+    <p class="page-dark-cta-sub">No credit card. No commitment. Just open your phone and start practising.</p>
+    <div class="cta-btns">
+      <a href="/chapter-practice.html" class="btn btn-primary btn-large">Start practising →</a>
+      <a href="/signup.html" class="btn btn-secondary btn-large">Create free account</a>
+    </div>
+  </div>
+</div>
+
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
-</body></html>
+</body>
+</html>
