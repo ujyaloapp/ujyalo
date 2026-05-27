@@ -45,16 +45,11 @@
 </div>
 
 <script>
-// Admin emails — same list as auth-login.js
-const ADMIN_EMAILS = [
-  'hello@ujyalo.app',
-  // 'friend1@ujyalo.app',
-];
-
 async function init() {
   try {
     const res  = await fetch('/api/auth?action=config');
     const data = await res.json();
+    window._sbUrl = data.url;
     window._sbKey = data.anon_key;
   } catch(e) {}
   handleConfirmation();
@@ -64,12 +59,10 @@ async function handleConfirmation() {
   const hash   = window.location.hash.substring(1);
   const params = new URLSearchParams(hash || window.location.search);
 
-  const accessToken  = params.get('access_token');
-  const refreshToken = params.get('refresh_token');
-  const type         = params.get('type');
-  const errorDesc    = params.get('error_description');
+  const accessToken = params.get('access_token');
+  const type        = params.get('type');
+  const errorDesc   = params.get('error_description');
 
-  // Error in URL
   if (errorDesc) {
     showError(decodeURIComponent(errorDesc));
     return;
@@ -80,47 +73,60 @@ async function handleConfirmation() {
     return;
   }
 
-  // ── PASSWORD RECOVERY — send to reset-password.html ──
-  // Do NOT log them in here — let reset-password.html handle it
+  // PASSWORD RECOVERY
   if (type === 'recovery') {
     window.location.href = `/reset-password.html${window.location.hash}`;
     return;
   }
 
-  // ── EMAIL CONFIRMATION (signup) — log them in ──
+  // EMAIL CONFIRMATION
   try {
-    const res = await fetch(
-      'https://uigausnyrlxxyosxjgvi.supabase.co/auth/v1/user',
+    // Step 1: Get auth user
+    const res = await fetch(`${window._sbUrl}/auth/v1/user`, {
+      headers: {
+        'apikey': window._sbKey,
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+    const userData = await res.json();
+
+    if (!userData.id) {
+      showError('Could not verify your account. Please try logging in.');
+      return;
+    }
+
+    // Step 2: Get role from users table
+    const roleRes = await fetch(
+      `${window._sbUrl}/rest/v1/users?id=eq.${userData.id}&select=role,full_name`,
       {
         headers: {
           'apikey': window._sbKey,
-          'Authorization': `Bearer ${accessToken}`
+          'Authorization': `Bearer ${window._sbKey}`
         }
       }
     );
+    const roleData = await roleRes.json();
+    const role = roleData?.[0]?.role || 'student';
 
-    const userData = await res.json();
+    // Step 3: Save to localStorage
+    localStorage.setItem('ujyalo_token', accessToken);
+    localStorage.setItem('ujyalo_user', JSON.stringify({
+      id:        userData.id,
+      email:     userData.email,
+      full_name: roleData?.[0]?.full_name || userData.user_metadata?.full_name || '',
+      role
+    }));
 
-    if (userData.id) {
-      localStorage.setItem('ujyalo_token', accessToken);
-      localStorage.setItem('ujyalo_user', JSON.stringify({
-        id:        userData.id,
-        email:     userData.email,
-        full_name: userData.user_metadata?.full_name || ''
-      }));
+    show('state-success');
+    hide('state-loading');
 
-      show('state-success');
-      hide('state-loading');
+    // Step 4: Redirect based on role
+    let redirectTo = '/dashboard.html';
+    if (role === 'admin')   redirectTo = '/admin.html';
+    if (role === 'teacher') redirectTo = '/teacher.html';
+    if (role === 'parent')  redirectTo = '/parent.html';
 
-      // Redirect admin to admin.html, students to dashboard.html
-      const isAdmin = ADMIN_EMAILS.includes(userData.email?.toLowerCase());
-      setTimeout(() => {
-        window.location.href = isAdmin ? '/admin.html' : '/dashboard.html';
-      }, 1500);
-
-    } else {
-      showError('Could not verify your account. Please try logging in.');
-    }
+    setTimeout(() => { window.location.href = redirectTo; }, 1500);
 
   } catch(e) {
     console.error('Confirmation error:', e);

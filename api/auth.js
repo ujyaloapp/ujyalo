@@ -2,12 +2,8 @@
 // UJYALO — AUTH API
 // Handles: login, signup, forgot-password, change-password, config
 // Route via ?action= parameter
+// Role-based routing — reads from users table, no hardcoded emails
 // ============================================================
-
-const ADMIN_EMAILS = [
-  'hello@ujyalo.app',
-  // 'friend1@ujyalo.app',
-];
 
 export default async function handler(req, res) {
   const action = req.query.action || req.body?.action;
@@ -33,6 +29,7 @@ export default async function handler(req, res) {
     }
 
     try {
+      // Step 1: Authenticate with Supabase
       const response = await fetch(`${process.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
         method: 'POST',
         headers: {
@@ -60,18 +57,37 @@ export default async function handler(req, res) {
         });
       }
 
-      const isAdmin = ADMIN_EMAILS.includes(email.toLowerCase());
-      const redirectTo = isAdmin ? '/admin.html' : '/dashboard.html';
+      // Step 2: Get role from users table
+      const userRow = await fetch(
+        `${process.env.SUPABASE_URL}/rest/v1/users?id=eq.${data.user.id}&select=role,full_name,streak,questions_count`,
+        {
+          headers: {
+            'apikey': process.env.SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+          }
+        }
+      );
+      const userData = await userRow.json();
+      const role = userData?.[0]?.role || 'student';
+
+      // Step 3: Redirect based on role
+      let redirectTo = '/dashboard.html';
+      if (role === 'admin')   redirectTo = '/admin.html';
+      if (role === 'teacher') redirectTo = '/teacher.html';
+      if (role === 'parent')  redirectTo = '/parent.html';
 
       return res.status(200).json({
         success: true,
         access_token: data.access_token,
         redirectTo,
         user: {
-          id:         data.user.id,
-          email:      data.user.email,
-          full_name:  data.user.user_metadata?.full_name || '',
-          created_at: data.user.created_at,
+          id:              data.user.id,
+          email:           data.user.email,
+          full_name:       userData?.[0]?.full_name || data.user.user_metadata?.full_name || '',
+          role,
+          streak:          userData?.[0]?.streak || 0,
+          questions_count: userData?.[0]?.questions_count || 0,
+          created_at:      data.user.created_at,
         }
       });
 
@@ -118,21 +134,8 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: data.error.message || 'Something went wrong.' });
       }
 
-      // Create row in users table
-      await fetch(`${process.env.SUPABASE_URL}/rest/v1/users`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': process.env.SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({
-          id:        data.user?.id,
-          email:     email.trim().toLowerCase(),
-          full_name: full_name.trim()
-        })
-      });
+      // Note: users table row is now created automatically via DB trigger
+      // trigger: on_auth_user_created → handle_new_user()
 
       return res.status(200).json({
         success: true,
@@ -167,7 +170,6 @@ export default async function handler(req, res) {
         }),
       });
 
-      // Always return success for security
       return res.status(200).json({ success: true });
 
     } catch (err) {
