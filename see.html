@@ -230,7 +230,7 @@
 // State machine: subject → year → province → paper
 // ════════════════════════════════════════════════════════
 
-const STATE = { step: 1, subject: null, year: null, province: null };
+const STATE = { step: 1, mode: null, subject: null, year: null, province: null };
 
 // ── Data ──────────────────────────────────────────────
 const SUBJECTS = [
@@ -263,7 +263,7 @@ const PROVINCES = [
 
 // Which papers are actually available
 const AVAILABLE = {
-  'maths-2082-1': { url: '/past-paper.html?paper=2082-koshi-maths', status: 'live' },
+  'maths-2082-1': { url: '/see-paper.html?paper_id=7ba8eb9e-00ff-4f94-8500-261c51ca4fec', status: 'live' },
 };
 
 function isAvailable(subjectKey, yearBS, provinceNum) {
@@ -278,6 +278,66 @@ function render() {
   if (STATE.step === 1) container.innerHTML = renderStep1();
   if (STATE.step === 2) container.innerHTML = renderStep2();
   if (STATE.step === 3) container.innerHTML = renderStep3();
+}
+
+function renderStep0() {
+  return `<div class="panel">
+    <span class="section-label">What would you like to do?</span>
+    <div class="mode-grid" style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+
+      <a href="/chapter-practice.html" style="text-decoration:none;">
+        <div style="background:white;border:2px solid #e2e8f0;border-radius:18px;padding:20px;display:flex;align-items:center;gap:16px;transition:all .2s;cursor:pointer;" 
+          onmouseover="this.style.borderColor='#2563EB';this.style.boxShadow='0 8px 24px rgba(37,99,235,.1)'"
+          onmouseout="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'">
+          <div style="width:56px;height:56px;border-radius:16px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">📚</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:3px;">Chapter Practice</div>
+            <div style="font-size:13px;color:#64748b;line-height:1.5;">Practice chapter by chapter with instant model answers. Maths and Science live now.</div>
+          </div>
+          <div style="font-size:20px;color:#2563EB;">→</div>
+        </div>
+      </a>
+
+      <div style="background:white;border:2px solid #e2e8f0;border-radius:18px;padding:20px;display:flex;align-items:center;gap:16px;transition:all .2s;cursor:pointer;"
+        onmouseover="this.style.borderColor='#2563EB';this.style.boxShadow='0 8px 24px rgba(37,99,235,.1)'"
+        onmouseout="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'"
+        onclick="selectMode('past-papers')">
+        <div style="width:56px;height:56px;border-radius:16px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">📜</div>
+        <div style="flex:1;">
+          <div style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:3px;">Past Papers</div>
+          <div style="font-size:13px;color:#64748b;line-height:1.5;">Full SEE past papers — all provinces, bilingual, free PDF download.</div>
+        </div>
+        <div style="font-size:20px;color:#2563EB;">→</div>
+      </div>
+
+      <div style="background:white;border:2px solid #e2e8f0;border-radius:18px;padding:20px;display:flex;align-items:center;gap:16px;opacity:.6;">
+        <div style="width:56px;height:56px;border-radius:16px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">🎯</div>
+        <div style="flex:1;">
+          <div style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:3px;">MCQ Practice <span style="font-size:10px;font-weight:700;background:#f1f5f9;color:#94a3b8;padding:2px 8px;border-radius:999px;margin-left:6px;">Coming soon</span></div>
+          <div style="font-size:13px;color:#64748b;line-height:1.5;">Multiple choice questions with instant feedback. Perfect for quick revision.</div>
+        </div>
+      </div>
+
+      <div style="background:white;border:2px solid #e2e8f0;border-radius:18px;padding:20px;display:flex;align-items:center;gap:16px;opacity:.6;">
+        <div style="width:56px;height:56px;border-radius:16px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">⏱️</div>
+        <div style="flex:1;">
+          <div style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:3px;">Mock Exam <span style="font-size:10px;font-weight:700;background:#f1f5f9;color:#94a3b8;padding:2px 8px;border-radius:999px;margin-left:6px;">Coming soon</span></div>
+          <div style="font-size:13px;color:#64748b;line-height:1.5;">Full timed SEE simulation. Real exam conditions with score report.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>`;
+}
+
+function selectMode(mode) {
+  if (mode === 'past-papers') {
+    STATE.mode = 'past-papers';
+    STATE.step = 1;
+    // Update stepper header
+    document.querySelector('.stepper').style.display = 'flex';
+    render();
+  }
 }
 
 function renderStep1() {
@@ -454,12 +514,26 @@ function isAdmin() {
 }
 
 // ── Init ──────────────────────────────────────────────
-// Check URL params for pre-selection
 const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('subject')) STATE.subject = urlParams.get('subject');
-if (urlParams.get('year'))    { STATE.year = urlParams.get('year'); if (STATE.subject) STATE.step = 2; }
 
-document.addEventListener('DOMContentLoaded', render);
+// If coming directly to past papers
+if (urlParams.get('mode') === 'past-papers') {
+  STATE.mode = 'past-papers';
+  if (urlParams.get('subject')) STATE.subject = urlParams.get('subject');
+  if (urlParams.get('year')) STATE.year = urlParams.get('year');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Show stepper only in past papers mode
+  const stepper = document.getElementById('stepper');
+  if (!STATE.mode) {
+    stepper.style.display = 'none';
+    document.getElementById('panel-container').innerHTML = renderStep0();
+  } else {
+    stepper.style.display = 'flex';
+    render();
+  }
+});
 </script>
 </body>
 </html>
