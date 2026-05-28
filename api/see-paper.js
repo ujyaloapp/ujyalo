@@ -262,8 +262,8 @@ function buildHTML({ paper, subject, questions }) {
     }
     html,body{height:100%;overflow:hidden;}
     body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);display:flex;flex-direction:column;}
-    /* Hide site nav and footer — full-screen app page */
-    #site-nav,#site-footer{display:none!important;height:0;overflow:hidden;}
+    /* Hide footer only — nav stays visible */
+    #site-footer{display:none!important;}
 
     /* ── TOPBAR ── */
     .topbar{
@@ -327,12 +327,12 @@ function buildHTML({ paper, subject, questions }) {
     /* ── TWO COLUMN LAYOUT ── */
     .paper-layout{
       display:flex;flex:1;overflow:hidden;
-      height:calc(100vh - 56px);
+      /* Height is set by JS to account for dynamic nav height */
     }
 
     /* Left — question list */
     .q-panel{
-      width:600px;flex-shrink:0;
+      width:55%;flex-shrink:0;
       background:white;border-right:1px solid var(--border);
       overflow-y:auto;display:flex;flex-direction:column;
     }
@@ -705,7 +705,7 @@ function shareLink() {
 function shareQ(id, e) {
   e.stopPropagation();
   const d = ANSWERS[id];
-  const url = SHARE_URL + '#q' + d.qNum + d.subPart;
+  const url = SHARE_URL;
   navigator.clipboard.writeText(url).then(() => {
     const btn = e.target;
     btn.textContent = '✓ Link copied!';
@@ -751,8 +751,28 @@ function downloadPDF(lang) {
 }
 
 // ── INIT ──────────────────────────────────────────────
-// Auto-select first question on desktop
 document.addEventListener('DOMContentLoaded', () => {
+  // Set layout height accounting for nav + topbar
+  function setLayoutHeight() {
+    const nav = document.getElementById('site-nav');
+    const topbar = document.querySelector('.topbar');
+    const navH = nav ? nav.offsetHeight : 0;
+    const topbarH = topbar ? topbar.offsetHeight : 56;
+    const layout = document.querySelector('.paper-layout');
+    const qPanel = document.getElementById('q-panel');
+    const ansPanel = document.getElementById('ans-panel');
+    if (layout) {
+      const h = window.innerHeight - navH - topbarH;
+      layout.style.height = h + 'px';
+      if (qPanel) qPanel.style.maxHeight = h + 'px';
+      if (ansPanel) ansPanel.style.height = h + 'px';
+    }
+  }
+  // Run after nav loads (components.js injects it)
+  setTimeout(setLayoutHeight, 300);
+  window.addEventListener('resize', setLayoutHeight);
+
+  // Auto-select first question on desktop
   if (!isMobile() && ALL_SUBS.length > 0) {
     selectQ(ALL_SUBS[0]);
   }
