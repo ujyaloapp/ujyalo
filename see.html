@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEE Exam Preparation — Maths, Science & More | Ujyalo Nepal</title>
+  <meta name="description" content="Prepare for SEE exam with Ujyalo. Chapter practice, past papers, MCQ mode and more. All subjects, all provinces, free forever." />
+  <link rel="canonical" href="https://ujyalo.app/see" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/main.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #f0f2f7; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
+
+    /* ── LAYOUT ── */
+    .see-page { max-width: 600px; margin: 0 auto; padding: 32px 20px 80px; }
+
+    /* ── STEPPER ── */
+    .stepper {
+      display: flex; align-items: center; gap: 0;
+      margin-bottom: 36px; background: white;
+      border-radius: 16px; padding: 16px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+    .step { display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer; }
+    .step-circle {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; flex-shrink: 0;
+      transition: all .3s;
+    }
+    .step-circle.pending { background: #f1f5f9; color: #94a3b8; }
+    .step-circle.active  { background: #2563EB; color: white; box-shadow: 0 0 0 4px rgba(37,99,235,.15); }
+    .step-circle.done    { background: #1D9E75; color: white; }
+    .step-circle.done::before { content: '✓'; }
+    .step-info {}
+    .step-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: .08em; }
+    .step-value { font-size: 13px; font-weight: 700; color: #0f172a; }
+    .step-value.pending { color: #94a3b8; font-weight: 400; }
+    .step-connector { flex: 1; height: 2px; background: #e2e8f0; margin: 0 8px; border-radius: 1px; }
+    .step-connector.done { background: #1D9E75; }
+
+    /* ── SECTION HEADER ── */
+    .section-label {
+      font-size: 10px; font-weight: 700; color: #94a3b8;
+      text-transform: uppercase; letter-spacing: .12em;
+      margin-bottom: 14px; display: block;
+    }
+
+    /* ── SUBJECT GRID ── */
+    .subject-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .subject-card {
+      background: white; border: 2px solid #e2e8f0;
+      border-radius: 18px; padding: 20px 14px 16px;
+      cursor: pointer; text-align: center;
+      transition: all .2s; position: relative;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .subject-card:hover { border-color: #2563EB; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,.1); }
+    .subject-card.selected { border-color: #2563EB; background: #EFF6FF; }
+    .subject-card.locked { opacity: .5; cursor: not-allowed; }
+    .subject-card.locked:hover { border-color: #e2e8f0; transform: none; box-shadow: none; }
+    .subject-icon {
+      width: 56px; height: 56px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; flex-shrink: 0;
+    }
+    .subject-name { font-size: 15px; font-weight: 800; color: #0f172a; }
+    .subject-np { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 12px; color: #64748b; }
+    .subject-badge {
+      position: absolute; top: 10px; right: 10px;
+      font-size: 9px; font-weight: 700; padding: 2px 6px;
+      border-radius: 999px;
+    }
+    .badge-live { background: #E1F5EE; color: #1D9E75; }
+    .badge-soon { background: #f1f5f9; color: #94a3b8; }
+
+    /* ── YEAR GRID ── */
+    .subject-context {
+      display: flex; align-items: center; gap: 14px;
+      background: white; border-radius: 14px; padding: 14px 16px;
+      margin-bottom: 20px; border: 1px solid #e2e8f0;
+    }
+    .sc-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .sc-name { font-size: 16px; font-weight: 800; color: #0f172a; }
+    .sc-sub { font-size: 12px; color: #64748b; margin-top: 1px; }
+
+    .year-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+    .year-card {
+      background: white; border: 2px solid #e2e8f0;
+      border-radius: 16px; padding: 18px 12px;
+      cursor: pointer; text-align: center;
+      transition: all .2s; position: relative;
+    }
+    .year-card:hover:not(.locked) { border-color: #2563EB; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,.1); }
+    .year-card.selected { border-color: #2563EB; background: #EFF6FF; }
+    .year-card.locked { opacity: .45; cursor: not-allowed; }
+    .year-num {
+      font-family: 'Fraunces', serif; font-size: 2rem;
+      font-weight: 700; color: #0f172a; line-height: 1;
+      margin-bottom: 4px;
+    }
+    .year-card.selected .year-num { color: #2563EB; }
+    .year-ad { font-size: 11px; color: #64748b; font-weight: 600; }
+    .year-new {
+      display: inline-block; margin-top: 6px;
+      font-size: 9px; font-weight: 700; padding: 2px 7px;
+      border-radius: 999px; background: #EFF6FF; color: #2563EB;
+    }
+
+    /* ── PROVINCE LIST ── */
+    .province-list { display: flex; flex-direction: column; gap: 8px; }
+    .province-card {
+      background: white; border: 2px solid #e2e8f0;
+      border-radius: 14px; padding: 14px 16px;
+      cursor: pointer; display: flex; align-items: center; gap: 14px;
+      transition: all .2s;
+    }
+    .province-card:hover:not(.locked) { border-color: #2563EB; box-shadow: 0 4px 16px rgba(37,99,235,.08); }
+    .province-card.selected { border-color: #2563EB; background: #EFF6FF; }
+    .province-card.locked { opacity: .45; cursor: not-allowed; }
+    .province-num {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; flex-shrink: 0;
+    }
+    .province-name { font-size: 14px; font-weight: 700; color: #0f172a; }
+    .province-np { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 11px; color: #64748b; margin-top: 1px; }
+    .province-arrow { margin-left: auto; font-size: 16px; color: #94a3b8; }
+    .province-card:not(.locked):hover .province-arrow { color: #2563EB; }
+    .province-status { margin-left: auto; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+
+    /* ── MODE SELECTION ── */
+    .mode-context {
+      background: #0a0f1e; border-radius: 16px; padding: 18px 20px;
+      margin-bottom: 20px; display: flex; align-items: center; gap: 14px;
+    }
+    .mc-icon { font-size: 28px; flex-shrink: 0; }
+    .mc-title { font-size: 15px; font-weight: 700; color: white; }
+    .mc-sub { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 2px; }
+    .mc-edit { margin-left: auto; font-size: 12px; font-weight: 600; color: #60a5fa; cursor: pointer; flex-shrink: 0; }
+
+    .mode-grid { display: flex; flex-direction: column; gap: 10px; }
+    .mode-card {
+      background: white; border: 2px solid #e2e8f0;
+      border-radius: 16px; padding: 18px 20px;
+      cursor: pointer; display: flex; align-items: center; gap: 16px;
+      transition: all .2s;
+    }
+    .mode-card:hover:not(.locked) { border-color: #2563EB; box-shadow: 0 4px 16px rgba(37,99,235,.08); }
+    .mode-card.locked { opacity: .5; cursor: not-allowed; }
+    .mode-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; flex-shrink: 0;
+    }
+    .mode-title { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 3px; }
+    .mode-desc { font-size: 12px; color: #64748b; line-height: 1.5; }
+    .mode-badge { margin-left: auto; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
+    .mode-arrow { margin-left: auto; font-size: 18px; color: #2563EB; flex-shrink: 0; }
+
+    /* ── BACK BUTTON ── */
+    .back-btn {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 600; color: #64748b;
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; padding: 0; margin-bottom: 20px;
+      transition: color .2s;
+    }
+    .back-btn:hover { color: #2563EB; }
+
+    /* ── ANIMATIONS ── */
+    .panel { animation: slideIn .25s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .subject-grid { grid-template-columns: repeat(2,1fr); }
+      .year-grid { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+<div id="site-nav"></div>
+
+<div class="see-page">
+
+  <!-- Stepper -->
+  <div class="stepper" id="stepper">
+    <div class="step" onclick="goToStep(1)">
+      <div class="step-circle pending" id="step1-circle">1</div>
+      <div class="step-info">
+        <div class="step-label">Step 1</div>
+        <div class="step-value pending" id="step1-value">Subject</div>
+      </div>
+    </div>
+    <div class="step-connector" id="conn1"></div>
+    <div class="step" onclick="goToStep(2)">
+      <div class="step-circle pending" id="step2-circle">2</div>
+      <div class="step-info">
+        <div class="step-label">Step 2</div>
+        <div class="step-value pending" id="step2-value">Year</div>
+      </div>
+    </div>
+    <div class="step-connector" id="conn2"></div>
+    <div class="step" onclick="goToStep(3)">
+      <div class="step-circle pending" id="step3-circle">3</div>
+      <div class="step-info">
+        <div class="step-label">Step 3</div>
+        <div class="step-value pending" id="step3-value">Province</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel container -->
+  <div id="panel-container"></div>
+
+</div>
+
+<div id="site-footer"></div>
+<script src="/scripts/components.js"></script>
+<script>
+// ════════════════════════════════════════════════════════
+// SEE — 3-STEP WIZARD
+// State machine: subject → year → province → paper
+// ════════════════════════════════════════════════════════
+
+const STATE = { step: 1, subject: null, year: null, province: null };
+
+// ── Data ──────────────────────────────────────────────
+const SUBJECTS = [
+  { key: 'maths',   name: 'Maths',   np: 'गणित',     icon: '∫', color: '#2563EB', bg: '#EFF6FF', status: 'live' },
+  { key: 'science', name: 'Science', np: 'विज्ञान',   icon: '🔬', color: '#16A34A', bg: '#F0FDF4', status: 'live' },
+  { key: 'english', name: 'English', np: 'अंग्रेजी',   icon: 'Aa', color: '#D97706', bg: '#FEF3C7', status: 'soon' },
+  { key: 'nepali',  name: 'Nepali',  np: 'नेपाली',    icon: 'क', color: '#DC2626', bg: '#FEE2E2', status: 'soon' },
+  { key: 'social',  name: 'Social',  np: 'सामाजिक',   icon: '🌏', color: '#7C3AED', bg: '#F5F3FF', status: 'soon' },
+  { key: 'hpe',     name: 'HPE',     np: 'स्वास्थ्य',  icon: '❤️', color: '#DB2777', bg: '#FDF2F8', status: 'soon' },
+];
+
+const YEARS = [
+  { bs: '2082', ad: '2026', isNew: true,  status: 'live' },
+  { bs: '2081', ad: '2025', isNew: false, status: 'soon' },
+  { bs: '2080', ad: '2024', isNew: false, status: 'soon' },
+  { bs: '2079', ad: '2023', isNew: false, status: 'soon' },
+  { bs: '2078', ad: '2022', isNew: false, status: 'soon' },
+  { bs: '2077', ad: '2021', isNew: false, status: 'soon' },
+];
+
+const PROVINCES = [
+  { num: 1, name: 'Koshi Province',         np: 'कोशी प्रदेश',         color: '#2563EB', bg: '#EFF6FF' },
+  { num: 2, name: 'Madhesh Province',       np: 'मधेश प्रदेश',         color: '#DC2626', bg: '#FEE2E2' },
+  { num: 3, name: 'Bagmati Province',       np: 'बागमती प्रदेश',       color: '#D97706', bg: '#FEF3C7' },
+  { num: 4, name: 'Gandaki Province',       np: 'गण्डकी प्रदेश',       color: '#7C3AED', bg: '#F5F3FF' },
+  { num: 5, name: 'Lumbini Province',       np: 'लुम्बिनी प्रदेश',     color: '#DB2777', bg: '#FDF2F8' },
+  { num: 6, name: 'Karnali Province',       np: 'कर्णाली प्रदेश',      color: '#059669', bg: '#ECFDF5' },
+  { num: 7, name: 'Sudurpashchim Province', np: 'सुदूरपश्चिम प्रदेश',  color: '#0891B2', bg: '#ECFEFF' },
+];
+
+// Which papers are actually available
+const AVAILABLE = {
+  'maths-2082-1': { url: '/past-paper.html?paper=2082-koshi-maths', status: 'live' },
+};
+
+function isAvailable(subjectKey, yearBS, provinceNum) {
+  const key = `${subjectKey}-${yearBS}-${provinceNum}`;
+  return AVAILABLE[key] || null;
+}
+
+// ── Step rendering ─────────────────────────────────────
+function render() {
+  updateStepper();
+  const container = document.getElementById('panel-container');
+  if (STATE.step === 1) container.innerHTML = renderStep1();
+  if (STATE.step === 2) container.innerHTML = renderStep2();
+  if (STATE.step === 3) container.innerHTML = renderStep3();
+}
+
+function renderStep1() {
+  let html = `<div class="panel">
+    <span class="section-label">Choose Subject</span>
+    <div class="subject-grid">`;
+
+  SUBJECTS.forEach(s => {
+    const live = s.status === 'live';
+    html += `<div class="subject-card ${live?'':'locked'}" onclick="${live?`selectSubject('${s.key}')`:''}" >
+      <div class="subject-icon" style="background:${s.bg};color:${s.color};font-family:${s.key==='maths'?'serif':s.key==='nepali'?'Noto Sans Devanagari,sans-serif':'inherit'};font-weight:700;font-size:${s.key==='maths'?'28px':'22px'};">${s.icon}</div>
+      <div class="subject-name">${s.name}</div>
+      <div class="subject-np">${s.np}</div>
+      <span class="subject-badge ${live?'badge-live':'badge-soon'}">${live?'Live':'Soon'}</span>
+    </div>`;
+  });
+
+  html += `</div></div>`;
+  return html;
+}
+
+function renderStep2() {
+  const s = SUBJECTS.find(s => s.key === STATE.subject);
+  const availableCount = YEARS.filter(y => {
+    return PROVINCES.some(p => isAvailable(STATE.subject, y.bs, p.num));
+  }).length;
+
+  let html = `<div class="panel">
+    <button class="back-btn" onclick="goToStep(1)">← Back</button>
+    <div class="subject-context">
+      <div class="sc-icon" style="background:${s.bg};color:${s.color};font-family:${STATE.subject==='maths'?'serif':'inherit'};font-weight:700;">${s.icon}</div>
+      <div>
+        <div class="sc-name">${s.name} / <span style="font-family:'Noto Sans Devanagari',sans-serif;font-weight:600;">${s.np}</span></div>
+        <div class="sc-sub">${availableCount > 0 ? availableCount + ' year' + (availableCount>1?'s':'') + ' available' : 'Papers being prepared'}</div>
+      </div>
+    </div>
+    <span class="section-label">Select Exam Year</span>
+    <div class="year-grid">`;
+
+  YEARS.forEach(y => {
+    const hasAny = PROVINCES.some(p => isAvailable(STATE.subject, y.bs, p.num));
+    const isLive = hasAny;
+    html += `<div class="year-card ${isLive?'':'locked'}" onclick="${isLive?`selectYear('${y.bs}')`:''}" >
+      <div class="year-num">${y.bs}</div>
+      <div class="year-ad">${y.ad} AD</div>
+      ${y.isNew ? `<div class="year-new">New</div>` : ''}
+    </div>`;
+  });
+
+  html += `</div></div>`;
+  return html;
+}
+
+function renderStep3() {
+  const s = SUBJECTS.find(s => s.key === STATE.subject);
+
+  let html = `<div class="panel">
+    <button class="back-btn" onclick="goToStep(2)">← Back</button>
+    <div class="subject-context">
+      <div class="sc-icon" style="background:${s.bg};color:${s.color};font-family:${STATE.subject==='maths'?'serif':'inherit'};font-weight:700;">${s.icon}</div>
+      <div>
+        <div class="sc-name">${s.name} · SEE ${STATE.year}</div>
+        <div class="sc-sub">Select your province</div>
+      </div>
+    </div>
+    <span class="section-label">Select Province</span>
+    <div class="province-list">`;
+
+  PROVINCES.forEach(p => {
+    const avail = isAvailable(STATE.subject, STATE.year, p.num);
+    const isLive = avail && avail.status === 'live';
+    const isDraft = avail && avail.status === 'draft';
+    const admin = isAdmin();
+    const canClick = isLive || (admin && isDraft);
+
+    html += `<div class="province-card ${canClick?'':'locked'}" onclick="${canClick?`selectProvince(${p.num})`:''}" >
+      <div class="province-num" style="background:${p.bg};color:${p.color};">P${p.num}</div>
+      <div>
+        <div class="province-name">${p.name}</div>
+        <div class="province-np">${p.np}</div>
+      </div>`;
+
+    if (isLive) {
+      html += `<span class="province-status badge-live" style="background:#E1F5EE;color:#1D9E75;">Available</span>`;
+    } else if (isDraft && admin) {
+      html += `<span class="province-status" style="background:#FEF3C7;color:#92400e;">🟡 Draft</span>`;
+    } else {
+      html += `<span class="province-status badge-soon" style="background:#f1f5f9;color:#94a3b8;">Coming soon</span>`;
+    }
+
+    html += `</div>`;
+  });
+
+  html += `</div></div>`;
+  return html;
+}
+
+// ── Actions ───────────────────────────────────────────
+function selectSubject(key) {
+  STATE.subject = key;
+  STATE.step = 2;
+  render();
+}
+
+function selectYear(bs) {
+  STATE.year = bs;
+  STATE.step = 3;
+  render();
+}
+
+function selectProvince(num) {
+  STATE.province = num;
+  const avail = isAvailable(STATE.subject, STATE.year, num);
+  if (avail) {
+    window.location.href = avail.url;
+  }
+}
+
+function goToStep(step) {
+  if (step === 1) { STATE.subject = null; STATE.year = null; STATE.province = null; STATE.step = 1; }
+  if (step === 2 && STATE.subject) { STATE.year = null; STATE.province = null; STATE.step = 2; }
+  if (step === 3 && STATE.subject && STATE.year) { STATE.province = null; STATE.step = 3; }
+  render();
+}
+
+function updateStepper() {
+  const c1 = document.getElementById('step1-circle');
+  const c2 = document.getElementById('step2-circle');
+  const c3 = document.getElementById('step3-circle');
+  const v1 = document.getElementById('step1-value');
+  const v2 = document.getElementById('step2-value');
+  const v3 = document.getElementById('step3-value');
+  const conn1 = document.getElementById('conn1');
+  const conn2 = document.getElementById('conn2');
+
+  const s = STATE.subject ? SUBJECTS.find(s=>s.key===STATE.subject) : null;
+
+  // Step 1
+  if (STATE.step === 1) {
+    c1.className = 'step-circle active'; c1.textContent = '1';
+    v1.className = 'step-value'; v1.textContent = 'Subject';
+  } else {
+    c1.className = 'step-circle done'; c1.textContent = '';
+    v1.className = 'step-value'; v1.textContent = s?.name || '';
+    conn1.className = 'step-connector done';
+  }
+
+  // Step 2
+  if (STATE.step === 2) {
+    c2.className = 'step-circle active'; c2.textContent = '2';
+    v2.className = 'step-value'; v2.textContent = 'Year';
+  } else if (STATE.step > 2) {
+    c2.className = 'step-circle done'; c2.textContent = '';
+    v2.className = 'step-value'; v2.textContent = `SEE ${STATE.year}`;
+    conn2.className = 'step-connector done';
+  } else {
+    c2.className = 'step-circle pending'; c2.textContent = '2';
+    v2.className = 'step-value pending'; v2.textContent = 'Year';
+  }
+
+  // Step 3
+  if (STATE.step === 3) {
+    c3.className = 'step-circle active'; c3.textContent = '3';
+    v3.className = 'step-value'; v3.textContent = 'Province';
+  } else {
+    c3.className = 'step-circle pending'; c3.textContent = '3';
+    v3.className = 'step-value pending'; v3.textContent = 'Province';
+  }
+}
+
+function isAdmin() {
+  const user = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
+  return user && user.role === 'admin';
+}
+
+// ── Init ──────────────────────────────────────────────
+// Check URL params for pre-selection
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('subject')) STATE.subject = urlParams.get('subject');
+if (urlParams.get('year'))    { STATE.year = urlParams.get('year'); if (STATE.subject) STATE.step = 2; }
+
+document.addEventListener('DOMContentLoaded', render);
+</script>
+</body>
+</html>
