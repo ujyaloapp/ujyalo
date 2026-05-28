@@ -13,6 +13,8 @@ const PAGES = [
   { path: '/',                    priority: '1.0', changefreq: 'weekly'  },
   { path: '/chapter-practice.html', priority: '0.9', changefreq: 'weekly'  },
   { path: '/see-practice.html',   priority: '0.8', changefreq: 'weekly'  },
+  { path: '/see-past-papers.html', priority: '0.9', changefreq: 'weekly'  },
+  { path: '/see/past-papers',      priority: '0.9', changefreq: 'weekly'  },
   { path: '/signup.html',         priority: '0.8', changefreq: 'monthly' },
   { path: '/features.html',       priority: '0.7', changefreq: 'monthly' },
   { path: '/for-schools.html',    priority: '0.7', changefreq: 'monthly' },
@@ -26,14 +28,32 @@ const PAGES = [
   { path: '/privacy.html',        priority: '0.3', changefreq: 'yearly'  },
 ];
 
-// ── Chapter pages (add when you build them) ──────────────────
-// These will be chapter-specific SEO pages e.g. /see/maths/compound-interest
-// Uncomment and populate when ready:
-// const CHAPTER_PAGES = [
-//   { path: '/see/maths/compound-interest', priority: '0.8', changefreq: 'monthly' },
-//   { path: '/see/maths/circle-theorems',   priority: '0.8', changefreq: 'monthly' },
-//   { path: '/see/maths/trigonometry',      priority: '0.8', changefreq: 'monthly' },
-// ];
+// ── Past paper pages — fetched dynamically from Supabase ──────
+// Auto-generates URLs for all live past papers
+// Add new paper to Supabase → appears in sitemap automatically
+
+async function getPastPaperUrls() {
+  try {
+    const res = await fetch(
+      `${process.env.SUPABASE_URL}/rest/v1/past_papers?status=eq.live&select=year,province,subject_id,exam_subjects(code)`,
+      {
+        headers: {
+          'apikey': process.env.SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`
+        }
+      }
+    );
+    const papers = await res.json();
+    if (!Array.isArray(papers)) return [];
+    return papers.map(p => ({
+      path: `/see/past-papers/${p.year}/${p.province?.toLowerCase()}/${p.exam_subjects?.code?.toLowerCase() || 'maths'}`,
+      priority: '0.9',
+      changefreq: 'monthly'
+    }));
+  } catch(e) {
+    return [];
+  }
+}
 
 function buildSitemap(urls) {
   const today = new Date().toISOString().split('T')[0];
@@ -62,9 +82,10 @@ export default async function handler(req, res) {
     // const { data } = await fetch(supabase chapters endpoint)
     // const chapterUrls = data.map(ch => ({ path: `/see/${ch.subject}/${ch.slug}`, ... }))
 
+    const pastPaperUrls = await getPastPaperUrls();
     const allUrls = [
       ...PAGES,
-      // ...chapterUrls  // add when chapter pages are built
+      ...pastPaperUrls,
     ];
 
     const sitemap = buildSitemap(allUrls);

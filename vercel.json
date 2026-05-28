@@ -3,6 +3,14 @@
     {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
+    },
+    {
+      "source": "/see/past-papers/:year/:province/:subject",
+      "destination": "/past-paper.html"
+    },
+    {
+      "source": "/see/past-papers",
+      "destination": "/see-past-papers.html"
     }
   ]
 }

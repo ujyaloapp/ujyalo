@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- SEO meta tags injected dynamically from Supabase data -->
+  <title>SEE Past Paper | Ujyalo</title>
+  <meta name="description" content="SEE past paper — free bilingual Nepali and English with clean diagrams. Download PDF free." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/main.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --paper-bg: #fffef9;
+      --paper-border: #d4c9a8;
+      --ink: #1a1208;
+      --ink-mid: #4a3f2a;
+      --ink-light: #8a7a5a;
+      --rule-line: rgba(37,99,235,0.08);
+    }
+
+    body { background: #f0ede6; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    /* ── LAYOUT ── */
+    .pp-page { max-width: 920px; margin: 0 auto; padding: 20px 16px 60px; }
+
+    /* ── TOP BAR ── */
+    .pp-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; margin-bottom: 16px;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      flex-wrap: wrap; gap: 8px;
+    }
+    .pp-breadcrumb {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: #64748b;
+    }
+    .pp-breadcrumb a { color: #64748b; text-decoration: none; }
+    .pp-breadcrumb a:hover { color: #2563EB; }
+    .pp-breadcrumb span { color: #cbd5e1; }
+    .pp-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pp-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 700; font-family: inherit;
+      cursor: pointer; border: none; transition: all .2s;
+      text-decoration: none;
+    }
+    .pp-btn-dl { background: #0f172a; color: white; }
+    .pp-btn-dl:hover { background: #1e293b; }
+    .pp-btn-notify { background: #2563EB; color: white; }
+    .pp-btn-notify:hover { background: #1d4ed8; }
+    .pp-btn-admin { background: #f59e0b; color: #1a1208; }
+    .pp-btn-admin:hover { background: #d97706; }
+
+    /* ── INFO STRIP ── */
+    .paper-info-strip {
+      display: grid; grid-template-columns: repeat(5,1fr); gap: 10px;
+      margin-bottom: 16px;
+    }
+    .pis-card {
+      background: white; border: 1px solid #e2e8f0;
+      border-radius: 10px; padding: 10px 12px; text-align: center;
+    }
+    .pis-label { font-size: 9px; font-weight: 700; color: #94a3b8;
+      text-transform: uppercase; letter-spacing: .08em; margin-bottom: 3px; }
+    .pis-value { font-family: 'Fraunces', serif; font-size: 1.2rem;
+      font-weight: 700; color: #0f172a; line-height: 1; }
+    .pis-sub { font-size: 10px; color: #64748b; margin-top: 2px; }
+
+    /* ── STATUS BANNER ── */
+    .status-banner {
+      border-radius: 10px; padding: 14px 18px;
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 16px; font-size: 13px;
+    }
+    .status-banner.draft {
+      background: #FEF3C7; border: 1px solid #FCD34D;
+    }
+    .status-banner.live {
+      background: #E1F5EE; border: 1px solid #1D9E75;
+    }
+    .status-banner-icon { font-size: 20px; flex-shrink: 0; }
+    .status-banner-text { flex: 1; }
+    .status-banner-title { font-weight: 700; color: #0f172a; margin-bottom: 2px; }
+    .status-banner-sub { color: #64748b; font-size: 12px; }
+    .status-banner-btn {
+      background: #2563EB; color: white;
+      border: none; padding: 8px 14px; border-radius: 7px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      font-family: inherit; text-decoration: none;
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* ── PAPER CARD ── */
+    .paper-card {
+      background: var(--paper-bg);
+      border: 1px solid var(--paper-border);
+      border-radius: 4px;
+      box-shadow:
+        0 2px 8px rgba(0,0,0,.05),
+        0 20px 60px rgba(0,0,0,.08),
+        4px 4px 0 #e8dfc8,
+        8px 8px 0 #ddd4bc;
+      overflow: hidden; position: relative;
+    }
+    .paper-card::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(
+        transparent, transparent 31px,
+        var(--rule-line) 31px, var(--rule-line) 32px
+      );
+      pointer-events: none; z-index: 0;
+    }
+    .paper-card::after {
+      content: ''; position: absolute;
+      top: 0; bottom: 0; left: 58px;
+      width: 1.5px; background: rgba(220,38,38,0.12);
+      pointer-events: none; z-index: 0;
+    }
+    .paper-inner {
+      position: relative; z-index: 1;
+      padding: 0 32px 48px 72px;
+    }
+
+    /* ── PAPER HEADER ── */
+    .paper-header {
+      padding: 24px 0 18px; text-align: center;
+      border-bottom: 2px solid var(--ink); margin-bottom: 20px;
+      position: relative;
+    }
+    .paper-code {
+      position: absolute; top: 24px; right: 0;
+      font-size: 11px; font-weight: 700; color: var(--ink-mid);
+      letter-spacing: 0.05em;
+    }
+    .paper-sym {
+      position: absolute; top: 24px; left: 0;
+      font-size: 11px; color: var(--ink-mid);
+    }
+    .paper-exam { font-family: 'Fraunces', serif; font-size: 15px;
+      font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+    .paper-subject { font-family: 'Fraunces', serif; font-size: 18px;
+      font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+    .paper-subject-np {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 14px; color: var(--ink-mid); margin-bottom: 10px;
+    }
+    .paper-province-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #0a0f1e; color: white;
+      font-size: 10px; font-weight: 700;
+      padding: 3px 12px; border-radius: 999px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .paper-meta-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 10px; font-size: 11px; font-weight: 700;
+      color: var(--ink); letter-spacing: 0.04em; text-transform: uppercase;
+    }
+
+    /* ── INSTRUCTIONS ── */
+    .paper-instructions {
+      background: rgba(37,99,235,0.04);
+      border: 1px solid rgba(37,99,235,0.12);
+      border-radius: 6px; padding: 12px 14px; margin-bottom: 20px;
+    }
+    .pi-np {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 12px; color: var(--ink); line-height: 1.7;
+      margin-bottom: 4px; font-style: italic;
+    }
+    .pi-en { font-size: 11px; font-weight: 600; color: var(--ink-mid); font-style: italic; }
+    .pi-bold { font-size: 12px; font-weight: 700; color: var(--ink); margin-top: 5px; }
+
+    /* ── QUESTIONS ── */
+    .q-block { margin-bottom: 24px; }
+    .q-main { display: grid; grid-template-columns: 22px 1fr; gap: 8px; margin-bottom: 6px; }
+    .q-num { font-weight: 700; font-size: 13px; color: var(--ink); padding-top: 1px; }
+    .q-np {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 12.5px; color: var(--ink); line-height: 1.8; margin-bottom: 3px;
+    }
+    .q-en { font-size: 12.5px; color: var(--ink-mid); line-height: 1.7; }
+    .q-en strong { color: var(--ink); font-weight: 700; }
+    .q-subs { padding-left: 30px; }
+    .q-sub { display: grid; grid-template-columns: 26px 1fr auto; gap: 5px;
+      margin-bottom: 7px; align-items: start; }
+    .q-sub-letter { font-size: 12.5px; color: var(--ink-mid); font-weight: 600; padding-top: 1px; }
+    .q-marks { font-size: 11px; font-weight: 700; color: var(--ink-mid);
+      white-space: nowrap; padding-top: 2px; }
+    .q-divider { border: none; border-top: 0.5px solid var(--paper-border);
+      margin: 4px 0 14px; }
+    .q-table { width: auto; border-collapse: collapse; margin: 8px 0 8px 30px; font-size: 11px; }
+    .q-table th, .q-table td { border: 1px solid var(--ink); padding: 4px 10px; text-align: center; }
+    .q-table th { background: #f0ede6; font-weight: 700;
+      font-family: 'Noto Sans Devanagari', sans-serif; font-size: 11px; }
+    .th-en { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 9px;
+      color: var(--ink-mid); display: block; font-weight: 600; }
+    .q-diagram { margin: 10px 0 10px 30px; background: white;
+      border: 1px solid var(--paper-border); border-radius: 5px;
+      padding: 14px; display: inline-block; }
+    .q-diagram-label { font-size: 9px; font-weight: 600; color: var(--ink-light);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-top: 5px; text-align: center; }
+    .math { font-family: 'Times New Roman', serif; font-style: italic; font-size: 13px; }
+    .frac { display: inline-flex; flex-direction: column; align-items: center;
+      vertical-align: middle; font-size: 11px; margin: 0 2px; }
+    .frac-num { border-bottom: 1px solid var(--ink); padding: 0 3px; }
+    .frac-den { padding: 0 3px; }
+
+    /* ── LOADING / ERROR STATES ── */
+    .state-loading {
+      text-align: center; padding: 80px 24px;
+      background: var(--paper-bg);
+    }
+    .spinner { width: 36px; height: 36px; border: 3px solid #e2e8f0;
+      border-top-color: #2563EB; border-radius: 50%;
+      animation: spin .8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .state-error { text-align: center; padding: 80px 24px;
+      background: var(--paper-bg); }
+
+    /* ── COMING SOON (non-admin) ── */
+    .coming-soon-wrap {
+      background: #0a0f1e; border-radius: 16px;
+      padding: 56px 32px; text-align: center;
+      position: relative; overflow: hidden; margin-bottom: 20px;
+    }
+    .coming-soon-wrap::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(37,99,235,.2) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .cs-inner { position: relative; z-index: 1; max-width: 520px; margin: 0 auto; }
+    .cs-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(245,158,11,.15); border: 1px solid rgba(245,158,11,.3);
+      color: #fcd34d; font-size: 10px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 999px; margin-bottom: 20px;
+    }
+    .cs-title { font-family: 'Fraunces', serif;
+      font-size: clamp(1.8rem,4vw,3rem); font-weight: 700;
+      color: white; line-height: 1.1; letter-spacing: -.02em; margin-bottom: 14px; }
+    .cs-title em { font-style: italic;
+      background: linear-gradient(135deg,#60a5fa,#34d399);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; }
+    .cs-sub { font-size: 15px; color: rgba(255,255,255,.5);
+      line-height: 1.7; margin-bottom: 28px; }
+    .cs-stats { display: flex; gap: 10px; justify-content: center;
+      flex-wrap: wrap; margin-bottom: 28px; }
+    .cs-stat { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 100px; }
+    .cs-stat-num { font-family: 'Fraunces', serif; font-size: 1.6rem;
+      font-weight: 700; color: white; line-height: 1; }
+    .cs-stat-label { font-size: 10px; color: rgba(255,255,255,.4); margin-top: 3px; }
+    .cs-features { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px; padding: 20px; margin: 0 auto 24px; text-align: left; }
+    .cs-feature { display: flex; gap: 8px; font-size: 12px;
+      color: rgba(255,255,255,.6); margin-bottom: 8px; line-height: 1.5; }
+    .cs-feature:last-child { margin-bottom: 0; }
+    .cs-feature-icon { flex-shrink: 0; }
+    .cs-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .cs-btn-primary { background: #2563EB; color: white; padding: 13px 24px;
+      border-radius: 9px; font-size: 13px; font-weight: 700;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .cs-btn-secondary { background: rgba(255,255,255,.08); color: white;
+      padding: 13px 24px; border-radius: 9px; font-size: 13px; font-weight: 700;
+      text-decoration: none; border: 1px solid rgba(255,255,255,.12); }
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: white; }
+      .pp-topbar, .paper-info-strip, .status-banner,
+      .coming-soon-wrap, #site-nav, #site-footer { display: none !important; }
+      .paper-card { box-shadow: none; border: none; }
+      .pp-page { padding: 0; max-width: 100%; }
+      .paper-inner { padding: 0 20px 20px 20px; }
+      .paper-card::after { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      .paper-inner { padding: 0 14px 32px 18px; }
+      .paper-card::after { display: none; }
+      .paper-info-strip { grid-template-columns: repeat(3,1fr); }
+      .pp-topbar { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+<div id="site-nav"></div>
+
+<div class="pp-page" id="pp-page">
+
+  <!-- Top bar -->
+  <div class="pp-topbar">
+    <div class="pp-breadcrumb">
+      <a href="/practice.html">Practice</a>
+      <span>›</span>
+      <a href="/see-past-papers.html">Past Papers</a>
+      <span>›</span>
+      <span id="breadcrumb-title">Loading...</span>
+    </div>
+    <div class="pp-actions" id="pp-actions">
+      <button class="pp-btn pp-btn-dl" onclick="window.print()" style="display:none" id="btn-download">
+        ⬇ Download PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Content injected here by JS -->
+  <div id="pp-content">
+    <div class="paper-card">
+      <div class="state-loading">
+        <div class="spinner"></div>
+        <div style="font-size:14px;color:#64748b;">Loading paper...</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="site-footer"></div>
+<script src="/scripts/components.js"></script>
+<script>
+// ════════════════════════════════════════════════════════
+// PAST PAPER — Dynamic page
+// URL: /see/past-papers/:year/:province/:subject
+// Reads URL params, fetches from Supabase, renders paper
+// ════════════════════════════════════════════════════════
+
+// Paper data — hardcoded for now, will come from Supabase later
+// Each paper has: meta + questions array
+const PAPERS = {
+  '2082-koshi-maths': {
+    meta: {
+      year: '2082',
+      yearAD: '2026',
+      province: 'Koshi',
+      provinceNp: 'कोशी',
+      subject: 'Compulsory Mathematics',
+      subjectNp: 'अनिवार्य गणित',
+      code: "RE - 1031'KoP",
+      fullMarks: 75,
+      timeHours: 3,
+      status: 'draft', // 'draft' = admin only, 'live' = everyone
+      totalQuestions: 16,
+    },
+    questions: [] // populated below
+  }
+};
+
+// ── Parse URL to get paper key ──
+function getPaperKey() {
+  const path = window.location.pathname;
+  // Matches /see/past-papers/2082/koshi/maths
+  const match = path.match(/\/see\/past-papers\/(\d+)\/([^\/]+)\/([^\/]+)/);
+  if (match) return `${match[1]}-${match[2]}-${match[3]}`;
+  // Fallback: check query string ?paper=2082-koshi-maths
+  const params = new URLSearchParams(window.location.search);
+  return params.get('paper') || '2082-koshi-maths';
+}
+
+// ── Check if current user is admin ──
+function isAdmin() {
+  const user = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
+  return user && user.role === 'admin';
+}
+
+// ── Render the full paper ──
+function renderPaper(paper) {
+  const { meta } = paper;
+  const admin = isAdmin();
+  const isLive = meta.status === 'live';
+  const canSee = isLive || admin;
+
+  // Update breadcrumb
+  document.getElementById('breadcrumb-title').textContent =
+    `SEE ${meta.year} ${meta.province} ${meta.subject.replace('Compulsory ','')}`;
+
+  // Update page title for SEO
+  document.title = `SEE ${meta.year} ${meta.province} — ${meta.subject} | Ujyalo`;
+
+  // Show download button
+  if (canSee) {
+    document.getElementById('btn-download').style.display = 'flex';
+  }
+
+  // Admin button
+  if (admin) {
+    const actions = document.getElementById('pp-actions');
+    const adminBtn = document.createElement('button');
+    adminBtn.className = 'pp-btn pp-btn-admin';
+    adminBtn.innerHTML = '⚙ Admin view';
+    adminBtn.onclick = () => {
+      const panel = document.getElementById('admin-panel');
+      if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    };
+    actions.insertBefore(adminBtn, actions.firstChild);
+  }
+
+  let html = '';
+
+  // ── Info strip ──
+  html += `
+  <div class="paper-info-strip">
+    <div class="pis-card">
+      <div class="pis-label">Exam</div>
+      <div class="pis-value">SEE</div>
+      <div class="pis-sub">Grade 10</div>
+    </div>
+    <div class="pis-card">
+      <div class="pis-label">Year</div>
+      <div class="pis-value">${meta.year}</div>
+      <div class="pis-sub">${meta.yearAD}</div>
+    </div>
+    <div class="pis-card">
+      <div class="pis-label">Province</div>
+      <div class="pis-value" style="font-size:.95rem;">${meta.province}</div>
+      <div class="pis-sub">${meta.code}</div>
+    </div>
+    <div class="pis-card">
+      <div class="pis-label">Marks</div>
+      <div class="pis-value">${meta.fullMarks}</div>
+      <div class="pis-sub">${meta.timeHours} hours</div>
+    </div>
+    <div class="pis-card">
+      <div class="pis-label">Questions</div>
+      <div class="pis-value">${meta.totalQuestions}</div>
+      <div class="pis-sub">All required</div>
+    </div>
+  </div>`;
+
+  // ── Admin status banner ──
+  if (admin) {
+    if (isLive) {
+      html += `
+      <div class="status-banner live">
+        <div class="status-banner-icon">✅</div>
+        <div class="status-banner-text">
+          <div class="status-banner-title">Published — visible to all students</div>
+          <div class="status-banner-sub">This paper is live. Students can see the full paper.</div>
+        </div>
+      </div>`;
+    } else {
+      html += `
+      <div class="status-banner draft">
+        <div class="status-banner-icon">⚠️</div>
+        <div class="status-banner-text">
+          <div class="status-banner-title">Draft — only you can see this</div>
+          <div class="status-banner-sub">Students see a "coming soon" page. Publish when the paper is ready.</div>
+        </div>
+        <a href="/admin.html" class="status-banner-btn">Manage in Admin →</a>
+      </div>`;
+    }
+  }
+
+  // ── Coming soon for non-admins ──
+  if (!canSee) {
+    html += renderComingSoon(meta);
+    document.getElementById('pp-content').innerHTML = html;
+    return;
+  }
+
+  // ── Notify banner for live papers (non-admin) ──
+  if (isLive && !admin) {
+    html += `
+    <div class="status-banner live" style="margin-bottom:16px;">
+      <div class="status-banner-icon">✍️</div>
+      <div class="status-banner-text">
+        <div class="status-banner-title">Model answers coming soon</div>
+        <div class="status-banner-sub">Full step-by-step solutions are being prepared. Sign up to be notified.</div>
+      </div>
+      <a href="/signup.html" class="status-banner-btn">Notify me →</a>
+    </div>`;
+  }
+
+  // ── The actual paper ──
+  html += renderFullPaper(meta);
+
+  document.getElementById('pp-content').innerHTML = html;
+}
+
+function renderComingSoon(meta) {
+  return `
+  <div class="coming-soon-wrap">
+    <div class="cs-inner">
+      <div class="cs-badge">⚙ Coming Soon</div>
+      <h1 class="cs-title">
+        SEE ${meta.year} ${meta.province}<br>
+        <em>${meta.subject.replace('Compulsory ','')}</em>
+      </h1>
+      <p class="cs-sub">
+        The full bilingual paper — Nepali and English, with clean diagrams — is being prepared.
+        Sign up to be notified the moment it goes live.
+      </p>
+      <div class="cs-stats">
+        <div class="cs-stat">
+          <div class="cs-stat-num">${meta.totalQuestions}</div>
+          <div class="cs-stat-label">Questions</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat-num">${meta.fullMarks}</div>
+          <div class="cs-stat-label">Full Marks</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat-num">${meta.timeHours}h</div>
+          <div class="cs-stat-label">Duration</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat-num">NE</div>
+          <div class="cs-stat-label">Bilingual</div>
+        </div>
+      </div>
+      <div class="cs-features">
+        <div class="cs-feature"><span class="cs-feature-icon" style="color:#34d399;">✓</span> Full paper in Nepali and English</div>
+        <div class="cs-feature"><span class="cs-feature-icon" style="color:#34d399;">✓</span> Clean diagrams for every geometry question</div>
+        <div class="cs-feature"><span class="cs-feature-icon" style="color:#34d399;">✓</span> Download as PDF — no watermark, free</div>
+        <div class="cs-feature"><span class="cs-feature-icon" style="color:#fcd34d;">⏳</span> Model answers with full working — coming soon</div>
+        <div class="cs-feature"><span class="cs-feature-icon" style="color:#fcd34d;">⏳</span> Interactive practice mode — coming soon</div>
+      </div>
+      <div class="cs-btns">
+        <a href="/signup.html" class="cs-btn-primary">🔔 Notify me when live →</a>
+        <a href="/chapter-practice.html" class="cs-btn-secondary">Practice chapters now →</a>
+      </div>
+      <p style="font-size:11px;color:rgba(255,255,255,.2);margin-top:16px;">
+        All 7 provinces · SEE 2082, 2081, 2080 and more · Free forever
+      </p>
+    </div>
+  </div>`;
+}
+
+function renderFullPaper(meta) {
+  return `
+  <div class="paper-card" id="paper-to-print">
+    <div class="paper-inner">
+
+      <div class="paper-header">
+        <div class="paper-sym">Symbol No. .....................</div>
+        <div class="paper-code">${meta.code}</div>
+        <div class="paper-exam">SEE ${meta.year} (${meta.yearAD})</div>
+        <div class="paper-subject">${meta.subject}</div>
+        <div class="paper-subject-np">${meta.subjectNp}</div>
+        <div><span class="paper-province-badge">🏔 ${meta.province} Province</span></div>
+        <div class="paper-meta-row">
+          <span>Time: ${meta.timeHours} Hours &nbsp;|&nbsp; समय : ३ घण्टा</span>
+          <span>Full Marks: ${meta.fullMarks} &nbsp;|&nbsp; पूर्णाङ्क : ७५</span>
+        </div>
+      </div>
+
+      <div class="paper-instructions">
+        <div class="pi-np">दिइएका निर्देशनका आधारमा आफ्नै शैलीमा सिर्जनात्मक उत्तर दिनुहोस् ।</div>
+        <div class="pi-en">Give creative answers in your own style as per the given instructions.</div>
+        <div class="pi-bold">सबै प्रश्नहरू अनिवार्य छन् । &nbsp;|&nbsp; All questions are compulsory.</div>
+      </div>
+
+      ${renderQuestions()}
+
+      <div style="text-align:center;margin-top:28px;padding-top:16px;border-top:1.5px solid var(--ink);">
+        <span style="font-size:11px;color:var(--ink-mid);font-style:italic;">— अन्त्य / End of Paper —</span>
+      </div>
+
+    </div>
+  </div>`;
+}
+
+function q(num, np, en) {
+  return `
+  <div class="q-block">
+    <div class="q-main">
+      <div class="q-num">${num}.</div>
+      <div>
+        ${np ? `<div class="q-np">${np}</div>` : ''}
+        ${en ? `<div class="q-en">${en}</div>` : ''}
+      </div>
+    </div>`;
+}
+
+function sub(letter, np, en, marks) {
+  return `
+    <div class="q-subs"><div class="q-sub">
+      <div class="q-sub-letter">(${letter})</div>
+      <div>
+        ${np ? `<div class="q-np">${np}</div>` : ''}
+        ${en ? `<div class="q-en">${en}</div>` : ''}
+      </div>
+      <div class="q-marks">(${marks})</div>
+    </div></div>`;
+}
+
+function renderQuestions() {
+  const hr = '<hr class="q-divider">';
+  let html = '';
+
+  // Q1
+  html += q(1,
+    'एउटा कार्यक्रममा उपस्थित ४५० जना विद्यार्थीहरूमध्ये १४४ जना विद्यार्थीहरूले गणित विषय मात्र, २१६ जना विद्यार्थीहरूले विज्ञान विषय मात्र मन पराउने पाइयो तर ६३ जना विद्यार्थीहरूले कुनै पनि विषय मन नपराउने पाइयो ।',
+    'Among the 450 students present at a programme, 144 students were found to like Mathematics only, 216 students found to like Science only, but 63 students found who did not like any of these two subjects.'
+  );
+  html += sub('a','यदि जम्मा उपस्थित सङ्ख्यालाई \'U\' ले जनाइन्छ भने U को गणनात्मक सङ्ख्या लेख्नुहोस् ।','If the total number of students is represented by \'U\', write the cardinality of U.',1);
+  html += sub('b','दिइएको जानकारीलाई भेन चित्रमा प्रस्तुत गर्नुहोस् ।','Show the given information in a Venn diagram.',1);
+  html += sub('c','गणित विषय मन पराउने विद्यार्थीहरूको सङ्ख्या पत्ता लगाउनुहोस् ।','Find the number of students who liked Mathematics subject.',3);
+  html += sub('d','दुवै विषय मन पराउने विद्यार्थी सङ्ख्या कुनै पनि विषय मन नपराउने विद्यार्थी सङ्ख्याभन्दा कति प्रतिशतले कम छन् ?','How much percent is the number of students who liked both subjects less than those who did not like any subject?',1);
+  html += '</div>' + hr;
+
+  // Q2
+  html += q(2,
+    'कुमारले वार्षिक १०% चक्रीय ब्याज पाउने हिसाबले २ वर्षका लागि एउटा वाणिज्य बैङ्कमा रु. ५,५०,००० जम्मा गरे । एक वर्षपछि बैङ्कले नीति परिवर्तन गरी सोही ब्याजदरमा अर्धवार्षिक चक्रीय ब्याज दिने निर्णय गयो ।',
+    'Kumar deposited Rs. 5,50,000 in a commercial bank at 10% p.a. compound interest compounded yearly for 2 years. After 1 year the bank changed its policy to pay compound interest semi-annually at the same rate.'
+  );
+  html += sub('a','चक्रीय ब्याज भनेको के हो, लेख्नुहोस् ।','What is compound interest? Write it.',1);
+  html += sub('b','२ वर्षको अन्त्यमा कुमारको खातामा जम्मा भएको रकम पत्ता लगाउनुहोस् ।','Find the total amount accumulated in Kumar\'s account at the end of 2 years.',2);
+  html += sub('c','पहिलो वर्ष र दोस्रो वर्षको ब्याज तुलना गर्नुहोस् ।','Compare the interest of the first year and second year.',2);
+  html += '</div>' + hr;
+
+  // Q3
+  html += q(3,
+    'एउटा नगरपालिकाको हालको जनसङ्ख्या १,२६,०७५ छ । उक्त पालिकाको वार्षिक जनसङ्ख्या वृद्धिदर २.५% प्रति वर्ष छ ।',
+    'The present population of a municipality is 1,26,075. The annual population growth rate is 2.5% per year.'
+  );
+  html += sub('a','T वर्षपछिको जनसङ्ख्या निकाल्ने सूत्र लेख्नुहोस् ।','Write the formula to calculate population after T years.',1);
+  html += sub('b','२ वर्षअघि उक्त नगरपालिकाको जनसङ्ख्या कति थियो ? पत्ता लगाउनुहोस् ।','What was the population of the municipality before 2 years? Find it.',2);
+  html += sub('c','यदि यो वर्ष १,०७५ जना विविध कारणले बसाइ सरेर अन्यत्रै जान्छन् भने अवको १ वर्षपछिको जनसङ्ख्या कति पुग्ला, निकाल्नुहोस् ।','If 1,075 people migrate to other places this year, what will be the population after 1 year? Find it.',1);
+  html += '</div>' + hr;
+
+  // Q4
+  html += q(4,
+    'नेपाल राष्ट्र बैङ्कले मिति २०८२/०८/०५ गते प्रकाशन गरेको मुद्रा विनिमयदर अनुसार अमेरिकी डलर ($) १ को खरिददर र बिक्रीदर क्रमशः ने.रु. १४१.६४ र ने.रु. १४२.२४ थियो ।',
+    'Nepal Rastra Bank on 2082/08/05 published buying and selling rates for US dollar ($) 1 as NRs. 141.64 and NRs. 142.24 respectively.'
+  );
+  html += sub('a','नेपाली रुपैयाँलाई अमेरिकन डलरमा साट्न बैङ्कले कुन दर प्रयोग गर्छ ? लेख्नुहोस् ।','Which rate will the bank use to exchange Nepalese rupees into American dollars? Write it.',1);
+  html += sub('b','ने.रु. ७,९६,५४४ सँग कति अमेरिकी डलर साट्न सकिन्छ ? पत्ता लगाउनुहोस् ।','How much US dollar can be exchanged with NRs. 7,96,544? Find it.',1);
+  html += sub('c','यदि केही समयपछि नेपाली रुपैयाँ ०.३% ले अवमूल्यन भयो भने उक्त डलरलाई पुनः नेपाली रुपैयाँमा साट्दा समग्रमा कति नाफा वा नोक्सान हुन्छ ? पत्ता लगाउनुहोस् ।','If Nepali rupees devalues by 0.3%, what is the profit or loss when the US dollar is exchanged back? Find it.',2);
+  html += '</div>' + hr;
+
+  // Q5
+  html += q(5,
+    'एउटा वर्गाकार आधार भएको पिरामिडको आधारको एउटा भुजाको लम्बाइ २० से.मी. र छड्केको किनाराको लम्बाइ २६ से.मी. छन् ।',
+    'The base side of a square based pyramid is 20 cm and the slant edge is 26 cm.'
+  );
+  html += sub('a','वर्गाकार पिरामिडमा जम्मा कतिओटा सतहहरू हन्छन्, लेख्नुहोस् ।','How many total surfaces are there in a square base pyramid? Write it.',1);
+  html += sub('b','पिरामिडको पूरा सतहको क्षेत्रफल पत्ता लगाउनुहोस् ।','Find the total surface area of the pyramid.',3);
+  html += sub('c','पिरामिडको ठाडो उचाइ र छड्के उचाइबिच तुलना गर्नुहोस् ।','Compare between the vertical height and slant height of the pyramid.',1);
+  html += '</div>' + hr;
+
+  // Q6
+  html += q(6,
+    'चित्रमा, समान आधार भएको एउटा सोली र एउटा अर्धगोला मिली एउटा ठोस वस्तु बनेको छ । ठोस वस्तुको पूरा उचाइ २० से.मी. र अर्धगोलाको व्यास १४ से.मी. छ ।',
+    'A solid object is formed by a cone and hemisphere with the same base. Total height is 20 cm. Diameter of hemisphere is 14 cm.'
+  );
+  // Diagram
+  html += `<div class="q-diagram" style="margin-left:30px;">
+    <svg width="110" height="150" viewBox="0 0 110 150" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="55" cy="105" rx="38" ry="11" fill="none" stroke="#1a1208" stroke-width="1.5"/>
+      <path d="M 17 105 A 38 38 0 0 0 93 105" fill="#f5f0e8" stroke="#1a1208" stroke-width="1.5"/>
+      <line x1="17" y1="105" x2="55" y2="22" stroke="#1a1208" stroke-width="1.5"/>
+      <line x1="93" y1="105" x2="55" y2="22" stroke="#1a1208" stroke-width="1.5"/>
+      <line x1="100" y1="22" x2="100" y2="140" stroke="#888" stroke-width="0.75" stroke-dasharray="3,2"/>
+      <line x1="96" y1="22" x2="104" y2="22" stroke="#888" stroke-width="0.75"/>
+      <line x1="96" y1="140" x2="104" y2="140" stroke="#888" stroke-width="0.75"/>
+      <text x="104" y="86" font-size="9" fill="#444" font-family="serif" font-style="italic">20cm</text>
+      <line x1="17" y1="120" x2="93" y2="120" stroke="#888" stroke-width="0.75" stroke-dasharray="3,2"/>
+      <text x="42" y="133" font-size="9" fill="#444" font-family="serif" font-style="italic">14cm</text>
+    </svg>
+    <div class="q-diagram-label">Figure / चित्र</div>
+  </div>`;
+  html += sub('a','सोलीको आयतन पत्ता लगाउने सूत्र लेख्नुहोस् ।','Write the formula for the volume of a cone.',1);
+  html += sub('b','दिइएको ठोस वस्तुमा सोली भागको उचाइ पत्ता लगाउनुहोस् ।','Find the height of the conical part.',1);
+  html += sub('c','दिइएको ठोस वस्तुको आयतन पत्ता लगाउनुहोस् ।','Find the volume of the solid object.',2);
+  html += '</div>' + hr;
+
+  // Q7
+  html += q(7,
+    'एउटा पर्खालको लम्बाइ, चौडाइ, उचाइ क्रमशः २० मी., ३० से.मी. र ५ मी. छ । इँटाको आकार २५ से.मी. × १२ से.मी. × ५ से.मी. र पर्खालको १०% भाग सिमेन्टले ओगट्छ ।',
+    'A wall is 20 m long, 30 cm wide and 5 m high. Bricks are 25 cm × 12 cm × 5 cm. 10% of the wall is occupied by cement joints.'
+  );
+  html += sub('a','उक्त पर्खाल बनाउन कतिओटा इँटाहरू प्रयोग भएका छन् ? पत्ता लगाउनुहोस् ।','How many bricks are used to construct the wall? Find it.',2);
+  html += sub('b','एक ट्रिपमा २,००० इँटा ढुवानी गरिन्छ र सो वापत भाडा रु. ६०० लाग्छ । प्रति १,००० इँटाको रु. १३,५०० को दरले जम्मा लागत अनुमान गर्नुहोस् ।','2,000 bricks are loaded per trip at Rs. 600 rent. Estimate total cost at Rs. 13,500 per 1,000 bricks.',2);
+  html += '</div>' + hr;
+
+  // Q8
+  html += q(8,
+    'रमिलाले आफ्नो छोरीको नाममा खाता खोलेर कुनै सहकारीमा मासिक रूपमा समान अन्तरमा बढाउने गरी जम्मा गरेको रकमलाई निम्नानुसार तालिकामा प्रस्तुत गरिएको छ ।',
+    'Ramila opened an account for her daughter. Monthly deposits increasing by a common difference are shown below.'
+  );
+  html += `
+  <table class="q-table">
+    <tr>
+      <th>महिना <span class="th-en">Months</span></th>
+      <th>१ औं <span class="th-en">1st</span></th>
+      <th>२ औं <span class="th-en">2nd</span></th>
+      <th>३ औं <span class="th-en">3rd</span></th>
+      <th>४ औं <span class="th-en">4th</span></th>
+      <th>५ औं <span class="th-en">5th</span></th>
+    </tr>
+    <tr>
+      <td>रकम रु. <span style="font-size:9px;color:#888;">Amount Rs.</span></td>
+      <td>2000</td><td>4000</td><td>6000</td><td>8000</td><td>10000</td>
+    </tr>
+  </table>`;
+  html += sub('a','रमिलाले छोरीका लागि बचत गरिदिएको रकमबाट कस्तो प्रकारको अनुक्रम बनेको छ, लेख्नुहोस् ।','What type of sequence is formed? Write it.',1);
+  html += sub('b','रमिलाले १ वर्षमा जम्मा कति रकम जम्मा गरेकी रहेछिन् ? पत्ता लगाउनुहोस् ।','How much total amount did Ramila deposit in 1 year? Find it.',2);
+  html += sub('c','छोरीको खातामा जम्मा रु. ४,२०,००० बचत गर्न रमिलालाई कति महिना लाग्छ ?','How many months will Ramila require to deposit Rs. 4,20,000? Find it.',2);
+  html += '</div>' + hr;
+
+  // Q9
+  html += q(9,
+    'दुई अङ्कले बनेको सङ्ख्यामा अङ्कहरूको गुणनफल २० छ र तिनीहरूबिचको फरक १ छ ।',
+    'In a two digit number, the product of digits is 20 and their difference is 1.'
+  );
+  html += sub('a','दुई अङ्कले बनेको सङ्ख्याको स्तरीय रूप लेख्नुहोस् ।','Write the standard form of a two digit number.',1);
+  html += sub('b','उक्त सङ्ख्या पत्ता लगाउनुहोस् ।','Find the number.',3);
+  html += '</div>' + hr;
+
+  // Q10
+  html += q(10, '', '');
+  html += sub('a','सरल गर्नुहोस् ।','Simplify: <span class="math">5<sup>√x</sup> = 25</span>',1);
+  html += sub('b','हल गर्नुहोस् ।','Solve: <span class="math">2<sup>a</sup> + 2<sup>−a</sup> = 2½</span>',3);
+  html += sub('c','सरल गर्नुहोस् ।',`Simplify: <span class="math"><span class="frac"><span class="frac-num">1</span><span class="frac-den">p²−pq+q²</span></span> − <span class="frac"><span class="frac-num">p²+q²</span><span class="frac-den">p⁴+p²q²+q⁴</span></span></span>`,2);
+  html += '</div>' + hr;
+
+  // Q11
+  html += q(11,
+    'दिइएको चित्रमा MN ∥ SP, SM ∥ QN र MR ∥ NP छन् ।',
+    'In the given figure, MN ∥ SP, SM ∥ QN and MR ∥ NP.'
+  );
+  html += `<div class="q-diagram" style="margin-left:30px;">
+    <svg width="190" height="120" viewBox="0 0 190 120" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="38,105 95,105 65,18 8,18" fill="rgba(37,99,235,0.06)" stroke="#2563EB" stroke-width="1.5"/>
+      <polygon points="38,105 95,105 180,18 122,18" fill="rgba(29,158,117,0.06)" stroke="#1D9E75" stroke-width="1.5"/>
+      <line x1="38" y1="105" x2="122" y2="18" stroke="#999" stroke-width="1" stroke-dasharray="4,2"/>
+      <line x1="65" y1="18" x2="95" y2="105" stroke="#999" stroke-width="1" stroke-dasharray="4,2"/>
+      <circle cx="76" cy="63" r="2" fill="#888"/>
+      <text x="79" y="60" font-size="9" font-family="serif" font-style="italic" fill="#888">A</text>
+      <text x="2" y="16" font-size="10" font-family="serif" font-style="italic">S</text>
+      <text x="60" y="14" font-size="10" font-family="serif" font-style="italic">Q</text>
+      <text x="118" y="14" font-size="10" font-family="serif" font-style="italic">R</text>
+      <text x="178" y="16" font-size="10" font-family="serif" font-style="italic">P</text>
+      <text x="32" y="118" font-size="10" font-family="serif" font-style="italic">M</text>
+      <text x="93" y="118" font-size="10" font-family="serif" font-style="italic">N</text>
+    </svg>
+    <div class="q-diagram-label">Figure / चित्र</div>
+  </div>`;
+  html += sub('a','समानान्तर चतुर्भुज MNQS र MNPR को क्षेत्रफलबिचको सम्बन्ध लेख्नुहोस् ।','Write the relation between areas of parallelogram MNQS and MNPR.',1);
+  html += sub('b','त्रिभुज SMN को क्षेत्रफल समानान्तर चतुर्भुज MNPR को आधा हुन्छ भनी प्रमाणित गर्नुहोस् ।','Prove that area of triangle SMN is half the area of parallelogram MNPR.',2);
+  html += sub('c','यदि MR र QN बिन्दु A मा प्रतिच्छेदन भए चतुर्भुज SMAQ र PRAN को क्षेत्रफल बराबर हुन्छ भनी प्रमाणित गर्नुहोस् ।','If MR and QN intersect at A, prove area of quadrilateral SMAQ equals area of PRAN.',2);
+  html += '</div>' + hr;
+
+  // Q12
+  html += q(12,
+    'केन्द्रबिन्दु O भएको वृत्तमा एउटै चाप SP मा आधारित केन्द्रीय कोण SOP र परिधि कोणहरू SRP र STP रहेका छन् ।',
+    'In a circle with centre O, central angle SOP and inscribed angles SRP and STP stand on the same arc SP.'
+  );
+  html += `<div class="q-diagram" style="margin-left:30px;">
+    <svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="75" cy="75" r="56" fill="rgba(37,99,235,0.04)" stroke="#1a1208" stroke-width="1.5"/>
+      <circle cx="75" cy="75" r="2.5" fill="#1a1208"/>
+      <text x="78" y="80" font-size="10" font-family="serif" font-style="italic">O</text>
+      <circle cx="28" cy="112" r="2.5" fill="#1a1208"/>
+      <circle cx="122" cy="112" r="2.5" fill="#1a1208"/>
+      <circle cx="75" cy="19" r="2.5" fill="#1a1208"/>
+      <circle cx="19" cy="58" r="2.5" fill="#1a1208"/>
+      <line x1="75" y1="75" x2="28" y2="112" stroke="#2563EB" stroke-width="1.5"/>
+      <line x1="75" y1="75" x2="122" y2="112" stroke="#2563EB" stroke-width="1.5"/>
+      <line x1="75" y1="19" x2="28" y2="112" stroke="#1D9E75" stroke-width="1.2"/>
+      <line x1="75" y1="19" x2="122" y2="112" stroke="#1D9E75" stroke-width="1.2"/>
+      <line x1="19" y1="58" x2="28" y2="112" stroke="#f59e0b" stroke-width="1.2"/>
+      <line x1="19" y1="58" x2="122" y2="112" stroke="#f59e0b" stroke-width="1.2"/>
+      <text x="21" y="124" font-size="10" font-family="serif" font-style="italic">S</text>
+      <text x="123" y="124" font-size="10" font-family="serif" font-style="italic">P</text>
+      <text x="72" y="13" font-size="10" font-family="serif" font-style="italic">R</text>
+      <text x="7" y="58" font-size="10" font-family="serif" font-style="italic">T</text>
+    </svg>
+    <div class="q-diagram-label">Figure / चित्र</div>
+  </div>`;
+  html += sub('a','एउटै चापमा आधारित केन्द्रीय कोण र परिधि कोणबिचको सम्बन्ध लेख्नुहोस् ।','Write the relationship between central angle and inscribed angle on the same arc.',1);
+  html += sub('b','केन्द्रीय कोणको नाप (x + 60)° र परिधि कोणको नाप (2x)° भए x को मान पत्ता लगाउनुहोस् ।','Central angle is (x + 60)° and inscribed angle is (2x)°. Find the value of x.',1);
+  html += sub('c','परिधि कोणहरू STP र SRP बराबर हुन्छन् भनी प्रयोगात्मक रूपमा पुष्टि गर्नुहोस् । (कम्तीमा ३ से.मी. अर्धव्यास भएका दुईओटा वृत्तहरू आवश्यक छन् ।)','Verify experimentally that inscribed angles STP and SRP are equal. (Two circles with at least 3 cm radius required.)',2);
+  html += '</div>' + hr;
+
+  // Q13
+  html += q(13,
+    'त्रिभुज MNS मा MN = ६.५ से.मी., NS = ६ से.मी. र MS = ५.५ से.मी. दिइएका छन् ।',
+    'In triangle MNS, MN = 6.5 cm, NS = 6 cm and MS = 5.5 cm.'
+  );
+  html += sub('a','माथि दिइएको नापको आधारमा △MNS को रचना गरी उक्त त्रिभुजको क्षेत्रफलसँग बराबर हुने गरी एउटा भुजा ६.८ से.मी. भएको समानान्तर चतुर्भुजको पनि रचना गर्नुहोस् ।','Construct △MNS. Also construct a parallelogram with one side 6.8 cm having equal area to that triangle.',3);
+  html += sub('b','△MNS र समानान्तर चतुर्भुजको क्षेत्रफल किन बराबर हुन्छ ? कारण दिनुहोस् ।','Why is the area of △MNS and the parallelogram equal? Give reason.',1);
+  html += '</div>' + hr;
+
+  // Q14
+  html += q(14,
+    'एउटा वृत्ताकार पोखरीको व्यास १०० मिटर र यसको बिचमा एउटा खम्बा गाडिएको छ । एउटा व्यक्तिले पोखरीको किनाराबाट खम्बाको टुप्पाको उन्नतांश कोण θ पाएछ । पोखरीको गहिराइ १.५ मिटर र खम्बाको जम्मा उचाइ ५१.५ मिटर छ ।',
+    'A circular pond has diameter 100 m with a pillar at its centre. A person at the bank finds the angle of elevation θ to the top of the pillar. Depth of pond is 1.5 m and total height of pillar is 51.5 m.'
+  );
+  html += `<div class="q-diagram" style="margin-left:30px;">
+    <svg width="210" height="130" viewBox="0 0 210 130" xmlns="http://www.w3.org/2000/svg">
+      <line x1="10" y1="85" x2="200" y2="85" stroke="#2563EB" stroke-width="0.75" stroke-dasharray="4,3"/>
+      <text x="12" y="80" font-size="8" fill="#2563EB" font-family="sans-serif">Water level</text>
+      <line x1="10" y1="95" x2="75" y2="95" stroke="#1a1208" stroke-width="1.5"/>
+      <line x1="135" y1="95" x2="200" y2="95" stroke="#1a1208" stroke-width="1.5"/>
+      <path d="M 75 95 Q 105 100 135 95" fill="rgba(37,99,235,0.1)" stroke="#1a1208" stroke-width="1"/>
+      <line x1="105" y1="18" x2="105" y2="95" stroke="#1a1208" stroke-width="2"/>
+      <circle cx="28" cy="91" r="4" fill="none" stroke="#1a1208" stroke-width="1.5"/>
+      <line x1="28" y1="95" x2="28" y2="108" stroke="#1a1208" stroke-width="1.5"/>
+      <line x1="28" y1="95" x2="105" y2="18" stroke="#dc2626" stroke-width="1" stroke-dasharray="3,2"/>
+      <path d="M 46 95 A 18 18 0 0 1 36 79" fill="none" stroke="#dc2626" stroke-width="1"/>
+      <text x="48" y="91" font-size="10" font-family="serif" font-style="italic" fill="#dc2626">θ</text>
+      <line x1="28" y1="116" x2="105" y2="116" stroke="#888" stroke-width="0.75"/>
+      <text x="52" y="126" font-size="8" fill="#444" font-family="sans-serif">50 m</text>
+      <text x="108" y="60" font-size="8" fill="#444" font-family="sans-serif">51.5m</text>
+      <text x="77" y="94" font-size="8" fill="#2563EB" font-family="sans-serif">1.5m</text>
+      <text x="108" y="15" font-size="10" font-family="serif" font-style="italic">T</text>
+    </svg>
+    <div class="q-diagram-label">Figure / चित्र</div>
+  </div>`;
+  html += sub('a','माथिको सन्दर्भ जनाउने चित्र बनाउनुहोस् ।','Draw a figure representing the above context.',1);
+  html += sub('b','पानीको सतहभन्दा माथि रहेको खम्बाको उचाइ कति होला ?','What is the height of the pole above water level?',1);
+  html += sub('c','उन्नतांश कोण θ को मान पत्ता लगाउनुहोस् ।','Find the value of angle of elevation θ.',1);
+  html += sub('d','यदि उन्नतांश कोण ३०° भएको भए पोखरीको अर्धव्यास कति हुन्थ्यो ? पत्ता लगाउनुहोस् ।','If the angle of elevation was 30°, what would be the radius of the pond?',1);
+  html += '</div>' + hr;
+
+  // Q15
+  html += q(15,
+    '१०० पूर्णाङ्को एउटा परीक्षामा विद्यार्थीहरूले पाप्त गरेका प्राप्ताङ्क निम्न तालिकामा दिइएको छ ।',
+    'Marks obtained by students in an exam with full marks 100 are given in the table below.'
+  );
+  html += `
+  <table class="q-table">
+    <tr>
+      <th>प्राप्ताङ्क <span class="th-en">Marks</span></th>
+      <th>0–20</th><th>20–40</th><th>40–60</th><th>60–80</th><th>80–100</th>
+    </tr>
+    <tr>
+      <td>विद्यार्थी सङ्ख्या <span style="font-size:9px;color:#888;">Students</span></td>
+      <td>2</td><td>3</td><td><span class="math">x</span></td><td>5</td><td>4</td>
+    </tr>
+  </table>`;
+  html += sub('a','यदि दिइएको तथ्याङ्कको मध्यक ५६ भए x को मान पत्ता लगाउनुहोस् ।','If the mean is 56, find the value of x.',2);
+  html += sub('b','दिइएको तथ्याङ्कको रीत पर्ने श्रेणी लेख्नुहोस् ।','Write the modal class of the given data.',1);
+  html += sub('c','दिइएको तथ्याङ्कबाट पहिलो चतुर्थांश पत्ता लगाउनुहोस् ।','Find the first quartile from the given data.',2);
+  html += sub('d','४० वा ४० भन्दा बढी अङ्क प्राप्त गर्ने र ४० भन्दा कम अङ्क प्राप्त गर्ने विद्यार्थीहरूबिच तुलना गर्नुहोस् ।','Compare students securing 40 or above and less than 40 marks.',1);
+  html += '</div>' + hr;
+
+  // Q16
+  html += q(16,
+    'एउटा बाकसमा ६ ओटा सेता र ४ ओटा कालो उस्तै र उत्रै बलहरू छन् । दुईओटा बलहरू एकपछि अर्को गर्दै नहेरिकन पुनः राखेर निकालिएका छन् ।',
+    'There are 6 white and 4 black balls of same shape and size. Two balls are drawn one after another with replacement.'
+  );
+  html += `<div class="q-diagram" style="margin-left:30px;">
+    <svg width="250" height="170" viewBox="0 0 250 170" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="28" cy="85" r="4" fill="#1a1208"/>
+      <text x="8" y="82" font-size="8" fill="#444" font-family="sans-serif">Start</text>
+      <line x1="32" y1="82" x2="95" y2="42" stroke="#1a1208" stroke-width="1.2"/>
+      <text x="52" y="55" font-size="8" fill="#1D9E75" font-family="sans-serif">W (6/10)</text>
+      <circle cx="99" cy="40" r="4" fill="#1D9E75"/>
+      <line x1="32" y1="88" x2="95" y2="128" stroke="#1a1208" stroke-width="1.2"/>
+      <text x="52" y="118" font-size="8" fill="#1a1208" font-family="sans-serif">B (4/10)</text>
+      <circle cx="99" cy="130" r="4" fill="#1a1208"/>
+      <line x1="103" y1="38" x2="170" y2="18" stroke="#1a1208" stroke-width="1"/>
+      <text x="124" y="22" font-size="7.5" fill="#1D9E75" font-family="sans-serif">W (6/10)</text>
+      <circle cx="174" cy="16" r="3" fill="#1D9E75"/>
+      <text x="180" y="20" font-size="8.5" fill="#444" font-family="sans-serif">WW</text>
+      <line x1="103" y1="42" x2="170" y2="60" stroke="#1a1208" stroke-width="1"/>
+      <text x="124" y="57" font-size="7.5" fill="#1a1208" font-family="sans-serif">B (4/10)</text>
+      <circle cx="174" cy="62" r="3" fill="#1a1208"/>
+      <text x="180" y="66" font-size="8.5" fill="#444" font-family="sans-serif">WB</text>
+      <line x1="103" y1="128" x2="170" y2="108" stroke="#1a1208" stroke-width="1"/>
+      <text x="124" y="112" font-size="7.5" fill="#1D9E75" font-family="sans-serif">W (6/10)</text>
+      <circle cx="174" cy="106" r="3" fill="#1D9E75"/>
+      <text x="180" y="110" font-size="8.5" fill="#444" font-family="sans-serif">BW</text>
+      <line x1="103" y1="132" x2="170" y2="152" stroke="#1a1208" stroke-width="1"/>
+      <text x="124" y="150" font-size="7.5" fill="#1a1208" font-family="sans-serif">B (4/10)</text>
+      <circle cx="174" cy="154" r="3" fill="#1a1208"/>
+      <text x="180" y="158" font-size="8.5" fill="#444" font-family="sans-serif">BB</text>
+    </svg>
+    <div class="q-diagram-label">Tree Diagram / वृक्ष चित्र</div>
+  </div>`;
+  html += sub('a','यदि A र B पारस्परिक निषेधक घटनाहरू हुन् भने P(A∪B) को सिद्धान्त लेख्नुहोस् ।','If A and B are mutually exclusive events, write the principle of P(A∪B).',1);
+  html += sub('b','दिइएको घटनाको सम्भावित सबै परिणामहरूको सम्भाव्यतालाई वृक्ष चित्रमा प्रस्तुत गर्नुहोस् ।','Present the probability of all possible outcomes in a tree diagram.',2);
+  html += sub('c','दुवै बलहरू एउटै रङ्गका पर्ने सम्भाव्यता पत्ता लगाउनुहोस् ।','Find the probability of getting same coloured balls.',1);
+  html += sub('d','दुवै बलहरू एउटै रङ्गका पर्ने र फरक रङ्गका पर्ने सम्भाव्यताहरूबिचको अनुपात पत्ता लगाउनुहोस् ।','Find the ratio of probabilities of same coloured and different coloured balls.',1);
+  html += '</div>';
+
+  return html;
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', function() {
+  const key = getPaperKey();
+  const paper = PAPERS[key];
+  if (paper) {
+    renderPaper(paper);
+  } else {
+    document.getElementById('pp-content').innerHTML = `
+      <div class="paper-card">
+        <div class="state-error">
+          <div style="font-size:48px;margin-bottom:12px;">📄</div>
+          <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:#0f172a;margin-bottom:8px;">Paper not found</div>
+          <div style="font-size:14px;color:#64748b;margin-bottom:20px;">This paper doesn't exist or hasn't been added yet.</div>
+          <a href="/see-past-papers.html" style="background:#2563EB;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:700;">← All past papers</a>
+        </div>
+      </div>`;
+  }
+});
+</script>
+</body>
+</html>
