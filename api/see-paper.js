@@ -1,8 +1,14 @@
 // ============================================================
 // UJYALO — SEE PAPER API (Server-Side Rendered)
 // Route: /see/past-papers/:year/:province/:subject
-// Returns fully rendered HTML — Google indexes everything
-// CTO decision: SSR for SEO + dynamic UI for UX
+// CTO decisions:
+//   - SSR for SEO — Google indexes everything
+//   - Desktop: two-column (questions left, answers right)
+//   - Mobile: accordion (answer below question)
+//   - PDF: questions only, no answers, branding footer
+//   - Both languages PDF: Nepali then English below
+//   - GA tracking on download
+//   - Share button in topbar
 // ============================================================
 
 const DIAGRAMS = {
@@ -16,7 +22,6 @@ const DIAGRAMS = {
     <line x1="20" y1="126" x2="100" y2="126" stroke="#888" stroke-width="0.75" stroke-dasharray="3,2"/>
     <text x="44" y="138" font-size="9" fill="#444" font-family="serif" font-style="italic">14cm</text>
   </svg>`,
-
   11: `<svg width="200" height="125" viewBox="0 0 200 125" xmlns="http://www.w3.org/2000/svg">
     <polygon points="38,108 97,108 66,18 8,18" fill="rgba(37,99,235,0.07)" stroke="#2563EB" stroke-width="1.5"/>
     <polygon points="38,108 97,108 188,18 130,18" fill="rgba(29,158,117,0.07)" stroke="#1D9E75" stroke-width="1.5"/>
@@ -31,7 +36,6 @@ const DIAGRAMS = {
     <text x="32" y="120" font-size="11" font-family="serif" font-style="italic">M</text>
     <text x="95" y="120" font-size="11" font-family="serif" font-style="italic">N</text>
   </svg>`,
-
   12: `<svg width="155" height="155" viewBox="0 0 155 155" xmlns="http://www.w3.org/2000/svg">
     <circle cx="77" cy="77" r="58" fill="rgba(37,99,235,0.04)" stroke="#1a1208" stroke-width="1.5"/>
     <circle cx="77" cy="77" r="2.5" fill="#1a1208"/>
@@ -51,7 +55,6 @@ const DIAGRAMS = {
     <text x="74" y="13" font-size="10" font-family="serif" font-style="italic">R</text>
     <text x="6" y="58" font-size="10" font-family="serif" font-style="italic">T</text>
   </svg>`,
-
   14: `<svg width="220" height="135" viewBox="0 0 220 135" xmlns="http://www.w3.org/2000/svg">
     <line x1="8" y1="88" x2="212" y2="88" stroke="#2563EB" stroke-width="0.75" stroke-dasharray="4,3"/>
     <text x="10" y="84" font-size="8" fill="#2563EB" font-family="sans-serif">Water level</text>
@@ -69,7 +72,6 @@ const DIAGRAMS = {
     <text x="78" y="96" font-size="8" fill="#2563EB" font-family="sans-serif">1.5m</text>
     <text x="110" y="16" font-size="10" font-family="serif" font-style="italic">T</text>
   </svg>`,
-
   16: `<svg width="255" height="175" viewBox="0 0 255 175" xmlns="http://www.w3.org/2000/svg">
     <circle cx="28" cy="87" r="4" fill="#1a1208"/>
     <text x="6" y="84" font-size="8" fill="#444" font-family="sans-serif">Start</text>
@@ -119,21 +121,16 @@ function escape(str) {
 
 function buildHTML({ paper, subject, questions }) {
 
-  // Nepali names for subjects — no DB column needed
   const subjectNepaliMap = {
-    'maths': 'गणित',
-    'science': 'विज्ञान',
-    'english': 'अंग्रेजी',
-    'nepali': 'नेपाली',
-    'social': 'सामाजिक अध्ययन',
-    'hpe': 'स्वास्थ्य'
+    'maths': 'गणित', 'science': 'विज्ञान', 'english': 'अंग्रेजी',
+    'nepali': 'नेपाली', 'social': 'सामाजिक अध्ययन', 'hpe': 'स्वास्थ्य'
   };
   const subjectNameNp = subjectNepaliMap[subject.code] || subject.name;
-
   const yearAD = parseInt(paper.year) - 56;
   const title = `SEE ${paper.year} ${paper.province} — ${subject.name} Past Paper | Ujyalo`;
-  const description = `Free SEE ${paper.year} ${paper.province} Province ${subject.name} past paper. Full bilingual Nepali and English with complete model answers. Download PDF free.`;
-  const canonicalUrl = `https://ujyalo.app/see/past-papers/${paper.year}/${paper.province.toLowerCase()}/${subject.code}`;
+  const description = `Free SEE ${paper.year} ${paper.province} Province ${subject.name} past paper. Bilingual Nepali and English, clean diagrams, model answers. Download PDF free.`;
+  const canonicalUrl = `https://ujyalo.app/see/past-papers/${paper.year}/${paper.province}/${subject.code}`;
+  const shareUrl = canonicalUrl;
 
   // Group questions
   const groups = {};
@@ -144,15 +141,15 @@ function buildHTML({ paper, subject, questions }) {
     else groups[num].subs.push(q);
   });
 
-  // Build structured data for Google
-  const faqItems = [];
-  questions.filter(q => q.sub_part && q.answer_text && q.question_text_english).forEach(q => {
-    faqItems.push({
+  // Schema.org structured data
+  const faqItems = questions
+    .filter(q => q.sub_part && q.answer_text && q.question_text_english)
+    .slice(0, 10)
+    .map(q => ({
       "@type": "Question",
       "name": `SEE ${paper.year} Q${q.question_number}(${q.sub_part}): ${q.question_text_english.substring(0, 100)}`,
       "acceptedAnswer": { "@type": "Answer", "text": q.answer_text.substring(0, 300) }
-    });
-  });
+    }));
 
   const structuredData = JSON.stringify({
     "@context": "https://schema.org",
@@ -164,34 +161,35 @@ function buildHTML({ paper, subject, questions }) {
         "provider": { "@type": "Organization", "name": "Ujyalo", "url": "https://ujyalo.app" },
         "url": canonicalUrl
       },
-      {
-        "@type": "FAQPage",
-        "mainEntity": faqItems.slice(0, 10)
-      }
+      { "@type": "FAQPage", "mainEntity": faqItems }
     ]
   });
 
-  // Build question list HTML (visible to Google)
+  // Build left panel questions (visible to Google + desktop left column)
   let questionsHTML = '';
+  const allSubs = [];
+
   Object.entries(groups)
     .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
     .forEach(([num, g]) => {
       const parent = g.parent;
       const diagram = DIAGRAMS[parseInt(num)];
 
-      questionsHTML += `
-      <div class="q-block" id="qb-${num}">
+      questionsHTML += `<div class="q-block" id="qb-${num}">
         <div class="q-parent-row">
           <span class="q-num">${num}.</span>
-          ${parent?.question_text_nepali ? `<span class="lang-np q-parent-text" style="display:none">${escape(parent.question_text_nepali)}</span>` : ''}
-          ${parent?.question_text_english ? `<span class="lang-en q-parent-text">${escape(parent.question_text_english)}</span>` : ''}
+          <span class="q-parent-text">
+            ${parent?.question_text_nepali ? `<span class="lang-np" style="display:none">${escape(parent.question_text_nepali)}</span>` : ''}
+            ${parent?.question_text_english ? `<span class="lang-en">${escape(parent.question_text_english)}</span>` : ''}
+          </span>
         </div>
         ${diagram ? `<div class="q-diagram">${diagram}</div>` : ''}
         <div class="q-subs">`;
 
-      g.subs.forEach((sub, i) => {
+      g.subs.forEach(sub => {
+        allSubs.push(sub.id);
         questionsHTML += `
-          <div class="q-sub" id="qs-${sub.id}" onclick="toggleAnswer('${sub.id}')">
+          <div class="q-sub" id="qs-${sub.id}" onclick="selectQ('${sub.id}')">
             <div class="q-sub-header">
               <span class="q-sub-letter">${sub.sub_part}</span>
               <span class="q-sub-content">
@@ -199,11 +197,15 @@ function buildHTML({ paper, subject, questions }) {
                 ${sub.question_text_english ? `<span class="lang-en">${escape(sub.question_text_english)}</span>` : ''}
               </span>
               <span class="q-sub-marks">${sub.marks}m</span>
-              <span class="q-sub-toggle" id="toggle-${sub.id}">▾</span>
+              <span class="q-sub-chevron">▾</span>
             </div>
-            <div class="q-answer" id="ans-${sub.id}" style="display:none">
-              <div class="q-answer-label">✓ Model Answer</div>
-              <div class="q-answer-body">${escape(sub.answer_text || 'Model answer coming soon.')}</div>
+            <!-- Mobile accordion answer -->
+            <div class="q-mobile-answer" id="mob-${sub.id}">
+              <div class="ans-label">✓ Model Answer</div>
+              <div class="ans-body">${escape(sub.answer_text || 'Model answer coming soon.')}</div>
+              <div class="ans-share">
+                <button onclick="shareQ('${sub.id}', event)" class="share-btn">↗ Share this question</button>
+              </div>
             </div>
           </div>`;
       });
@@ -211,160 +213,299 @@ function buildHTML({ paper, subject, questions }) {
       questionsHTML += `</div></div>`;
     });
 
+  // Build answers data for right panel (desktop)
+  const answersData = {};
+  questions.filter(q => q.sub_part).forEach(q => {
+    const parent = groups[q.question_number]?.parent;
+    answersData[q.id] = {
+      qNum: q.question_number,
+      subPart: q.sub_part,
+      marks: q.marks,
+      textEn: q.question_text_english || '',
+      textNp: q.question_text_nepali || '',
+      ctxEn: parent?.question_text_english || '',
+      ctxNp: parent?.question_text_nepali || '',
+      answer: q.answer_text || 'Model answer coming soon.',
+      hasDiagram: !!DIAGRAMS[q.question_number]
+    };
+  });
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>${escape(title)}</title>
-  <meta name="description" content="${escape(description)}" />
-  <meta name="keywords" content="SEE ${paper.year} ${paper.province} ${subject.name} past paper, SEE ${paper.year} ${subject.name} Nepal, SEE past paper ${paper.province} province, SEE ${paper.year} ganit paper" />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="${canonicalUrl}" />
-
-  <meta property="og:title" content="${escape(title)}" />
-  <meta property="og:description" content="${escape(description)}" />
-  <meta property="og:url" content="${canonicalUrl}" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Ujyalo" />
-
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${escape(title)}" />
-  <meta name="twitter:description" content="${escape(description)}" />
-
+  <meta name="description" content="${escape(description)}"/>
+  <meta name="keywords" content="SEE ${paper.year} ${paper.province} ${subject.name} past paper, SEE ${paper.year} ${subject.name} Nepal, SEE past paper ${paper.province}, SEE ${paper.year} ganit"/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="${canonicalUrl}"/>
+  <meta property="og:title" content="${escape(title)}"/>
+  <meta property="og:description" content="${escape(description)}"/>
+  <meta property="og:url" content="${canonicalUrl}"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Ujyalo"/>
+  <meta name="twitter:card" content="summary_large_image"/>
   <script type="application/ld+json">${structuredData}</script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles/main.css" />
-
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/styles/main.css"/>
+  <!-- Google Analytics event tracking -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --brand: #2563EB; --green: #1D9E75; --dark: #0a0f1e;
-      --ink: #0f172a; --mid: #475569; --light: #94a3b8;
-      --border: #e2e8f0; --bg: #f8fafc;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --brand:#2563EB;--green:#1D9E75;--dark:#0a0f1e;
+      --ink:#0f172a;--mid:#475569;--light:#94a3b8;
+      --border:#e2e8f0;--bg:#f8fafc;
     }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); }
+    html,body{height:100%;overflow:hidden;}
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);display:flex;flex-direction:column;}
 
-    /* ── TOP BAR ── */
-    .topbar {
-      background: var(--dark); display: flex; align-items: center;
-      gap: 12px; padding: 0 20px; height: 58px;
-      position: sticky; top: 0; z-index: 100;
+    /* ── TOPBAR ── */
+    .topbar{
+      background:var(--dark);display:flex;align-items:center;
+      gap:10px;padding:0 16px;height:56px;flex-shrink:0;z-index:100;
     }
-    .tb-back {
-      display: flex; align-items: center; gap: 6px;
-      color: rgba(255,255,255,.65); font-size: 13px; font-weight: 600;
-      background: rgba(255,255,255,.08); border: none; border-radius: 8px;
-      padding: 7px 14px; cursor: pointer; font-family: inherit;
-      transition: all .2s; text-decoration: none; white-space: nowrap;
+    .tb-back{
+      display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.6);
+      font-size:13px;font-weight:600;background:rgba(255,255,255,.08);
+      border:none;border-radius:8px;padding:6px 12px;cursor:pointer;
+      font-family:inherit;transition:all .2s;text-decoration:none;white-space:nowrap;flex-shrink:0;
     }
-    .tb-back:hover { background: rgba(255,255,255,.15); color: white; }
-    .tb-divider { width: 1px; height: 26px; background: rgba(255,255,255,.1); flex-shrink: 0; }
-    .tb-info { flex: 1; min-width: 0; }
-    .tb-title { font-size: 15px; font-weight: 700; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .tb-sub { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 1px; }
-    .tb-lang { display: flex; background: rgba(255,255,255,.08); border-radius: 8px; padding: 3px; gap: 2px; flex-shrink: 0; }
-    .tb-lang-btn {
-      padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700;
-      border: none; cursor: pointer; font-family: inherit; transition: all .2s;
-      color: rgba(255,255,255,.5); background: transparent; white-space: nowrap;
+    .tb-back:hover{background:rgba(255,255,255,.14);color:white;}
+    .tb-divider{width:1px;height:24px;background:rgba(255,255,255,.1);flex-shrink:0;}
+    .tb-info{flex:1;min-width:0;}
+    .tb-title{font-size:14px;font-weight:700;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .tb-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:1px;}
+    .tb-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+    .tb-lang{display:flex;background:rgba(255,255,255,.08);border-radius:8px;padding:3px;gap:2px;}
+    .tb-lang-btn{
+      padding:5px 10px;border-radius:6px;font-size:12px;font-weight:700;
+      border:none;cursor:pointer;font-family:inherit;transition:all .2s;
+      color:rgba(255,255,255,.5);background:transparent;white-space:nowrap;
     }
-    .tb-lang-btn.active { background: white; color: var(--ink); }
-    .tb-dl-wrap { position: relative; flex-shrink: 0; }
-    .tb-dl {
-      display: flex; align-items: center; gap: 7px;
-      background: #f59e0b; color: #0a0f1e; border: none; border-radius: 8px;
-      padding: 8px 16px; font-size: 13px; font-weight: 800; cursor: pointer;
-      font-family: inherit; transition: all .2s; white-space: nowrap;
+    .tb-lang-btn.active{background:white;color:var(--ink);}
+    /* Share button */
+    .tb-share{
+      display:flex;align-items:center;gap:5px;
+      background:rgba(255,255,255,.08);border:none;border-radius:8px;
+      padding:6px 12px;color:rgba(255,255,255,.7);font-size:12px;font-weight:700;
+      cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap;
     }
-    .tb-dl:hover { background: #d97706; }
-    .dl-dropdown {
-      position: absolute; top: calc(100% + 8px); right: 0;
-      background: white; border: 1px solid var(--border);
-      border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.15);
-      min-width: 210px; overflow: hidden; z-index: 999; display: none;
+    .tb-share:hover{background:rgba(255,255,255,.14);color:white;}
+    .tb-share.copied{background:#1D9E75;color:white;}
+    /* Download */
+    .tb-dl-wrap{position:relative;}
+    .tb-dl{
+      display:flex;align-items:center;gap:6px;
+      background:#f59e0b;color:#0a0f1e;border:none;border-radius:8px;
+      padding:7px 14px;font-size:12px;font-weight:800;cursor:pointer;
+      font-family:inherit;transition:all .2s;white-space:nowrap;
     }
-    .dl-dropdown.open { display: block; }
-    .dl-option {
-      display: flex; align-items: center; gap: 12px;
-      padding: 13px 16px; cursor: pointer; transition: background .15s;
-      border-bottom: 1px solid #f1f5f9; font-size: 14px; font-weight: 600; color: var(--ink);
+    .tb-dl:hover{background:#d97706;}
+    .dl-dd{
+      position:absolute;top:calc(100% + 8px);right:0;
+      background:white;border:1px solid var(--border);
+      border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.15);
+      min-width:210px;overflow:hidden;z-index:999;display:none;
     }
-    .dl-option:last-child { border-bottom: none; }
-    .dl-option:hover { background: #f8fafc; }
-    .dl-option-icon { font-size: 20px; flex-shrink: 0; }
-    .dl-sub { font-size: 11px; color: var(--light); margin-top: 1px; font-weight: 400; }
+    .dl-dd.open{display:block;}
+    .dl-opt{
+      display:flex;align-items:center;gap:12px;
+      padding:12px 16px;cursor:pointer;transition:background .15s;
+      border-bottom:1px solid #f1f5f9;font-size:13px;font-weight:600;color:var(--ink);
+    }
+    .dl-opt:last-child{border-bottom:none;}
+    .dl-opt:hover{background:#f8fafc;}
+    .dl-opt-icon{font-size:18px;flex-shrink:0;}
+    .dl-opt-sub{font-size:11px;color:var(--light);margin-top:1px;font-weight:400;}
 
-    /* ── PAPER ── */
-    .paper-wrap { max-width: 860px; margin: 0 auto; padding: 28px 20px 80px; }
-
-    /* Paper header */
-    .paper-header {
-      background: white; border: 1px solid var(--border);
-      border-radius: 16px; padding: 28px; text-align: center;
-      margin-bottom: 24px;
+    /* ── TWO COLUMN LAYOUT ── */
+    .paper-layout{
+      display:flex;flex:1;overflow:hidden;
+      height:calc(100vh - 56px);
     }
-    .ph-exam { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 700; color: var(--ink); }
-    .ph-subject { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--ink); margin: 4px 0; }
-    .ph-subject-np { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 15px; color: var(--mid); margin-bottom: 12px; }
-    .ph-badge { display: inline-flex; align-items: center; gap: 5px; background: var(--dark); color: white; font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 999px; margin-bottom: 14px; }
-    .ph-meta { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--ink); border-top: 1px solid var(--border); padding-top: 14px; }
-    .ph-instructions { background: #EFF6FF; border-left: 3px solid var(--brand); padding: 10px 14px; margin-top: 14px; border-radius: 0 8px 8px 0; font-size: 12px; color: var(--mid); line-height: 1.65; text-align: left; }
-    .ph-instr-np { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 12px; margin-bottom: 4px; font-style: italic; }
-    .ph-all { font-weight: 700; color: var(--ink); font-size: 13px; margin-top: 5px; }
+
+    /* Left — question list */
+    .q-panel{
+      width:520px;flex-shrink:0;
+      background:white;border-right:1px solid var(--border);
+      overflow-y:auto;display:flex;flex-direction:column;
+    }
+
+    /* Paper header in left panel */
+    .paper-header{
+      border-bottom:2px solid var(--ink);padding:20px 20px 16px;
+      text-align:center;flex-shrink:0;background:white;
+    }
+    .ph-exam{font-family:'Fraunces',serif;font-size:13px;font-weight:700;color:var(--ink);}
+    .ph-subject{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--ink);margin:3px 0;}
+    .ph-subject-np{font-family:'Noto Sans Devanagari',sans-serif;font-size:13px;color:var(--mid);margin-bottom:8px;}
+    .ph-badge{display:inline-flex;align-items:center;gap:4px;background:var(--dark);color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:10px;}
+    .ph-meta{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--ink);border-top:1px solid var(--border);padding-top:10px;}
+    .ph-instr{background:#EFF6FF;border-left:3px solid var(--brand);padding:8px 12px;margin:12px 16px 0;border-radius:0 6px 6px 0;font-size:11px;color:var(--mid);line-height:1.6;text-align:left;}
+    .ph-instr-np{font-family:'Noto Sans Devanagari',sans-serif;font-size:11px;margin-bottom:3px;font-style:italic;}
+    .ph-all{font-weight:700;color:var(--ink);font-size:11px;margin-top:4px;}
 
     /* Questions */
-    .q-block { background: white; border: 1px solid var(--border); border-radius: 14px; margin-bottom: 16px; overflow: hidden; }
-    .q-parent-row { padding: 18px 20px 8px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
-    .q-num { font-size: 16px; font-weight: 800; color: var(--ink); flex-shrink: 0; }
-    .q-parent-text { font-size: 15px; color: var(--mid); line-height: 1.75; flex: 1; }
-    .q-diagram { padding: 0 20px 12px; }
-    .q-subs { border-top: 1px solid #f1f5f9; }
-
-    .q-sub { border-bottom: 1px solid #f1f5f9; }
-    .q-sub:last-child { border-bottom: none; }
-    .q-sub-header {
-      display: flex; align-items: flex-start; gap: 12px;
-      padding: 14px 20px; cursor: pointer; transition: background .15s;
+    .q-list-wrap{padding:8px 0 32px;}
+    .q-block{border-top:1px solid #f1f5f9;margin-top:4px;}
+    .q-block:first-child{border-top:none;margin-top:0;}
+    .q-parent-row{padding:14px 16px 6px;display:flex;gap:8px;align-items:baseline;}
+    .q-num{font-size:15px;font-weight:800;color:var(--ink);flex-shrink:0;}
+    .q-parent-text{font-size:14px;color:var(--mid);line-height:1.7;flex:1;}
+    .q-diagram{padding:0 16px 8px;}
+    .q-subs{}
+    .q-sub{border-bottom:1px solid #f8fafc;cursor:pointer;}
+    .q-sub:last-child{border-bottom:none;}
+    .q-sub-header{
+      display:flex;align-items:flex-start;gap:10px;
+      padding:10px 16px;transition:background .15s;
     }
-    .q-sub-header:hover { background: #f8fafc; }
-    .q-sub.open .q-sub-header { background: #EFF6FF; }
-    .q-sub-letter {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: #f1f5f9; color: var(--mid);
-      font-size: 12px; font-weight: 700; display: flex;
-      align-items: center; justify-content: center;
-      flex-shrink: 0; transition: all .2s;
+    .q-sub-header:hover{background:#f8fafc;}
+    .q-sub.active .q-sub-header{background:#EFF6FF;border-left:3px solid var(--brand);}
+    .q-sub-letter{
+      width:24px;height:24px;border-radius:50%;
+      background:#f1f5f9;color:var(--mid);
+      font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;transition:all .2s;
     }
-    .q-sub.open .q-sub-letter { background: var(--brand); color: white; }
-    .q-sub-content { flex: 1; font-size: 15px; color: var(--mid); line-height: 1.7; }
-    .q-sub.open .q-sub-content { color: var(--ink); font-weight: 600; }
-    .q-sub-marks { font-size: 11px; font-weight: 700; color: white; background: var(--light); border-radius: 999px; padding: 3px 9px; flex-shrink: 0; margin-top: 4px; white-space: nowrap; }
-    .q-sub.open .q-sub-marks { background: var(--brand); }
-    .q-sub-toggle { font-size: 14px; color: var(--light); flex-shrink: 0; margin-top: 4px; transition: transform .2s; }
-    .q-sub.open .q-sub-toggle { transform: rotate(180deg); color: var(--brand); }
+    .q-sub.active .q-sub-letter{background:var(--brand);color:white;}
+    .q-sub-content{flex:1;font-size:14px;color:var(--mid);line-height:1.65;}
+    .q-sub.active .q-sub-content{color:var(--ink);font-weight:600;}
+    .q-sub-marks{font-size:10px;font-weight:700;color:white;background:var(--light);border-radius:999px;padding:2px 7px;flex-shrink:0;margin-top:3px;white-space:nowrap;}
+    .q-sub.active .q-sub-marks{background:var(--brand);}
+    .q-sub-chevron{font-size:12px;color:var(--light);flex-shrink:0;margin-top:3px;transition:transform .2s;display:none;}
 
-    /* Answer */
-    .q-answer { border-top: 1px solid #bbf7d0; display: none; }
-    .q-sub.open .q-answer { display: block; }
-    .q-answer-label { background: var(--green); color: white; padding: 10px 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
-    .q-answer-body { padding: 18px 20px; font-size: 14px; color: #065f46; line-height: 1.9; white-space: pre-wrap; background: #f0fdf4; }
+    /* Mobile accordion answer — hidden on desktop */
+    .q-mobile-answer{display:none;}
 
-    /* Print */
+    /* Right — answer panel */
+    .ans-panel{
+      flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);
+    }
+    .ans-empty{
+      flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:40px;text-align:center;
+    }
+    .ans-empty-icon{font-size:56px;margin-bottom:16px;opacity:.3;}
+    .ans-empty-title{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:var(--ink);opacity:.3;margin-bottom:8px;}
+    .ans-empty-sub{font-size:14px;color:var(--light);}
+    .ans-content{flex:1;overflow-y:auto;padding:24px 28px;display:none;}
+    .ans-content.show{display:block;}
+    .ans-q-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      font-size:11px;font-weight:700;color:var(--brand);
+      background:#EFF6FF;padding:4px 12px;border-radius:999px;
+      text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;
+    }
+    .ans-question{
+      background:white;border:1px solid var(--border);
+      border-radius:14px;padding:18px 20px;margin-bottom:16px;
+    }
+    .ans-ctx-label{font-size:10px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+    .ans-ctx{font-size:13px;color:var(--mid);line-height:1.7;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--border);}
+    .ans-ctx-np{font-family:'Noto Sans Devanagari',sans-serif;font-size:13px;color:var(--ink);line-height:1.8;}
+    .ans-q-text{font-size:14px;color:var(--ink);line-height:1.75;font-weight:600;}
+    .ans-q-text-np{font-family:'Noto Sans Devanagari',sans-serif;font-size:14px;color:var(--ink);line-height:1.85;font-weight:600;}
+    .ans-marks{display:inline-flex;align-items:center;gap:4px;background:#EFF6FF;color:var(--brand);font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;margin-top:10px;}
+    .ans-box{background:white;border:1.5px solid #bbf7d0;border-radius:14px;overflow:hidden;}
+    .ans-box-header{background:var(--green);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;}
+    .ans-box-label{font-size:11px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:.08em;}
+    .ans-body{padding:18px 20px;font-size:13px;color:#065f46;line-height:1.9;white-space:pre-wrap;background:#f0fdf4;}
+    .ans-share-wrap{padding:12px 20px 16px;background:#f0fdf4;border-top:1px solid #bbf7d0;text-align:right;}
+
+    /* Share button in answer */
+    .share-btn{
+      display:inline-flex;align-items:center;gap:5px;
+      background:white;border:1px solid var(--border);
+      border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;
+      color:var(--brand);cursor:pointer;font-family:inherit;transition:all .2s;
+    }
+    .share-btn:hover{background:#EFF6FF;border-color:var(--brand);}
+
+    /* Nav bottom */
+    .ans-nav{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 20px;border-top:1px solid var(--border);
+      background:white;flex-shrink:0;
+    }
+    .ans-nav-info{font-size:12px;color:var(--light);font-weight:600;}
+    .ans-nav-btns{display:flex;gap:8px;}
+    .ans-nav-btn{
+      padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;
+      border:none;cursor:pointer;font-family:inherit;transition:all .2s;
+    }
+    .ans-prev{background:#f1f5f9;color:var(--mid);}
+    .ans-prev:hover:not(:disabled){background:var(--border);}
+    .ans-next{background:var(--brand);color:white;}
+    .ans-next:hover:not(:disabled){background:#1d4ed8;}
+    .ans-nav-btn:disabled{opacity:.35;cursor:not-allowed;}
+
+    /* ── PRINT / PDF ── */
     @media print {
-      .topbar, #site-nav, #site-footer { display: none !important; }
-      .q-answer { display: block !important; }
-      .q-sub-toggle { display: none; }
-      .paper-wrap { padding: 0; }
-    }
+      html,body{height:auto;overflow:visible;}
+      .topbar,#site-nav,#site-footer,.ans-panel{display:none!important;}
+      .paper-layout{display:block;height:auto;overflow:visible;}
+      .q-panel{width:100%;border:none;overflow:visible;height:auto;}
+      .q-sub-chevron{display:none!important;}
+      .q-mobile-answer{display:none!important;}
+      .q-sub.active .q-sub-header{background:white!important;border-left:none!important;}
+      .q-sub-header:hover{background:white!important;}
 
-    @media (max-width: 640px) {
-      .tb-dl span:first-of-type { display: none; }
-      .paper-wrap { padding: 16px 12px 60px; }
-      .ph-subject { font-size: 18px; }
+      /* PDF footer with branding on every page */
+      @page {
+        margin: 15mm 15mm 20mm 15mm;
+        @bottom-center {
+          content: "ujyalo.app | Free SEE Exam Prep for Nepal 🇳🇵 | Free forever";
+          font-size: 9pt;
+          color: #94a3b8;
+        }
+      }
+      /* Fallback footer for browsers that don't support @page @bottom */
+      .print-footer{
+        display:block!important;
+        text-align:center;font-size:10px;color:#94a3b8;
+        padding-top:16px;margin-top:24px;
+        border-top:1px solid #e2e8f0;
+      }
+    }
+    .print-footer{display:none;}
+
+    /* Both languages print mode */
+    body.print-both .lang-np{display:inline!important;}
+    body.print-both .lang-en{display:inline!important;}
+    body.print-both .ph-instr-np{display:block!important;}
+    body.print-both .lang-np-block{display:block!important;}
+    /* In both mode, show Nepali then English on separate lines */
+    body.print-both .q-parent-text,
+    body.print-both .q-sub-content{display:flex;flex-direction:column;gap:4px;}
+    body.print-both .lang-np{display:block!important;font-family:'Noto Sans Devanagari',sans-serif;}
+    body.print-both .lang-en{display:block!important;color:var(--mid);font-size:.95em;}
+
+    /* ── MOBILE ── */
+    @media (max-width:768px){
+      html,body{height:auto;overflow:auto;}
+      .paper-layout{flex-direction:column;height:auto;overflow:visible;}
+      .q-panel{width:100%;border-right:none;overflow:visible;height:auto;}
+      .ans-panel{display:none!important;}
+      .q-sub-chevron{display:block!important;}
+      /* Mobile accordion */
+      .q-mobile-answer{
+        display:none;border-top:1px solid #bbf7d0;
+        background:#f0fdf4;
+      }
+      .q-sub.open .q-mobile-answer{display:block;}
+      .q-sub.open .q-sub-chevron{transform:rotate(180deg);color:var(--brand);}
+      .q-sub.open .q-sub-header{background:#EFF6FF;border-left:3px solid var(--brand);}
+      .q-sub.open .q-sub-letter{background:var(--brand);color:white;}
+      .q-sub.open .q-sub-content{color:var(--ink);font-weight:600;}
+      .ans-label{background:var(--green);color:white;padding:8px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+      .ans-body{padding:14px 16px;font-size:13px;color:#065f46;line-height:1.9;white-space:pre-wrap;}
+      .ans-share{padding:8px 16px 12px;text-align:right;}
+      .tb-dl span:first-of-type{display:none;}
     }
   </style>
 </head>
@@ -378,125 +519,242 @@ function buildHTML({ paper, subject, questions }) {
     <div class="tb-title">${escape(subject.name)} · SEE ${paper.year}</div>
     <div class="tb-sub">${escape(paper.province)} Province · Full marks: ${paper.total_marks}</div>
   </div>
-  <div class="tb-lang">
-    <button class="tb-lang-btn active" id="btn-en" onclick="setLang('en')">🇬🇧 English</button>
-    <button class="tb-lang-btn" id="btn-np" onclick="setLang('np')">🇳🇵 नेपाली</button>
-  </div>
-  <div class="tb-dl-wrap">
-    <button class="tb-dl" onclick="toggleDl()">⬇ <span>Download PDF</span> ▾</button>
-    <div class="dl-dropdown" id="dl-dd">
-      <div class="dl-option" onclick="downloadPDF('en')">
-        <div class="dl-option-icon">🇬🇧</div>
-        <div><div>English PDF</div><div class="dl-sub">Questions in English only</div></div>
-      </div>
-      <div class="dl-option" onclick="downloadPDF('np')">
-        <div class="dl-option-icon">🇳🇵</div>
-        <div><div>Nepali PDF</div><div class="dl-sub">नेपाली भाषामा मात्र</div></div>
-      </div>
-      <div class="dl-option" onclick="downloadPDF('both')">
-        <div class="dl-option-icon">📄</div>
-        <div><div>Both languages</div><div class="dl-sub">Nepali + English combined</div></div>
+  <div class="tb-actions">
+    <div class="tb-lang">
+      <button class="tb-lang-btn active" id="btn-en" onclick="setLang('en')">🇬🇧 English</button>
+      <button class="tb-lang-btn" id="btn-np" onclick="setLang('np')">🇳🇵 नेपाली</button>
+    </div>
+    <button class="tb-share" id="share-btn" onclick="shareLink()">↗ Share</button>
+    <div class="tb-dl-wrap">
+      <button class="tb-dl" onclick="toggleDl()">⬇ <span>Download PDF</span> ▾</button>
+      <div class="dl-dd" id="dl-dd">
+        <div class="dl-opt" onclick="downloadPDF('en')">
+          <div class="dl-opt-icon">🇬🇧</div>
+          <div><div>English PDF</div><div class="dl-opt-sub">Questions in English only</div></div>
+        </div>
+        <div class="dl-opt" onclick="downloadPDF('np')">
+          <div class="dl-opt-icon">🇳🇵</div>
+          <div><div>Nepali PDF</div><div class="dl-opt-sub">नेपाली भाषामा मात्र</div></div>
+        </div>
+        <div class="dl-opt" onclick="downloadPDF('both')">
+          <div class="dl-opt-icon">📄</div>
+          <div><div>Both languages</div><div class="dl-opt-sub">Nepali then English</div></div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="paper-wrap">
-  <h1 class="paper-header">
-    <div class="ph-exam">SEE ${paper.year} (${yearAD} AD)</div>
-    <div class="ph-subject">Compulsory ${escape(subject.name)}</div>
-    <div class="ph-subject-np">अनिवार्य ${escape(subjectNameNp)}</div>
-    <div><span class="ph-badge">🏔 ${escape(paper.province)} Province</span></div>
-    <div class="ph-meta">
-      <span>Time: ${paper.time_minutes / 60} Hours</span>
-      <span>Full Marks: ${paper.total_marks}</span>
+<div class="paper-layout">
+  <!-- LEFT: Question list -->
+  <div class="q-panel" id="q-panel">
+    <!-- Paper header -->
+    <div class="paper-header">
+      <div class="ph-exam">SEE ${paper.year} (${yearAD} AD)</div>
+      <div class="ph-subject">Compulsory ${escape(subject.name)}</div>
+      <div class="ph-subject-np">अनिवार्य ${escape(subjectNameNp)}</div>
+      <div><span class="ph-badge">🏔 ${escape(paper.province)} Province</span></div>
+      <div class="ph-meta">
+        <span>Time: ${paper.time_minutes / 60} Hours</span>
+        <span>Full Marks: ${paper.total_marks}</span>
+      </div>
+      ${paper.instructions_english ? `
+      <div class="ph-instr">
+        <div class="ph-instr-np lang-np" style="display:none">${escape(paper.instructions_nepali || '')}</div>
+        <div class="lang-en" style="font-style:italic;font-size:11px;">${escape(paper.instructions_english)}</div>
+        <div class="ph-all">सबै प्रश्नहरू अनिवार्य छन् · All questions are compulsory.</div>
+      </div>` : ''}
     </div>
-    ${paper.instructions_english ? `
-    <div class="ph-instructions">
-      <div class="ph-instr-np lang-np" style="display:none">${escape(paper.instructions_nepali || '')}</div>
-      <div class="lang-en" style="font-style:italic">${escape(paper.instructions_english)}</div>
-      <div class="ph-all">सबै प्रश्नहरू अनिवार्य छन् · All questions are compulsory.</div>
-    </div>` : ''}
-  </h1>
+    <!-- Questions -->
+    <div class="q-list-wrap">${questionsHTML}</div>
+    <!-- Print footer -->
+    <div class="print-footer">
+      ujyalo.app &nbsp;|&nbsp; Free SEE Exam Prep for Nepal 🇳🇵 &nbsp;|&nbsp; Free forever
+    </div>
+  </div>
 
-  ${questionsHTML}
+  <!-- RIGHT: Answer panel (desktop only) -->
+  <div class="ans-panel" id="ans-panel">
+    <div class="ans-empty" id="ans-empty">
+      <div class="ans-empty-icon">👈</div>
+      <div class="ans-empty-title">Select a question</div>
+      <div class="ans-empty-sub">Click any question on the left to see the model answer</div>
+    </div>
+    <div class="ans-content" id="ans-content"></div>
+    <div class="ans-nav" id="ans-nav" style="display:none;">
+      <div class="ans-nav-info" id="ans-nav-info"></div>
+      <div class="ans-nav-btns">
+        <button class="ans-nav-btn ans-prev" id="btn-prev" onclick="navQ(-1)">← Prev</button>
+        <button class="ans-nav-btn ans-next" id="btn-next" onclick="navQ(1)">Next →</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
 <script>
+const ANSWERS = ${JSON.stringify(answersData)};
+const ALL_SUBS = ${JSON.stringify(allSubs)};
+const DIAGRAMS_JS = ${JSON.stringify(Object.fromEntries(Object.entries(DIAGRAMS)))};
+const SHARE_URL = '${shareUrl}';
+const PAPER_KEY = 'SEE-${paper.year}-${paper.province}-${subject.code}';
+
 let LANG = 'en';
-let OPEN_ID = null;
+let ACTIVE_ID = null;
+let OPEN_MOB_ID = null;
+const isMobile = () => window.innerWidth <= 768;
 
-function toggleAnswer(id) {
-  const sub = document.getElementById('qs-' + id);
-  const ans = document.getElementById('ans-' + id);
-  const isOpen = sub.classList.contains('open');
-
-  // Close previously open
-  if (OPEN_ID && OPEN_ID !== id) {
-    const prev = document.getElementById('qs-' + OPEN_ID);
-    const prevAns = document.getElementById('ans-' + OPEN_ID);
-    if (prev) prev.classList.remove('open');
-    if (prevAns) prevAns.style.display = 'none';
+// ── SELECT QUESTION (desktop) ──────────────────────────
+function selectQ(id) {
+  if (isMobile()) {
+    // Mobile: accordion
+    const sub = document.getElementById('qs-' + id);
+    const isOpen = sub.classList.contains('open');
+    // Close previous
+    if (OPEN_MOB_ID && OPEN_MOB_ID !== id) {
+      const prev = document.getElementById('qs-' + OPEN_MOB_ID);
+      if (prev) prev.classList.remove('open');
+    }
+    sub.classList.toggle('open', !isOpen);
+    OPEN_MOB_ID = isOpen ? null : id;
+    return;
   }
 
-  if (isOpen) {
-    sub.classList.remove('open');
-    ans.style.display = 'none';
-    OPEN_ID = null;
-  } else {
-    sub.classList.add('open');
-    ans.style.display = 'block';
-    OPEN_ID = id;
-  }
+  // Desktop: show in right panel
+  ACTIVE_ID = id;
+  const d = ANSWERS[id];
+  if (!d) return;
+
+  // Update active state
+  document.querySelectorAll('.q-sub').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('qs-' + id);
+  if (el) { el.classList.add('active'); el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+  document.getElementById('ans-empty').style.display = 'none';
+  document.getElementById('ans-nav').style.display = 'flex';
+  const content = document.getElementById('ans-content');
+  content.classList.add('show');
+
+  const showNp = LANG === 'np';
+  const ctx = showNp ? (d.ctxNp || d.ctxEn) : (d.ctxEn || '');
+  const qText = showNp ? (d.textNp || d.textEn) : (d.textEn || '');
+  const diagram = DIAGRAMS_JS[d.qNum] || '';
+  const isNpClass = showNp ? 'ans-ctx-np' : 'ans-ctx';
+  const qClass = showNp ? 'ans-q-text-np' : 'ans-q-text';
+
+  content.innerHTML = \`
+    <div class="ans-q-badge">Q\${d.qNum}(\${d.subPart}) · \${d.marks} mark\${d.marks!==1?'s':''}</div>
+    <div class="ans-question">
+      \${ctx ? \`<div class="ans-ctx-label">Context</div><div class="\${isNpClass}">\${ctx}</div>\` : ''}
+      \${diagram ? \`<div style="margin:10px 0;">\${diagram}</div>\` : ''}
+      <div class="\${qClass}">\${qText}</div>
+      <div class="ans-marks">📋 \${d.marks} mark\${d.marks!==1?'s':''}</div>
+    </div>
+    <div class="ans-box">
+      <div class="ans-box-header">
+        <span class="ans-box-label">✓ Model Answer</span>
+      </div>
+      <div class="ans-body">\${d.answer}</div>
+      <div class="ans-share-wrap">
+        <button class="share-btn" onclick="shareQ('\${id}', event)">↗ Share this Q&A</button>
+      </div>
+    </div>
+  \`;
+
+  const idx = ALL_SUBS.indexOf(id);
+  document.getElementById('ans-nav-info').textContent = \`\${idx+1} of \${ALL_SUBS.length}\`;
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').disabled = idx === ALL_SUBS.length - 1;
+  content.scrollTop = 0;
 }
 
+function navQ(dir) {
+  const idx = ALL_SUBS.indexOf(ACTIVE_ID);
+  if (idx >= 0) selectQ(ALL_SUBS[idx + dir]);
+}
+
+// ── LANGUAGE ──────────────────────────────────────────
 function setLang(lang) {
   LANG = lang;
-  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-  document.getElementById('btn-np').classList.toggle('active', lang === 'np');
-  const showNp = lang === 'np';
-  document.querySelectorAll('.lang-np').forEach(el => el.style.display = showNp ? 'inline' : 'none');
-  document.querySelectorAll('.lang-en').forEach(el => el.style.display = showNp ? 'none' : 'inline');
-  // Block elements
-  document.querySelectorAll('.ph-instr-np').forEach(el => el.style.display = showNp ? 'block' : 'none');
+  document.getElementById('btn-en').classList.toggle('active', lang==='en');
+  document.getElementById('btn-np').classList.toggle('active', lang==='np');
+  const np = lang === 'np';
+  document.querySelectorAll('.lang-np').forEach(el => el.style.display = np ? 'inline' : 'none');
+  document.querySelectorAll('.lang-en').forEach(el => el.style.display = np ? 'none' : 'inline');
+  document.querySelectorAll('.ph-instr-np').forEach(el => el.style.display = np ? 'block' : 'none');
+  if (ACTIVE_ID) selectQ(ACTIVE_ID);
 }
 
+// ── SHARE ─────────────────────────────────────────────
+function shareLink() {
+  navigator.clipboard.writeText(SHARE_URL).then(() => {
+    const btn = document.getElementById('share-btn');
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '↗ Share'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    prompt('Copy this link:', SHARE_URL);
+  });
+  // GA tracking
+  if (typeof gtag !== 'undefined') gtag('event', 'share', { paper: PAPER_KEY });
+}
+
+function shareQ(id, e) {
+  e.stopPropagation();
+  const d = ANSWERS[id];
+  const url = SHARE_URL + '#q' + d.qNum + d.subPart;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = e.target;
+    btn.textContent = '✓ Link copied!';
+    setTimeout(() => { btn.textContent = '↗ Share this Q&A'; }, 2000);
+  }).catch(() => { prompt('Copy this link:', url); });
+}
+
+// ── DOWNLOAD PDF ──────────────────────────────────────
 function toggleDl() { document.getElementById('dl-dd').classList.toggle('open'); }
-document.addEventListener('click', e => { if (!e.target.closest('.tb-dl-wrap')) document.getElementById('dl-dd').classList.remove('open'); });
+document.addEventListener('click', e => {
+  if (!e.target.closest('.tb-dl-wrap')) document.getElementById('dl-dd').classList.remove('open');
+});
 
 function downloadPDF(lang) {
   document.getElementById('dl-dd').classList.remove('open');
+
+  // GA tracking
+  if (typeof gtag !== 'undefined') gtag('event', 'pdf_download', { paper: PAPER_KEY, language: lang });
+
+  // Close all answers — PDF shows questions only
+  document.querySelectorAll('.q-mobile-answer').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.q-sub').forEach(el => el.classList.remove('open'));
+
   const prev = LANG;
+
   if (lang === 'both') {
-    document.querySelectorAll('.lang-np, .lang-en').forEach(el => el.style.display = 'inline');
-    document.querySelectorAll('.ph-instr-np').forEach(el => el.style.display = 'block');
-    // Open all answers for print
-    document.querySelectorAll('.q-answer').forEach(el => el.style.display = 'block');
+    // Both: Nepali then English on separate lines
+    document.body.classList.add('print-both');
     setTimeout(() => {
       window.print();
       setTimeout(() => {
+        document.body.classList.remove('print-both');
         setLang(prev);
-        document.querySelectorAll('.q-answer').forEach((el, i) => {
-          el.style.display = 'none';
-        });
-        if (OPEN_ID) document.getElementById('ans-' + OPEN_ID).style.display = 'block';
-      }, 500);
+      }, 800);
     }, 300);
   } else {
     setLang(lang);
-    document.querySelectorAll('.q-answer').forEach(el => el.style.display = 'block');
     setTimeout(() => {
       window.print();
-      setTimeout(() => {
-        setLang(prev);
-        document.querySelectorAll('.q-answer').forEach(el => el.style.display = 'none');
-        if (OPEN_ID) document.getElementById('ans-' + OPEN_ID).style.display = 'block';
-      }, 500);
+      setTimeout(() => setLang(prev), 800);
     }, 300);
   }
 }
+
+// ── INIT ──────────────────────────────────────────────
+// Auto-select first question on desktop
+document.addEventListener('DOMContentLoaded', () => {
+  if (!isMobile() && ALL_SUBS.length > 0) {
+    selectQ(ALL_SUBS[0]);
+  }
+});
 </script>
 </body>
 </html>`;
@@ -504,57 +762,35 @@ function downloadPDF(lang) {
 
 export default async function handler(req, res) {
   try {
-    // Vercel rewrites pass path segments as query params
-    // BUT also need to handle parsing from URL path directly
     let { year, province, subject } = req.query;
 
-    // If not in query params, parse from URL path
-    // URL: /see/past-papers/2082/Koshi/maths
     if (!year || !province || !subject) {
-      const urlPath = req.url || '';
-      const match = urlPath.match(/\/see\/past-papers\/(\d+)\/([^\/\?]+)\/([^\/\?]+)/);
-      if (match) {
-        year = year || match[1];
-        province = province || match[2];
-        subject = subject || match[3];
-      }
+      const match = (req.url||'').match(/\/see\/past-papers\/(\d+)\/([^\/\?]+)\/([^\/\?]+)/);
+      if (match) { year=year||match[1]; province=province||match[2]; subject=subject||match[3]; }
     }
 
-    console.log('Params:', { year, province, subject, url: req.url, query: req.query });
     if (!year || !province || !subject) {
-      return res.status(400).send(`Missing parameters. URL: ${req.url}, Query: ${JSON.stringify(req.query)}`);
+      return res.status(400).send(`Missing: year=${year} province=${province} subject=${subject}`);
     }
 
-    // Fetch subject — filter by code only (code is unique across SEE subjects)
-    const subjects = await fetchFromSupabase(
-      `/exam_subjects?code=eq.${subject.toLowerCase()}&select=id,name,code`
-    );
-    console.log('Subject query result:', JSON.stringify(subjects));
-    if (!subjects[0]) return res.status(404).send(`Subject not found: ${subject}. Query returned: ${JSON.stringify(subjects)}`);
+    const subjects = await fetchFromSupabase(`/exam_subjects?code=eq.${subject.toLowerCase()}&select=id,name,code`);
+    if (!subjects[0]) return res.status(404).send(`Subject not found: ${subject}`);
     const subjectData = subjects[0];
 
-    // Fetch paper — province stored with capital first letter e.g. "Koshi"
     const provinceName = province.charAt(0).toUpperCase() + province.slice(1).toLowerCase();
-    const papers = await fetchFromSupabase(
-      `/past_papers?subject_id=eq.${subjectData.id}&year=eq.${year}&province=eq.${provinceName}&select=*`
-    );
-    console.log('Paper query result:', JSON.stringify(papers));
-    if (!papers[0]) return res.status(404).send(`Paper not found. year=${year} province=${provinceName} subject_id=${subjectData.id}. Result: ${JSON.stringify(papers)}`);
+    const papers = await fetchFromSupabase(`/past_papers?subject_id=eq.${subjectData.id}&year=eq.${year}&province=eq.${provinceName}&select=*`);
+    if (!papers[0]) return res.status(404).send(`Paper not found: ${year}/${provinceName}/${subject}`);
     const paper = papers[0];
 
-    // Fetch questions
-    const questions = await fetchFromSupabase(
-      `/past_paper_questions?paper_id=eq.${paper.id}&order=question_number.asc,sub_part.asc&select=*`
-    );
+    const questions = await fetchFromSupabase(`/past_paper_questions?paper_id=eq.${paper.id}&order=question_number.asc,sub_part.asc&select=*`);
 
     const html = buildHTML({ paper, subject: subjectData, questions });
-
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
     return res.status(200).send(html);
 
   } catch (err) {
     console.error('Paper error:', err);
-    return res.status(500).send(`<html><body><h1>Error loading paper</h1><p>${err.message}</p><a href="/see.html">Back</a></body></html>`);
+    return res.status(500).send(`<html><body><h1>Error</h1><p>${err.message}</p><a href="/see.html">Back</a></body></html>`);
   }
 }

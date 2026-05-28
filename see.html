@@ -263,7 +263,7 @@ const PROVINCES = [
 
 // Which papers are actually available
 const AVAILABLE = {
-  'maths-2082-1': { url: '/api/see-paper?year=2082&province=Koshi&subject=maths', status: 'live' },
+  'maths-2082-1': { url: '/see-paper.html?paper_id=7ba8eb9e-00ff-4f94-8500-261c51ca4fec', status: 'live' },
 };
 
 function isAvailable(subjectKey, yearBS, provinceNum) {
@@ -361,10 +361,20 @@ function renderStep1() {
 
 function renderStep2() {
   const s = SUBJECTS.find(s => s.key === STATE.subject);
+  const availableCount = YEARS.filter(y => {
+    return PROVINCES.some(p => isAvailable(STATE.subject, y.bs, p.num));
+  }).length;
 
   let html = `<div class="panel">
     <button class="back-btn" onclick="goToStep(1)">← Back</button>
-    <span class="section-label">Select Exam Year — ${s.name} / ${s.np}</span>
+    <div class="subject-context">
+      <div class="sc-icon" style="background:${s.bg};color:${s.color};font-family:${STATE.subject==='maths'?'serif':'inherit'};font-weight:700;">${s.icon}</div>
+      <div>
+        <div class="sc-name">${s.name} / <span style="font-family:'Noto Sans Devanagari',sans-serif;font-weight:600;">${s.np}</span></div>
+        <div class="sc-sub">${availableCount > 0 ? availableCount + ' year' + (availableCount>1?'s':'') + ' available' : 'Papers being prepared'}</div>
+      </div>
+    </div>
+    <span class="section-label">Select Exam Year</span>
     <div class="year-grid">`;
 
   YEARS.forEach(y => {
@@ -386,7 +396,14 @@ function renderStep3() {
 
   let html = `<div class="panel">
     <button class="back-btn" onclick="goToStep(2)">← Back</button>
-    <span class="section-label">Select Province — ${s.name} · SEE ${STATE.year}</span>
+    <div class="subject-context">
+      <div class="sc-icon" style="background:${s.bg};color:${s.color};font-family:${STATE.subject==='maths'?'serif':'inherit'};font-weight:700;">${s.icon}</div>
+      <div>
+        <div class="sc-name">${s.name} · SEE ${STATE.year}</div>
+        <div class="sc-sub">Select your province</div>
+      </div>
+    </div>
+    <span class="section-label">Select Province</span>
     <div class="province-list">`;
 
   PROVINCES.forEach(p => {
