@@ -492,10 +492,24 @@ function downloadPDF(lang) {
 
 export default async function handler(req, res) {
   try {
-    const { year, province, subject } = req.query;
+    // Vercel rewrites pass path segments as query params
+    // BUT also need to handle parsing from URL path directly
+    let { year, province, subject } = req.query;
+
+    // If not in query params, parse from URL path
+    // URL: /see/past-papers/2082/Koshi/maths
+    if (!year || !province || !subject) {
+      const urlPath = req.url || '';
+      const match = urlPath.match(/\/see\/past-papers\/(\d+)\/([^\/\?]+)\/([^\/\?]+)/);
+      if (match) {
+        year = year || match[1];
+        province = province || match[2];
+        subject = subject || match[3];
+      }
+    }
 
     if (!year || !province || !subject) {
-      return res.status(400).send('Missing parameters');
+      return res.status(400).send(`Missing parameters. URL: ${req.url}, Query: ${JSON.stringify(req.query)}`);
     }
 
     // Fetch subject — filter by code only (code is unique across SEE subjects)
