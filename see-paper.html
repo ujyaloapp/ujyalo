@@ -113,7 +113,7 @@
 
     /* ── LEFT PANEL ── */
     .q-list {
-      width: 520px;
+      width: 600px;
       flex-shrink: 0;
       background: white;
       border-right: 1px solid var(--border);
@@ -178,10 +178,10 @@
     .q-parent:first-child { border-top: none; margin-top: 0; }
     .q-parent-row { display: flex; gap: 8px; align-items: baseline; margin-bottom: 4px; }
     .q-parent-num { font-size: 15px; font-weight: 800; color: var(--ink); flex-shrink: 0; }
-    .q-parent-text-en { font-size: 13px; color: var(--mid); line-height: 1.65; }
+    .q-parent-text-en { font-size: 15px; color: var(--mid); line-height: 1.75; }
     .q-parent-text-np {
       font-family: 'Noto Sans Devanagari', sans-serif;
-      font-size: 13px; color: var(--ink); line-height: 1.8;
+      font-size: 15px; color: var(--ink); line-height: 1.85;
       margin-bottom: 4px; display: none;
     }
 
@@ -205,10 +205,10 @@
     }
     .q-sub-item.active .q-sub-letter { background: var(--brand); color: white; }
     .q-sub-content { flex: 1; min-width: 0; }
-    .q-sub-text-en { font-size: 13px; color: var(--mid); line-height: 1.6; }
+    .q-sub-text-en { font-size: 15px; color: var(--mid); line-height: 1.7; }
     .q-sub-text-np {
       font-family: 'Noto Sans Devanagari', sans-serif;
-      font-size: 13px; color: var(--ink); line-height: 1.7;
+      font-size: 15px; color: var(--ink); line-height: 1.8;
       display: none;
     }
     .q-sub-item.active .q-sub-text-en,
@@ -249,7 +249,7 @@
 
     .answer-content {
       flex: 1; overflow-y: auto;
-      padding: 28px 32px;
+      padding: 20px 24px;
       display: none;
     }
     .answer-content.visible { display: block; }
@@ -271,20 +271,20 @@
       text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px;
     }
     .ac-context-text {
-      font-size: 14px; color: var(--mid); line-height: 1.75;
-      padding-bottom: 14px; margin-bottom: 14px;
+      font-size: 12px; color: var(--mid); line-height: 1.7;
+      padding-bottom: 12px; margin-bottom: 12px;
       border-bottom: 1px solid var(--border);
     }
     .ac-context-np {
       font-family: 'Noto Sans Devanagari', sans-serif;
-      font-size: 14px; color: var(--ink); line-height: 1.85;
+      font-size: 12px; color: var(--ink); line-height: 1.8;
     }
     .ac-q-text {
-      font-size: 15px; color: var(--ink); line-height: 1.75; font-weight: 600;
+      font-size: 13px; color: var(--ink); line-height: 1.7; font-weight: 600;
     }
     .ac-q-text-np {
       font-family: 'Noto Sans Devanagari', sans-serif;
-      font-size: 15px; color: var(--ink); line-height: 1.85; font-weight: 600;
+      font-size: 13px; color: var(--ink); line-height: 1.8; font-weight: 600;
     }
     .ac-marks {
       display: inline-flex; align-items: center; gap: 5px;
@@ -320,9 +320,9 @@
       text-transform: uppercase; letter-spacing: .08em;
     }
     .ac-answer-body {
-      padding: 20px 24px;
-      font-size: 14px; color: #065f46;
-      line-height: 2; white-space: pre-wrap;
+      padding: 16px 20px;
+      font-size: 13px; color: #065f46;
+      line-height: 1.8; white-space: pre-wrap;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
@@ -745,6 +745,16 @@ function selectQuestion(idx) {
   document.getElementById('btn-next').disabled = idx === FLAT_SUBS.length - 1;
 
   content.scrollTop = 0;
+
+  // Mobile: scroll to answer panel
+  if (window.innerWidth <= 768) {
+    const answerPanel = document.querySelector('.answer-panel');
+    if (answerPanel) {
+      setTimeout(() => {
+        answerPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }
 }
 
 function navQuestion(dir) { selectQuestion(ACTIVE_IDX + dir); }
