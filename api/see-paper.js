@@ -118,6 +118,18 @@ function escape(str) {
 }
 
 function buildHTML({ paper, subject, questions }) {
+
+  // Nepali names for subjects — no DB column needed
+  const subjectNepaliMap = {
+    'maths': 'गणित',
+    'science': 'विज्ञान',
+    'english': 'अंग्रेजी',
+    'nepali': 'नेपाली',
+    'social': 'सामाजिक अध्ययन',
+    'hpe': 'स्वास्थ्य'
+  };
+  const subjectNameNp = subjectNepaliMap[subject.code] || subject.name;
+
   const yearAD = parseInt(paper.year) - 56;
   const title = `SEE ${paper.year} ${paper.province} — ${subject.name} Past Paper | Ujyalo`;
   const description = `Free SEE ${paper.year} ${paper.province} Province ${subject.name} past paper. Full bilingual Nepali and English with complete model answers. Download PDF free.`;
@@ -393,7 +405,7 @@ function buildHTML({ paper, subject, questions }) {
   <h1 class="paper-header">
     <div class="ph-exam">SEE ${paper.year} (${yearAD} AD)</div>
     <div class="ph-subject">Compulsory ${escape(subject.name)}</div>
-    <div class="ph-subject-np">अनिवार्य ${escape(subject.name_nepali || '')}</div>
+    <div class="ph-subject-np">अनिवार्य ${escape(subjectNameNp)}</div>
     <div><span class="ph-badge">🏔 ${escape(paper.province)} Province</span></div>
     <div class="ph-meta">
       <span>Time: ${paper.time_minutes / 60} Hours</span>
@@ -508,15 +520,17 @@ export default async function handler(req, res) {
       }
     }
 
+    console.log('Params:', { year, province, subject, url: req.url, query: req.query });
     if (!year || !province || !subject) {
       return res.status(400).send(`Missing parameters. URL: ${req.url}, Query: ${JSON.stringify(req.query)}`);
     }
 
     // Fetch subject — filter by code only (code is unique across SEE subjects)
     const subjects = await fetchFromSupabase(
-      `/exam_subjects?code=eq.${subject.toLowerCase()}&select=id,name,name_nepali,code`
+      `/exam_subjects?code=eq.${subject.toLowerCase()}&select=id,name,code`
     );
-    if (!subjects[0]) return res.status(404).send(`Subject not found: ${subject}`);
+    console.log('Subject query result:', JSON.stringify(subjects));
+    if (!subjects[0]) return res.status(404).send(`Subject not found: ${subject}. Query returned: ${JSON.stringify(subjects)}`);
     const subjectData = subjects[0];
 
     // Fetch paper — province stored with capital first letter e.g. "Koshi"
@@ -524,7 +538,8 @@ export default async function handler(req, res) {
     const papers = await fetchFromSupabase(
       `/past_papers?subject_id=eq.${subjectData.id}&year=eq.${year}&province=eq.${provinceName}&select=*`
     );
-    if (!papers[0]) return res.status(404).send('Paper not found');
+    console.log('Paper query result:', JSON.stringify(papers));
+    if (!papers[0]) return res.status(404).send(`Paper not found. year=${year} province=${provinceName} subject_id=${subjectData.id}. Result: ${JSON.stringify(papers)}`);
     const paper = papers[0];
 
     // Fetch questions

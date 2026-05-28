@@ -1,8 +1,8 @@
 {
-  "routes": [
-    { "src": "/sitemap.xml", "dest": "/api/sitemap" },
-    { "src": "/see/past-papers/([^/]+)/([^/]+)/([^/]+)", "dest": "/api/see-paper?year=$1&province=$2&subject=$3" },
-    { "src": "/see/past-papers", "dest": "/see.html?mode=past-papers" },
-    { "src": "/see", "dest": "/see.html" }
+  "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/see/past-papers/:year/:province/:subject", "destination": "/api/see-paper?year=:year&province=:province&subject=:subject" },
+    { "source": "/see/past-papers", "destination": "/see.html" },
+    { "source": "/see", "destination": "/see.html" }
   ]
 }
