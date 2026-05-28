@@ -262,6 +262,8 @@ function buildHTML({ paper, subject, questions }) {
     }
     html,body{height:100%;overflow:hidden;}
     body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);display:flex;flex-direction:column;}
+    /* Hide site nav and footer — full-screen app page */
+    #site-nav,#site-footer{display:none!important;height:0;overflow:hidden;}
 
     /* ── TOPBAR ── */
     .topbar{
@@ -330,21 +332,21 @@ function buildHTML({ paper, subject, questions }) {
 
     /* Left — question list */
     .q-panel{
-      width:520px;flex-shrink:0;
+      width:600px;flex-shrink:0;
       background:white;border-right:1px solid var(--border);
       overflow-y:auto;display:flex;flex-direction:column;
     }
 
     /* Paper header in left panel */
     .paper-header{
-      border-bottom:2px solid var(--ink);padding:20px 20px 16px;
+      border-bottom:2px solid var(--ink);padding:16px 16px 12px;
       text-align:center;flex-shrink:0;background:white;
     }
-    .ph-exam{font-family:'Fraunces',serif;font-size:13px;font-weight:700;color:var(--ink);}
-    .ph-subject{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--ink);margin:3px 0;}
-    .ph-subject-np{font-family:'Noto Sans Devanagari',sans-serif;font-size:13px;color:var(--mid);margin-bottom:8px;}
-    .ph-badge{display:inline-flex;align-items:center;gap:4px;background:var(--dark);color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:10px;}
-    .ph-meta{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--ink);border-top:1px solid var(--border);padding-top:10px;}
+    .ph-exam{font-family:'Fraunces',serif;font-size:12px;font-weight:700;color:var(--ink);}
+    .ph-subject{font-family:'Fraunces',serif;font-size:16px;font-weight:700;color:var(--ink);margin:2px 0;}
+    .ph-subject-np{font-family:'Noto Sans Devanagari',sans-serif;font-size:12px;color:var(--mid);margin-bottom:6px;}
+    .ph-badge{display:inline-flex;align-items:center;gap:4px;background:var(--dark);color:white;font-size:9px;font-weight:700;padding:3px 9px;border-radius:999px;margin-bottom:8px;}
+    .ph-meta{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--ink);border-top:1px solid var(--border);padding-top:8px;}
     .ph-instr{background:#EFF6FF;border-left:3px solid var(--brand);padding:8px 12px;margin:12px 16px 0;border-radius:0 6px 6px 0;font-size:11px;color:var(--mid);line-height:1.6;text-align:left;}
     .ph-instr-np{font-family:'Noto Sans Devanagari',sans-serif;font-size:11px;margin-bottom:3px;font-style:italic;}
     .ph-all{font-weight:700;color:var(--ink);font-size:11px;margin-top:4px;}
@@ -786,7 +788,7 @@ export default async function handler(req, res) {
 
     const html = buildHTML({ paper, subject: subjectData, questions });
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     return res.status(200).send(html);
 
   } catch (err) {
