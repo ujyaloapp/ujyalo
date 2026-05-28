@@ -386,14 +386,7 @@ function renderStep3() {
 
   let html = `<div class="panel">
     <button class="back-btn" onclick="goToStep(2)">← Back</button>
-    <div class="subject-context">
-      <div class="sc-icon" style="background:${s.bg};color:${s.color};font-family:${STATE.subject==='maths'?'serif':'inherit'};font-weight:700;">${s.icon}</div>
-      <div>
-        <div class="sc-name">${s.name} · SEE ${STATE.year}</div>
-        <div class="sc-sub">Select your province</div>
-      </div>
-    </div>
-    <span class="section-label">Select Province</span>
+    <span class="section-label">Select Province — ${s.name} · SEE ${STATE.year}</span>
     <div class="province-list">`;
 
   PROVINCES.forEach(p => {
