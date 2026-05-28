@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet" />
-
+  <link rel="stylesheet" href="/styles/main.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -26,10 +26,9 @@
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       background: var(--bg);
-      height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      min-height: 100vh;
     }
 
     /* ── TOP BAR ── */
@@ -38,50 +37,83 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 0 16px;
-      height: 56px;
+      padding: 0 20px;
+      height: 58px;
       flex-shrink: 0;
-      z-index: 10;
+      z-index: 100;
+      position: sticky;
+      top: 0;
     }
     .tb-back {
       display: flex; align-items: center; gap: 6px;
-      color: rgba(255,255,255,.6); font-size: 13px; font-weight: 600;
+      color: rgba(255,255,255,.65); font-size: 13px; font-weight: 600;
       background: rgba(255,255,255,.08); border: none; border-radius: 8px;
-      padding: 6px 12px; cursor: pointer; font-family: inherit;
+      padding: 7px 14px; cursor: pointer; font-family: inherit;
       transition: all .2s; text-decoration: none; flex-shrink: 0;
+      white-space: nowrap;
     }
-    .tb-back:hover { background: rgba(255,255,255,.14); color: white; }
-    .tb-divider { width: 1px; height: 24px; background: rgba(255,255,255,.12); flex-shrink: 0; }
+    .tb-back:hover { background: rgba(255,255,255,.15); color: white; }
+    .tb-divider { width: 1px; height: 26px; background: rgba(255,255,255,.12); flex-shrink: 0; }
     .tb-info { flex: 1; min-width: 0; }
-    .tb-title { font-size: 14px; font-weight: 700; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tb-title {
+      font-size: 15px; font-weight: 700; color: white;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
     .tb-sub { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 1px; }
-    .tb-lang { display: flex; background: rgba(255,255,255,.08); border-radius: 8px; padding: 3px; gap: 2px; flex-shrink: 0; }
+
+    /* Language toggle */
+    .tb-lang {
+      display: flex; background: rgba(255,255,255,.08);
+      border-radius: 8px; padding: 3px; gap: 2px; flex-shrink: 0;
+    }
     .tb-lang-btn {
-      padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 700;
+      padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700;
       border: none; cursor: pointer; font-family: inherit; transition: all .2s;
-      color: rgba(255,255,255,.5); background: transparent;
+      color: rgba(255,255,255,.5); background: transparent; white-space: nowrap;
     }
     .tb-lang-btn.active { background: white; color: var(--ink); }
+
+    /* Download dropdown */
+    .tb-dl-wrap { position: relative; flex-shrink: 0; }
     .tb-dl {
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: center; gap: 7px;
       background: #f59e0b; color: #0a0f1e;
-      border: none; border-radius: 8px; padding: 7px 14px;
-      font-size: 12px; font-weight: 800; cursor: pointer;
-      font-family: inherit; transition: all .2s; flex-shrink: 0;
-      text-decoration: none;
+      border: none; border-radius: 8px; padding: 8px 16px;
+      font-size: 13px; font-weight: 800; cursor: pointer;
+      font-family: inherit; transition: all .2s; white-space: nowrap;
     }
     .tb-dl:hover { background: #d97706; }
+    .tb-dl-arrow { font-size: 10px; margin-left: 2px; }
+    .dl-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0;
+      background: white; border: 1px solid var(--border);
+      border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.15);
+      min-width: 200px; overflow: hidden; z-index: 999;
+      display: none;
+    }
+    .dl-dropdown.open { display: block; }
+    .dl-option {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 16px; cursor: pointer; transition: background .15s;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px; font-weight: 600; color: var(--ink);
+    }
+    .dl-option:last-child { border-bottom: none; }
+    .dl-option:hover { background: #f8fafc; }
+    .dl-option-icon { font-size: 20px; flex-shrink: 0; }
+    .dl-option-sub { font-size: 11px; color: var(--light); margin-top: 1px; font-weight: 400; }
 
     /* ── MAIN LAYOUT ── */
     .main {
       display: flex;
       flex: 1;
+      height: calc(100vh - 58px);
       overflow: hidden;
     }
 
-    /* ── LEFT PANEL — question list ── */
+    /* ── LEFT PANEL ── */
     .q-list {
-      width: 480px;
+      width: 520px;
       flex-shrink: 0;
       background: white;
       border-right: 1px solid var(--border);
@@ -90,69 +122,106 @@
       flex-direction: column;
     }
 
-    /* Paper header inside left panel */
+    /* Paper header */
     .paper-header {
       background: white;
       border-bottom: 2px solid var(--ink);
-      padding: 20px 20px 16px;
+      padding: 24px 24px 18px;
       text-align: center;
       flex-shrink: 0;
     }
-    .ph-exam { font-family: 'Fraunces', serif; font-size: 14px; font-weight: 700; color: var(--ink); }
-    .ph-subject { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 700; color: var(--ink); margin: 2px 0; }
-    .ph-subject-np { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 13px; color: var(--mid); margin-bottom: 8px; }
-    .ph-badge { display: inline-flex; align-items: center; gap: 5px; background: var(--dark); color: white; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 999px; margin-bottom: 10px; }
-    .ph-meta { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: var(--ink); border-top: 1px solid var(--border); padding-top: 10px; margin-top: 4px; }
-    .ph-instructions {
-      background: #EFF6FF; border-left: 3px solid var(--brand);
-      padding: 8px 12px; margin: 12px 20px 0;
-      border-radius: 0 6px 6px 0;
-      font-size: 11px; color: var(--mid); line-height: 1.6;
+    .ph-exam {
+      font-family: 'Fraunces', serif;
+      font-size: 15px; font-weight: 700; color: var(--ink);
     }
-    .ph-instr-np { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 11px; margin-bottom: 3px; font-style: italic; }
-    .ph-all { font-weight: 700; color: var(--ink); font-size: 12px; margin-top: 4px; }
-
-    /* Question items */
-    .q-items { padding: 12px 0 24px; }
-
-    .q-parent {
-      padding: 10px 20px 4px;
-      border-top: 1px solid var(--border);
+    .ph-subject {
+      font-family: 'Fraunces', serif;
+      font-size: 20px; font-weight: 700; color: var(--ink);
+      margin: 3px 0;
+    }
+    .ph-subject-np {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 14px; color: var(--mid); margin-bottom: 10px;
+    }
+    .ph-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--dark); color: white;
+      font-size: 10px; font-weight: 700; padding: 4px 12px;
+      border-radius: 999px; margin-bottom: 12px;
+    }
+    .ph-meta {
+      display: flex; justify-content: space-between;
+      font-size: 12px; font-weight: 700; color: var(--ink);
+      border-top: 1px solid var(--border); padding-top: 12px;
       margin-top: 4px;
     }
+    .ph-instructions {
+      background: #EFF6FF; border-left: 3px solid var(--brand);
+      padding: 10px 14px; margin: 14px 20px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 12px; color: var(--mid); line-height: 1.65;
+    }
+    .ph-instr-np {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 12px; margin-bottom: 4px; font-style: italic;
+    }
+    .ph-all { font-weight: 700; color: var(--ink); font-size: 13px; margin-top: 5px; }
+
+    /* Question list */
+    .q-items { padding: 8px 0 32px; }
+
+    .q-parent {
+      padding: 14px 20px 6px;
+      border-top: 1px solid #f1f5f9;
+      margin-top: 6px;
+    }
     .q-parent:first-child { border-top: none; margin-top: 0; }
-    .q-parent-num { font-size: 13px; font-weight: 800; color: var(--ink); margin-bottom: 2px; display: flex; align-items: baseline; gap: 8px; }
-    .q-parent-text-en { font-size: 12px; color: var(--mid); line-height: 1.6; }
-    .q-parent-text-np { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 12px; color: var(--ink); line-height: 1.7; margin-bottom: 3px; display: none; }
+    .q-parent-row { display: flex; gap: 8px; align-items: baseline; margin-bottom: 4px; }
+    .q-parent-num { font-size: 15px; font-weight: 800; color: var(--ink); flex-shrink: 0; }
+    .q-parent-text-en { font-size: 13px; color: var(--mid); line-height: 1.65; }
+    .q-parent-text-np {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 13px; color: var(--ink); line-height: 1.8;
+      margin-bottom: 4px; display: none;
+    }
 
     .q-sub-item {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 8px 20px 8px 32px;
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 10px 20px 10px 36px;
       cursor: pointer; transition: background .15s;
-      border-radius: 0;
+      border-left: 3px solid transparent;
     }
     .q-sub-item:hover { background: #f8fafc; }
-    .q-sub-item.active { background: #EFF6FF; border-right: 3px solid var(--brand); }
+    .q-sub-item.active {
+      background: #EFF6FF;
+      border-left-color: var(--brand);
+    }
     .q-sub-letter {
-      width: 24px; height: 24px; border-radius: 50%;
+      width: 26px; height: 26px; border-radius: 50%;
       background: #f1f5f9; color: var(--mid);
-      font-size: 11px; font-weight: 700;
+      font-size: 12px; font-weight: 700;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; transition: all .15s;
     }
     .q-sub-item.active .q-sub-letter { background: var(--brand); color: white; }
     .q-sub-content { flex: 1; min-width: 0; }
-    .q-sub-text-en { font-size: 12px; color: var(--mid); line-height: 1.5; }
-    .q-sub-text-np { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 12px; color: var(--ink); line-height: 1.6; display: none; }
-    .q-sub-item.active .q-sub-text-en { color: var(--ink); }
+    .q-sub-text-en { font-size: 13px; color: var(--mid); line-height: 1.6; }
+    .q-sub-text-np {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 13px; color: var(--ink); line-height: 1.7;
+      display: none;
+    }
+    .q-sub-item.active .q-sub-text-en,
+    .q-sub-item.active .q-sub-text-np { color: var(--ink); font-weight: 600; }
     .q-sub-marks {
-      font-size: 10px; font-weight: 700; color: white;
+      font-size: 11px; font-weight: 700; color: white;
       background: var(--light); border-radius: 999px;
-      padding: 2px 7px; flex-shrink: 0; margin-top: 2px;
+      padding: 2px 8px; flex-shrink: 0; margin-top: 3px;
+      white-space: nowrap;
     }
     .q-sub-item.active .q-sub-marks { background: var(--brand); }
 
-    /* ── RIGHT PANEL — answer ── */
+    /* ── RIGHT PANEL ── */
     .answer-panel {
       flex: 1;
       display: flex;
@@ -167,101 +236,142 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 40px;
+      padding: 48px;
       text-align: center;
     }
-    .answer-empty-icon { font-size: 56px; margin-bottom: 16px; opacity: .4; }
-    .answer-empty-title { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 700; color: var(--ink); margin-bottom: 8px; opacity: .4; }
-    .answer-empty-sub { font-size: 14px; color: var(--light); }
+    .answer-empty-icon { font-size: 64px; margin-bottom: 16px; opacity: .35; }
+    .answer-empty-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem; font-weight: 700;
+      color: var(--ink); margin-bottom: 8px; opacity: .35;
+    }
+    .answer-empty-sub { font-size: 15px; color: var(--light); }
 
     .answer-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px;
+      flex: 1; overflow-y: auto;
+      padding: 28px 32px;
       display: none;
     }
     .answer-content.visible { display: block; }
 
-    .ac-q-label { font-size: 10px; font-weight: 700; color: var(--light); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 8px; }
-    .ac-q-num { font-size: 13px; font-weight: 800; color: var(--brand); margin-bottom: 4px; }
+    .ac-q-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; color: var(--brand);
+      background: #EFF6FF; padding: 4px 12px; border-radius: 999px;
+      text-transform: uppercase; letter-spacing: .06em;
+      margin-bottom: 16px;
+    }
 
     .ac-question {
       background: white; border: 1px solid var(--border);
-      border-radius: 14px; padding: 18px 20px; margin-bottom: 16px;
+      border-radius: 16px; padding: 22px 24px; margin-bottom: 20px;
     }
-    .ac-q-text-en { font-size: 14px; color: var(--ink); line-height: 1.7; }
-    .ac-q-text-np { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 14px; color: var(--ink); line-height: 1.8; display: none; }
-    .ac-marks { display: inline-flex; align-items: center; gap: 4px; background: #EFF6FF; color: var(--brand); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; margin-top: 10px; }
+    .ac-context-label {
+      font-size: 11px; font-weight: 700; color: var(--light);
+      text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px;
+    }
+    .ac-context-text {
+      font-size: 14px; color: var(--mid); line-height: 1.75;
+      padding-bottom: 14px; margin-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ac-context-np {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 14px; color: var(--ink); line-height: 1.85;
+    }
+    .ac-q-text {
+      font-size: 15px; color: var(--ink); line-height: 1.75; font-weight: 600;
+    }
+    .ac-q-text-np {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 15px; color: var(--ink); line-height: 1.85; font-weight: 600;
+    }
+    .ac-marks {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #EFF6FF; color: var(--brand);
+      font-size: 12px; font-weight: 700;
+      padding: 4px 12px; border-radius: 999px; margin-top: 12px;
+    }
 
+    /* Diagram */
+    .ac-diagram {
+      background: white; border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px;
+      margin: 14px 0; display: flex;
+      flex-direction: column; align-items: center;
+    }
+    .ac-diagram-label {
+      font-size: 10px; font-weight: 700; color: var(--light);
+      text-transform: uppercase; letter-spacing: .08em; margin-top: 8px;
+    }
+
+    /* Answer box */
     .ac-answer {
-      background: white; border: 1px solid #bbf7d0;
-      border-top: 3px solid var(--green);
-      border-radius: 14px; overflow: hidden;
+      background: white;
+      border: 1.5px solid #bbf7d0;
+      border-radius: 16px; overflow: hidden;
     }
     .ac-answer-header {
-      background: var(--green); padding: 10px 18px;
+      background: var(--green); padding: 12px 20px;
       display: flex; align-items: center; gap: 8px;
     }
-    .ac-answer-label { font-size: 11px; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: .08em; }
+    .ac-answer-label {
+      font-size: 12px; font-weight: 700; color: white;
+      text-transform: uppercase; letter-spacing: .08em;
+    }
     .ac-answer-body {
-      padding: 18px 20px;
+      padding: 20px 24px;
       font-size: 14px; color: #065f46;
-      line-height: 1.9; white-space: pre-wrap;
+      line-height: 2; white-space: pre-wrap;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    /* nav between questions */
+    /* Nav */
     .ac-nav {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 24px; border-top: 1px solid var(--border);
+      padding: 14px 24px; border-top: 1px solid var(--border);
       background: white; flex-shrink: 0;
     }
-    .ac-nav-info { font-size: 12px; color: var(--light); font-weight: 600; }
+    .ac-nav-info { font-size: 13px; color: var(--light); font-weight: 600; }
     .ac-nav-btns { display: flex; gap: 8px; }
     .ac-nav-btn {
-      padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 700;
+      padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 700;
       border: none; cursor: pointer; font-family: inherit; transition: all .2s;
     }
     .ac-nav-prev { background: #f1f5f9; color: var(--mid); }
-    .ac-nav-prev:hover { background: var(--border); }
+    .ac-nav-prev:hover:not(:disabled) { background: var(--border); }
     .ac-nav-next { background: var(--brand); color: white; }
-    .ac-nav-next:hover { background: #1d4ed8; }
-    .ac-nav-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .ac-nav-next:hover:not(:disabled) { background: #1d4ed8; }
+    .ac-nav-btn:disabled { opacity: .35; cursor: not-allowed; }
 
-    /* ── LOADING ── */
+    /* Loading */
     .loading-screen {
-      position: fixed; inset: 0;
-      background: var(--bg);
+      position: fixed; inset: 0; background: var(--bg);
       display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      z-index: 100;
+      align-items: center; justify-content: center; z-index: 999;
     }
     .spinner {
-      width: 40px; height: 40px;
-      border: 3px solid var(--border);
-      border-top-color: var(--brand);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin-bottom: 16px;
+      width: 40px; height: 40px; border: 3px solid var(--border);
+      border-top-color: var(--brand); border-radius: 50%;
+      animation: spin .8s linear infinite; margin-bottom: 16px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading-text { font-size: 14px; color: var(--light); font-weight: 600; }
 
-    /* ── MOBILE ── */
+    /* Mobile */
     @media (max-width: 768px) {
-      body { overflow: auto; }
-      .main { flex-direction: column; overflow: auto; height: auto; }
-      .q-list { width: 100%; border-right: none; border-bottom: 1px solid var(--border); overflow: visible; }
-      .answer-panel { min-height: 60vh; overflow: auto; }
+      .main { flex-direction: column; height: auto; overflow: auto; }
+      .q-list { width: 100%; border-right: none; border-bottom: 1px solid var(--border); overflow: visible; height: auto; }
+      .answer-panel { min-height: 70vh; overflow: auto; }
       .answer-content { display: block; min-height: 400px; }
       .answer-empty { display: none; }
-      .ac-nav { position: sticky; bottom: 0; }
       .tb-dl span { display: none; }
+      .ac-nav { position: sticky; bottom: 0; z-index: 10; }
     }
 
     @media print {
-      .topbar { display: none; }
-      body { height: auto; overflow: auto; background: white; }
+      .topbar, .ac-nav, #site-nav, #site-footer { display: none !important; }
+      body { height: auto; }
       .main { flex-direction: column; height: auto; overflow: visible; }
       .q-list { width: 100%; overflow: visible; border: none; }
       .answer-panel { display: none; }
@@ -269,6 +379,8 @@
   </style>
 </head>
 <body>
+
+<div id="site-nav"></div>
 
 <!-- Loading -->
 <div class="loading-screen" id="loading">
@@ -288,7 +400,34 @@
     <button class="tb-lang-btn active" id="btn-en" onclick="setLang('en')">🇬🇧 English</button>
     <button class="tb-lang-btn" id="btn-np" onclick="setLang('np')">🇳🇵 नेपाली</button>
   </div>
-  <button class="tb-dl" onclick="window.print()">⬇ <span>Download PDF</span></button>
+  <div class="tb-dl-wrap">
+    <button class="tb-dl" onclick="toggleDlDropdown()">
+      ⬇ <span>Download PDF</span> <span class="tb-dl-arrow">▾</span>
+    </button>
+    <div class="dl-dropdown" id="dl-dropdown">
+      <div class="dl-option" onclick="downloadPDF('en')">
+        <div class="dl-option-icon">🇬🇧</div>
+        <div>
+          <div>English PDF</div>
+          <div class="dl-option-sub">Questions in English only</div>
+        </div>
+      </div>
+      <div class="dl-option" onclick="downloadPDF('np')">
+        <div class="dl-option-icon">🇳🇵</div>
+        <div>
+          <div>Nepali PDF</div>
+          <div class="dl-option-sub">नेपाली भाषामा मात्र</div>
+        </div>
+      </div>
+      <div class="dl-option" onclick="downloadPDF('both')">
+        <div class="dl-option-icon">📄</div>
+        <div>
+          <div>Both languages</div>
+          <div class="dl-option-sub">Nepali + English combined</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Main -->
@@ -319,135 +458,197 @@
 
 </div>
 
+<div id="site-footer"></div>
+<script src="/scripts/components.js"></script>
 <script>
-// ════════════════════════════════════════════════════════
-// SEE PAPER PAGE
-// Fetches from Supabase, renders bilingual paper
-// URL: /see-paper.html?paper_id=UUID
-//   or /see/past-papers/2082/koshi/maths
-// ════════════════════════════════════════════════════════
 
 let LANG = 'en';
 let PAPER = null;
 let QUESTIONS = [];
-let FLAT_SUBS = []; // flat list of sub-parts only for navigation
+let FLAT_SUBS = [];
 let ACTIVE_IDX = -1;
+let SB_URL = '';
+let SB_KEY = '';
 
-// ── Get paper ID from URL ─────────────────────────────
+// SVG diagrams for questions that need them
+const DIAGRAMS = {
+  // Q6 — Cone + Hemisphere
+  '6': `<svg width="120" height="155" viewBox="0 0 120 155" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="60" cy="108" rx="40" ry="11" fill="none" stroke="#1a1208" stroke-width="1.5"/>
+    <path d="M 20 108 A 40 40 0 0 0 100 108" fill="#f0f4ff" stroke="#1a1208" stroke-width="1.5"/>
+    <line x1="20" y1="108" x2="60" y2="22" stroke="#1a1208" stroke-width="1.5"/>
+    <line x1="100" y1="108" x2="60" y2="22" stroke="#1a1208" stroke-width="1.5"/>
+    <line x1="108" y1="22" x2="108" y2="143" stroke="#888" stroke-width="0.75" stroke-dasharray="3,2"/>
+    <line x1="104" y1="22" x2="112" y2="22" stroke="#888" stroke-width="0.75"/>
+    <line x1="104" y1="143" x2="112" y2="143" stroke="#888" stroke-width="0.75"/>
+    <text x="112" y="88" font-size="9" fill="#444" font-family="serif" font-style="italic">20cm</text>
+    <line x1="20" y1="126" x2="100" y2="126" stroke="#888" stroke-width="0.75" stroke-dasharray="3,2"/>
+    <text x="44" y="138" font-size="9" fill="#444" font-family="serif" font-style="italic">14cm</text>
+  </svg>`,
+
+  // Q11 — Parallelogram
+  '11': `<svg width="200" height="125" viewBox="0 0 200 125" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="38,108 97,108 66,18 8,18" fill="rgba(37,99,235,0.07)" stroke="#2563EB" stroke-width="1.5"/>
+    <polygon points="38,108 97,108 188,18 130,18" fill="rgba(29,158,117,0.07)" stroke="#1D9E75" stroke-width="1.5"/>
+    <line x1="38" y1="108" x2="130" y2="18" stroke="#999" stroke-width="1" stroke-dasharray="4,2"/>
+    <line x1="66" y1="18" x2="97" y2="108" stroke="#999" stroke-width="1" stroke-dasharray="4,2"/>
+    <circle cx="77" cy="65" r="2.5" fill="#888"/>
+    <text x="80" y="62" font-size="9" font-family="serif" font-style="italic" fill="#888">A</text>
+    <text x="2" y="16" font-size="11" font-family="serif" font-style="italic" fill="#1a1208">S</text>
+    <text x="61" y="14" font-size="11" font-family="serif" font-style="italic" fill="#1a1208">Q</text>
+    <text x="126" y="14" font-size="11" font-family="serif" font-style="italic" fill="#1a1208">R</text>
+    <text x="184" y="16" font-size="11" font-family="serif" font-style="italic" fill="#1a1208">P</text>
+    <text x="32" y="120" font-size="11" font-family="serif" font-style="italic" fill="#1a1208">M</text>
+    <text x="95" y="120" font-size="11" font-family="serif" font-style="italic" fill="#1a1208">N</text>
+  </svg>`,
+
+  // Q12 — Circle theorems
+  '12': `<svg width="155" height="155" viewBox="0 0 155 155" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="77" cy="77" r="58" fill="rgba(37,99,235,0.04)" stroke="#1a1208" stroke-width="1.5"/>
+    <circle cx="77" cy="77" r="2.5" fill="#1a1208"/>
+    <text x="80" y="82" font-size="10" font-family="serif" font-style="italic" fill="#1a1208">O</text>
+    <circle cx="28" cy="116" r="2.5" fill="#1a1208"/>
+    <circle cx="126" cy="116" r="2.5" fill="#1a1208"/>
+    <circle cx="77" cy="19" r="2.5" fill="#1a1208"/>
+    <circle cx="19" cy="58" r="2.5" fill="#1a1208"/>
+    <line x1="77" y1="77" x2="28" y2="116" stroke="#2563EB" stroke-width="1.5"/>
+    <line x1="77" y1="77" x2="126" y2="116" stroke="#2563EB" stroke-width="1.5"/>
+    <line x1="77" y1="19" x2="28" y2="116" stroke="#1D9E75" stroke-width="1.2"/>
+    <line x1="77" y1="19" x2="126" y2="116" stroke="#1D9E75" stroke-width="1.2"/>
+    <line x1="19" y1="58" x2="28" y2="116" stroke="#f59e0b" stroke-width="1.2"/>
+    <line x1="19" y1="58" x2="126" y2="116" stroke="#f59e0b" stroke-width="1.2"/>
+    <text x="21" y="128" font-size="10" font-family="serif" font-style="italic" fill="#1a1208">S</text>
+    <text x="127" y="128" font-size="10" font-family="serif" font-style="italic" fill="#1a1208">P</text>
+    <text x="74" y="13" font-size="10" font-family="serif" font-style="italic" fill="#1a1208">R</text>
+    <text x="6" y="58" font-size="10" font-family="serif" font-style="italic" fill="#1a1208">T</text>
+  </svg>`,
+
+  // Q14 — Trigonometry / pond
+  '14': `<svg width="220" height="135" viewBox="0 0 220 135" xmlns="http://www.w3.org/2000/svg">
+    <line x1="8" y1="88" x2="212" y2="88" stroke="#2563EB" stroke-width="0.75" stroke-dasharray="4,3"/>
+    <text x="10" y="84" font-size="8" fill="#2563EB" font-family="sans-serif">Water level</text>
+    <line x1="8" y1="97" x2="75" y2="97" stroke="#1a1208" stroke-width="1.5"/>
+    <line x1="138" y1="97" x2="212" y2="97" stroke="#1a1208" stroke-width="1.5"/>
+    <path d="M 75 97 Q 107 104 138 97" fill="rgba(37,99,235,0.1)" stroke="#1a1208" stroke-width="1"/>
+    <line x1="107" y1="19" x2="107" y2="97" stroke="#1a1208" stroke-width="2"/>
+    <circle cx="28" cy="93" r="4" fill="none" stroke="#1a1208" stroke-width="1.5"/>
+    <line x1="28" y1="97" x2="28" y2="112" stroke="#1a1208" stroke-width="1.5"/>
+    <line x1="28" y1="97" x2="107" y2="19" stroke="#dc2626" stroke-width="1" stroke-dasharray="3,2"/>
+    <path d="M 48 97 A 20 20 0 0 1 37 80" fill="none" stroke="#dc2626" stroke-width="1"/>
+    <text x="50" y="93" font-size="10" font-family="serif" font-style="italic" fill="#dc2626">θ</text>
+    <line x1="28" y1="120" x2="107" y2="120" stroke="#888" stroke-width="0.75"/>
+    <text x="52" y="131" font-size="8" fill="#444" font-family="sans-serif">50m</text>
+    <text x="110" y="62" font-size="8" fill="#444" font-family="sans-serif">51.5m</text>
+    <text x="78" y="96" font-size="8" fill="#2563EB" font-family="sans-serif">1.5m</text>
+    <text x="110" y="16" font-size="10" font-family="serif" font-style="italic" fill="#1a1208">T</text>
+  </svg>`,
+
+  // Q16 — Tree diagram
+  '16': `<svg width="255" height="175" viewBox="0 0 255 175" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="28" cy="87" r="4" fill="#1a1208"/>
+    <text x="6" y="84" font-size="8" fill="#444" font-family="sans-serif">Start</text>
+    <line x1="32" y1="84" x2="98" y2="43" stroke="#1a1208" stroke-width="1.2"/>
+    <text x="52" y="56" font-size="8" fill="#1D9E75" font-family="sans-serif">W (6/10)</text>
+    <circle cx="102" cy="41" r="4" fill="#1D9E75"/>
+    <line x1="32" y1="90" x2="98" y2="131" stroke="#1a1208" stroke-width="1.2"/>
+    <text x="52" y="120" font-size="8" fill="#1a1208" font-family="sans-serif">B (4/10)</text>
+    <circle cx="102" cy="133" r="4" fill="#1a1208"/>
+    <line x1="106" y1="39" x2="172" y2="18" stroke="#1a1208" stroke-width="1"/>
+    <text x="125" y="22" font-size="8" fill="#1D9E75" font-family="sans-serif">W (6/10)</text>
+    <circle cx="176" cy="16" r="3" fill="#1D9E75"/>
+    <text x="182" y="20" font-size="9" fill="#444" font-family="sans-serif">WW: 36/100</text>
+    <line x1="106" y1="43" x2="172" y2="63" stroke="#1a1208" stroke-width="1"/>
+    <text x="125" y="59" font-size="8" fill="#1a1208" font-family="sans-serif">B (4/10)</text>
+    <circle cx="176" cy="65" r="3" fill="#1a1208"/>
+    <text x="182" y="69" font-size="9" fill="#444" font-family="sans-serif">WB: 24/100</text>
+    <line x1="106" y1="131" x2="172" y2="110" stroke="#1a1208" stroke-width="1"/>
+    <text x="125" y="113" font-size="8" fill="#1D9E75" font-family="sans-serif">W (6/10)</text>
+    <circle cx="176" cy="108" r="3" fill="#1D9E75"/>
+    <text x="182" y="112" font-size="9" fill="#444" font-family="sans-serif">BW: 24/100</text>
+    <line x1="106" y1="135" x2="172" y2="155" stroke="#1a1208" stroke-width="1"/>
+    <text x="125" y="153" font-size="8" fill="#1a1208" font-family="sans-serif">B (4/10)</text>
+    <circle cx="176" cy="157" r="3" fill="#1a1208"/>
+    <text x="182" y="161" font-size="9" fill="#444" font-family="sans-serif">BB: 16/100</text>
+  </svg>`
+};
+
+// ── Get URL params ────────────────────────────────────
 function getPaperParams() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('paper_id')) return { by: 'id', value: params.get('paper_id') };
-
-  // Parse /see/past-papers/2082/koshi/maths
   const path = window.location.pathname;
   const match = path.match(/\/see\/past-papers\/(\d+)\/([^\/]+)\/([^\/]+)/);
   if (match) return { by: 'slug', year: match[1], province: match[2], subject: match[3] };
-
-  // Fallback — default to our paper for testing
   return { by: 'id', value: '7ba8eb9e-00ff-4f94-8500-261c51ca4fec' };
 }
 
-// ── Fetch from Supabase ───────────────────────────────
+// ── Fetch config then paper ───────────────────────────
+async function init() {
+  const cfg = await fetch('/api/auth?action=config').then(r => r.json());
+  SB_URL = cfg.url;
+  SB_KEY = cfg.anon_key;
+  await fetchPaper();
+  render();
+  document.getElementById('loading').style.display = 'none';
+}
+
 async function fetchPaper() {
-  const SUPABASE_URL = await getSupabaseUrl();
-  const ANON_KEY = await getAnonKey();
   const p = getPaperParams();
+  let paperId = p.value;
 
-  let paperUrl;
-  if (p.by === 'id') {
-    paperUrl = `${SUPABASE_URL}/rest/v1/past_papers?id=eq.${p.value}&select=*`;
+  if (p.by === 'slug') {
+    const subjRes = await sb(`/rest/v1/exam_subjects?code=eq.${p.subject}&select=id,name,name_nepali`);
+    if (!subjRes[0]) throw new Error('Subject not found');
+    const paperRes = await sb(`/rest/v1/past_papers?subject_id=eq.${subjRes[0].id}&year=eq.${p.year}&province=eq.${p.province}&select=*`);
+    if (!paperRes[0]) throw new Error('Paper not found');
+    PAPER = paperRes[0];
+    PAPER.subject_name = subjRes[0].name;
+    PAPER.subject_name_np = subjRes[0].name_nepali;
+    paperId = PAPER.id;
   } else {
-    // Get subject_id first
-    const subjRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/exam_subjects?code=eq.${p.subject}&select=id,name,name_nepali`,
-      { headers: { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}` } }
-    );
-    const subjData = await subjRes.json();
-    if (!subjData[0]) throw new Error('Subject not found');
-    const subjId = subjData[0].id;
-
-    paperUrl = `${SUPABASE_URL}/rest/v1/past_papers?subject_id=eq.${subjId}&year=eq.${p.year}&province=eq.${p.province}&select=*`;
+    const paperRes = await sb(`/rest/v1/past_papers?id=eq.${paperId}&select=*`);
+    if (!paperRes[0]) throw new Error('Paper not found');
+    PAPER = paperRes[0];
+    const subjRes = await sb(`/rest/v1/exam_subjects?id=eq.${PAPER.subject_id}&select=name,name_nepali`);
+    PAPER.subject_name = subjRes[0]?.name || 'Mathematics';
+    PAPER.subject_name_np = subjRes[0]?.name_nepali || 'गणित';
   }
 
-  const [paperRes, questionsRes] = await Promise.all([
-    fetch(paperUrl, { headers: { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}` } }),
-    fetch(
-      `${SUPABASE_URL}/rest/v1/past_paper_questions?paper_id=eq.${p.by === 'id' ? p.value : 'TBD'}&order=question_number.asc,sub_part.asc&select=*`,
-      { headers: { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}` } }
-    )
-  ]);
-
-  const paperData = await paperRes.json();
-  if (!paperData[0]) throw new Error('Paper not found');
-  PAPER = paperData[0];
-
-  // Fetch questions with paper id
-  const qRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/past_paper_questions?paper_id=eq.${PAPER.id}&order=question_number.asc,sub_part.asc&select=*`,
-    { headers: { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}` } }
-  );
-  QUESTIONS = await qRes.json();
-
-  // Also get subject info
-  const sRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/exam_subjects?id=eq.${PAPER.subject_id}&select=name,name_nepali,code`,
-    { headers: { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}` } }
-  );
-  const sData = await sRes.json();
-  PAPER.subject_name = sData[0]?.name || 'Mathematics';
-  PAPER.subject_name_np = sData[0]?.name_nepali || 'गणित';
+  QUESTIONS = await sb(`/rest/v1/past_paper_questions?paper_id=eq.${paperId}&order=question_number.asc,sub_part.asc&select=*`);
 }
 
-async function getSupabaseUrl() {
-  const res = await fetch('/api/auth?action=config');
-  const data = await res.json();
-  return data.url;
-}
-async function getAnonKey() {
-  const res = await fetch('/api/auth?action=config');
-  const data = await res.json();
-  return data.anon_key;
+function sb(path) {
+  return fetch(`${SB_URL}${path}`, {
+    headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
+  }).then(r => r.json());
 }
 
 // ── Render ────────────────────────────────────────────
 function render() {
-  // Update top bar
+  const yearAD = PAPER.year > 2000 ? parseInt(PAPER.year) - 56 : PAPER.year;
   document.getElementById('tb-title').textContent = `${PAPER.subject_name} · SEE ${PAPER.year}`;
   document.getElementById('tb-sub').textContent = `${PAPER.province} Province · Full marks: ${PAPER.total_marks}`;
   document.title = `SEE ${PAPER.year} ${PAPER.province} ${PAPER.subject_name} | Ujyalo`;
 
-  renderPaperHeader();
-  renderQuestionList();
-}
-
-function renderPaperHeader() {
-  const el = document.getElementById('paper-header');
-  el.innerHTML = `
-    <div class="ph-exam">SEE ${PAPER.year} (${PAPER.year > 2080 ? parseInt(PAPER.year) - 56 + ' AD' : ''})</div>
+  // Paper header
+  document.getElementById('paper-header').innerHTML = `
+    <div class="ph-exam">SEE ${PAPER.year} (${yearAD} AD)</div>
     <div class="ph-subject">Compulsory ${PAPER.subject_name}</div>
-    <div class="ph-subject-np">${PAPER.subject_name_np ? 'अनिवार्य ' + PAPER.subject_name_np : ''}</div>
+    <div class="ph-subject-np">अनिवार्य ${PAPER.subject_name_np || ''}</div>
     <div><span class="ph-badge">🏔 ${PAPER.province} Province</span></div>
     <div class="ph-meta">
-      <span>Time: ${PAPER.time_minutes/60} Hours</span>
+      <span>Time: ${PAPER.time_minutes / 60} Hours</span>
       <span>Full Marks: ${PAPER.total_marks}</span>
     </div>
+    ${PAPER.instructions_english ? `
+    <div class="ph-instructions">
+      <div class="ph-instr-np lang-np" style="display:none">${PAPER.instructions_nepali || ''}</div>
+      <div class="lang-en" style="font-style:italic;font-size:11px;color:var(--mid);">${PAPER.instructions_english}</div>
+      <div class="ph-all">All questions are compulsory.</div>
+    </div>` : ''}
   `;
 
-  // Instructions
-  if (PAPER.instructions_english || PAPER.instructions_nepali) {
-    const instr = document.createElement('div');
-    instr.className = 'ph-instructions';
-    instr.innerHTML = `
-      <div class="ph-instr-np" id="instr-np" style="display:${LANG==='np'?'block':'none'}">${PAPER.instructions_nepali || ''}</div>
-      <div id="instr-en" style="display:${LANG==='en'?'block':'none'};font-style:italic;font-size:11px;color:var(--mid);">${PAPER.instructions_english || ''}</div>
-      <div class="ph-all">All questions are compulsory.</div>
-    `;
-    el.appendChild(instr);
-  }
-}
-
-function renderQuestionList() {
-  // Group questions by question_number
+  // Build question groups
   const groups = {};
   QUESTIONS.forEach(q => {
     const num = q.question_number;
@@ -456,143 +657,139 @@ function renderQuestionList() {
     else groups[num].subs.push(q);
   });
 
-  // Build flat subs list for navigation
   FLAT_SUBS = [];
-  Object.values(groups).forEach(g => {
-    g.subs.forEach(s => FLAT_SUBS.push(s));
-  });
+  Object.values(groups).forEach(g => g.subs.forEach(s => FLAT_SUBS.push(s)));
 
-  const container = document.getElementById('q-items');
   let html = '';
-
-  Object.entries(groups).sort((a,b) => parseInt(a[0]) - parseInt(b[0])).forEach(([num, g]) => {
-    const parent = g.parent;
-    const parentTextEn = parent?.question_text_english || '';
-    const parentTextNp = parent?.question_text_nepali || '';
-
-    html += `<div class="q-parent">
-      <div class="q-parent-num">${num}.</div>
-      <div class="q-parent-text-np" id="pnp-${num}">${parentTextNp}</div>
-      <div class="q-parent-text-en" id="pen-${num}">${parentTextEn}</div>
-    </div>`;
-
-    g.subs.forEach(sub => {
-      const idx = FLAT_SUBS.indexOf(sub);
-      const textEn = sub.question_text_english || '';
-      const textNp = sub.question_text_nepali || '';
+  Object.entries(groups)
+    .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
+    .forEach(([num, g]) => {
+      const p = g.parent;
       html += `
-      <div class="q-sub-item" id="sub-${sub.id}" onclick="selectQuestion(${idx})">
-        <div class="q-sub-letter">${sub.sub_part}</div>
-        <div class="q-sub-content">
-          <div class="q-sub-text-np" id="snp-${sub.id}">${textNp}</div>
-          <div class="q-sub-text-en" id="sen-${sub.id}">${textEn}</div>
+      <div class="q-parent">
+        <div class="q-parent-row">
+          <div class="q-parent-num">${num}.</div>
         </div>
-        <div class="q-sub-marks">${sub.marks}m</div>
+        ${p?.question_text_nepali ? `<div class="q-parent-text-np lang-np" style="display:none">${p.question_text_nepali}</div>` : ''}
+        ${p?.question_text_english ? `<div class="q-parent-text-en lang-en">${p.question_text_english}</div>` : ''}
+        ${DIAGRAMS[num] ? `<div style="margin:10px 0 4px 0;">${DIAGRAMS[num]}</div>` : ''}
       </div>`;
-    });
-  });
 
-  container.innerHTML = html;
+      g.subs.forEach(sub => {
+        const idx = FLAT_SUBS.indexOf(sub);
+        html += `
+        <div class="q-sub-item" id="sub-${sub.id}" onclick="selectQuestion(${idx})">
+          <div class="q-sub-letter">${sub.sub_part}</div>
+          <div class="q-sub-content">
+            ${sub.question_text_nepali ? `<div class="q-sub-text-np lang-np" style="display:none">${sub.question_text_nepali}</div>` : ''}
+            ${sub.question_text_english ? `<div class="q-sub-text-en lang-en">${sub.question_text_english}</div>` : ''}
+          </div>
+          <div class="q-sub-marks">${sub.marks}m</div>
+        </div>`;
+      });
+    });
+
+  document.getElementById('q-items').innerHTML = html;
   applyLang();
 }
 
+// ── Select question ───────────────────────────────────
 function selectQuestion(idx) {
   if (idx < 0 || idx >= FLAT_SUBS.length) return;
   ACTIVE_IDX = idx;
   const q = FLAT_SUBS[idx];
 
-  // Update active state in list
   document.querySelectorAll('.q-sub-item').forEach(el => el.classList.remove('active'));
-  const activeEl = document.getElementById(`sub-${q.id}`);
-  if (activeEl) {
-    activeEl.classList.add('active');
-    activeEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-  }
+  const el = document.getElementById(`sub-${q.id}`);
+  if (el) { el.classList.add('active'); el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
 
-  // Show answer panel
   document.getElementById('answer-empty').style.display = 'none';
   document.getElementById('ac-nav').style.display = 'flex';
   const content = document.getElementById('answer-content');
   content.classList.add('visible');
 
-  // Get parent question text
-  const parentQ = QUESTIONS.find(pq => pq.question_number === q.question_number && !pq.sub_part);
-  const parentTextEn = parentQ?.question_text_english || '';
-  const parentTextNp = parentQ?.question_text_nepali || '';
+  const parent = QUESTIONS.find(pq => pq.question_number === q.question_number && !pq.sub_part);
+  const showNp = LANG === 'np';
 
-  const qTextEn = q.question_text_english || '';
-  const qTextNp = q.question_text_nepali || '';
+  const ctxText = showNp ? (parent?.question_text_nepali || parent?.question_text_english || '') : (parent?.question_text_english || '');
+  const qText = showNp ? (q.question_text_nepali || q.question_text_english || '') : (q.question_text_english || q.question_text_nepali || '');
   const answer = q.answer_text || 'Model answer coming soon.';
+  const diagram = DIAGRAMS[String(q.question_number)];
+
+  const isNp = LANG === 'np';
 
   content.innerHTML = `
-    <div class="ac-q-label">Question ${q.question_number}(${q.sub_part})</div>
+    <div class="ac-q-badge">Question ${q.question_number}(${q.sub_part}) · ${q.marks} mark${q.marks !== 1 ? 's' : ''}</div>
 
     <div class="ac-question">
-      ${parentTextNp || parentTextEn ? `
-        <div style="font-size:12px;color:var(--light);margin-bottom:8px;font-weight:600;">Context</div>
-        <div class="ac-q-text-np" id="ctx-np" style="display:${LANG==='np'?'block':'none'};font-size:13px;margin-bottom:6px;">${parentTextNp}</div>
-        <div id="ctx-en" style="display:${LANG==='en'?'block':'none'};font-size:13px;color:var(--mid);margin-bottom:10px;line-height:1.6;">${parentTextEn}</div>
-        <div style="height:1px;background:var(--border);margin-bottom:10px;"></div>
+      ${ctxText ? `
+        <div class="ac-context-label">Context</div>
+        <div class="${isNp ? 'ac-context-np' : 'ac-context-text'}">${ctxText}</div>
       ` : ''}
-      <div class="ac-q-text-np" id="q-np" style="display:${LANG==='np'?'block':'none'}">${qTextNp}</div>
-      <div class="ac-q-text-en" id="q-en" style="display:${LANG==='en'?'block':'none'}">${qTextEn}</div>
+      ${diagram ? `<div class="ac-diagram">${diagram}<div class="ac-diagram-label">Figure / चित्र</div></div>` : ''}
+      <div class="${isNp ? 'ac-q-text-np' : 'ac-q-text'}">${qText}</div>
       <div class="ac-marks">📋 ${q.marks} mark${q.marks !== 1 ? 's' : ''}</div>
     </div>
 
     <div class="ac-answer">
       <div class="ac-answer-header">
-        <span style="font-size:14px;">✓</span>
+        <span style="font-size:16px;">✓</span>
         <span class="ac-answer-label">Model Answer</span>
       </div>
       <div class="ac-answer-body">${answer}</div>
     </div>
   `;
 
-  // Update nav
   document.getElementById('ac-nav-info').textContent = `${idx + 1} of ${FLAT_SUBS.length} questions`;
   document.getElementById('btn-prev').disabled = idx === 0;
   document.getElementById('btn-next').disabled = idx === FLAT_SUBS.length - 1;
+
+  content.scrollTop = 0;
 }
 
-function navQuestion(dir) {
-  selectQuestion(ACTIVE_IDX + dir);
-}
+function navQuestion(dir) { selectQuestion(ACTIVE_IDX + dir); }
 
-// ── Language toggle ───────────────────────────────────
+// ── Language ──────────────────────────────────────────
 function setLang(lang) {
   LANG = lang;
   document.getElementById('btn-en').classList.toggle('active', lang === 'en');
   document.getElementById('btn-np').classList.toggle('active', lang === 'np');
   applyLang();
-
-  // Re-render active question if one is selected
   if (ACTIVE_IDX >= 0) selectQuestion(ACTIVE_IDX);
 }
 
 function applyLang() {
   const showNp = LANG === 'np';
+  document.querySelectorAll('.lang-np').forEach(el => el.style.display = showNp ? 'block' : 'none');
+  document.querySelectorAll('.lang-en').forEach(el => el.style.display = showNp ? 'none' : 'block');
+}
 
-  // Parent question texts
-  document.querySelectorAll('[id^="pnp-"]').forEach(el => el.style.display = showNp ? 'block' : 'none');
-  document.querySelectorAll('[id^="pen-"]').forEach(el => el.style.display = showNp ? 'none' : 'block');
+// ── PDF Download ──────────────────────────────────────
+function toggleDlDropdown() {
+  document.getElementById('dl-dropdown').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.tb-dl-wrap')) {
+    document.getElementById('dl-dropdown').classList.remove('open');
+  }
+});
 
-  // Sub-part texts
-  document.querySelectorAll('[id^="snp-"]').forEach(el => el.style.display = showNp ? 'block' : 'none');
-  document.querySelectorAll('[id^="sen-"]').forEach(el => el.style.display = showNp ? 'none' : 'block');
-
-  // Instructions
-  const instrNp = document.getElementById('instr-np');
-  const instrEn = document.getElementById('instr-en');
-  if (instrNp) instrNp.style.display = showNp ? 'block' : 'none';
-  if (instrEn) instrEn.style.display = showNp ? 'none' : 'block';
+function downloadPDF(lang) {
+  document.getElementById('dl-dropdown').classList.remove('open');
+  const prev = LANG;
+  if (lang === 'en') setLang('en');
+  else if (lang === 'np') setLang('np');
+  else setLang('en'); // both — default to English for print
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => setLang(prev), 500);
+  }, 300);
 }
 
 // ── Init ──────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async () => {
   try {
-    await fetchPaper();
-    render();
-    document.getElementById('loading').style.display = 'none';
+    await init();
   } catch(e) {
     console.error(e);
     document.getElementById('loading').innerHTML = `
@@ -600,9 +797,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
         <div style="font-size:16px;font-weight:700;color:#0f172a;margin-bottom:8px;">Could not load paper</div>
         <div style="font-size:14px;color:#64748b;margin-bottom:20px;">${e.message}</div>
-        <a href="/see.html" style="background:#2563EB;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:700;">← Back to SEE</a>
-      </div>
-    `;
+        <a href="/see.html" style="background:#2563EB;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;">← Back</a>
+      </div>`;
   }
 });
 </script>
