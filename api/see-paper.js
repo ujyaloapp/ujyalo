@@ -35,11 +35,16 @@ const SUBJECT_CONFIG = {
 };
 
 // Province Nepali names
-const PROV_NP = {
-  Koshi:'कोशी', Madhesh:'मधेश', Bagmati:'बागमती',
-  Gandaki:'गण्डकी', Lumbini:'लुम्बिनी',
-  Karnali:'कर्णाली', Sudurpashchim:'सुदूरपश्चिम',
+const PROV_CONFIG = {
+  Koshi:         { np:'कोशी',         num:1, col:'#1a6fff' },
+  Madhesh:       { np:'मधेश',          num:2, col:'#38c9b0' },
+  Bagmati:       { np:'बागमती',        num:3, col:'#f59c1a' },
+  Gandaki:       { np:'गण्डकी',        num:4, col:'#e84393' },
+  Lumbini:       { np:'लुम्बिनी',      num:5, col:'#7c3aed' },
+  Karnali:       { np:'कर्णाली',       num:6, col:'#ef4444' },
+  Sudurpashchim: { np:'सुदूरपश्चिम',   num:7, col:'#22c55e' },
 };
+const PROV_NP = Object.fromEntries(Object.entries(PROV_CONFIG).map(([k,v])=>[k,v.np]));
 
 function buildHTML({ paper, subject, questions }) {
   const cfg = SUBJECT_CONFIG[subject.code] || SUBJECT_CONFIG.maths;
@@ -65,6 +70,14 @@ function buildHTML({ paper, subject, questions }) {
 
   const totalQuestions = groupEntries.length;
   const totalMarks = paper.total_marks || 75;
+
+  // ── Overview stats from questions data ─────────────────
+  const provCfg = PROV_CONFIG[paper.province] || { np: paper.province, num: 1, col: cfg.accent };
+  const uniqueTopics = [...new Set(questions.map(q=>q.topic).filter(Boolean))].slice(0,4);
+  const diffCounts = { Easy:0, Medium:0, Hard:0 };
+  questions.forEach(q => { if(q.difficulty && diffCounts[q.difficulty]!==undefined) diffCounts[q.difficulty]++; });
+  const hasDifficulty = diffCounts.Easy+diffCounts.Medium+diffCounts.Hard > 0;
+  const totalSubs = questions.filter(q=>q.sub_part).length;
 
   // ── Schema.org ─────────────────────────────────────────
   const faqItems = questions
@@ -434,26 +447,54 @@ body{background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direct
 .re-box-text{font-size:13px;color:var(--ink);line-height:1.65;}
 
 /* ── OVERVIEW SCREEN ── */
-.ov-screen{padding:28px;max-width:640px;margin:0 auto;}
-.ov-hero{background:var(--navy);border-radius:18px;padding:24px 26px;position:relative;overflow:hidden;margin-bottom:24px;}
-.ov-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:${cfg.accent}22;}
-.ov-hero-in{position:relative;display:flex;align-items:center;gap:14px;}
-.ov-subj-ico{width:48px;height:48px;border-radius:13px;background:${cfg.light};color:${cfg.accent};display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:22px;flex-shrink:0;}
-.ov-paper-nm{font-family:'Fraunces',serif;font-size:20px;font-weight:900;color:#fff;}
-.ov-paper-mt{font-size:12px;color:#8898b8;margin-top:2px;}
-.ov-stats{display:flex;gap:8px;margin-top:12px;position:relative;}
-.ov-stat{background:rgba(255,255,255,.07);border-radius:9px;padding:8px 14px;text-align:center;}
-.ov-stat-n{font-family:'Fraunces',serif;font-size:18px;font-weight:900;color:#fff;}
-.ov-stat-l{font-size:10px;color:#8898b8;text-transform:uppercase;letter-spacing:.5px;}
-.ov-how-lbl{font-size:11px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px;}
+.ov-wrap{flex:1;display:flex;overflow:hidden;}
+.ov-left{width:260px;flex-shrink:0;background:var(--navy);display:flex;flex-direction:column;overflow-y:auto;border-right:1px solid rgba(255,255,255,.06);}
+.ov-left::-webkit-scrollbar{width:0;}
+.ov-subj-row{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:12px;}
+.ov-subj-ico{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:21px;flex-shrink:0;background:${cfg.light};color:${cfg.accent};}
+.ov-subj-nm{font-family:'Fraunces',serif;font-size:18px;font-weight:900;color:#fff;}
+.ov-subj-nm em{font-style:italic;color:${cfg.accent};}
+.ov-subj-yr{font-size:11px;color:#8898b8;margin-top:2px;}
+.ov-section{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.07);}
+.ov-sec-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.trail{display:flex;flex-direction:column;}
+.trail-row{display:flex;align-items:center;gap:9px;padding:5px 0;}
+.trail-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.trail-dot.done{background:#22c55e;}
+.trail-dot.cur{background:${cfg.accent};box-shadow:0 0 0 3px ${cfg.accent}30;}
+.trail-line{width:1px;height:10px;background:rgba(255,255,255,.1);margin:0 0 0 3.5px;}
+.trail-key{font-size:12px;color:rgba(255,255,255,.5);}
+.trail-key.done{color:rgba(255,255,255,.7);}
+.trail-key.cur{color:#fff;font-weight:700;}
+.trail-val{font-size:11px;font-weight:700;margin-left:auto;}
+.prov-pill{background:${cfg.accent}18;border:1px solid ${cfg.accent}33;border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin-top:2px;}
+.prov-num{width:30px;height:30px;border-radius:8px;background:${cfg.accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.prov-nm{font-size:13px;font-weight:700;color:#fff;}
+.prov-np{font-size:10px;color:#8898b8;margin-top:1px;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.ov-stat{background:rgba(255,255,255,.06);border-radius:8px;padding:8px 10px;}
+.ov-stat-n{font-family:'Fraunces',serif;font-size:16px;font-weight:900;color:#fff;}
+.ov-stat-l{font-size:9px;color:#8898b8;text-transform:uppercase;letter-spacing:.5px;margin-top:1px;}
+.topic-pills{display:flex;flex-wrap:wrap;gap:5px;}
+.topic-pill{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.6);}
+.diff-bars{display:flex;flex-direction:column;gap:5px;}
+.diff-row{display:flex;align-items:center;gap:7px;}
+.diff-lbl{font-size:10px;font-weight:700;width:40px;color:rgba(255,255,255,.5);}
+.diff-track{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;}
+.diff-fill{height:100%;border-radius:99px;}
+.diff-cnt{font-size:10px;font-weight:700;color:rgba(255,255,255,.4);width:20px;text-align:right;}
+.ov-right{flex:1;background:var(--bg);overflow-y:auto;padding:24px 22px;}
+.ov-how-lbl{font-size:11px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:14px;}
 .ov-cards{display:flex;flex-direction:column;gap:8px;}
-.ov-card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left;width:100%;transition:all .18s cubic-bezier(.22,.68,0,1.2);}
-.ov-card:hover{border-color:var(--mc);transform:translateY(-2px);box-shadow:0 8px 24px color-mix(in srgb, var(--mc) 18%, transparent);}
+.ov-card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:15px 17px;display:flex;align-items:center;gap:13px;cursor:pointer;text-align:left;width:100%;transition:all .18s cubic-bezier(.22,.68,0,1.2);}
+.ov-card:hover{border-color:var(--mc);transform:translateY(-2px);}
 .ov-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
 .ov-info{flex:1;}
-.ov-title{font-size:15px;font-weight:700;color:var(--ink);}
-.ov-desc{font-size:13px;color:var(--muted);margin-top:2px;}
-.ov-arr{font-size:20px;font-weight:700;}
+.ov-title{font-size:14px;font-weight:700;color:var(--ink);}
+.ov-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+.ov-arr{font-size:18px;font-weight:700;}
+.ov-tip{margin-top:16px;background:var(--card);border-radius:12px;padding:12px 14px;border:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.6;}
+.ov-tip strong{color:var(--ink);}
 
 /* ── STEP MODE ── */
 .step-strip{background:var(--card);border-bottom:1px solid var(--line);padding:10px 22px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
@@ -509,10 +550,11 @@ body{background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direct
 @media(max-width:767px){
   .sb{display:none;}
   .rp{display:none;}
+  .ov-left{display:none;}
   .hdr-main{padding:8px 14px;}
   .paper-nm{font-size:14px;}
   .paper-mt{display:none;}
-  .ov-screen{padding:16px;}
+  .ov-right{padding:16px;}
   .step-main{padding:14px;}
   .info-strip{padding:8px 14px;}
   .qcard-body{padding:12px 14px;}
@@ -561,28 +603,92 @@ body{background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direct
 <div class="body" id="body">
 
   <!-- OVERVIEW SCREEN -->
-  <div style="flex:1;overflow-y:auto;background:var(--bg);" id="ov-wrap">
-    <div class="ov-screen">
-      <!-- Paper hero -->
-      <div class="ov-hero">
-        <div class="ov-hero-in">
-          <div class="ov-subj-ico">${cfg.icon}</div>
-          <div>
-            <div class="ov-paper-nm">${esc(subject.name)} <span style="opacity:.7;font-size:16px">·</span> SEE ${paper.year}</div>
-            <div class="ov-paper-mt">${esc(paper.province)} · ${esc(provNp)} · ${yearAD} AD</div>
+  <div class="ov-wrap" id="ov-wrap">
+
+    <!-- LEFT PANEL — journey + paper info -->
+    <div class="ov-left">
+
+      <!-- Subject + year -->
+      <div class="ov-subj-row">
+        <div class="ov-subj-ico">${cfg.icon}</div>
+        <div>
+          <div class="ov-subj-nm">${esc(subject.name)} <em>/ ${esc(cfg.np||subject.name)}</em></div>
+          <div class="ov-subj-yr">SEE ${paper.year} · ${yearAD} AD</div>
+        </div>
+      </div>
+
+      <!-- Journey trail -->
+      <div class="ov-section">
+        <div class="ov-sec-lbl">Your selection</div>
+        <div class="trail">
+          <div class="trail-row">
+            <div class="trail-dot done"></div>
+            <span class="trail-key done">Subject</span>
+            <span class="trail-val" style="color:#22c55e;">${esc(subject.name)} ✓</span>
+          </div>
+          <div class="trail-line"></div>
+          <div class="trail-row">
+            <div class="trail-dot done"></div>
+            <span class="trail-key done">Year</span>
+            <span class="trail-val" style="color:#22c55e;">${paper.year} ✓</span>
+          </div>
+          <div class="trail-line"></div>
+          <div class="trail-row">
+            <div class="trail-dot cur"></div>
+            <span class="trail-key cur">Province</span>
+            <span class="trail-val" style="color:${cfg.accent};">${esc(paper.province)} ●</span>
           </div>
         </div>
-        <div class="ov-stats">
+        <div class="prov-pill" style="margin-top:12px;">
+          <div class="prov-num">P${provCfg.num}</div>
+          <div>
+            <div class="prov-nm">${esc(paper.province)} Province</div>
+            <div class="prov-np">${esc(provNp)} प्रदेश</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paper stats -->
+      <div class="ov-section">
+        <div class="ov-sec-lbl">Paper info</div>
+        <div class="stats-grid">
           <div class="ov-stat"><div class="ov-stat-n">${totalQuestions}</div><div class="ov-stat-l">Questions</div></div>
           <div class="ov-stat"><div class="ov-stat-n">${totalMarks}</div><div class="ov-stat-l">Marks</div></div>
           <div class="ov-stat"><div class="ov-stat-n">${paper.duration||'3 hrs'}</div><div class="ov-stat-l">Duration</div></div>
+          <div class="ov-stat"><div class="ov-stat-n">${totalSubs||totalQuestions}</div><div class="ov-stat-l">Sub-parts</div></div>
         </div>
       </div>
-      <!-- Mode selection -->
+
+      <!-- Topics covered -->
+      ${uniqueTopics.length ? '<div class="ov-section"><div class="ov-sec-lbl">Topics covered</div><div class="topic-pills">'+uniqueTopics.map(function(t){return '<span class="topic-pill">'+esc(t)+'</span>';}).join('')+'</div></div>' : ''}
+
+      <!-- Difficulty breakdown -->
+      ${hasDifficulty ? '<div class="ov-section"><div class="ov-sec-lbl">Difficulty</div><div class="diff-bars"><div class="diff-row"><span class="diff-lbl" style="color:#22c55e;">Easy</span><div class="diff-track"><div class="diff-fill" style="width:'+Math.round((diffCounts.Easy/Math.max(totalSubs,1))*100)+'%;background:#22c55e;"></div></div><span class="diff-cnt">'+diffCounts.Easy+'</span></div><div class="diff-row"><span class="diff-lbl" style="color:#f59c1a;">Medium</span><div class="diff-track"><div class="diff-fill" style="width:'+Math.round((diffCounts.Medium/Math.max(totalSubs,1))*100)+'%;background:#f59c1a;"></div></div><span class="diff-cnt">'+diffCounts.Medium+'</span></div><div class="diff-row"><span class="diff-lbl" style="color:#ef4444;">Hard</span><div class="diff-track"><div class="diff-fill" style="width:'+Math.round((diffCounts.Hard/Math.max(totalSubs,1))*100)+'%;background:#ef4444;"></div></div><span class="diff-cnt">'+diffCounts.Hard+'</span></div></div></div>' : ''}
+
+      <!-- Progress from localStorage -->
+      <div class="ov-section" id="ov-prog-section" style="display:none;">
+        <div class="ov-sec-lbl">Your progress</div>
+        <div style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:8px 10px;">
+          <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:900;color:#22c55e;" id="ov-prog-pct">0%</div>
+          <div style="font-size:10px;color:#8898b8;margin-top:1px;" id="ov-prog-lbl">Not started yet</div>
+          <div style="margin-top:6px;height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;">
+            <div style="height:100%;border-radius:99px;background:#22c55e;transition:width .4s;" id="ov-prog-bar" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /ov-left -->
+
+    <!-- RIGHT PANEL — mode selection -->
+    <div class="ov-right">
       <div class="ov-how-lbl">How do you want to use this paper?</div>
       <div class="ov-cards">${overviewCards}</div>
-    </div>
-  </div>
+      <div class="ov-tip">
+        <strong>Tip:</strong> Start with <strong>Read</strong> to get familiar with the paper. Use <strong>Check</strong> after you've attempted it yourself. Use <strong>Step</strong> for guided question-by-question practice.
+      </div>
+    </div><!-- /ov-right -->
+
+  </div><!-- /ov-wrap -->
 
   <!-- PAPER INSIDE (hidden until mode selected) -->
   <div style="flex:1;display:flex;overflow:hidden;" id="paper-wrap" class="hidden">
@@ -721,6 +827,23 @@ let currentStep = 0;
 let stepQIdx = 0;
 let doneSet = new Set();
 const isMobile = () => window.innerWidth < 768;
+
+// Show progress on overview immediately on load
+(function initOvProgress(){
+  try {
+    const saved = (JSON.parse(localStorage.getItem('ujyalo_progress')||'{}')||{})[PAPER_KEY];
+    if (saved && saved.pct > 0) {
+      const sec = document.getElementById('ov-prog-section');
+      const pct = document.getElementById('ov-prog-pct');
+      const lbl = document.getElementById('ov-prog-lbl');
+      const bar = document.getElementById('ov-prog-bar');
+      if (sec) sec.style.display = 'block';
+      if (pct) pct.textContent = saved.pct + '%';
+      if (lbl) lbl.textContent = saved.pct === 100 ? 'Completed ✓' : ((saved.done||[]).length + ' of ' + TOTAL + ' reviewed');
+      if (bar) bar.style.width = saved.pct + '%';
+    }
+  } catch(e) {}
+})();
 
 // ─── OVERVIEW → MODE ───────────────────────────────────────────────────────
 
@@ -1022,6 +1145,17 @@ function loadProgress() {
         card?.classList.add('done-card');
       });
       updateProgress();
+    }
+    // Show progress on overview panel if started
+    if (saved?.pct > 0) {
+      const sec = document.getElementById('ov-prog-section');
+      const pct = document.getElementById('ov-prog-pct');
+      const lbl = document.getElementById('ov-prog-lbl');
+      const bar = document.getElementById('ov-prog-bar');
+      if (sec) sec.style.display = 'block';
+      if (pct) pct.textContent = saved.pct + '%';
+      if (lbl) lbl.textContent = saved.pct === 100 ? 'Completed!' : (saved.done.length + ' of ' + TOTAL + ' reviewed');
+      if (bar) bar.style.width = saved.pct + '%';
     }
   } catch(e) {}
 }
