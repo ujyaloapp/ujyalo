@@ -448,14 +448,74 @@ function buildHTML({ paper, subject, questions }) {
 
     /* ── PRINT / PDF ── */
     @media print {
-      html,body{height:auto;overflow:visible;}
-      .topbar,#site-nav,#site-footer,.ans-panel{display:none!important;}
-      .paper-layout{display:block;height:auto;overflow:visible;}
-      .q-panel{width:100%;border:none;overflow:visible;height:auto;}
-      .q-sub-chevron{display:none!important;}
-      .q-mobile-answer{display:none!important;}
-      .q-sub.active .q-sub-header{background:white!important;border-left:none!important;}
-      .q-sub-header:hover{background:white!important;}
+      /* Reset everything for clean multi-page print */
+      html,body{
+        height:auto!important;overflow:visible!important;
+        width:100%!important;
+      }
+      /* Fix Nepali font in PDF - use system fonts */
+      * { font-family: 'Noto Sans Devanagari', Arial, sans-serif !important; }
+      .ph-exam, .ph-subject, .ph-all,
+      .q-num, .q-parent-text, .q-sub-content,
+      .ph-meta span { font-family: Arial, sans-serif !important; }
+      .ph-subject-np, .ph-instr-np,
+      .lang-np { font-family: 'Noto Sans Devanagari', Arial Unicode MS, sans-serif !important; }
+      /* Hide everything except question panel */
+      .topbar,#site-nav,#site-footer,.ans-panel,
+      .q-sub-chevron,.q-mobile-answer,.print-footer-screen,
+      .ans-share-wrap,.share-btn{
+        display:none!important;
+      }
+      /* Hide chevron arrows - critical */
+      [class*="chevron"], [class*="toggle"], .q-sub-chevron{
+        display:none!important;
+        visibility:hidden!important;
+      }
+      /* Full width question panel, no height limit */
+      .paper-layout{
+        display:block!important;height:auto!important;
+        overflow:visible!important;width:100%!important;
+      }
+      .q-panel{
+        width:100%!important;height:auto!important;
+        max-height:none!important;overflow:visible!important;
+        border:none!important;
+      }
+      .q-list-wrap{
+        height:auto!important;overflow:visible!important;
+      }
+      /* Clean up active states */
+      .q-sub.active .q-sub-header{
+        background:white!important;border-left:none!important;
+      }
+      /* Clean question styling for print */
+      .q-block{
+        border:none!important;border-radius:0!important;
+        border-bottom:1px solid #e2e8f0!important;
+        margin-bottom:6px!important;
+        page-break-inside:avoid;
+      }
+      .q-sub-header{padding:6px 8px!important;}
+      .q-sub-letter{
+        background:#f1f5f9!important;color:#475569!important;
+        -webkit-print-color-adjust:exact;print-color-adjust:exact;
+      }
+      .q-sub-marks{
+        background:#94a3b8!important;color:white!important;
+        -webkit-print-color-adjust:exact;print-color-adjust:exact;
+      }
+      .paper-header{border-radius:0!important;}
+      /* Show print footer at bottom */
+      .print-footer{
+        display:block!important;
+        position:fixed;
+        bottom:0;left:0;right:0;
+        text-align:center;
+        font-size:9pt;
+        color:#94a3b8;
+        padding:8px;
+        border-top:1px solid #e2e8f0;
+      }
 
       /* PDF footer with branding on every page */
       @page {
@@ -601,6 +661,7 @@ const ALL_SUBS = ${JSON.stringify(allSubs)};
 const DIAGRAMS_JS = ${JSON.stringify(Object.fromEntries(Object.entries(DIAGRAMS)))};
 const SHARE_URL = '${shareUrl}';
 const PAPER_KEY = 'SEE-${paper.year}-${paper.province}-${subject.code}';
+const PRINT_BASE = '/api/see-paper-print?year=${paper.year}&province=${paper.province}&subject=${subject.code}';
 
 let LANG = 'en';
 let ACTIVE_ID = null;
@@ -721,33 +782,10 @@ document.addEventListener('click', e => {
 
 function downloadPDF(lang) {
   document.getElementById('dl-dd').classList.remove('open');
-
   // GA tracking
   if (typeof gtag !== 'undefined') gtag('event', 'pdf_download', { paper: PAPER_KEY, language: lang });
-
-  // Close all answers — PDF shows questions only
-  document.querySelectorAll('.q-mobile-answer').forEach(el => el.style.display = 'none');
-  document.querySelectorAll('.q-sub').forEach(el => el.classList.remove('open'));
-
-  const prev = LANG;
-
-  if (lang === 'both') {
-    // Both: Nepali then English on separate lines
-    document.body.classList.add('print-both');
-    setTimeout(() => {
-      window.print();
-      setTimeout(() => {
-        document.body.classList.remove('print-both');
-        setLang(prev);
-      }, 800);
-    }, 300);
-  } else {
-    setLang(lang);
-    setTimeout(() => {
-      window.print();
-      setTimeout(() => setLang(prev), 800);
-    }, 300);
-  }
+  // Open dedicated print page in new tab — fonts load correctly, clean output
+  window.open(PRINT_BASE + '&lang=' + lang, '_blank');
 }
 
 // ── INIT ──────────────────────────────────────────────
