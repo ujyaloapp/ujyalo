@@ -364,10 +364,27 @@ function buildPrintHTML({ paper, subject, questions, lang }) {
     ujyalo.app &nbsp;|&nbsp; Free SEE Exam Prep for Nepal 🇳🇵 &nbsp;|&nbsp; Free forever
   </div>
 
+  <style>
+    .print-tip {
+      background: #FEF3C7; border: 1px solid #FCD34D;
+      padding: 10px 16px; border-radius: 8px;
+      font-size: 11pt; color: #92400e;
+      margin-bottom: 16pt; font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    @media print { .print-tip { display: none !important; } }
+  </style>
+  <div class="print-tip">
+    💡 For a cleaner PDF: In the print dialog, go to <strong>More settings</strong> → uncheck <strong>Headers and footers</strong>
+  </div>
   <script>
     // Wait for fonts to load then print
     document.fonts.ready.then(function() {
-      setTimeout(function() { window.print(); }, 500);
+      setTimeout(function() { window.print(); }, 800);
+    });
+    // Close tab when print dialog is closed (whether printed or cancelled)
+    window.addEventListener('afterprint', function() {
+      window.close();
     });
   </script>
 </body>
