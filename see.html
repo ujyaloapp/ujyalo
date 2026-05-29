@@ -236,7 +236,7 @@ const STATE = { step: 1, mode: null, subject: null, year: null, province: null }
 const SUBJECTS = [
   { key: 'maths',   name: 'Maths',   np: 'गणित',     icon: '∫', color: '#2563EB', bg: '#EFF6FF', status: 'live' },
   { key: 'science', name: 'Science', np: 'विज्ञान',   icon: '🔬', color: '#16A34A', bg: '#F0FDF4', status: 'live' },
-  { key: 'english', name: 'English', np: 'अंग्रेजी',   icon: 'Aa', color: '#D97706', bg: '#FEF3C7', status: 'soon' },
+  { key: 'english', name: 'English', np: 'अंग्रेजी',   icon: 'Aa', color: '#D97706', bg: '#FEF3C7', status: 'live' },
   { key: 'nepali',  name: 'Nepali',  np: 'नेपाली',    icon: 'क', color: '#DC2626', bg: '#FEE2E2', status: 'soon' },
   { key: 'social',  name: 'Social',  np: 'सामाजिक',   icon: '🌏', color: '#7C3AED', bg: '#F5F3FF', status: 'soon' },
   { key: 'hpe',     name: 'HPE',     np: 'स्वास्थ्य',  icon: '❤️', color: '#DB2777', bg: '#FDF2F8', status: 'soon' },
@@ -244,7 +244,7 @@ const SUBJECTS = [
 
 const YEARS = [
   { bs: '2082', ad: '2026', isNew: true,  status: 'live' },
-  { bs: '2081', ad: '2025', isNew: false, status: 'soon' },
+  { bs: '2081', ad: '2025', isNew: false, status: 'live' },
   { bs: '2080', ad: '2024', isNew: false, status: 'soon' },
   { bs: '2079', ad: '2023', isNew: false, status: 'soon' },
   { bs: '2078', ad: '2022', isNew: false, status: 'soon' },
@@ -265,6 +265,13 @@ const PROVINCES = [
 const AVAILABLE = {
   'maths-2082-1': { url: '/api/see-paper?year=2082&province=Koshi&subject=maths', status: 'live' },
   'maths-2082-4': { url: '/api/see-paper?year=2082&province=Gandaki&subject=maths', status: 'live' },
+  'english-2081-1': { url: '/api/see-paper?year=2081&province=Koshi&subject=english', status: 'live' },
+  'english-2081-2': { url: '/api/see-paper?year=2081&province=Madhesh&subject=english', status: 'live' },
+  'english-2081-3': { url: '/api/see-paper?year=2081&province=Bagmati&subject=english', status: 'live' },
+  'english-2081-4': { url: '/api/see-paper?year=2081&province=Gandaki&subject=english', status: 'live' },
+  'english-2081-5': { url: '/api/see-paper?year=2081&province=Lumbini&subject=english', status: 'live' },
+  'english-2081-6': { url: '/api/see-paper?year=2081&province=Karnali&subject=english', status: 'live' },
+  'english-2081-7': { url: '/api/see-paper?year=2081&province=Sudurpashchim&subject=english', status: 'live' },
 };
 
 function isAvailable(subjectKey, yearBS, provinceNum) {
