@@ -249,7 +249,7 @@ body{background:var(--bg);color:var(--ink);height:100vh;overflow:hidden;display:
       <button class="li" onclick="showView('mypaper',this)" id="nav-mypaper"><span class="li-icon">⚡</span><span class="li-lbl">My Paper</span></button>
       <button class="li" onclick="showView('saved',this)" id="nav-saved"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
     </nav>
-    <div class="lsb-foot"><p>ujyalo.app · Free forever for SEE students</p></div>
+    <div class="lsb-foot"><p>SEE 2082 live · 7 provinces<br/>6 subjects · Free forever</p></div>
   </aside>
 
   <div class="mn">
@@ -272,6 +272,7 @@ body{background:var(--bg);color:var(--ink);height:100vh;overflow:hidden;display:
               <div class="sbox"><div class="sbox-n" id="st-papers">—</div><div class="sbox-l">Papers</div></div>
               <div class="sbox"><div class="sbox-n" id="st-years">—</div><div class="sbox-l">Years</div></div>
               <div class="sbox"><div class="sbox-n">7</div><div class="sbox-l">Provinces</div></div>
+              <div class="sbox"><div class="sbox-n" id="st-started">0</div><div class="sbox-l">Started</div></div>
             </div>
           </div>
         </div>
@@ -382,13 +383,13 @@ const SUBJECTS = [
 ];
 
 const PROVINCES = [
-  {num:1, name:'Koshi',         np:'कोशी'},
-  {num:2, name:'Madhesh',       np:'मधेश'},
-  {num:3, name:'Bagmati',       np:'बागमती'},
-  {num:4, name:'Gandaki',       np:'गण्डकी'},
-  {num:5, name:'Lumbini',       np:'लुम्बिनी'},
-  {num:6, name:'Karnali',       np:'कर्णाली'},
-  {num:7, name:'Sudurpashchim', np:'सुदूरपश्चिम'},
+  {num:1, name:'Koshi',         np:'कोशी',        col:'#1a6fff'},
+  {num:2, name:'Madhesh',       np:'मधेश',         col:'#38c9b0'},
+  {num:3, name:'Bagmati',       np:'बागमती',       col:'#f59c1a'},
+  {num:4, name:'Gandaki',       np:'गण्डकी',       col:'#e84393'},
+  {num:5, name:'Lumbini',       np:'लुम्बिनी',     col:'#7c3aed'},
+  {num:6, name:'Karnali',       np:'कर्णाली',      col:'#ef4444'},
+  {num:7, name:'Sudurpashchim', np:'सुदूरपश्चिम',  col:'#22c55e'},
 ];
 
 const YEAR_AD = {2082:2026,2081:2025,2080:2024,2079:2023,2078:2022,2077:2021};
@@ -491,7 +492,7 @@ function renderHero(){
   const s = subj(S.subj);
   const ico = document.getElementById('h-ico');
   ico.textContent = s.icon; ico.style.background = s.light; ico.style.color = s.accent;
-  document.getElementById('h-nm').innerHTML = `${s.name} <em id="h-nm-np" style="color:${s.accent}">${s.np}</em>`;
+  document.getElementById('h-nm').innerHTML = `${s.name} <em id="h-nm-np" style="color:${s.accent}">/ ${s.np}</em>`;
   const d = S.data?.grouped?.[s.code]||{};
   const years = Object.keys(d);
   const total = years.reduce((a,y)=>a+d[y].length,0);
@@ -505,6 +506,7 @@ function renderHero(){
 function renderPapers(){
   if(!S.data) return;
   renderHero();
+  updateStartedCount(subj(S.subj));
   const s = subj(S.subj);
   const d = S.data.grouped?.[S.subj]||{};
   const years = Object.keys(d).sort((a,b)=>b-a);
@@ -526,11 +528,11 @@ function renderPapers(){
     const isN = parseInt(y)>=2082;
     return `<div class="yblock">
       <div class="yhdr">
-        <span class="ynum">${y}</span>
+        <span class="ynum" style="${isN?'color:var(--blue)':'color:var(--ink)'}">SEE ${y}</span>
         <span class="yad">${YEAR_AD[y]||''} AD</span>
         ${isN?'<span class="new-b">NEW</span>':''}
         <div class="ydiv"></div>
-        <span class="ycnt">${provs.length} of 7 provinces</span>
+        <span class="ycnt">${provs.length}/7 started</span>
       </div>
       <div class="pgrid">${provCards(provs,y,s)}</div>
     </div>`;
@@ -558,7 +560,7 @@ function provCards(avail, year, s){
     return `<div class="${cls}" ${click}>
       <div class="pc-strip" style="background:${live?s.accent:'transparent'};width:${pct?pct+'%':'0'};"></div>
       <div class="pc-in">
-        <div class="pc-badge" style="background:${s.accent}18;color:${s.accent};">P${p.num}</div>
+        <div class="pc-badge" style="background:${p.col}18;color:${p.col};">P${p.num}</div>
         <div class="pc-info">
           <div class="pc-nm">${p.name}</div>
           <div class="pc-np">${p.np}</div>
@@ -748,6 +750,15 @@ function delBK(i,btn){
 
 // ─── PROGRESS ────────────────────────────────────────────────────────────────
 
+function updateStartedCount(s) {
+  // Count how many papers have been started for current subject
+  try {
+    const all = JSON.parse(localStorage.getItem('ujyalo_progress')||'{}');
+    const started = Object.keys(all).filter(k => k.startsWith(s.code+'-') && all[k].started).length;
+    const el = document.getElementById('st-started');
+    if(el) el.textContent = started;
+  } catch(e) {}
+}
 function getProgress(key){
   try{return (JSON.parse(localStorage.getItem('ujyalo_progress')||'{}')||{})[key]||null;}
   catch{return null;}
