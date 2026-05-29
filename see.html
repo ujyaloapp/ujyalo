@@ -1,530 +1,761 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SEE Exam Preparation — Maths, Science & More | Ujyalo Nepal</title>
-  <meta name="description" content="Prepare for SEE exam with Ujyalo. Chapter practice, past papers, MCQ mode and more. All subjects, all provinces, free forever." />
-  <link rel="canonical" href="https://ujyalo.app/see" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles/main.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SEE Past Papers — ujyalo</title>
+<meta name="description" content="Every SEE past paper, all subjects, all 7 provinces. Free forever. Practice with model answers."/>
+<link rel="canonical" href="https://ujyalo.app/see/past-papers"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#0d1b3e;--navy2:#162550;--blue:#1a6fff;--teal:#38c9b0;--orange:#f59c1a;
+  --green:#22c55e;--red:#ef4444;--purple:#7c3aed;--pink:#e84393;
+  --ink:#0f1923;--muted:#5c6a80;--faint:#94a3b8;--line:#e8edf5;--bg:#f3f5fb;--card:#fff;
+}
+*{font-family:'DM Sans',sans-serif;}
+body{background:var(--bg);color:var(--ink);height:100vh;overflow:hidden;display:flex;flex-direction:column;}
 
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #f0f2f7; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
+/* ANNOUNCE */
+.announce{background:var(--orange);padding:7px 24px;text-align:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0;}
+.announce a{color:#fff;text-decoration:underline;}
 
-    /* ── LAYOUT ── */
-    .see-page { max-width: 600px; margin: 0 auto; padding: 32px 20px 80px; }
+/* NAV */
+.gnav{background:var(--card);border-bottom:1px solid var(--line);padding:0 28px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:20;}
+.logo{font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:var(--navy);letter-spacing:-.5px;text-decoration:none;}
+.logo span{color:var(--blue);}
+.nav-links{display:flex;gap:26px;}
+.nav-links a{font-size:13px;color:var(--muted);text-decoration:none;font-weight:500;}
+.nav-links a.act{color:var(--blue);font-weight:700;border-bottom:2px solid var(--blue);padding-bottom:2px;}
+.nav-auth{display:flex;gap:12px;align-items:center;}
+.btn-li{font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;}
+.btn-su{background:var(--navy);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;}
 
-    /* ── STEPPER ── */
-    .stepper {
-      display: flex; align-items: center; gap: 0;
-      margin-bottom: 36px; background: white;
-      border-radius: 16px; padding: 16px 20px;
-      box-shadow: 0 1px 3px rgba(0,0,0,.06);
-    }
-    .step { display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer; }
-    .step-circle {
-      width: 36px; height: 36px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 700; flex-shrink: 0;
-      transition: all .3s;
-    }
-    .step-circle.pending { background: #f1f5f9; color: #94a3b8; }
-    .step-circle.active  { background: #2563EB; color: white; box-shadow: 0 0 0 4px rgba(37,99,235,.15); }
-    .step-circle.done    { background: #1D9E75; color: white; }
-    .step-circle.done::before { content: '✓'; }
-    .step-info {}
-    .step-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: .08em; }
-    .step-value { font-size: 13px; font-weight: 700; color: #0f172a; }
-    .step-value.pending { color: #94a3b8; font-weight: 400; }
-    .step-connector { flex: 1; height: 2px; background: #e2e8f0; margin: 0 8px; border-radius: 1px; }
-    .step-connector.done { background: #1D9E75; }
+/* LAYOUT */
+.app{display:flex;flex:1;overflow:hidden;}
 
-    /* ── SECTION HEADER ── */
-    .section-label {
-      font-size: 10px; font-weight: 700; color: #94a3b8;
-      text-transform: uppercase; letter-spacing: .12em;
-      margin-bottom: 14px; display: block;
-    }
+/* LEFT SIDEBAR */
+.lsb{width:220px;flex-shrink:0;background:var(--navy);display:flex;flex-direction:column;}
+.lsb-head{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.08);}
+.lsb-title{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;}
+.lsb-sub{font-size:11px;color:#8898b8;margin-top:3px;}
+.lsb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.li{display:flex;align-items:center;gap:11px;padding:11px 18px;cursor:pointer;border-left:3px solid transparent;background:none;border-top:none;border-right:none;border-bottom:none;width:100%;text-align:left;transition:all .14s;}
+.li:hover{background:rgba(255,255,255,.05);}
+.li.act{background:rgba(255,255,255,.1);border-left-color:var(--blue);}
+.li-icon{font-size:16px;width:20px;text-align:center;}
+.li-lbl{font-size:13px;font-weight:500;color:rgba(255,255,255,.6);}
+.li.act .li-lbl{color:#fff;font-weight:700;}
+.lsb-foot{padding:12px 18px;border-top:1px solid rgba(255,255,255,.08);}
+.lsb-foot p{font-size:10px;color:rgba(255,255,255,.22);line-height:1.6;}
 
-    /* ── SUBJECT GRID ── */
-    .subject-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
-    .subject-card {
-      background: white; border: 2px solid #e2e8f0;
-      border-radius: 18px; padding: 20px 14px 16px;
-      cursor: pointer; text-align: center;
-      transition: all .2s; position: relative;
-      display: flex; flex-direction: column; align-items: center; gap: 10px;
-    }
-    .subject-card:hover { border-color: #2563EB; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,.1); }
-    .subject-card.selected { border-color: #2563EB; background: #EFF6FF; }
-    .subject-card.locked { opacity: .5; cursor: not-allowed; }
-    .subject-card.locked:hover { border-color: #e2e8f0; transform: none; box-shadow: none; }
-    .subject-icon {
-      width: 56px; height: 56px; border-radius: 16px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 26px; flex-shrink: 0;
-    }
-    .subject-name { font-size: 15px; font-weight: 800; color: #0f172a; }
-    .subject-np { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 12px; color: #64748b; }
-    .subject-badge {
-      position: absolute; top: 10px; right: 10px;
-      font-size: 9px; font-weight: 700; padding: 2px 6px;
-      border-radius: 999px;
-    }
-    .badge-live { background: #E1F5EE; color: #1D9E75; }
-    .badge-soon { background: #f1f5f9; color: #94a3b8; }
+/* MAIN */
+.mn{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 
-    /* ── YEAR GRID ── */
-    .subject-context {
-      display: flex; align-items: center; gap: 14px;
-      background: white; border-radius: 14px; padding: 14px 16px;
-      margin-bottom: 20px; border: 1px solid #e2e8f0;
-    }
-    .sc-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-    .sc-name { font-size: 16px; font-weight: 800; color: #0f172a; }
-    .sc-sub { font-size: 12px; color: #64748b; margin-top: 1px; }
+/* SUBJECT TABS */
+.stabs{background:var(--card);border-bottom:1px solid var(--line);display:flex;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
+.stabs::-webkit-scrollbar{display:none;}
+.stab{padding:13px 20px;border:none;background:transparent;border-bottom:3px solid transparent;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .15s;}
+.stab:hover{color:var(--ink);}
 
-    .year-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
-    .year-card {
-      background: white; border: 2px solid #e2e8f0;
-      border-radius: 16px; padding: 18px 12px;
-      cursor: pointer; text-align: center;
-      transition: all .2s; position: relative;
-    }
-    .year-card:hover:not(.locked) { border-color: #2563EB; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,.1); }
-    .year-card.selected { border-color: #2563EB; background: #EFF6FF; }
-    .year-card.locked { opacity: .45; cursor: not-allowed; }
-    .year-num {
-      font-family: 'Fraunces', serif; font-size: 2rem;
-      font-weight: 700; color: #0f172a; line-height: 1;
-      margin-bottom: 4px;
-    }
-    .year-card.selected .year-num { color: #2563EB; }
-    .year-ad { font-size: 11px; color: #64748b; font-weight: 600; }
-    .year-new {
-      display: inline-block; margin-top: 6px;
-      font-size: 9px; font-weight: 700; padding: 2px 7px;
-      border-radius: 999px; background: #EFF6FF; color: #2563EB;
-    }
+/* SCROLL */
+.scroll{flex:1;overflow-y:auto;}
+.scroll::-webkit-scrollbar{width:4px;}
+.scroll::-webkit-scrollbar-thumb{background:#dde3f0;border-radius:99px;}
 
-    /* ── PROVINCE LIST ── */
-    .province-list { display: flex; flex-direction: column; gap: 8px; }
-    .province-card {
-      background: white; border: 2px solid #e2e8f0;
-      border-radius: 14px; padding: 14px 16px;
-      cursor: pointer; display: flex; align-items: center; gap: 14px;
-      transition: all .2s;
-    }
-    .province-card:hover:not(.locked) { border-color: #2563EB; box-shadow: 0 4px 16px rgba(37,99,235,.08); }
-    .province-card.selected { border-color: #2563EB; background: #EFF6FF; }
-    .province-card.locked { opacity: .45; cursor: not-allowed; }
-    .province-num {
-      width: 36px; height: 36px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 800; flex-shrink: 0;
-    }
-    .province-name { font-size: 14px; font-weight: 700; color: #0f172a; }
-    .province-np { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 11px; color: #64748b; margin-top: 1px; }
-    .province-arrow { margin-left: auto; font-size: 16px; color: #94a3b8; }
-    .province-card:not(.locked):hover .province-arrow { color: #2563EB; }
-    .province-status { margin-left: auto; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+/* VIEWS */
+.vw{display:none;}
+.vw.act{display:block;}
 
-    /* ── MODE SELECTION ── */
-    .mode-context {
-      background: #0a0f1e; border-radius: 16px; padding: 18px 20px;
-      margin-bottom: 20px; display: flex; align-items: center; gap: 14px;
-    }
-    .mc-icon { font-size: 28px; flex-shrink: 0; }
-    .mc-title { font-size: 15px; font-weight: 700; color: white; }
-    .mc-sub { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 2px; }
-    .mc-edit { margin-left: auto; font-size: 12px; font-weight: 600; color: #60a5fa; cursor: pointer; flex-shrink: 0; }
+/* HERO */
+.hero{padding:26px 28px;position:relative;overflow:hidden;background:var(--navy);}
+.hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:rgba(26,111,255,.14);}
+.hero::after{content:'';position:absolute;bottom:-30px;left:-20px;width:140px;height:140px;border-radius:50%;background:rgba(56,201,176,.1);}
+.hero-in{position:relative;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.hero-l{display:flex;align-items:center;gap:16px;}
+.hero-ico{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:26px;}
+.hero-nm{font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:#fff;}
+.hero-nm em{font-style:italic;}
+.hero-sb{font-size:13px;color:#8898b8;margin-top:2px;}
+.hero-stats{display:flex;gap:10px;flex-wrap:wrap;}
+.sbox{background:rgba(255,255,255,.07);border-radius:10px;padding:10px 16px;text-align:center;}
+.sbox-n{font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:#fff;}
+.sbox-l{font-size:10px;color:#8898b8;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
 
-    .mode-grid { display: flex; flex-direction: column; gap: 10px; }
-    .mode-card {
-      background: white; border: 2px solid #e2e8f0;
-      border-radius: 16px; padding: 18px 20px;
-      cursor: pointer; display: flex; align-items: center; gap: 16px;
-      transition: all .2s;
-    }
-    .mode-card:hover:not(.locked) { border-color: #2563EB; box-shadow: 0 4px 16px rgba(37,99,235,.08); }
-    .mode-card.locked { opacity: .5; cursor: not-allowed; }
-    .mode-icon {
-      width: 52px; height: 52px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; flex-shrink: 0;
-    }
-    .mode-title { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 3px; }
-    .mode-desc { font-size: 12px; color: #64748b; line-height: 1.5; }
-    .mode-badge { margin-left: auto; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
-    .mode-arrow { margin-left: auto; font-size: 18px; color: #2563EB; flex-shrink: 0; }
+/* BREADCRUMB */
+.bc{padding:9px 28px;font-size:12px;color:var(--faint);display:flex;align-items:center;gap:6px;background:var(--card);border-bottom:1px solid var(--line);}
+.bc a{color:var(--faint);text-decoration:none;}
+.bc a:hover{color:var(--blue);}
+.bc-cur{color:var(--ink);font-weight:600;}
 
-    /* ── BACK BUTTON ── */
-    .back-btn {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 13px; font-weight: 600; color: #64748b;
-      background: none; border: none; cursor: pointer;
-      font-family: inherit; padding: 0; margin-bottom: 20px;
-      transition: color .2s;
-    }
-    .back-btn:hover { color: #2563EB; }
+/* FILTERS */
+.frow{padding:11px 28px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg);border-bottom:1px solid var(--line);flex-shrink:0;}
+.flbl{font-size:11px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:1px;margin-right:2px;}
+.ypill{padding:6px 13px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;}
+.ypill:hover{border-color:var(--blue);color:var(--blue);}
+.ypill.act{background:var(--blue);border-color:var(--blue);color:#fff;}
+.srch{flex:1;max-width:220px;position:relative;margin-left:auto;}
+.srch input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:7px 11px 7px 30px;font-size:13px;color:var(--ink);background:var(--card);outline:none;transition:border-color .15s;}
+.srch input:focus{border-color:var(--blue);}
+.srch-ico{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--faint);}
 
-    /* ── ANIMATIONS ── */
-    .panel { animation: slideIn .25s cubic-bezier(.16,1,.3,1) both; }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+/* CONTENT */
+.cpad{padding:20px 28px;}
 
-    @media (max-width: 480px) {
-      .subject-grid { grid-template-columns: repeat(2,1fr); }
-      .year-grid { grid-template-columns: repeat(2,1fr); }
-    }
-  </style>
+/* YEAR BLOCK */
+.yblock{margin-bottom:28px;}
+.yhdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.ynum{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--blue);}
+.yad{font-size:13px;color:var(--faint);}
+.new-b{background:rgba(26,111,255,.15);color:var(--blue);font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;}
+.ydiv{flex:1;height:1px;background:var(--line);}
+.ycnt{font-size:11px;color:var(--faint);}
+
+/* PROVINCE GRID */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;}
+
+/* PROVINCE CARD */
+.pc{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;}
+.pc:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.07);}
+.pc.started{border-color:rgba(26,111,255,.35);}
+.pc.done{border-color:rgba(34,197,94,.45);}
+.pc-strip{position:absolute;top:0;left:0;right:0;height:3px;}
+.pc-in{display:flex;align-items:center;gap:9px;margin-top:2px;}
+.pc-badge{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.pc-info{flex:1;min-width:0;}
+.pc-nm{font-size:13px;font-weight:700;color:var(--ink);}
+.pc-np{font-size:10px;color:var(--faint);margin-top:1px;}
+.pc-rt{font-size:11px;font-weight:700;margin-left:6px;flex-shrink:0;}
+.pc-new{position:absolute;top:7px;right:8px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;color:#fff;}
+.pc.soon{opacity:.45;cursor:not-allowed;}
+.pc.soon:hover{transform:none;box-shadow:none;}
+
+/* LOADING / EMPTY */
+.loading{padding:60px 28px;text-align:center;}
+.spin{width:32px;height:32px;border:3px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.empty{padding:60px 28px;text-align:center;}
+.empty-ico{font-size:44px;margin-bottom:14px;}
+.empty-t{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.empty-s{font-size:14px;color:var(--muted);}
+
+/* VIEW PAD */
+.vpad{padding:28px;}
+.vtitle{font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--ink);margin-bottom:4px;}
+.vtitle em{font-style:italic;}
+.vsub{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+
+/* SUBJECT FILTER PILLS */
+.spills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.spill{padding:7px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;}
+
+/* HEATMAP */
+.hcard{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:10px;}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.htag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;}
+.hbar-t{height:8px;background:var(--bg);border-radius:99px;overflow:hidden;margin-bottom:8px;}
+.hbar-f{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+.hfoot{display:flex;justify-content:space-between;font-size:11px;color:var(--faint);}
+.hlegend{background:var(--navy);border-radius:14px;padding:14px 18px;display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;}
+.hleg{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.7);}
+
+/* COMPARE */
+.cmp-ctrl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
+.cmp-sel{border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;color:var(--ink);background:var(--card);outline:none;cursor:pointer;}
+.vs{font-size:14px;font-weight:700;color:var(--faint);}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.chead{border-radius:12px 12px 0 0;padding:14px 16px;color:#fff;}
+.chead-y{font-family:'Fraunces',serif;font-size:18px;font-weight:900;}
+.chead-s{font-size:11px;opacity:.75;margin-top:2px;}
+.cbody{background:var(--card);border:1.5px solid var(--line);border-radius:0 0 12px 12px;padding:14px 16px;}
+.cbody-q{font-size:14px;color:var(--ink);line-height:1.7;margin-bottom:10px;}
+.insight{border-radius:8px;padding:10px 12px;font-size:12px;line-height:1.6;}
+.insight-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.pat{background:var(--navy);border-radius:12px;padding:14px 18px;margin-top:16px;}
+.pat-l{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.pat-t{font-size:13px;line-height:1.6;color:rgba(255,255,255,.8);}
+
+/* MY PAPER */
+.mp-banner{border-radius:14px;padding:20px;margin-bottom:20px;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(124,58,237,.04));border:1.5px solid rgba(124,58,237,.18);}
+.mp-banner h3{font-family:'Fraunces',serif;font-size:18px;font-weight:900;color:var(--ink);margin-bottom:6px;}
+.mp-banner p{font-size:13px;color:var(--muted);line-height:1.6;}
+.gen-btn{width:100%;background:var(--purple);color:#fff;border:none;border-radius:12px;padding:16px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s;}
+.gen-btn:hover{opacity:.88;}
+.gen-btn:disabled{background:var(--line);color:var(--faint);cursor:not-allowed;opacity:1;}
+
+/* BOOKMARKS */
+.bk-t{font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:var(--ink);}
+.bk-t em{font-style:italic;color:var(--orange);}
+.bk-s{font-size:13px;color:var(--muted);margin-top:4px;margin-bottom:20px;}
+.bk-card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:10px;animation:fadeUp .3s ease both;}
+.bk-src{font-size:11px;color:var(--faint);}
+.bk-qt{font-size:14px;color:var(--ink);line-height:1.65;margin:10px 0 12px;}
+.bk-acts{display:flex;gap:8px;}
+.bk-see{flex:1;border-radius:9px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid;transition:all .15s;}
+.bk-del{background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:9px 14px;font-size:14px;cursor:pointer;}
+.bk-del:hover{background:rgba(239,68,68,.08);border-color:var(--red);}
+.bk-empty{text-align:center;padding:40px 20px;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* MOBILE */
+@media(max-width:767px){
+  .lsb{display:none;}
+  .gnav{padding:0 16px;}
+  .nav-links{display:none;}
+  .vpad,.cpad{padding:16px;}
+  .hero{padding:20px 16px;}
+  .frow{padding:10px 16px;}
+  .srch{max-width:100%;margin-left:0;width:100%;}
+  .pgrid{grid-template-columns:repeat(2,1fr);}
+  .cgrid{grid-template-columns:1fr;}
+  .bc{padding:8px 16px;}
+}
+</style>
 </head>
 <body>
-<div id="site-nav"></div>
 
-<div class="see-page">
+<div class="announce">📚 Free SEE practice · No signup needed · <a href="/see">Start now →</a></div>
 
-  <!-- Stepper -->
-  <div class="stepper" id="stepper">
-    <div class="step" onclick="goToStep(1)">
-      <div class="step-circle pending" id="step1-circle">1</div>
-      <div class="step-info">
-        <div class="step-label">Step 1</div>
-        <div class="step-value pending" id="step1-value">Subject</div>
-      </div>
-    </div>
-    <div class="step-connector" id="conn1"></div>
-    <div class="step" onclick="goToStep(2)">
-      <div class="step-circle pending" id="step2-circle">2</div>
-      <div class="step-info">
-        <div class="step-label">Step 2</div>
-        <div class="step-value pending" id="step2-value">Year</div>
-      </div>
-    </div>
-    <div class="step-connector" id="conn2"></div>
-    <div class="step" onclick="goToStep(3)">
-      <div class="step-circle pending" id="step3-circle">3</div>
-      <div class="step-info">
-        <div class="step-label">Step 3</div>
-        <div class="step-value pending" id="step3-value">Province</div>
-      </div>
-    </div>
+<nav class="gnav">
+  <a href="/" class="logo">ujy<span>a</span>lo</a>
+  <div class="nav-links">
+    <a href="/see" class="act">SEE</a>
+    <a href="/pricing">Pricing</a>
+    <a href="/about">About</a>
   </div>
+  <div class="nav-auth">
+    <button class="btn-li">Log in</button>
+    <button class="btn-su">Sign up free →</button>
+  </div>
+</nav>
 
-  <!-- Panel container -->
-  <div id="panel-container"></div>
+<div class="app">
 
-</div>
+  <aside class="lsb">
+    <div class="lsb-head">
+      <div class="lsb-title">SEE Past Papers</div>
+      <div class="lsb-sub">All subjects · All provinces</div>
+    </div>
+    <nav class="lsb-nav">
+      <button class="li act" onclick="showView('papers',this)" id="nav-papers"><span class="li-icon">📄</span><span class="li-lbl">Papers</span></button>
+      <button class="li" onclick="showView('heatmap',this)" id="nav-heatmap"><span class="li-icon">🔥</span><span class="li-lbl">Hot Topics</span></button>
+      <button class="li" onclick="showView('compare',this)" id="nav-compare"><span class="li-icon">↔</span><span class="li-lbl">Compare</span></button>
+      <button class="li" onclick="showView('predict',this)" id="nav-predict"><span class="li-icon">🎯</span><span class="li-lbl">Predict</span></button>
+      <button class="li" onclick="showView('mypaper',this)" id="nav-mypaper"><span class="li-icon">⚡</span><span class="li-lbl">My Paper</span></button>
+      <button class="li" onclick="showView('saved',this)" id="nav-saved"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
+    </nav>
+    <div class="lsb-foot"><p>ujyalo.app · Free forever for SEE students</p></div>
+  </aside>
 
-<div id="site-footer"></div>
-<script src="/scripts/components.js"></script>
+  <div class="mn">
+    <div class="stabs" id="stabs"></div>
+
+    <div class="scroll" id="scroll">
+
+      <!-- PAPERS VIEW -->
+      <div class="vw act" id="vw-papers">
+        <div class="hero" id="hero">
+          <div class="hero-in">
+            <div class="hero-l">
+              <div class="hero-ico" id="h-ico">∫</div>
+              <div>
+                <div class="hero-nm" id="h-nm">Maths <em id="h-nm-np" style="color:var(--blue)">गणित</em></div>
+                <div class="hero-sb" id="h-sb">Loading...</div>
+              </div>
+            </div>
+            <div class="hero-stats">
+              <div class="sbox"><div class="sbox-n" id="st-papers">—</div><div class="sbox-l">Papers</div></div>
+              <div class="sbox"><div class="sbox-n" id="st-years">—</div><div class="sbox-l">Years</div></div>
+              <div class="sbox"><div class="sbox-n">7</div><div class="sbox-l">Provinces</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="bc">
+          <a href="/see">SEE</a><span style="opacity:.5">›</span>
+          <a href="/see/past-papers">Past Papers</a><span style="opacity:.5">›</span>
+          <span class="bc-cur" id="bc-subj">Maths</span>
+        </div>
+        <div class="frow">
+          <span class="flbl">Year</span>
+          <div id="ypills" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+          <div class="srch"><span class="srch-ico">🔍</span><input type="text" placeholder="Search province..." oninput="searchProv(this.value)"/></div>
+        </div>
+        <div class="cpad" id="yblocks">
+          <div class="loading"><div class="spin"></div><div style="font-size:14px;color:var(--muted)">Loading papers...</div></div>
+        </div>
+      </div>
+
+      <!-- HEATMAP VIEW -->
+      <div class="vw" id="vw-heatmap">
+        <div class="vpad">
+          <div class="vtitle">Hot <em>Topics</em></div>
+          <div class="vsub">Which topics appear most across the last 10 years of SEE exams.</div>
+          <div class="spills" id="h-spills"></div>
+          <div id="h-list"></div>
+          <div class="hlegend">
+            <div class="hleg">🔥 <span>90%+ Almost certain</span></div>
+            <div class="hleg">📈 <span>70–89% Very likely</span></div>
+            <div class="hleg">📊 <span>50–69% Likely</span></div>
+            <div class="hleg">📉 <span>&lt;50% Less common</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPARE VIEW -->
+      <div class="vw" id="vw-compare">
+        <div class="vpad">
+          <div class="vtitle">Year vs Year <em>Comparison</em></div>
+          <div class="vsub">See how exam questions evolved between two years.</div>
+          <div class="cmp-ctrl">
+            <select class="cmp-sel" id="c-subj" onchange="renderCompare()">
+              <option value="maths">Maths</option>
+              <option value="english">English</option>
+              <option value="science">Science</option>
+            </select>
+            <select class="cmp-sel" id="c-y1" style="border-color:var(--blue);color:var(--blue);" onchange="renderCompare()">
+              <option value="2082">2082</option><option value="2081">2081</option><option value="2080">2080</option>
+            </select>
+            <span class="vs">vs</span>
+            <select class="cmp-sel" id="c-y2" style="border-color:var(--purple);color:var(--purple);" onchange="renderCompare()">
+              <option value="2081">2081</option><option value="2082">2082</option><option value="2080">2080</option>
+            </select>
+          </div>
+          <div class="cgrid" id="cgrid"></div>
+          <div class="pat" id="pat" style="display:none"><div class="pat-l">Pattern insight</div><div class="pat-t" id="pat-t"></div></div>
+        </div>
+      </div>
+
+      <!-- PREDICT VIEW -->
+      <div class="vw" id="vw-predict">
+        <div class="vpad">
+          <div class="vtitle">Topic <em>Predictions</em></div>
+          <div class="vsub">Topics most likely to appear in SEE 2083, based on 10-year frequency analysis.</div>
+          <div class="spills" id="p-spills"></div>
+          <div id="p-list"></div>
+        </div>
+      </div>
+
+      <!-- MY PAPER VIEW -->
+      <div class="vw" id="vw-mypaper">
+        <div class="vpad">
+          <div class="vtitle">My <em>Paper</em></div>
+          <div class="vsub">A personalised practice paper built from your weak topics.</div>
+          <div class="mp-banner">
+            <h3>⚡ Your personalised paper</h3>
+            <p>Complete chapter practice first and we'll detect your weak topics. Then generate a custom paper targeting exactly what you need to improve.</p>
+          </div>
+          <div id="weak-list" style="margin-bottom:16px;">
+            <div class="bk-empty"><div style="font-size:36px;margin-bottom:12px;">📊</div><div style="font-weight:700;color:var(--ink);margin-bottom:6px;">No weak topics detected yet</div><div style="font-size:13px;color:var(--muted);">Complete some chapter practice to get started.</div></div>
+          </div>
+          <button class="gen-btn" disabled>⚡ Generate my personal paper →</button>
+        </div>
+      </div>
+
+      <!-- SAVED VIEW -->
+      <div class="vw" id="vw-saved">
+        <div class="vpad">
+          <div class="bk-t">Bookmarked <em>Questions</em></div>
+          <div class="bk-s">Questions you've saved for later review.</div>
+          <div id="bk-list"></div>
+        </div>
+      </div>
+
+    </div><!-- /scroll -->
+  </div><!-- /mn -->
+</div><!-- /app -->
+
 <script>
-// ════════════════════════════════════════════════════════
-// SEE — 3-STEP WIZARD
-// State machine: subject → year → province → paper
-// ════════════════════════════════════════════════════════
+// ─── DATA ────────────────────────────────────────────────────────────────────
 
-const STATE = { step: 1, mode: null, subject: null, year: null, province: null };
-
-// ── Data ──────────────────────────────────────────────
 const SUBJECTS = [
-  { key: 'maths',   name: 'Maths',   np: 'गणित',     icon: '∫', color: '#2563EB', bg: '#EFF6FF', status: 'live' },
-  { key: 'science', name: 'Science', np: 'विज्ञान',   icon: '🔬', color: '#16A34A', bg: '#F0FDF4', status: 'live' },
-  { key: 'english', name: 'English', np: 'अंग्रेजी',   icon: 'Aa', color: '#D97706', bg: '#FEF3C7', status: 'live' },
-  { key: 'nepali',  name: 'Nepali',  np: 'नेपाली',    icon: 'क', color: '#DC2626', bg: '#FEE2E2', status: 'soon' },
-  { key: 'social',  name: 'Social',  np: 'सामाजिक',   icon: '🌏', color: '#7C3AED', bg: '#F5F3FF', status: 'soon' },
-  { key: 'hpe',     name: 'HPE',     np: 'स्वास्थ्य',  icon: '❤️', color: '#DB2777', bg: '#FDF2F8', status: 'soon' },
-];
-
-const YEARS = [
-  { bs: '2082', ad: '2026', isNew: true,  status: 'live' },
-  { bs: '2081', ad: '2025', isNew: false, status: 'live' },
-  { bs: '2080', ad: '2024', isNew: false, status: 'soon' },
-  { bs: '2079', ad: '2023', isNew: false, status: 'soon' },
-  { bs: '2078', ad: '2022', isNew: false, status: 'soon' },
-  { bs: '2077', ad: '2021', isNew: false, status: 'soon' },
+  {code:'maths',   name:'Maths',   np:'गणित',      icon:'∫',  accent:'#1a6fff', light:'#e8f0ff'},
+  {code:'science', name:'Science', np:'विज्ञान',    icon:'⚗',  accent:'#38c9b0', light:'#e0f7f2'},
+  {code:'english', name:'English', np:'अंग्रेजी',  icon:'Aa', accent:'#f59c1a', light:'#fff4e0'},
+  {code:'nepali',  name:'Nepali',  np:'नेपाली',    icon:'क',  accent:'#e84393', light:'#ffeaf5'},
+  {code:'social',  name:'Social',  np:'सामाजिक',   icon:'◉',  accent:'#7c3aed', light:'#f0ebff'},
+  {code:'hpe',     name:'HPE',     np:'स्वास्थ्य', icon:'♡',  accent:'#ef4444', light:'#fff0f0'},
 ];
 
 const PROVINCES = [
-  { num: 1, name: 'Koshi Province',         np: 'कोशी प्रदेश',         color: '#2563EB', bg: '#EFF6FF' },
-  { num: 2, name: 'Madhesh Province',       np: 'मधेश प्रदेश',         color: '#DC2626', bg: '#FEE2E2' },
-  { num: 3, name: 'Bagmati Province',       np: 'बागमती प्रदेश',       color: '#D97706', bg: '#FEF3C7' },
-  { num: 4, name: 'Gandaki Province',       np: 'गण्डकी प्रदेश',       color: '#7C3AED', bg: '#F5F3FF' },
-  { num: 5, name: 'Lumbini Province',       np: 'लुम्बिनी प्रदेश',     color: '#DB2777', bg: '#FDF2F8' },
-  { num: 6, name: 'Karnali Province',       np: 'कर्णाली प्रदेश',      color: '#059669', bg: '#ECFDF5' },
-  { num: 7, name: 'Sudurpashchim Province', np: 'सुदूरपश्चिम प्रदेश',  color: '#0891B2', bg: '#ECFEFF' },
+  {num:1, name:'Koshi',         np:'कोशी'},
+  {num:2, name:'Madhesh',       np:'मधेश'},
+  {num:3, name:'Bagmati',       np:'बागमती'},
+  {num:4, name:'Gandaki',       np:'गण्डकी'},
+  {num:5, name:'Lumbini',       np:'लुम्बिनी'},
+  {num:6, name:'Karnali',       np:'कर्णाली'},
+  {num:7, name:'Sudurpashchim', np:'सुदूरपश्चिम'},
 ];
 
-// Which papers are actually available — URL points to SSR API
-const AVAILABLE = {
-  'maths-2082-1': { url: '/api/see-paper?year=2082&province=Koshi&subject=maths', status: 'live' },
-  'maths-2082-4': { url: '/api/see-paper?year=2082&province=Gandaki&subject=maths', status: 'live' },
-  'english-2081-1': { url: '/api/see-paper?year=2081&province=Koshi&subject=english', status: 'live' },
-  'english-2081-2': { url: '/api/see-paper?year=2081&province=Madhesh&subject=english', status: 'live' },
-  'english-2081-3': { url: '/api/see-paper?year=2081&province=Bagmati&subject=english', status: 'live' },
-  'english-2081-4': { url: '/api/see-paper?year=2081&province=Gandaki&subject=english', status: 'live' },
-  'english-2081-5': { url: '/api/see-paper?year=2081&province=Lumbini&subject=english', status: 'live' },
-  'english-2081-6': { url: '/api/see-paper?year=2081&province=Karnali&subject=english', status: 'live' },
-  'english-2081-7': { url: '/api/see-paper?year=2081&province=Sudurpashchim&subject=english', status: 'live' },
+const YEAR_AD = {2082:2026,2081:2025,2080:2024,2079:2023,2078:2022,2077:2021};
+
+const HEAT = {
+  maths:[
+    {t:'Quadratic Equations',   f:10, m:8,  l:95},
+    {t:'Statistics',            f:10, m:6,  l:95},
+    {t:'Coordinate Geometry',   f:9,  m:8,  l:90},
+    {t:'Functions & Graphs',    f:9,  m:4,  l:90},
+    {t:'Trigonometry',          f:8,  m:6,  l:80},
+    {t:'Sets & Venn Diagrams',  f:7,  m:4,  l:70},
+    {t:'Mensuration',           f:6,  m:6,  l:60},
+    {t:'Probability',           f:5,  m:4,  l:50},
+    {t:'Financial Maths',       f:5,  m:4,  l:50},
+    {t:'Sequence & Series',     f:4,  m:4,  l:40},
+  ],
+  english:[
+    {t:'Reading Comprehension', f:10, m:15, l:100},
+    {t:'Grammar',               f:10, m:11, l:100},
+    {t:'Essay Writing',         f:10, m:8,  l:100},
+    {t:'Letter Writing',        f:9,  m:6,  l:90},
+    {t:'Vocabulary',            f:8,  m:5,  l:80},
+    {t:'Report / Diary',        f:7,  m:5,  l:70},
+    {t:'Dialogue Writing',      f:6,  m:6,  l:60},
+    {t:'Notice Writing',        f:5,  m:5,  l:50},
+  ],
+  science:[
+    {t:'Human Body Systems',    f:9, m:8, l:90},
+    {t:'Chemical Reactions',    f:8, m:6, l:80},
+    {t:'Electricity',           f:8, m:8, l:80},
+    {t:'Light & Optics',        f:7, m:6, l:70},
+    {t:'Ecosystem',             f:7, m:4, l:70},
+    {t:'Heredity & Evolution',  f:6, m:6, l:60},
+  ],
 };
 
-function isAvailable(subjectKey, yearBS, provinceNum) {
-  const key = `${subjectKey}-${yearBS}-${provinceNum}`;
-  return AVAILABLE[key] || null;
+const CMP_DATA = {
+  'maths-2082-2081':{
+    y1:{topic:'Quadratic Equations', q:'Solve: 2x² + 7x + 3 = 0 by factorisation and verify your answer.', insight:'Tests factorisation and verification skills.'},
+    y2:{topic:'Quadratic Equations', q:'Solve: x² − 5x + 6 = 0 and check your answer.', insight:'Same technique, different coefficients.'},
+    pat:'Quadratic Equations has appeared in every SEE paper for 10 consecutive years. Expect it again in 2083 — likely 8 marks.',
+  },
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+
+const S = {subj:'maths', year:'all', data:null};
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+(async function init(){
+  renderTabs();
+  renderHeatPills(); renderPredPills();
+  renderHeat('maths'); renderPred('maths');
+  renderCompare(); renderBookmarks();
+  await loadPapers();
+})();
+
+// ─── PAPERS API ──────────────────────────────────────────────────────────────
+
+async function loadPapers(){
+  try{
+    const r = await fetch('/api/see-papers');
+    if(!r.ok) throw new Error();
+    S.data = await r.json();
+    renderPapers();
+  }catch{
+    document.getElementById('yblocks').innerHTML =
+      `<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-t">Couldn't load papers</div><div class="empty-s">Please refresh the page.</div></div>`;
+  }
 }
 
-// ── Step rendering ─────────────────────────────────────
-function render() {
-  updateStepper();
-  const container = document.getElementById('panel-container');
-  if (STATE.step === 1) container.innerHTML = renderStep1();
-  if (STATE.step === 2) container.innerHTML = renderStep2();
-  if (STATE.step === 3) container.innerHTML = renderStep3();
+// ─── SUBJECT TABS ────────────────────────────────────────────────────────────
+
+function renderTabs(){
+  document.getElementById('stabs').innerHTML = SUBJECTS.map((s,i)=>`
+    <button class="stab${i===0?` act`:''}" id="tab-${s.code}"
+      style="${i===0?`color:${s.accent};border-bottom-color:${s.accent};`:''}"
+      onclick="switchSubj('${s.code}',this)">
+      <span style="opacity:.8">${s.icon}</span>${s.name}
+    </button>`).join('');
 }
 
-function renderStep0() {
-  return `<div class="panel">
-    <span class="section-label">What would you like to do?</span>
-    <div class="mode-grid" style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+function switchSubj(code, el){
+  S.subj = code; S.year = 'all';
+  document.querySelectorAll('.stab').forEach(t=>{t.classList.remove('act');t.style.color='';t.style.borderBottomColor='';});
+  const s = subj(code);
+  el.classList.add('act'); el.style.color=s.accent; el.style.borderBottomColor=s.accent;
+  document.getElementById('bc-subj').textContent = s.name;
+  renderPapers();
+  goView('papers');
+  document.querySelectorAll('.li').forEach(i=>i.classList.remove('act'));
+  document.getElementById('nav-papers').classList.add('act');
+}
 
-      <a href="/chapter-practice.html" style="text-decoration:none;">
-        <div style="background:white;border:2px solid #e2e8f0;border-radius:18px;padding:20px;display:flex;align-items:center;gap:16px;transition:all .2s;cursor:pointer;" 
-          onmouseover="this.style.borderColor='#2563EB';this.style.boxShadow='0 8px 24px rgba(37,99,235,.1)'"
-          onmouseout="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'">
-          <div style="width:56px;height:56px;border-radius:16px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">📚</div>
-          <div style="flex:1;">
-            <div style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:3px;">Chapter Practice</div>
-            <div style="font-size:13px;color:#64748b;line-height:1.5;">Practice chapter by chapter with instant model answers. Maths and Science live now.</div>
+// ─── HERO ────────────────────────────────────────────────────────────────────
+
+function renderHero(){
+  const s = subj(S.subj);
+  const ico = document.getElementById('h-ico');
+  ico.textContent = s.icon; ico.style.background = s.light; ico.style.color = s.accent;
+  document.getElementById('h-nm').innerHTML = `${s.name} <em id="h-nm-np" style="color:${s.accent}">${s.np}</em>`;
+  const d = S.data?.grouped?.[s.code]||{};
+  const years = Object.keys(d);
+  const total = years.reduce((a,y)=>a+d[y].length,0);
+  document.getElementById('h-sb').textContent = `${years.length} year${years.length!==1?'s':''} · 7 provinces · ${total} paper${total!==1?'s':''}`;
+  document.getElementById('st-papers').textContent = total||'—';
+  document.getElementById('st-years').textContent = years.length||'—';
+}
+
+// ─── PAPERS VIEW ─────────────────────────────────────────────────────────────
+
+function renderPapers(){
+  if(!S.data) return;
+  renderHero();
+  const s = subj(S.subj);
+  const d = S.data.grouped?.[S.subj]||{};
+  const years = Object.keys(d).sort((a,b)=>b-a);
+
+  // Year pills
+  document.getElementById('ypills').innerHTML =
+    `<button class="ypill${S.year==='all'?' act':''}" onclick="setYear('all',this)">All</button>` +
+    years.map(y=>`<button class="ypill${S.year===y?' act':''}" onclick="setYear('${y}',this)">${y}</button>`).join('');
+
+  // Blocks
+  if(!years.length){
+    document.getElementById('yblocks').innerHTML =
+      `<div class="empty"><div class="empty-ico">📭</div><div class="empty-t">No papers yet</div><div class="empty-s">${s.name} papers coming soon.</div></div>`;
+    return;
+  }
+  const shown = S.year==='all' ? years : years.filter(y=>y===S.year);
+  document.getElementById('yblocks').innerHTML = shown.map(y=>{
+    const provs = d[y]||[];
+    const isN = parseInt(y)>=2082;
+    return `<div class="yblock">
+      <div class="yhdr">
+        <span class="ynum">${y}</span>
+        <span class="yad">${YEAR_AD[y]||''} AD</span>
+        ${isN?'<span class="new-b">NEW</span>':''}
+        <div class="ydiv"></div>
+        <span class="ycnt">${provs.length} of 7 provinces</span>
+      </div>
+      <div class="pgrid">${provCards(provs,y,s)}</div>
+    </div>`;
+  }).join('');
+}
+
+function provCards(avail, year, s){
+  const map={};
+  avail.forEach(p=>{map[p.province]=p;});
+  return PROVINCES.map(p=>{
+    const paper = map[p.name];
+    const live = !!paper;
+    const prog = getProgress(`${s.code}-${year}-${p.name.toLowerCase()}`);
+    const pct = prog?.pct||0;
+    const statusHtml = live
+      ? (pct===100
+          ? `<span class="pc-rt" style="color:var(--green)">✓</span>`
+          : pct>0
+            ? `<span class="pc-rt" style="color:${s.accent}">${pct}%</span>`
+            : `<span class="pc-rt" style="color:var(--faint)">›</span>`)
+      : `<span class="pc-rt" style="font-size:10px;color:var(--faint)">Soon</span>`;
+    const cls = `pc${!live?' soon':''}${pct===100?' done':pct>0?' started':''}`;
+    const click = live ? `onclick="openPaper('${s.code}','${year}','${p.name}')"` : '';
+    const isN = parseInt(year)>=2082;
+    return `<div class="${cls}" ${click}>
+      <div class="pc-strip" style="background:${live?s.accent:'transparent'};width:${pct?pct+'%':'0'};"></div>
+      <div class="pc-in">
+        <div class="pc-badge" style="background:${s.accent}18;color:${s.accent};">P${p.num}</div>
+        <div class="pc-info">
+          <div class="pc-nm">${p.name}</div>
+          <div class="pc-np">${p.np}</div>
+        </div>
+        ${statusHtml}
+      </div>
+      ${isN&&live?`<div class="pc-new" style="background:${s.accent}">NEW</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function openPaper(code,year,province){
+  window.location.href = `/api/see-paper?year=${year}&province=${province}&subject=${code}`;
+}
+
+function setYear(y,el){
+  S.year=y;
+  document.querySelectorAll('.ypill').forEach(p=>{p.classList.remove('act');});
+  el.classList.add('act');
+  renderPapers();
+}
+
+function searchProv(q){
+  const qL = q.toLowerCase();
+  document.querySelectorAll('.pc').forEach(c=>{
+    const nm = c.querySelector('.pc-nm')?.textContent?.toLowerCase()||'';
+    const np = c.querySelector('.pc-np')?.textContent?.toLowerCase()||'';
+    c.style.display = (!qL||nm.includes(qL)||np.includes(qL)) ? '' : 'none';
+  });
+}
+
+// ─── VIEW SWITCH ─────────────────────────────────────────────────────────────
+
+function showView(id,btn){
+  goView(id);
+  document.querySelectorAll('.li').forEach(i=>i.classList.remove('act'));
+  if(btn) btn.classList.add('act');
+  document.getElementById('scroll').scrollTop=0;
+}
+function goView(id){
+  document.querySelectorAll('.vw').forEach(v=>v.classList.remove('act'));
+  document.getElementById('vw-'+id).classList.add('act');
+}
+
+// ─── HEATMAP ─────────────────────────────────────────────────────────────────
+
+function hCol(p){return p>=90?'#ef4444':p>=70?'#f59c1a':p>=50?'#1a6fff':'#94a3b8';}
+
+function renderHeatPills(){
+  document.getElementById('h-spills').innerHTML = Object.keys(HEAT).map((code,i)=>{
+    const s=subj(code);
+    return `<button class="spill${i===0?' act':''}"
+      style="${i===0?`background:${s.accent};color:#fff;border-color:${s.accent};`:''}"
+      onclick="heatSwitch('${code}',this)">${s.icon} ${s.name}</button>`;
+  }).join('');
+}
+function heatSwitch(code,el){
+  document.querySelectorAll('#h-spills .spill').forEach(p=>{p.classList.remove('act');p.style.cssText='';});
+  const s=subj(code); el.classList.add('act');
+  el.style.background=s.accent; el.style.color='#fff'; el.style.borderColor=s.accent;
+  renderHeat(code);
+}
+function renderHeat(code){
+  const topics=HEAT[code]||[];
+  document.getElementById('h-list').innerHTML = topics.sort((a,b)=>b.f-a.f).map(t=>{
+    const pct=(t.f/10)*100, col=hCol(pct);
+    const lbl=pct>=90?'🔥 Almost certain':pct>=70?'📈 Very likely':pct>=50?'📊 Likely':'📉 Less common';
+    return `<div class="hcard">
+      <div class="hrow">
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:14px;font-weight:700;color:var(--ink);">${t.t}</span><span class="htag" style="background:${col}18;color:${col};">${t.f}/10 years</span></div>
+        <div style="display:flex;gap:6px;"><span class="htag" style="background:var(--bg);color:var(--muted);">~${t.m}m</span><span class="htag" style="background:${col}18;color:${col};">${t.l}% likely 2083</span></div>
+      </div>
+      <div class="hbar-t"><div class="hbar-f" style="width:${pct}%;background:${col};"></div></div>
+      <div class="hfoot"><span>Appeared ${t.f} of last 10 years</span><span style="color:${col};">${lbl}</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ─── PREDICT ─────────────────────────────────────────────────────────────────
+
+function renderPredPills(){
+  document.getElementById('p-spills').innerHTML = Object.keys(HEAT).map((code,i)=>{
+    const s=subj(code);
+    return `<button class="spill${i===0?' act':''}"
+      style="${i===0?`background:${s.accent};color:#fff;border-color:${s.accent};`:''}"
+      onclick="predSwitch('${code}',this)">${s.icon} ${s.name}</button>`;
+  }).join('');
+}
+function predSwitch(code,el){
+  document.querySelectorAll('#p-spills .spill').forEach(p=>{p.classList.remove('act');p.style.cssText='';});
+  const s=subj(code); el.classList.add('act');
+  el.style.background=s.accent; el.style.color='#fff'; el.style.borderColor=s.accent;
+  renderPred(code);
+}
+function renderPred(code){
+  const topics=HEAT[code]||[];
+  document.getElementById('p-list').innerHTML = topics.sort((a,b)=>b.l-a.l).map(t=>{
+    const col=hCol(t.l);
+    const emoji=t.l>=90?'🔥':t.l>=70?'⚡':t.l>=50?'📖':'💡';
+    return `<div class="hcard" style="border-color:${t.l>=80?col+'44':'var(--line)'};">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:${col}15;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">${emoji}</div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+            <span style="font-weight:700;font-size:14px;color:var(--ink);">${t.t}</span>
+            <span class="htag" style="background:${col}18;color:${col};">${t.l}% likely</span>
+            <span class="htag" style="background:var(--bg);color:var(--muted);">~${t.m}m</span>
           </div>
-          <div style="font-size:20px;color:#2563EB;">→</div>
+          <div style="height:6px;background:var(--bg);border-radius:99px;overflow:hidden;">
+            <div style="height:100%;width:${t.l}%;background:${col};border-radius:99px;transition:width .6s;"></div>
+          </div>
         </div>
-      </a>
-
-      <div style="background:white;border:2px solid #e2e8f0;border-radius:18px;padding:20px;display:flex;align-items:center;gap:16px;transition:all .2s;cursor:pointer;"
-        onmouseover="this.style.borderColor='#2563EB';this.style.boxShadow='0 8px 24px rgba(37,99,235,.1)'"
-        onmouseout="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'"
-        onclick="selectMode('past-papers')">
-        <div style="width:56px;height:56px;border-radius:16px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">📜</div>
-        <div style="flex:1;">
-          <div style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:3px;">Past Papers</div>
-          <div style="font-size:13px;color:#64748b;line-height:1.5;">Full SEE past papers — all provinces, bilingual, free PDF download.</div>
-        </div>
-        <div style="font-size:20px;color:#2563EB;">→</div>
+        <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:${col};min-width:40px;text-align:right;">${t.f}<span style="font-size:12px;color:var(--faint);">/10</span></div>
       </div>
-
-      <div style="background:white;border:2px solid #e2e8f0;border-radius:18px;padding:20px;display:flex;align-items:center;gap:16px;opacity:.6;">
-        <div style="width:56px;height:56px;border-radius:16px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">🎯</div>
-        <div style="flex:1;">
-          <div style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:3px;">MCQ Practice <span style="font-size:10px;font-weight:700;background:#f1f5f9;color:#94a3b8;padding:2px 8px;border-radius:999px;margin-left:6px;">Coming soon</span></div>
-          <div style="font-size:13px;color:#64748b;line-height:1.5;">Multiple choice questions with instant feedback. Perfect for quick revision.</div>
-        </div>
-      </div>
-
-      <div style="background:white;border:2px solid #e2e8f0;border-radius:18px;padding:20px;display:flex;align-items:center;gap:16px;opacity:.6;">
-        <div style="width:56px;height:56px;border-radius:16px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">⏱️</div>
-        <div style="flex:1;">
-          <div style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:3px;">Mock Exam <span style="font-size:10px;font-weight:700;background:#f1f5f9;color:#94a3b8;padding:2px 8px;border-radius:999px;margin-left:6px;">Coming soon</span></div>
-          <div style="font-size:13px;color:#64748b;line-height:1.5;">Full timed SEE simulation. Real exam conditions with score report.</div>
-        </div>
-      </div>
-
-    </div>
-  </div>`;
-}
-
-function selectMode(mode) {
-  if (mode === 'past-papers') {
-    STATE.mode = 'past-papers';
-    STATE.step = 1;
-    // Update stepper header
-    document.querySelector('.stepper').style.display = 'flex';
-    render();
-  }
-}
-
-function renderStep1() {
-  let html = `<div class="panel">
-    <span class="section-label">Choose Subject</span>
-    <div class="subject-grid">`;
-
-  SUBJECTS.forEach(s => {
-    const live = s.status === 'live';
-    html += `<div class="subject-card ${live?'':'locked'}" onclick="${live?`selectSubject('${s.key}')`:''}" >
-      <div class="subject-icon" style="background:${s.bg};color:${s.color};font-family:${s.key==='maths'?'serif':s.key==='nepali'?'Noto Sans Devanagari,sans-serif':'inherit'};font-weight:700;font-size:${s.key==='maths'?'28px':'22px'};">${s.icon}</div>
-      <div class="subject-name">${s.name}</div>
-      <div class="subject-np">${s.np}</div>
-      <span class="subject-badge ${live?'badge-live':'badge-soon'}">${live?'Live':'Soon'}</span>
     </div>`;
-  });
-
-  html += `</div></div>`;
-  return html;
+  }).join('');
 }
 
-function renderStep2() {
-  const s = SUBJECTS.find(s => s.key === STATE.subject);
+// ─── COMPARE ─────────────────────────────────────────────────────────────────
 
-  let html = `<div class="panel">
-    <button class="back-btn" onclick="goToStep(1)">← Back</button>
-    <span class="section-label">Select Exam Year — ${s.name} / ${s.np}</span>
-    <div class="year-grid">`;
+function renderCompare(){
+  const code=document.getElementById('c-subj').value;
+  const y1=document.getElementById('c-y1').value;
+  const y2=document.getElementById('c-y2').value;
+  const s=subj(code), key=`${code}-${y1}-${y2}`;
+  const data=CMP_DATA[key];
+  const grid=document.getElementById('cgrid'), pat=document.getElementById('pat');
+  if(!data){
+    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);"><div style="font-size:32px;margin-bottom:12px;">📭</div><div style="font-weight:700;color:var(--ink);margin-bottom:6px;">Comparison coming soon</div><div style="font-size:13px;">We're building this comparison. Check back soon.</div></div>`;
+    pat.style.display='none'; return;
+  }
+  grid.innerHTML = [{year:y1,d:data.y1,col:s.accent},{year:y2,d:data.y2,col:'#7c3aed'}].map(({year,d,col})=>`
+    <div>
+      <div class="chead" style="background:${col};">
+        <div class="chead-y">SEE ${year}</div>
+        <div class="chead-s">${YEAR_AD[year]||''} AD · ${s.name}</div>
+      </div>
+      <div class="cbody">
+        <div style="font-size:11px;font-weight:700;color:${col};text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">${d.topic}</div>
+        <div class="cbody-q">${d.q}</div>
+        <div class="insight" style="background:${col}10;border:1px solid ${col}22;">
+          <div class="insight-l" style="color:${col};">What the examiner tests</div>
+          <div style="font-size:12px;color:var(--muted);">${d.insight}</div>
+        </div>
+      </div>
+    </div>`).join('');
+  if(data.pat){document.getElementById('pat-t').textContent=data.pat; pat.style.display='block';}
+  else pat.style.display='none';
+}
 
-  YEARS.forEach(y => {
-    const hasAny = PROVINCES.some(p => isAvailable(STATE.subject, y.bs, p.num));
-    const isLive = hasAny;
-    html += `<div class="year-card ${isLive?'':'locked'}" onclick="${isLive?`selectYear('${y.bs}')`:''}" >
-      <div class="year-num">${y.bs}</div>
-      <div class="year-ad">${y.ad} AD</div>
-      ${y.isNew ? `<div class="year-new">New</div>` : ''}
+// ─── BOOKMARKS ───────────────────────────────────────────────────────────────
+
+function getBK(){try{return JSON.parse(localStorage.getItem('ujyalo_bookmarks')||'[]');}catch{return[];}}
+
+function renderBookmarks(){
+  const bks=getBK(), el=document.getElementById('bk-list');
+  if(!bks.length){
+    el.innerHTML=`<div class="bk-empty"><div style="font-size:36px;margin-bottom:12px;">🔖</div><div style="font-weight:700;color:var(--ink);margin-bottom:6px;">No saved questions yet</div><div style="font-size:13px;color:var(--muted);">Bookmark questions while practising to review them here.</div></div>`;
+    return;
+  }
+  el.innerHTML=bks.map((bk,i)=>{
+    const s=subj(bk.subjectCode)||SUBJECTS[0];
+    return `<div class="bk-card" style="animation-delay:${i*.05}s;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;">
+        <span class="bk-src">${bk.paper||''} · ${bk.province||''}</span>
+        <div style="display:flex;gap:6px;">
+          ${bk.topic?`<span class="htag" style="background:${s.accent}18;color:${s.accent};">${bk.topic}</span>`:''}
+          ${bk.marks?`<span class="htag" style="background:var(--bg);color:var(--muted);">Q${bk.questionN} · ${bk.marks}m</span>`:''}
+        </div>
+      </div>
+      <div class="bk-qt">${bk.questionText||'Question text unavailable.'}</div>
+      <div class="bk-acts">
+        <button class="bk-see" style="background:${s.accent}12;border-color:${s.accent}22;color:${s.accent};"
+          onclick="openPaper('${bk.subjectCode}','${bk.year}','${bk.province}')">See answer →</button>
+        <button class="bk-del" onclick="delBK(${i},this)">🗑</button>
+      </div>
     </div>`;
-  });
-
-  html += `</div></div>`;
-  return html;
+  }).join('');
 }
 
-function renderStep3() {
-  const s = SUBJECTS.find(s => s.key === STATE.subject);
-
-  let html = `<div class="panel">
-    <button class="back-btn" onclick="goToStep(2)">← Back</button>
-    <span class="section-label">Select Province — ${s.name} · SEE ${STATE.year}</span>
-    <div class="province-list">`;
-
-  PROVINCES.forEach(p => {
-    const avail = isAvailable(STATE.subject, STATE.year, p.num);
-    const isLive = avail && avail.status === 'live';
-    const isDraft = avail && avail.status === 'draft';
-    const admin = isAdmin();
-    const canClick = isLive || (admin && isDraft);
-
-    html += `<div class="province-card ${canClick?'':'locked'}" onclick="${canClick?`selectProvince(${p.num})`:''}" >
-      <div class="province-num" style="background:${p.bg};color:${p.color};">P${p.num}</div>
-      <div>
-        <div class="province-name">${p.name}</div>
-        <div class="province-np">${p.np}</div>
-      </div>`;
-
-    if (isLive) {
-      html += `<span class="province-status badge-live" style="background:#E1F5EE;color:#1D9E75;">Available</span>`;
-    } else if (isDraft && admin) {
-      html += `<span class="province-status" style="background:#FEF3C7;color:#92400e;">🟡 Draft</span>`;
-    } else {
-      html += `<span class="province-status badge-soon" style="background:#f1f5f9;color:#94a3b8;">Coming soon</span>`;
-    }
-
-    html += `</div>`;
-  });
-
-  html += `</div></div>`;
-  return html;
+function delBK(i,btn){
+  const bks=getBK(); bks.splice(i,1);
+  localStorage.setItem('ujyalo_bookmarks',JSON.stringify(bks));
+  btn.closest('.bk-card').remove();
+  if(!getBK().length) renderBookmarks();
 }
 
-// ── Actions ───────────────────────────────────────────
-function selectSubject(key) {
-  STATE.subject = key;
-  STATE.step = 2;
-  render();
+// ─── PROGRESS ────────────────────────────────────────────────────────────────
+
+function getProgress(key){
+  try{return (JSON.parse(localStorage.getItem('ujyalo_progress')||'{}')||{})[key]||null;}
+  catch{return null;}
 }
 
-function selectYear(bs) {
-  STATE.year = bs;
-  STATE.step = 3;
-  render();
-}
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
 
-function selectProvince(num) {
-  STATE.province = num;
-  const avail = isAvailable(STATE.subject, STATE.year, num);
-  if (avail) {
-    window.location.href = avail.url;
-  }
-}
-
-function goToStep(step) {
-  if (step === 1) { STATE.subject = null; STATE.year = null; STATE.province = null; STATE.step = 1; }
-  if (step === 2 && STATE.subject) { STATE.year = null; STATE.province = null; STATE.step = 2; }
-  if (step === 3 && STATE.subject && STATE.year) { STATE.province = null; STATE.step = 3; }
-  render();
-}
-
-function updateStepper() {
-  const c1 = document.getElementById('step1-circle');
-  const c2 = document.getElementById('step2-circle');
-  const c3 = document.getElementById('step3-circle');
-  const v1 = document.getElementById('step1-value');
-  const v2 = document.getElementById('step2-value');
-  const v3 = document.getElementById('step3-value');
-  const conn1 = document.getElementById('conn1');
-  const conn2 = document.getElementById('conn2');
-
-  const s = STATE.subject ? SUBJECTS.find(s=>s.key===STATE.subject) : null;
-
-  // Step 1
-  if (STATE.step === 1) {
-    c1.className = 'step-circle active'; c1.textContent = '1';
-    v1.className = 'step-value'; v1.textContent = 'Subject';
-  } else {
-    c1.className = 'step-circle done'; c1.textContent = '';
-    v1.className = 'step-value'; v1.textContent = s?.name || '';
-    conn1.className = 'step-connector done';
-  }
-
-  // Step 2
-  if (STATE.step === 2) {
-    c2.className = 'step-circle active'; c2.textContent = '2';
-    v2.className = 'step-value'; v2.textContent = 'Year';
-  } else if (STATE.step > 2) {
-    c2.className = 'step-circle done'; c2.textContent = '';
-    v2.className = 'step-value'; v2.textContent = `SEE ${STATE.year}`;
-    conn2.className = 'step-connector done';
-  } else {
-    c2.className = 'step-circle pending'; c2.textContent = '2';
-    v2.className = 'step-value pending'; v2.textContent = 'Year';
-  }
-
-  // Step 3
-  if (STATE.step === 3) {
-    c3.className = 'step-circle active'; c3.textContent = '3';
-    v3.className = 'step-value'; v3.textContent = 'Province';
-  } else {
-    c3.className = 'step-circle pending'; c3.textContent = '3';
-    v3.className = 'step-value pending'; v3.textContent = 'Province';
-  }
-}
-
-function isAdmin() {
-  const user = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
-  return user && user.role === 'admin';
-}
-
-// ── Init ──────────────────────────────────────────────
-const urlParams = new URLSearchParams(window.location.search);
-
-// If coming directly to past papers
-if (urlParams.get('mode') === 'past-papers') {
-  STATE.mode = 'past-papers';
-  if (urlParams.get('subject')) STATE.subject = urlParams.get('subject');
-  if (urlParams.get('year')) STATE.year = urlParams.get('year');
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  // Show stepper only in past papers mode
-  const stepper = document.getElementById('stepper');
-  if (!STATE.mode) {
-    stepper.style.display = 'none';
-    document.getElementById('panel-container').innerHTML = renderStep0();
-  } else {
-    stepper.style.display = 'flex';
-    render();
-  }
-});
+function subj(code){return SUBJECTS.find(s=>s.code===code)||SUBJECTS[0];}
 </script>
 </body>
 </html>

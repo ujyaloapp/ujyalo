@@ -1,14 +1,8 @@
 // ============================================================
-// UJYALO — SEE PAPER API (Server-Side Rendered)
-// Route: /see/past-papers/:year/:province/:subject
-// CTO decisions:
-//   - SSR for SEO — Google indexes everything
-//   - Desktop: two-column (questions left, answers right)
-//   - Mobile: accordion (answer below question)
-//   - PDF: questions only, no answers, branding footer
-//   - Both languages PDF: Nepali then English below
-//   - GA tracking on download
-//   - Share button in topbar
+// UJYALO — SEE PAPER PAGE (SSR)
+// Route: /api/see-paper?year=&province=&subject=
+// Design: ujyalo-complete-spec.pdf
+// Modes: Overview → Read / Check / Step
 // ============================================================
 
 async function fetchFromSupabase(path) {
@@ -18,758 +12,1133 @@ async function fetchFromSupabase(path) {
       'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`
     }
   });
+  if (!res.ok) throw new Error(`Supabase ${res.status}: ${path}`);
   return res.json();
 }
 
-function escape(str) {
+function esc(str) {
   if (!str) return '';
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
 }
 
+// Subject config — colours, icons, Nepali names
+const SUBJECT_CONFIG = {
+  maths:   { accent:'#1a6fff', light:'#e8f0ff', icon:'∫',  np:'गणित' },
+  science: { accent:'#38c9b0', light:'#e0f7f2', icon:'⚗',  np:'विज्ञान' },
+  english: { accent:'#f59c1a', light:'#fff4e0', icon:'Aa', np:'अंग्रेजी' },
+  nepali:  { accent:'#e84393', light:'#ffeaf5', icon:'क',  np:'नेपाली' },
+  social:  { accent:'#7c3aed', light:'#f0ebff', icon:'◉',  np:'सामाजिक' },
+  hpe:     { accent:'#ef4444', light:'#fff0f0', icon:'♡',  np:'स्वास्थ्य' },
+};
+
+// Province Nepali names
+const PROV_NP = {
+  Koshi:'कोशी', Madhesh:'मधेश', Bagmati:'बागमती',
+  Gandaki:'गण्डकी', Lumbini:'लुम्बिनी',
+  Karnali:'कर्णाली', Sudurpashchim:'सुदूरपश्चिम',
+};
+
 function buildHTML({ paper, subject, questions }) {
-
-  const subjectNepaliMap = {
-    'maths': 'गणित', 'science': 'विज्ञान', 'english': 'अंग्रेजी',
-    'nepali': 'नेपाली', 'social': 'सामाजिक अध्ययन', 'hpe': 'स्वास्थ्य'
-  };
-  const subjectNameNp = subjectNepaliMap[subject.code] || subject.name;
+  const cfg = SUBJECT_CONFIG[subject.code] || SUBJECT_CONFIG.maths;
+  const isEnglish = subject.code === 'english';
   const yearAD = parseInt(paper.year) - 56;
-  const title = `SEE ${paper.year} ${paper.province} — ${subject.name} Past Paper | Ujyalo`;
-  const description = `Free SEE ${paper.year} ${paper.province} Province ${subject.name} past paper. Bilingual Nepali and English, clean diagrams, model answers. Download PDF free.`;
-  const canonicalUrl = `https://ujyalo.app/see/past-papers/${paper.year}/${paper.province}/${subject.code}`;
-  const shareUrl = canonicalUrl;
+  const provNp = PROV_NP[paper.province] || paper.province;
 
-  // Group questions
+  const title = `SEE ${paper.year} ${paper.province} — ${subject.name} Past Paper | ujyalo`;
+  const description = `Free SEE ${paper.year} ${paper.province} ${subject.name} past paper with model answers. All 7 provinces. Download PDF free — ujyalo.app`;
+  const canonicalUrl = `https://ujyalo.app/see/past-papers/${paper.year}/${paper.province}/${subject.code}`;
+
+  // ── Group questions by number ──────────────────────────
   const groups = {};
   questions.forEach(q => {
-    const num = q.question_number;
-    if (!groups[num]) groups[num] = { parent: null, subs: [] };
-    if (!q.sub_part) groups[num].parent = q;
-    else groups[num].subs.push(q);
+    const n = q.question_number;
+    if (!groups[n]) groups[n] = { parent: null, subs: [] };
+    if (!q.sub_part) groups[n].parent = q;
+    else groups[n].subs.push(q);
   });
 
-  // Schema.org structured data
+  const groupEntries = Object.entries(groups)
+    .sort((a,b) => parseInt(a[0]) - parseInt(b[0]));
+
+  const totalQuestions = groupEntries.length;
+  const totalMarks = paper.total_marks || 75;
+
+  // ── Schema.org ─────────────────────────────────────────
   const faqItems = questions
     .filter(q => q.sub_part && q.answer_text && q.question_text_english)
     .slice(0, 10)
     .map(q => ({
-      "@type": "Question",
-      "name": `SEE ${paper.year} Q${q.question_number}(${q.sub_part}): ${q.question_text_english.substring(0, 100)}`,
-      "acceptedAnswer": { "@type": "Answer", "text": q.answer_text.substring(0, 300) }
+      "@type":"Question",
+      "name": `SEE ${paper.year} Q${q.question_number}(${q.sub_part}): ${q.question_text_english.substring(0,100)}`,
+      "acceptedAnswer":{"@type":"Answer","text":q.answer_text.substring(0,300)}
     }));
-
-  const structuredData = JSON.stringify({
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Course",
-        "name": `SEE ${paper.year} ${paper.province} ${subject.name}`,
-        "description": description,
-        "provider": { "@type": "Organization", "name": "Ujyalo", "url": "https://ujyalo.app" },
-        "url": canonicalUrl
-      },
-      { "@type": "FAQPage", "mainEntity": faqItems }
+  const schema = JSON.stringify({
+    "@context":"https://schema.org",
+    "@graph":[
+      {"@type":"Course","name":`SEE ${paper.year} ${paper.province} ${subject.name}`,"description":description,"provider":{"@type":"Organization","name":"ujyalo","url":"https://ujyalo.app"},"url":canonicalUrl},
+      {"@type":"FAQPage","mainEntity":faqItems}
     ]
   });
 
-  // Build left panel questions (visible to Google + desktop left column)
-  let questionsHTML = '';
-  const allSubs = [];
+  // ── Build question cards for main area ─────────────────
+  let allSubsData = [];
+  let qCardsHTML = '';
 
-  Object.entries(groups)
-    .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
-    .forEach(([num, g]) => {
-      const parent = g.parent;
-      const diagram = parent?.diagram_svg || null;
+  groupEntries.forEach(([num, g], idx) => {
+    const parent = g.parent;
+    const subs = g.subs;
+    if (!parent && !subs.length) return;
 
-      questionsHTML += `<div class="q-block" id="qb-${num}">
-        <div class="q-parent-row">
-          <span class="q-num">${num}.</span>
-          <span class="q-parent-text">
-            ${parent?.question_text_nepali ? `<span class="lang-np" style="display:none">${escape(parent.question_text_nepali)}</span>` : ''}
-            ${parent?.question_text_english ? `<span class="lang-en">${escape(parent.question_text_english)}</span>` : ''}
-          </span>
-        </div>
-        ${diagram ? `<div class="q-diagram">${diagram}</div>` : ''}
-        <div class="q-subs">`;
+    const qText = isEnglish
+      ? (parent?.question_text_english || '')
+      : (parent?.question_text_nepali || parent?.question_text_english || '');
+    const diagram = parent?.diagram_svg || null;
+    const marks = subs.length
+      ? subs.reduce((a,s)=>a+(s.marks||0),0)
+      : (parent?.marks||0);
+    const topic = parent?.topic || '';
+    const difficulty = parent?.difficulty || '';
+    const frequency = parent?.frequency || '';
 
-      g.subs.forEach(sub => {
-        allSubs.push(sub.id);
-        questionsHTML += `
-          <div class="q-sub" id="qs-${sub.id}" onclick="selectQ('${sub.id}')">
-            <div class="q-sub-header">
-              <span class="q-sub-letter">${sub.sub_part}</span>
-              <span class="q-sub-content">
-                ${sub.question_text_nepali ? `<span class="lang-np" style="display:none">${escape(sub.question_text_nepali)}</span>` : ''}
-                ${sub.question_text_english ? `<span class="lang-en">${escape(sub.question_text_english)}</span>` : ''}
-              </span>
-              <span class="q-sub-marks">${sub.marks}m</span>
-              <span class="q-sub-chevron">▾</span>
-            </div>
-            <!-- Mobile accordion answer -->
-            <div class="q-mobile-answer" id="mob-${sub.id}">
-              <div class="ans-label">✓ Model Answer</div>
-              <div class="ans-body">${escape(sub.answer_text || 'Model answer coming soon.')}</div>
-              <div class="ans-share">
-                <button onclick="shareQ('${sub.id}', event)" class="share-btn">↗ Share this question</button>
-              </div>
-            </div>
-          </div>`;
+    // Sub parts
+    let subsHTML = '';
+    subs.forEach(s => {
+      const sText = isEnglish
+        ? (s.question_text_english||'')
+        : (s.question_text_nepali||s.question_text_english||'');
+      const sid = `q-${num}-${s.sub_part}`;
+      allSubsData.push({
+        id: sid,
+        qNum: parseInt(num),
+        sub: s.sub_part,
+        en: s.question_text_english||'',
+        np: s.question_text_nepali||'',
+        answer: s.answer_text||'',
+        steps: s.steps_en||null,
+        marks: s.marks||0,
+        topic: s.topic||topic||'',
+        difficulty: s.difficulty||difficulty||'',
+        frequency: s.frequency||frequency||'',
+        opts: s.opts_en||null,
+        correct: s.correct_opt??null,
+        color: cfg.accent,
       });
 
-      questionsHTML += `</div></div>`;
+      // MCQ vs written
+      let optionsHTML = '';
+      if (s.opts_en) {
+        const opts = Array.isArray(s.opts_en) ? s.opts_en : JSON.parse(s.opts_en);
+        optionsHTML = `<div class="mcq-grid">${opts.map((o,oi)=>`
+          <button class="mcq-opt" onclick="pickOpt(this,${s.correct_opt??-1},${oi})">${esc(o)}</button>`).join('')}</div>`;
+      }
+
+      subsHTML += `
+      <div class="sub-item" id="${sid}">
+        <div class="sub-hd">
+          <span class="sub-ltr" style="background:${cfg.accent}18;color:${cfg.accent};">${esc(s.sub_part)}</span>
+          <span class="sub-marks">${s.marks||0}m</span>
+          <button class="bk-btn" onclick="toggleBookmark(this,'${sid}')" title="Bookmark">🔖</button>
+        </div>
+        <div class="sub-text">${esc(sText)}</div>
+        ${optionsHTML}
+        <button class="ans-btn" onclick="openAnswer('${sid}')">
+          <span>💡</span> See answer &amp; explanation
+        </button>
+      </div>`;
     });
 
-  // Build answers data for right panel (desktop)
-  const answersData = {};
-  questions.filter(q => q.sub_part).forEach(q => {
-    const parent = groups[q.question_number]?.parent;
-    answersData[q.id] = {
-      qNum: q.question_number,
-      subPart: q.sub_part,
-      marks: q.marks,
-      textEn: q.question_text_english || '',
-      textNp: q.question_text_nepali || '',
-      ctxEn: parent?.question_text_english || '',
-      ctxNp: parent?.question_text_nepali || '',
-      answer: q.answer_text || 'Model answer coming soon.',
-      diagram: groups[q.question_number]?.parent?.diagram_svg || ''
-    };
+    // If no subs, treat parent itself as answerable
+    if (!subs.length && parent) {
+      const pid = `q-${num}-main`;
+      allSubsData.push({
+        id: pid,
+        qNum: parseInt(num),
+        sub: null,
+        en: parent.question_text_english||'',
+        np: parent.question_text_nepali||'',
+        answer: parent.answer_text||'',
+        steps: parent.steps_en||null,
+        marks: parent.marks||0,
+        topic: parent.topic||'',
+        difficulty: parent.difficulty||'',
+        frequency: parent.frequency||'',
+        opts: parent.opts_en||null,
+        correct: parent.correct_opt??null,
+        color: cfg.accent,
+      });
+
+      let optionsHTML = '';
+      if (parent.opts_en) {
+        const opts = Array.isArray(parent.opts_en) ? parent.opts_en : JSON.parse(parent.opts_en);
+        optionsHTML = `<div class="mcq-grid">${opts.map((o,oi)=>`
+          <button class="mcq-opt" onclick="pickOpt(this,${parent.correct_opt??-1},${oi})">${esc(o)}</button>`).join('')}</div>`;
+      }
+
+      subsHTML = `
+      <div class="sub-item" id="${pid}">
+        ${optionsHTML}
+        <button class="ans-btn" onclick="openAnswer('${pid}')">
+          <span>💡</span> See answer &amp; explanation
+        </button>
+      </div>`;
+    }
+
+    qCardsHTML += `
+    <div class="qcard" id="qcard-${num}" onclick="qCardClick(${num})">
+      <div class="qcard-strip" id="strip-${num}"></div>
+      <div class="qcard-head">
+        <div class="qch-l">
+          <div class="qnum" id="qnum-${num}" style="background:${cfg.accent};">${num}</div>
+          ${topic ? `<span class="qtag" style="background:${cfg.accent}18;color:${cfg.accent};">${esc(topic)}</span>` : ''}
+          ${difficulty ? `<span class="qtag" style="background:${difficulty==='Hard'?'rgba(239,68,68,.1)':difficulty==='Medium'?'rgba(245,156,26,.1)':'rgba(34,197,94,.1)';};color:${difficulty==='Hard'?'#ef4444':difficulty==='Medium'?'#f59c1a':'#22c55e'};">${esc(difficulty)}</span>` : ''}
+          ${frequency ? `<span class="qtag" style="background:var(--bg);color:var(--muted);">${esc(frequency)}</span>` : ''}
+        </div>
+        <div class="qch-r">
+          <span class="qmarks">${marks}m</span>
+          <button class="done-btn undone" id="done-${num}" onclick="event.stopPropagation();markDone(${num})">Mark done</button>
+        </div>
+      </div>
+      <div class="qcard-body">
+        ${qText ? `<div class="q-text">${esc(qText)}</div>` : ''}
+        ${diagram ? `<div class="q-diagram">${diagram}</div>` : ''}
+        ${subsHTML}
+      </div>
+    </div>`;
   });
+
+  // ── Sidebar question rows ──────────────────────────────
+  let sidebarHTML = groupEntries.map(([num, g]) => {
+    const parent = g.parent;
+    const topic = parent?.topic || '';
+    const marks = g.subs.length
+      ? g.subs.reduce((a,s)=>a+(s.marks||0),0)
+      : (parent?.marks||0);
+    return `
+    <div class="sb-row" id="sb-${num}" onclick="scrollToQ(${num})">
+      <div class="sb-num" id="sb-num-${num}" style="background:${cfg.accent}18;color:${cfg.accent};">${num}</div>
+      <div class="sb-info">
+        <div class="sb-topic">${esc(topic)||'Question '+num}</div>
+        <div class="sb-meta">${marks}m</div>
+      </div>
+      <div class="sb-dot" id="sb-dot-${num}" style="background:${cfg.accent};"></div>
+    </div>`;
+  }).join('');
+
+  // ── Overview mode cards ────────────────────────────────
+  const overviewCards = [
+    { mode:'read',    icon:'📖', title:'Read full paper',        desc:'Browse all questions — answers hidden', col:'#1a6fff' },
+    { mode:'check',   icon:'✅', title:'Check my answers',       desc:"I've already attempted it — show answers", col:'#38c9b0' },
+    { mode:'step',    icon:'⚡', title:'Question by question',    desc:'One question at a time — reveal and move on', col:'#f59c1a' },
+    { mode:'download',icon:'📥', title:'Download PDF',           desc:'Nepali, English, or both languages', col:'#7c3aed' },
+  ].map(c=>`
+    <button class="ov-card" onclick="enterMode('${c.mode}')" style="--mc:${c.col};">
+      <div class="ov-icon" style="background:${c.col}18;color:${c.col};">${c.icon}</div>
+      <div class="ov-info">
+        <div class="ov-title">${c.title}</div>
+        <div class="ov-desc">${c.desc}</div>
+      </div>
+      <div class="ov-arr" style="color:${c.col};">›</div>
+    </button>`).join('');
+
+  // ── Step mode question dots ────────────────────────────
+  const stepDots = groupEntries.map(([num],i) =>
+    `<div class="step-dot" id="sdot-${num}" onclick="goStep(${parseInt(num)})" title="Q${num}"></div>`
+  ).join('');
+
+  // ── Serialise data for client ──────────────────────────
+  const ANSWERS_JSON = JSON.stringify(allSubsData);
+  const GROUPS_JSON = JSON.stringify(groupEntries.map(([n,g])=>({
+    num: parseInt(n),
+    topic: g.parent?.topic||'',
+    marks: g.subs.length ? g.subs.reduce((a,s)=>a+(s.marks||0),0) : (g.parent?.marks||0),
+  })));
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>${escape(title)}</title>
-  <meta name="description" content="${escape(description)}"/>
-  <meta name="keywords" content="SEE ${paper.year} ${paper.province} ${subject.name} past paper, SEE ${paper.year} ${subject.name} Nepal, SEE past paper ${paper.province}, SEE ${paper.year} ganit"/>
-  <meta name="robots" content="index, follow"/>
-  <link rel="canonical" href="${canonicalUrl}"/>
-  <meta property="og:title" content="${escape(title)}"/>
-  <meta property="og:description" content="${escape(description)}"/>
-  <meta property="og:url" content="${canonicalUrl}"/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:site_name" content="Ujyalo"/>
-  <meta name="twitter:card" content="summary_large_image"/>
-  <script type="application/ld+json">${structuredData}</script>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="/styles/main.css"/>
-  <!-- Google Analytics event tracking -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    :root{
-      --brand:#2563EB;--green:#1D9E75;--dark:#0a0f1e;
-      --ink:#0f172a;--mid:#475569;--light:#94a3b8;
-      --border:#e2e8f0;--bg:#f8fafc;
-    }
-    html,body{height:100%;overflow:hidden;}
-    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);display:flex;flex-direction:column;}
-    /* Hide footer only — nav stays visible */
-    #site-footer{display:none!important;}
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(description)}"/>
+<link rel="canonical" href="${esc(canonicalUrl)}"/>
+<meta property="og:title" content="${esc(title)}"/>
+<meta property="og:description" content="${esc(description)}"/>
+<meta property="og:url" content="${esc(canonicalUrl)}"/>
+<script type="application/ld+json">${schema}<\/script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"><\/script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');<\/script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#0d1b3e;--navy2:#162550;--blue:#1a6fff;--teal:#38c9b0;--orange:#f59c1a;
+  --green:#22c55e;--red:#ef4444;--purple:#7c3aed;
+  --ink:#0f1923;--muted:#5c6a80;--faint:#94a3b8;--line:#e8edf5;--bg:#f3f5fb;--card:#fff;
+  --accent:${cfg.accent};
+}
+*{font-family:'DM Sans',sans-serif;}
+body{background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 
-    /* ── TOPBAR ── */
-    .topbar{
-      background:var(--dark);display:flex;align-items:center;
-      gap:10px;padding:0 16px;height:56px;flex-shrink:0;z-index:100;
-    }
-    .tb-back{
-      display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.6);
-      font-size:13px;font-weight:600;background:rgba(255,255,255,.08);
-      border:none;border-radius:8px;padding:6px 12px;cursor:pointer;
-      font-family:inherit;transition:all .2s;text-decoration:none;white-space:nowrap;flex-shrink:0;
-    }
-    .tb-back:hover{background:rgba(255,255,255,.14);color:white;}
-    .tb-divider{width:1px;height:24px;background:rgba(255,255,255,.1);flex-shrink:0;}
-    .tb-info{flex:1;min-width:0;}
-    .tb-title{font-size:14px;font-weight:700;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .tb-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:1px;}
-    .tb-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-    .tb-lang{display:flex;background:rgba(255,255,255,.08);border-radius:8px;padding:3px;gap:2px;}
-    .tb-lang-btn{
-      padding:5px 10px;border-radius:6px;font-size:12px;font-weight:700;
-      border:none;cursor:pointer;font-family:inherit;transition:all .2s;
-      color:rgba(255,255,255,.5);background:transparent;white-space:nowrap;
-    }
-    .tb-lang-btn.active{background:white;color:var(--ink);}
-    /* Share button */
-    .tb-share{
-      display:flex;align-items:center;gap:5px;
-      background:rgba(255,255,255,.08);border:none;border-radius:8px;
-      padding:6px 12px;color:rgba(255,255,255,.7);font-size:12px;font-weight:700;
-      cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap;
-    }
-    .tb-share:hover{background:rgba(255,255,255,.14);color:white;}
-    .tb-share.copied{background:#1D9E75;color:white;}
-    /* Download */
-    .tb-dl-wrap{position:relative;}
-    .tb-dl{
-      display:flex;align-items:center;gap:6px;
-      background:#f59e0b;color:#0a0f1e;border:none;border-radius:8px;
-      padding:7px 14px;font-size:12px;font-weight:800;cursor:pointer;
-      font-family:inherit;transition:all .2s;white-space:nowrap;
-    }
-    .tb-dl:hover{background:#d97706;}
-    .dl-dd{
-      position:absolute;top:calc(100% + 8px);right:0;
-      background:white;border:1px solid var(--border);
-      border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.15);
-      min-width:210px;overflow:hidden;z-index:999;display:none;
-    }
-    .dl-dd.open{display:block;}
-    .dl-opt{
-      display:flex;align-items:center;gap:12px;
-      padding:12px 16px;cursor:pointer;transition:background .15s;
-      border-bottom:1px solid #f1f5f9;font-size:13px;font-weight:600;color:var(--ink);
-    }
-    .dl-opt:last-child{border-bottom:none;}
-    .dl-opt:hover{background:#f8fafc;}
-    .dl-opt-icon{font-size:18px;flex-shrink:0;}
-    .dl-opt-sub{font-size:11px;color:var(--light);margin-top:1px;font-weight:400;}
+/* ── HEADER ── */
+.hdr{background:var(--navy);flex-shrink:0;z-index:20;position:sticky;top:0;}
+.hdr-main{padding:10px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(255,255,255,.08);}
+.hdr-l{display:flex;align-items:center;gap:12px;}
+.back-btn{background:rgba(255,255,255,.08);border:none;border-radius:9px;padding:7px 13px;color:rgba(255,255,255,.85);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;transition:background .15s;}
+.back-btn:hover{background:rgba(255,255,255,.14);}
+.paper-id{display:flex;align-items:center;gap:10px;}
+.subj-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:17px;background:${cfg.light};color:${cfg.accent};}
+.paper-nm{font-family:'Fraunces',serif;font-size:16px;font-weight:900;color:#fff;}
+.paper-mt{font-size:11px;color:#8898b8;margin-top:1px;}
+.hdr-r{display:flex;align-items:center;gap:8px;}
+.prog-pill{background:rgba(255,255,255,.08);border-radius:99px;padding:5px 11px;display:flex;align-items:center;gap:7px;}
+.prog-track{width:34px;height:3px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--teal));transition:width .4s;}
+.prog-pct{font-size:11px;font-weight:700;color:rgba(255,255,255,.7);}
+.lang-tog{display:flex;background:rgba(255,255,255,.1);border-radius:10px;padding:3px;gap:2px;${isEnglish?'display:none!important;':''}}
+.lt-btn{padding:5px 12px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;}
+.lt-btn.act{background:#fff;color:var(--navy);}
+.lt-btn.off{background:transparent;color:rgba(255,255,255,.5);}
+.share-btn{background:rgba(255,255,255,.08);border:none;border-radius:9px;padding:7px 12px;color:rgba(255,255,255,.8);font-size:13px;cursor:pointer;transition:background .15s;}
+.share-btn:hover{background:rgba(255,255,255,.14);}
+.dl-btn{background:var(--orange);border:none;border-radius:10px;padding:7px 15px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;gap:5px;transition:opacity .15s;}
+.dl-btn:hover{opacity:.88;}
 
-    /* ── TWO COLUMN LAYOUT ── */
-    .paper-layout{
-      display:flex;flex:1;overflow:hidden;
-      /* Height is set by JS to account for dynamic nav height */
-    }
+/* MODE TABS */
+.mode-tabs{display:flex;padding:0 22px;border-bottom:1px solid rgba(255,255,255,.06);}
+.mtab{padding:9px 16px;border:none;background:transparent;border-bottom:2.5px solid transparent;font-size:13px;font-weight:400;color:rgba(255,255,255,.45);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+.mtab:hover{color:rgba(255,255,255,.75);}
+.mtab.act{color:#fff;font-weight:700;border-bottom-color:#fff;}
 
-    /* Left — question list */
-    .q-panel{
-      width:55%;flex-shrink:0;
-      background:white;border-right:1px solid var(--border);
-      overflow-y:auto;display:flex;flex-direction:column;
-    }
+/* ── BODY ── */
+.body{display:flex;flex:1;overflow:hidden;}
 
-    /* Paper header in left panel */
-    .paper-header{
-      border-bottom:2px solid var(--ink);padding:16px 16px 12px;
-      text-align:center;flex-shrink:0;background:white;
-    }
-    .ph-exam{font-family:'Fraunces',serif;font-size:12px;font-weight:700;color:var(--ink);}
-    .ph-subject{font-family:'Fraunces',serif;font-size:16px;font-weight:700;color:var(--ink);margin:2px 0;}
-    .ph-subject-np{font-family:'Noto Sans Devanagari',sans-serif;font-size:12px;color:var(--mid);margin-bottom:6px;}
-    .ph-badge{display:inline-flex;align-items:center;gap:4px;background:var(--dark);color:white;font-size:9px;font-weight:700;padding:3px 9px;border-radius:999px;margin-bottom:8px;}
-    .ph-meta{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--ink);border-top:1px solid var(--border);padding-top:8px;}
-    .ph-instr{background:#EFF6FF;border-left:3px solid var(--brand);padding:8px 12px;margin:12px 16px 0;border-radius:0 6px 6px 0;font-size:11px;color:var(--mid);line-height:1.6;text-align:left;}
-    .ph-instr-np{font-family:'Noto Sans Devanagari',sans-serif;font-size:11px;margin-bottom:3px;font-style:italic;}
-    .ph-all{font-weight:700;color:var(--ink);font-size:11px;margin-top:4px;}
+/* SIDEBAR */
+.sb{width:230px;flex-shrink:0;background:var(--card);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden;}
+.sb-hd{padding:12px 14px;border-bottom:1px solid var(--line);flex-shrink:0;}
+.sb-lbl{font-size:11px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;}
+.sb-pt{height:3px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:4px;}
+.sb-pf{height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:99px;transition:width .4s;}
+.sb-cnt{font-size:11px;color:var(--faint);}
+.sb-scroll{flex:1;overflow-y:auto;}
+.sb-scroll::-webkit-scrollbar{width:2px;}
+.sb-scroll::-webkit-scrollbar-thumb{background:var(--line);}
+.sb-row{padding:10px 14px;cursor:pointer;border-left:3px solid transparent;border-bottom:1px solid var(--line);transition:all .12s;display:flex;align-items:center;gap:8px;}
+.sb-row:hover{background:var(--bg);}
+.sb-row.act{background:${cfg.accent}10;border-left-color:${cfg.accent};}
+.sb-row.done{background:rgba(34,197,94,.04);}
+.sb-num{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:900;font-size:11px;flex-shrink:0;transition:all .15s;}
+.sb-info{flex:1;min-width:0;}
+.sb-topic{font-size:12px;font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sb-row.act .sb-topic{font-weight:700;}
+.sb-meta{font-size:10px;color:var(--faint);margin-top:1px;}
+.sb-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;opacity:0;}
+.sb-row.act .sb-dot{opacity:1;}
 
-    /* Questions */
-    .q-list-wrap{padding:8px 0 32px;}
-    .q-block{border-top:1px solid #f1f5f9;margin-top:4px;}
-    .q-block:first-child{border-top:none;margin-top:0;}
-    .q-parent-row{padding:14px 16px 6px;display:flex;gap:8px;align-items:baseline;}
-    .q-num{font-size:15px;font-weight:800;color:var(--ink);flex-shrink:0;}
-    .q-parent-text{font-size:14px;color:var(--mid);line-height:1.7;flex:1;}
-    .q-diagram{padding:0 16px 8px;}
-    .q-subs{}
-    .q-sub{border-bottom:1px solid #f8fafc;cursor:pointer;}
-    .q-sub:last-child{border-bottom:none;}
-    .q-sub-header{
-      display:flex;align-items:flex-start;gap:10px;
-      padding:10px 16px;transition:background .15s;
-    }
-    .q-sub-header:hover{background:#f8fafc;}
-    .q-sub.active .q-sub-header{background:#EFF6FF;border-left:3px solid var(--brand);}
-    .q-sub-letter{
-      width:24px;height:24px;border-radius:50%;
-      background:#f1f5f9;color:var(--mid);
-      font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;
-      flex-shrink:0;transition:all .2s;
-    }
-    .q-sub.active .q-sub-letter{background:var(--brand);color:white;}
-    .q-sub-content{flex:1;font-size:14px;color:var(--mid);line-height:1.65;}
-    .q-sub.active .q-sub-content{color:var(--ink);font-weight:600;}
-    .q-sub-marks{font-size:10px;font-weight:700;color:white;background:var(--light);border-radius:999px;padding:2px 7px;flex-shrink:0;margin-top:3px;white-space:nowrap;}
-    .q-sub.active .q-sub-marks{background:var(--brand);}
-    .q-sub-chevron{font-size:12px;color:var(--light);flex-shrink:0;margin-top:3px;transition:transform .2s;display:none;}
+/* MAIN AREA */
+.main-area{flex:1;display:flex;overflow:hidden;}
+.paper-scroll{flex:1;overflow-y:auto;background:var(--bg);}
+.paper-scroll::-webkit-scrollbar{width:3px;}
+.paper-scroll::-webkit-scrollbar-thumb{background:#dde3f0;border-radius:99px;}
 
-    /* Mobile accordion answer — hidden on desktop */
-    .q-mobile-answer{display:none;}
+/* INFO STRIP */
+.info-strip{background:var(--card);border-bottom:1px solid var(--line);padding:9px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.info-item{display:flex;gap:4px;align-items:center;}
+.info-k{font-size:12px;color:var(--faint);}
+.info-v{font-size:12px;font-weight:700;color:var(--ink);}
+.info-sep{color:var(--line);font-size:16px;}
 
-    /* Right — answer panel */
-    .ans-panel{
-      flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);
-    }
-    .ans-empty{
-      flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-      padding:40px;text-align:center;
-    }
-    .ans-empty-icon{font-size:56px;margin-bottom:16px;opacity:.3;}
-    .ans-empty-title{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:var(--ink);opacity:.3;margin-bottom:8px;}
-    .ans-empty-sub{font-size:14px;color:var(--light);}
-    .ans-content{flex:1;overflow-y:auto;padding:24px 28px;display:none;}
-    .ans-content.show{display:block;}
-    .ans-q-badge{
-      display:inline-flex;align-items:center;gap:6px;
-      font-size:11px;font-weight:700;color:var(--brand);
-      background:#EFF6FF;padding:4px 12px;border-radius:999px;
-      text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;
-    }
-    .ans-question{
-      background:white;border:1px solid var(--border);
-      border-radius:14px;padding:18px 20px;margin-bottom:16px;
-    }
-    .ans-ctx-label{font-size:10px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
-    .ans-ctx{font-size:13px;color:var(--mid);line-height:1.7;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--border);}
-    .ans-ctx-np{font-family:'Noto Sans Devanagari',sans-serif;font-size:13px;color:var(--ink);line-height:1.8;}
-    .ans-q-text{font-size:14px;color:var(--ink);line-height:1.75;font-weight:600;}
-    .ans-q-text-np{font-family:'Noto Sans Devanagari',sans-serif;font-size:14px;color:var(--ink);line-height:1.85;font-weight:600;}
-    .ans-marks{display:inline-flex;align-items:center;gap:4px;background:#EFF6FF;color:var(--brand);font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;margin-top:10px;}
-    .ans-box{background:white;border:1.5px solid #bbf7d0;border-radius:14px;overflow:hidden;}
-    .ans-box-header{background:var(--green);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;}
-    .ans-box-label{font-size:11px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:.08em;}
-    .ans-body{padding:18px 20px;font-size:13px;color:#065f46;line-height:1.9;white-space:pre-wrap;background:#f0fdf4;}
-    .ans-share-wrap{padding:12px 20px 16px;background:#f0fdf4;border-top:1px solid #bbf7d0;text-align:right;}
+/* QUESTION CARD */
+.qcard{background:var(--card);border:1.5px solid var(--line);border-radius:16px;margin-bottom:10px;overflow:hidden;transition:border-color .15s;cursor:pointer;}
+.qcard:hover{border-color:${cfg.accent}44;}
+.qcard.act{border-color:${cfg.accent}88;}
+.qcard.done-card{border-color:rgba(34,197,94,.4);}
+.qcard-strip{height:3px;width:0;transition:width .4s;}
+.qcard-head{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--line);}
+.qch-l{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.qnum{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:900;font-size:13px;color:#fff;flex-shrink:0;}
+.qtag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;}
+.qch-r{display:flex;align-items:center;gap:8px;}
+.qmarks{font-size:12px;font-weight:700;color:var(--muted);}
+.done-btn{border-radius:8px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid;transition:all .15s;}
+.done-btn.undone{background:transparent;border-color:var(--line);color:var(--faint);}
+.done-btn.done{background:rgba(34,197,94,.15);border-color:var(--green);color:var(--green);}
+.qcard-body{padding:14px 16px;}
+.q-text{font-size:15px;color:var(--ink);line-height:1.75;margin-bottom:12px;}
+.q-diagram{margin:10px 0;overflow-x:auto;}
 
-    /* Share button in answer */
-    .share-btn{
-      display:inline-flex;align-items:center;gap:5px;
-      background:white;border:1px solid var(--border);
-      border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;
-      color:var(--brand);cursor:pointer;font-family:inherit;transition:all .2s;
-    }
-    .share-btn:hover{background:#EFF6FF;border-color:var(--brand);}
+/* SUB PARTS */
+.sub-item{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;}
+.sub-item:last-child{margin-bottom:0;}
+.sub-hd{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.sub-ltr{font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;}
+.sub-marks{font-size:11px;color:var(--faint);margin-left:auto;}
+.bk-btn{background:none;border:none;cursor:pointer;font-size:14px;opacity:.3;transition:opacity .15s;padding:2px;}
+.bk-btn:hover,.bk-btn.saved{opacity:1;}
+.sub-text{font-size:14px;color:var(--ink);line-height:1.7;margin-bottom:10px;}
 
-    /* Nav bottom */
-    .ans-nav{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:12px 20px;border-top:1px solid var(--border);
-      background:white;flex-shrink:0;
-    }
-    .ans-nav-info{font-size:12px;color:var(--light);font-weight:600;}
-    .ans-nav-btns{display:flex;gap:8px;}
-    .ans-nav-btn{
-      padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;
-      border:none;cursor:pointer;font-family:inherit;transition:all .2s;
-    }
-    .ans-prev{background:#f1f5f9;color:var(--mid);}
-    .ans-prev:hover:not(:disabled){background:var(--border);}
-    .ans-next{background:var(--brand);color:white;}
-    .ans-next:hover:not(:disabled){background:#1d4ed8;}
-    .ans-nav-btn:disabled{opacity:.35;cursor:not-allowed;}
+/* MCQ */
+.mcq-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.mcq-opt{border:1.5px solid var(--line);border-radius:10px;padding:10px 13px;font-size:14px;color:var(--ink);background:var(--bg);cursor:pointer;text-align:left;transition:all .14s;display:flex;justify-content:space-between;}
+.mcq-opt:hover{border-color:${cfg.accent};background:${cfg.accent}08;}
+.mcq-opt.correct{background:rgba(34,197,94,.12);border-color:var(--green);color:var(--green);font-weight:700;}
+.mcq-opt.wrong{background:rgba(239,68,68,.1);border-color:var(--red);color:var(--red);}
 
-    /* ── PRINT / PDF ── */
-    @media print {
-      /* Reset everything for clean multi-page print */
-      html,body{
-        height:auto!important;overflow:visible!important;
-        width:100%!important;
-      }
-      /* Fix Nepali font in PDF - use system fonts */
-      * { font-family: 'Noto Sans Devanagari', Arial, sans-serif !important; }
-      .ph-exam, .ph-subject, .ph-all,
-      .q-num, .q-parent-text, .q-sub-content,
-      .ph-meta span { font-family: Arial, sans-serif !important; }
-      .ph-subject-np, .ph-instr-np,
-      .lang-np { font-family: 'Noto Sans Devanagari', Arial Unicode MS, sans-serif !important; }
-      /* Hide everything except question panel */
-      .topbar,#site-nav,#site-footer,.ans-panel,
-      .q-sub-chevron,.q-mobile-answer,.print-footer-screen,
-      .ans-share-wrap,.share-btn{
-        display:none!important;
-      }
-      /* Hide chevron arrows - critical */
-      [class*="chevron"], [class*="toggle"], .q-sub-chevron{
-        display:none!important;
-        visibility:hidden!important;
-      }
-      /* Full width question panel, no height limit */
-      .paper-layout{
-        display:block!important;height:auto!important;
-        overflow:visible!important;width:100%!important;
-      }
-      .q-panel{
-        width:100%!important;height:auto!important;
-        max-height:none!important;overflow:visible!important;
-        border:none!important;
-      }
-      .q-list-wrap{
-        height:auto!important;overflow:visible!important;
-      }
-      /* Clean up active states */
-      .q-sub.active .q-sub-header{
-        background:white!important;border-left:none!important;
-      }
-      /* Clean question styling for print */
-      .q-block{
-        border:none!important;border-radius:0!important;
-        border-bottom:1px solid #e2e8f0!important;
-        margin-bottom:6px!important;
-        page-break-inside:avoid;
-      }
-      .q-sub-header{padding:6px 8px!important;}
-      .q-sub-letter{
-        background:#f1f5f9!important;color:#475569!important;
-        -webkit-print-color-adjust:exact;print-color-adjust:exact;
-      }
-      .q-sub-marks{
-        background:#94a3b8!important;color:white!important;
-        -webkit-print-color-adjust:exact;print-color-adjust:exact;
-      }
-      .paper-header{border-radius:0!important;}
-      /* Show print footer at bottom */
-      .print-footer{
-        display:block!important;
-        position:fixed;
-        bottom:0;left:0;right:0;
-        text-align:center;
-        font-size:9pt;
-        color:#94a3b8;
-        padding:8px;
-        border-top:1px solid #e2e8f0;
-      }
+/* ANSWER BUTTON */
+.ans-btn{width:100%;background:transparent;border:1.5px dashed ${cfg.accent}80;border-radius:12px;padding:11px 16px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:700;color:${cfg.accent};cursor:pointer;margin-top:8px;transition:all .15s;}
+.ans-btn:hover{background:${cfg.accent}08;border-style:solid;}
 
-      /* PDF footer with branding on every page */
-      @page {
-        margin: 15mm 15mm 20mm 15mm;
-        @bottom-center {
-          content: "ujyalo.app | Free SEE Exam Prep for Nepal 🇳🇵 | Free forever";
-          font-size: 9pt;
-          color: #94a3b8;
-        }
-      }
-      /* Fallback footer for browsers that don't support @page @bottom */
-      .print-footer{
-        display:block!important;
-        text-align:center;font-size:10px;color:#94a3b8;
-        padding-top:16px;margin-top:24px;
-        border-top:1px solid #e2e8f0;
-      }
-    }
-    .print-footer{display:none;}
+/* RIGHT PANEL */
+.rp{width:380px;flex-shrink:0;border-left:1px solid var(--line);background:var(--bg);display:flex;flex-direction:column;overflow:hidden;}
+.rp-hd{padding:13px 18px;background:var(--card);border-bottom:1px solid var(--line);flex-shrink:0;position:sticky;top:0;z-index:2;}
+.rp-lbl{font-size:11px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.8px;}
+.rp-q{font-size:13px;font-weight:700;margin-top:3px;color:var(--ink);}
+.rp-scroll{flex:1;overflow-y:auto;padding:18px;}
+.rp-scroll::-webkit-scrollbar{width:3px;}
+.rp-scroll::-webkit-scrollbar-thumb{background:#dde3f0;border-radius:99px;}
+.rp-empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.rp-empty-ico{font-size:32px;margin-bottom:10px;}
 
-    /* Both languages print mode */
-    body.print-both .lang-np{display:inline!important;}
-    body.print-both .lang-en{display:inline!important;}
-    body.print-both .ph-instr-np{display:block!important;}
-    body.print-both .lang-np-block{display:block!important;}
-    /* In both mode, show Nepali then English on separate lines */
-    body.print-both .q-parent-text,
-    body.print-both .q-sub-content{display:flex;flex-direction:column;gap:4px;}
-    body.print-both .lang-np{display:block!important;font-family:'Noto Sans Devanagari',sans-serif;}
-    body.print-both .lang-en{display:block!important;color:var(--mid);font-size:.95em;}
+/* ANSWER PANEL */
+.ans-final{border-radius:14px;padding:15px 17px;margin-bottom:16px;}
+.ans-check{display:flex;align-items:center;gap:7px;margin-bottom:6px;}
+.ans-check-circle{width:20px;height:20px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+.ans-lbl{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px;}
+.ans-text{font-size:15px;font-weight:700;color:var(--ink);line-height:1.6;}
+.steps-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;}
+.step-item{display:flex;gap:12px;padding-bottom:14px;opacity:.18;transition:opacity .3s;}
+.step-item.shown{opacity:1;}
+.step-col{display:flex;flex-direction:column;align-items:center;}
+.step-circle{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;transition:background .25s;}
+.step-line{width:1.5px;flex:1;min-height:12px;margin-top:4px;transition:background .25s;}
+.step-text{font-size:14px;color:var(--ink);line-height:1.65;padding-top:2px;flex:1;}
+.next-btn{width:100%;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-bottom:10px;transition:opacity .15s;}
+.next-btn:hover{opacity:.88;}
+.replay-btn{width:100%;background:transparent;border:1.5px solid var(--line);border-radius:12px;padding:11px;font-size:13px;font-weight:700;color:var(--faint);cursor:pointer;margin-bottom:10px;}
+.re-btn{width:100%;background:transparent;border:1.5px dashed rgba(124,58,237,.45);border-radius:12px;padding:11px;font-size:13px;font-weight:700;color:var(--purple);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.re-btn:hover{background:rgba(124,58,237,.06);border-style:solid;}
+.re-box{border-radius:10px;padding:12px 14px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.18);margin-top:8px;display:none;}
+.re-box-lbl{font-size:10px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.re-box-text{font-size:13px;color:var(--ink);line-height:1.65;}
 
-    /* ── MOBILE ── */
-    @media (max-width:768px){
-      html,body{height:auto;overflow:auto;}
-      .paper-layout{flex-direction:column;height:auto;overflow:visible;}
-      .q-panel{width:100%;border-right:none;overflow:visible;height:auto;}
-      .ans-panel{display:none!important;}
-      .q-sub-chevron{display:block!important;}
-      /* Mobile accordion */
-      .q-mobile-answer{
-        display:none;border-top:1px solid #bbf7d0;
-        background:#f0fdf4;
-      }
-      .q-sub.open .q-mobile-answer{display:block;}
-      .q-sub.open .q-sub-chevron{transform:rotate(180deg);color:var(--brand);}
-      .q-sub.open .q-sub-header{background:#EFF6FF;border-left:3px solid var(--brand);}
-      .q-sub.open .q-sub-letter{background:var(--brand);color:white;}
-      .q-sub.open .q-sub-content{color:var(--ink);font-weight:600;}
-      .ans-label{background:var(--green);color:white;padding:8px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
-      .ans-body{padding:14px 16px;font-size:13px;color:#065f46;line-height:1.9;white-space:pre-wrap;}
-      .ans-share{padding:8px 16px 12px;text-align:right;}
-      .tb-dl span:first-of-type{display:none;}
-    }
-  </style>
+/* ── OVERVIEW SCREEN ── */
+.ov-screen{padding:28px;max-width:640px;margin:0 auto;}
+.ov-hero{background:var(--navy);border-radius:18px;padding:24px 26px;position:relative;overflow:hidden;margin-bottom:24px;}
+.ov-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:${cfg.accent}22;}
+.ov-hero-in{position:relative;display:flex;align-items:center;gap:14px;}
+.ov-subj-ico{width:48px;height:48px;border-radius:13px;background:${cfg.light};color:${cfg.accent};display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:22px;flex-shrink:0;}
+.ov-paper-nm{font-family:'Fraunces',serif;font-size:20px;font-weight:900;color:#fff;}
+.ov-paper-mt{font-size:12px;color:#8898b8;margin-top:2px;}
+.ov-stats{display:flex;gap:8px;margin-top:12px;position:relative;}
+.ov-stat{background:rgba(255,255,255,.07);border-radius:9px;padding:8px 14px;text-align:center;}
+.ov-stat-n{font-family:'Fraunces',serif;font-size:18px;font-weight:900;color:#fff;}
+.ov-stat-l{font-size:10px;color:#8898b8;text-transform:uppercase;letter-spacing:.5px;}
+.ov-how-lbl{font-size:11px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px;}
+.ov-cards{display:flex;flex-direction:column;gap:8px;}
+.ov-card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left;width:100%;transition:all .18s cubic-bezier(.22,.68,0,1.2);}
+.ov-card:hover{border-color:var(--mc);transform:translateY(-2px);box-shadow:0 8px 24px color-mix(in srgb, var(--mc) 18%, transparent);}
+.ov-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.ov-info{flex:1;}
+.ov-title{font-size:15px;font-weight:700;color:var(--ink);}
+.ov-desc{font-size:13px;color:var(--muted);margin-top:2px;}
+.ov-arr{font-size:20px;font-weight:700;}
+
+/* ── STEP MODE ── */
+.step-strip{background:var(--card);border-bottom:1px solid var(--line);padding:10px 22px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.step-dot{flex:1;height:5px;border-radius:99px;background:var(--line);cursor:pointer;transition:background .2s;}
+.step-dot.act{background:${cfg.accent};}
+.step-dot.done{background:rgba(34,197,94,.75);}
+.step-counter{font-size:12px;font-weight:700;color:var(--muted);flex-shrink:0;margin-left:6px;}
+.step-main{flex:1;overflow-y:auto;background:var(--bg);padding:22px;}
+.step-qcard{background:var(--card);border:1.5px solid ${cfg.accent}44;border-radius:18px;padding:22px 24px;max-width:640px;margin:0 auto 20px;}
+.step-qnum{font-family:'Fraunces',serif;font-size:36px;font-weight:900;color:${cfg.accent};margin-bottom:8px;}
+.step-qtext{font-size:16px;color:var(--ink);line-height:1.8;}
+.step-nav{background:var(--card);border-top:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.step-prev{flex:1;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:12px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;transition:all .15s;}
+.step-prev:disabled{background:var(--bg);color:var(--faint);cursor:default;}
+.step-ctr{font-size:12px;color:var(--faint);font-weight:700;flex-shrink:0;}
+.step-next{flex:1;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#fff;background:${cfg.accent};cursor:pointer;transition:opacity .15s;}
+.step-next:disabled{background:var(--bg);color:var(--faint);cursor:default;}
+
+/* ── DOWNLOAD MODAL ── */
+.dl-overlay{position:fixed;inset:0;background:rgba(13,27,62,.6);backdrop-filter:blur(4px);z-index:400;display:none;align-items:center;justify-content:center;}
+.dl-overlay.open{display:flex;}
+.dl-modal{background:var(--card);border-radius:20px;padding:24px;max-width:420px;width:calc(100% - 32px);animation:fadeDown .22s ease;}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.dl-modal-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:18px;}
+.dl-modal-title{font-family:'Fraunces',serif;font-size:18px;font-weight:900;color:var(--ink);}
+.dl-modal-sub{font-size:12px;color:var(--faint);margin-top:3px;}
+.dl-x{background:var(--bg);border:none;border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0;}
+.dl-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.dl-opt{background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;width:100%;text-align:left;transition:all .15s;}
+.dl-opt:hover{background:var(--card);border-color:${cfg.accent}44;}
+.dl-opt.selected{background:rgba(34,197,94,.1);border-color:var(--green);}
+.dl-flag{font-size:24px;flex-shrink:0;}
+.dl-opt-nm{font-size:14px;font-weight:700;color:var(--ink);}
+.dl-opt-sub{font-size:12px;color:var(--muted);margin-top:1px;}
+.dl-note{background:var(--bg);border-radius:10px;padding:10px 12px;font-size:11px;color:var(--muted);}
+
+/* ── MOBILE DRAWER ── */
+.drawer-overlay{position:fixed;inset:0;background:rgba(13,27,62,.55);backdrop-filter:blur(4px);z-index:300;display:none;}
+.drawer-overlay.open{display:block;}
+.drawer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-radius:22px 22px 0 0;max-height:82vh;overflow-y:auto;z-index:301;transform:translateY(100%);transition:transform .28s cubic-bezier(.22,.68,0,1.2);}
+.drawer.open{transform:translateY(0);}
+.drawer-handle{width:36px;height:4px;background:var(--line);border-radius:99px;margin:12px auto 0;}
+.drawer-hd{padding:14px 18px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
+.drawer-q{font-size:13px;font-weight:700;color:var(--ink);}
+.drawer-marks{font-size:12px;color:var(--faint);}
+.drawer-x{background:var(--bg);border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;}
+.drawer-body{padding:18px;}
+
+/* HIDDEN */
+.hidden{display:none!important;}
+
+/* ── MOBILE ── */
+@media(max-width:767px){
+  .sb{display:none;}
+  .rp{display:none;}
+  .hdr-main{padding:8px 14px;}
+  .paper-nm{font-size:14px;}
+  .paper-mt{display:none;}
+  .ov-screen{padding:16px;}
+  .step-main{padding:14px;}
+  .info-strip{padding:8px 14px;}
+  .qcard-body{padding:12px 14px;}
+  .cpad{padding:12px 14px;}
+  .mcq-grid{grid-template-columns:1fr;}
+}
+</style>
 </head>
 <body>
-<div id="site-nav"></div>
 
-<div class="topbar">
-  <a href="/see.html?mode=past-papers" class="tb-back">← Back</a>
-  <div class="tb-divider"></div>
-  <div class="tb-info">
-    <div class="tb-title">${escape(subject.name)} · SEE ${paper.year}</div>
-    <div class="tb-sub">${escape(paper.province)} Province · Full marks: ${paper.total_marks}</div>
-  </div>
-  <div class="tb-actions">
-    <div class="tb-lang" id="lang-toggle" style="${subject.code === 'english' ? 'display:none' : ''}">
-      <button class="tb-lang-btn active" id="btn-en" onclick="setLang('en')">🇬🇧 English</button>
-      <button class="tb-lang-btn" id="btn-np" onclick="setLang('np')">🇳🇵 नेपाली</button>
-    </div>
-    <button class="tb-share" id="share-btn" onclick="shareLink()">↗ Share</button>
-    <div class="tb-dl-wrap">
-      ${subject.code === 'english' ? `
-      <button class="tb-dl" onclick="downloadPDF('en')">⬇ <span>Download PDF</span></button>
-      ` : `
-      <button class="tb-dl" onclick="toggleDl()">⬇ <span>Download PDF</span> ▾</button>
-      <div class="dl-dd" id="dl-dd">
-        <div class="dl-opt" onclick="downloadPDF('en')">
-          <div class="dl-opt-icon">🇬🇧</div>
-          <div><div>English PDF</div><div class="dl-opt-sub">Questions in English only</div></div>
-        </div>
-        <div class="dl-opt" onclick="downloadPDF('np')">
-          <div class="dl-opt-icon">🇳🇵</div>
-          <div><div>Nepali PDF</div><div class="dl-opt-sub">नेपाली भाषामा मात्र</div></div>
-        </div>
-        <div class="dl-opt" onclick="downloadPDF('both')">
-          <div class="dl-opt-icon">📄</div>
-          <div><div>Both languages</div><div class="dl-opt-sub">Nepali then English</div></div>
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-main">
+    <div class="hdr-l">
+      <button class="back-btn" onclick="history.back()">← Back</button>
+      <div class="paper-id">
+        <div class="subj-ico">${cfg.icon}</div>
+        <div>
+          <div class="paper-nm">${esc(subject.name)} · SEE ${paper.year}</div>
+          <div class="paper-mt">${esc(paper.province)} Province · ${totalMarks} marks · ${paper.duration||'3 hours'}</div>
         </div>
       </div>
-      `}
     </div>
+    <div class="hdr-r">
+      <div class="prog-pill">
+        <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+        <span class="prog-pct" id="prog-pct">0%</span>
+      </div>
+      <div class="lang-tog">
+        <button class="lt-btn act" id="lt-en" onclick="setLang('en')">🇬🇧 EN</button>
+        <button class="lt-btn off" id="lt-np" onclick="setLang('np')">🇳🇵 NP</button>
+      </div>
+      <button class="share-btn" onclick="shareUrl()" title="Share">🔗</button>
+      <button class="dl-btn" onclick="openDownload()">⬇ PDF</button>
+    </div>
+  </div>
+  <!-- MODE TABS — hidden on overview screen -->
+  <div class="mode-tabs hidden" id="mode-tabs">
+    <button class="mtab act" onclick="setMode('read',this)">📖 Read</button>
+    <button class="mtab" onclick="setMode('check',this)">✅ Check</button>
+    <button class="mtab" onclick="setMode('step',this)">⚡ Step</button>
   </div>
 </div>
 
-<div class="paper-layout">
-  <!-- LEFT: Question list -->
-  <div class="q-panel" id="q-panel">
-    <!-- Paper header -->
-    <div class="paper-header">
-      <div class="ph-exam">SEE ${paper.year} (${yearAD} AD)</div>
-      <div class="ph-subject">Compulsory ${escape(subject.name)}</div>
-      <div class="ph-subject-np">अनिवार्य ${escape(subjectNameNp)}</div>
-      <div><span class="ph-badge">🏔 ${escape(paper.province)} Province</span></div>
-      <div class="ph-meta">
-        <span>Time: ${paper.time_minutes / 60} Hours</span>
-        <span>Full Marks: ${paper.total_marks}</span>
+<!-- BODY -->
+<div class="body" id="body">
+
+  <!-- OVERVIEW SCREEN -->
+  <div style="flex:1;overflow-y:auto;background:var(--bg);" id="ov-wrap">
+    <div class="ov-screen">
+      <!-- Paper hero -->
+      <div class="ov-hero">
+        <div class="ov-hero-in">
+          <div class="ov-subj-ico">${cfg.icon}</div>
+          <div>
+            <div class="ov-paper-nm">${esc(subject.name)} <span style="opacity:.7;font-size:16px">·</span> SEE ${paper.year}</div>
+            <div class="ov-paper-mt">${esc(paper.province)} · ${esc(provNp)} · ${yearAD} AD</div>
+          </div>
+        </div>
+        <div class="ov-stats">
+          <div class="ov-stat"><div class="ov-stat-n">${totalQuestions}</div><div class="ov-stat-l">Questions</div></div>
+          <div class="ov-stat"><div class="ov-stat-n">${totalMarks}</div><div class="ov-stat-l">Marks</div></div>
+          <div class="ov-stat"><div class="ov-stat-n">${paper.duration||'3 hrs'}</div><div class="ov-stat-l">Duration</div></div>
+        </div>
       </div>
-      ${paper.instructions_english ? `
-      <div class="ph-instr">
-        <div class="ph-instr-np lang-np" style="display:none">${escape(paper.instructions_nepali || '')}</div>
-        <div class="lang-en" style="font-style:italic;font-size:11px;">${escape(paper.instructions_english)}</div>
-        <div class="ph-all">सबै प्रश्नहरू अनिवार्य छन् · All questions are compulsory.</div>
-      </div>` : ''}
-    </div>
-    <!-- Questions -->
-    <div class="q-list-wrap">${questionsHTML}</div>
-    <!-- Print footer -->
-    <div class="print-footer">
-      ujyalo.app &nbsp;|&nbsp; Free SEE Exam Prep for Nepal 🇳🇵 &nbsp;|&nbsp; Free forever
+      <!-- Mode selection -->
+      <div class="ov-how-lbl">How do you want to use this paper?</div>
+      <div class="ov-cards">${overviewCards}</div>
     </div>
   </div>
 
-  <!-- RIGHT: Answer panel (desktop only) -->
-  <div class="ans-panel" id="ans-panel">
-    <div class="ans-empty" id="ans-empty">
-      <div class="ans-empty-icon">👈</div>
-      <div class="ans-empty-title">Select a question</div>
-      <div class="ans-empty-sub">Click any question on the left to see the model answer</div>
+  <!-- PAPER INSIDE (hidden until mode selected) -->
+  <div style="flex:1;display:flex;overflow:hidden;" id="paper-wrap" class="hidden">
+
+    <!-- SIDEBAR -->
+    <div class="sb">
+      <div class="sb-hd">
+        <div class="sb-lbl">All Questions</div>
+        <div class="sb-pt"><div class="sb-pf" id="sb-fill" style="width:0%"></div></div>
+        <div class="sb-cnt" id="sb-cnt">0 / ${totalQuestions} reviewed</div>
+      </div>
+      <div class="sb-scroll">${sidebarHTML}</div>
     </div>
-    <div class="ans-content" id="ans-content"></div>
-    <div class="ans-nav" id="ans-nav" style="display:none;">
-      <div class="ans-nav-info" id="ans-nav-info"></div>
-      <div class="ans-nav-btns">
-        <button class="ans-nav-btn ans-prev" id="btn-prev" onclick="navQ(-1)">← Prev</button>
-        <button class="ans-nav-btn ans-next" id="btn-next" onclick="navQ(1)">Next →</button>
+
+    <!-- MAIN -->
+    <div class="main-area">
+
+      <!-- READ / CHECK modes -->
+      <div class="paper-scroll" id="read-check-scroll">
+        <!-- Info strip -->
+        <div class="info-strip">
+          <div class="info-item"><span class="info-k">Marks</span><span class="info-v">${totalMarks}</span></div>
+          <span class="info-sep">|</span>
+          <div class="info-item"><span class="info-k">Time</span><span class="info-v">${paper.duration||'3 hours'}</span></div>
+          <span class="info-sep">|</span>
+          <div class="info-item"><span class="info-k">Questions</span><span class="info-v">${totalQuestions}</span></div>
+          <span class="info-sep">|</span>
+          <div class="info-item"><span class="info-k">Language</span><span class="info-v" id="lang-indicator">${isEnglish?'English':'Nepali / English'}</span></div>
+        </div>
+        <!-- Question cards -->
+        <div style="padding:14px 16px;" id="qcards">${qCardsHTML}</div>
+      </div>
+
+      <!-- STEP mode -->
+      <div class="hidden" id="step-wrap" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+        <div class="step-strip">
+          ${stepDots}
+          <span class="step-counter" id="step-ctr">1 / ${totalQuestions}</span>
+        </div>
+        <div class="step-main" id="step-main">
+          <!-- Filled by JS -->
+        </div>
+        <div class="step-nav">
+          <button class="step-prev" id="sp-prev" onclick="stepPrev()" disabled>← Previous</button>
+          <span class="step-ctr" id="step-mid">Q1 of ${totalQuestions}</span>
+          <button class="step-next" id="sp-next" onclick="stepNext()" style="background:${cfg.accent};">Next →</button>
+        </div>
+      </div>
+
+    </div><!-- /main-area -->
+
+    <!-- RIGHT PANEL -->
+    <div class="rp" id="right-panel">
+      <div class="rp-hd">
+        <div class="rp-lbl">Answer &amp; Explanation</div>
+        <div class="rp-q" id="rp-q">Select a question to see the answer</div>
+      </div>
+      <div class="rp-scroll" id="rp-scroll">
+        <div class="rp-empty">
+          <div class="rp-empty-ico">👆</div>
+          <div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px;">Click any question</div>
+          <div style="font-size:13px;">The answer and step-by-step explanation will appear here.</div>
+        </div>
       </div>
     </div>
+
+  </div><!-- /paper-wrap -->
+
+</div><!-- /body -->
+
+<!-- DOWNLOAD MODAL -->
+<div class="dl-overlay" id="dl-overlay" onclick="if(event.target===this)closeDownload()">
+  <div class="dl-modal">
+    <div class="dl-modal-hd">
+      <div>
+        <div class="dl-modal-title">Download PDF</div>
+        <div class="dl-modal-sub">SEE ${paper.year} · ${esc(paper.province)} · ${esc(subject.name)}</div>
+      </div>
+      <button class="dl-x" onclick="closeDownload()">✕</button>
+    </div>
+    <div class="dl-opts">
+      ${isEnglish ? `
+      <button class="dl-opt" onclick="downloadPDF('en',this)" data-flag="🇬🇧">
+        <span class="dl-flag">🇬🇧</span>
+        <div><div class="dl-opt-nm">English PDF</div><div class="dl-opt-sub">Questions in English only</div></div>
+      </button>` : `
+      <button class="dl-opt" onclick="downloadPDF('np',this)" data-flag="🇳🇵">
+        <span class="dl-flag">🇳🇵</span>
+        <div><div class="dl-opt-nm">Nepali PDF</div><div class="dl-opt-sub">Original script — नेपाली भाषामा मात्र</div></div>
+      </button>
+      <button class="dl-opt" onclick="downloadPDF('en',this)" data-flag="🇬🇧">
+        <span class="dl-flag">🇬🇧</span>
+        <div><div class="dl-opt-nm">English PDF</div><div class="dl-opt-sub">Translated version</div></div>
+      </button>
+      <button class="dl-opt" onclick="downloadPDF('both',this)" data-flag="📄">
+        <span class="dl-flag">📄</span>
+        <div><div class="dl-opt-nm">Both languages</div><div class="dl-opt-sub">Nepali then English in one PDF</div></div>
+      </button>`}
+    </div>
+    <div class="dl-note">🔒 Invisible watermark included for copyright protection.</div>
   </div>
 </div>
 
-<div id="site-footer"></div>
-<script src="/scripts/components.js"></script>
+<!-- MOBILE DRAWER -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-hd">
+    <div>
+      <div class="drawer-q" id="drawer-q">Answer</div>
+      <div class="drawer-marks" id="drawer-marks"></div>
+    </div>
+    <button class="drawer-x" onclick="closeDrawer()">✕ Close</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+</div>
+
 <script>
-const ANSWERS = ${JSON.stringify(answersData)};
-const ALL_SUBS = ${JSON.stringify(allSubs)};
-const SHARE_URL = '${shareUrl}';
-const IS_ENGLISH_SUBJECT = ${subject.code === 'english' ? 'true' : 'false'};
+// ─── CONSTANTS ─────────────────────────────────────────────────────────────
+
+const IS_ENGLISH = ${isEnglish ? 'true' : 'false'};
 const PAPER_KEY = 'SEE-${paper.year}-${paper.province}-${subject.code}';
 const PRINT_BASE = '/api/see-paper-print?year=${paper.year}&province=${paper.province}&subject=${subject.code}';
+const SHARE_URL = '${esc(canonicalUrl)}';
+const ACCENT = '${cfg.accent}';
+const TOTAL = ${totalQuestions};
+const ANSWERS = ${ANSWERS_JSON};
+const GROUPS = ${GROUPS_JSON};
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
 
 let LANG = 'en';
-let ACTIVE_ID = null;
-let OPEN_MOB_ID = null;
-const isMobile = () => window.innerWidth <= 768;
+let MODE = null; // null=overview, 'read','check','step'
+let activeId = null;
+let currentStep = 0;
+let stepQIdx = 0;
+let doneSet = new Set();
+const isMobile = () => window.innerWidth < 768;
 
-// ── SELECT QUESTION (desktop) ──────────────────────────
-function selectQ(id) {
-  if (isMobile()) {
-    // Mobile: accordion
-    const sub = document.getElementById('qs-' + id);
-    const isOpen = sub.classList.contains('open');
-    // Close previous
-    if (OPEN_MOB_ID && OPEN_MOB_ID !== id) {
-      const prev = document.getElementById('qs-' + OPEN_MOB_ID);
-      if (prev) prev.classList.remove('open');
-    }
-    sub.classList.toggle('open', !isOpen);
-    OPEN_MOB_ID = isOpen ? null : id;
-    return;
+// ─── OVERVIEW → MODE ───────────────────────────────────────────────────────
+
+function enterMode(mode) {
+  if (mode === 'download') { openDownload(); return; }
+  MODE = mode;
+  document.getElementById('ov-wrap').classList.add('hidden');
+  document.getElementById('paper-wrap').classList.remove('hidden');
+  document.getElementById('mode-tabs').classList.remove('hidden');
+
+  // Update mode tab
+  document.querySelectorAll('.mtab').forEach(t => t.classList.remove('act'));
+  const modeMap = {read:0, check:1, step:2};
+  document.querySelectorAll('.mtab')[modeMap[mode]]?.classList.add('act');
+
+  if (mode === 'step') {
+    document.getElementById('read-check-scroll').classList.add('hidden');
+    document.getElementById('step-wrap').classList.remove('hidden');
+    document.getElementById('step-wrap').style.display = 'flex';
+    stepQIdx = 0;
+    renderStepQ();
+  } else {
+    document.getElementById('step-wrap').classList.add('hidden');
+    document.getElementById('step-wrap').style.display = 'none';
+    document.getElementById('read-check-scroll').classList.remove('hidden');
   }
 
-  // Desktop: show in right panel
-  ACTIVE_ID = id;
-  const d = ANSWERS[id];
-  if (!d) return;
-
-  // Update active state
-  document.querySelectorAll('.q-sub').forEach(el => el.classList.remove('active'));
-  const el = document.getElementById('qs-' + id);
-  if (el) { el.classList.add('active'); el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
-
-  document.getElementById('ans-empty').style.display = 'none';
-  document.getElementById('ans-nav').style.display = 'flex';
-  const content = document.getElementById('ans-content');
-  content.classList.add('show');
-
-  const showNp = LANG === 'np';
-  const ctx = showNp ? (d.ctxNp || d.ctxEn) : (d.ctxEn || '');
-  const qText = showNp ? (d.textNp || d.textEn) : (d.textEn || '');
-  const diagram = d.diagram || '';
-  const isNpClass = showNp ? 'ans-ctx-np' : 'ans-ctx';
-  const qClass = showNp ? 'ans-q-text-np' : 'ans-q-text';
-
-  content.innerHTML = \`
-    <div class="ans-q-badge">Q\${d.qNum}(\${d.subPart}) · \${d.marks} mark\${d.marks!==1?'s':''}</div>
-    <div class="ans-question">
-      \${ctx ? \`<div class="ans-ctx-label">Context</div><div class="\${isNpClass}">\${ctx}</div>\` : ''}
-      \${diagram ? \`<div style="margin:10px 0;">\${diagram}</div>\` : ''}
-      <div class="\${qClass}">\${qText}</div>
-      <div class="ans-marks">📋 \${d.marks} mark\${d.marks!==1?'s':''}</div>
-    </div>
-    <div class="ans-box">
-      <div class="ans-box-header">
-        <span class="ans-box-label">✓ Model Answer</span>
-      </div>
-      <div class="ans-body">\${d.answer}</div>
-      <div class="ans-share-wrap">
-        <button class="share-btn" onclick="shareQ('\${id}', event)">↗ Share this Q&A</button>
-      </div>
-    </div>
-  \`;
-
-  const idx = ALL_SUBS.indexOf(id);
-  document.getElementById('ans-nav-info').textContent = \`\${idx+1} of \${ALL_SUBS.length}\`;
-  document.getElementById('btn-prev').disabled = idx === 0;
-  document.getElementById('btn-next').disabled = idx === ALL_SUBS.length - 1;
-  content.scrollTop = 0;
-}
-
-function navQ(dir) {
-  const idx = ALL_SUBS.indexOf(ACTIVE_ID);
-  if (idx >= 0) selectQ(ALL_SUBS[idx + dir]);
-}
-
-// ── LANGUAGE ──────────────────────────────────────────
-function setLang(lang) {
-  LANG = lang;
-  document.getElementById('btn-en').classList.toggle('active', lang==='en');
-  document.getElementById('btn-np').classList.toggle('active', lang==='np');
-  const np = lang === 'np';
-  document.querySelectorAll('.lang-np').forEach(el => el.style.display = np ? 'inline' : 'none');
-  document.querySelectorAll('.lang-en').forEach(el => el.style.display = np ? 'none' : 'inline');
-  document.querySelectorAll('.ph-instr-np').forEach(el => el.style.display = np ? 'block' : 'none');
-  if (ACTIVE_ID) selectQ(ACTIVE_ID);
-}
-
-// ── SHARE ─────────────────────────────────────────────
-function shareLink() {
-  navigator.clipboard.writeText(SHARE_URL).then(() => {
-    const btn = document.getElementById('share-btn');
-    btn.textContent = '✓ Copied!';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = '↗ Share'; btn.classList.remove('copied'); }, 2000);
-  }).catch(() => {
-    prompt('Copy this link:', SHARE_URL);
+  // Check mode: show answer buttons prominently; Read mode: hide them
+  document.querySelectorAll('.ans-btn').forEach(btn => {
+    btn.style.display = mode === 'read' ? 'none' : '';
   });
-  // GA tracking
+
+  // Auto-select first question on desktop
+  if (!isMobile() && mode !== 'step' && ANSWERS.length > 0) {
+    openAnswer(ANSWERS[0].id);
+  }
+
+  // Restore progress
+  loadProgress();
+}
+
+function setMode(mode, btn) {
+  MODE = mode;
+  document.querySelectorAll('.mtab').forEach(t => t.classList.remove('act'));
+  btn.classList.add('act');
+
+  if (mode === 'step') {
+    document.getElementById('read-check-scroll').classList.add('hidden');
+    document.getElementById('step-wrap').classList.remove('hidden');
+    document.getElementById('step-wrap').style.display = 'flex';
+    stepQIdx = 0;
+    renderStepQ();
+  } else {
+    document.getElementById('step-wrap').classList.add('hidden');
+    document.getElementById('step-wrap').style.display = 'none';
+    document.getElementById('read-check-scroll').classList.remove('hidden');
+  }
+
+  document.querySelectorAll('.ans-btn').forEach(btn => {
+    btn.style.display = mode === 'read' ? 'none' : '';
+  });
+}
+
+// ─── ANSWER OPEN ───────────────────────────────────────────────────────────
+
+function openAnswer(id) {
+  const q = ANSWERS.find(a => a.id === id);
+  if (!q) return;
+  activeId = id;
+  currentStep = 0;
+
+  // Highlight sidebar row
+  const qNum = q.qNum;
+  document.querySelectorAll('.sb-row').forEach(r => r.classList.remove('act'));
+  document.getElementById('sb-' + qNum)?.classList.add('act');
+
+  // Highlight question card
+  document.querySelectorAll('.qcard').forEach(c => c.classList.remove('act'));
+  document.getElementById('qcard-' + qNum)?.classList.add('act');
+
+  const html = buildAnswerPanel(q);
+
+  if (isMobile()) {
+    document.getElementById('drawer-q').textContent = 'Q' + qNum + (q.sub ? ' (' + q.sub + ')' : '');
+    document.getElementById('drawer-marks').textContent = q.marks + ' marks';
+    document.getElementById('drawer-body').innerHTML = html;
+    document.getElementById('drawer').classList.add('open');
+    document.getElementById('drawer-overlay').classList.add('open');
+  } else {
+    document.getElementById('rp-q').textContent = 'Q' + qNum + (q.sub ? ' (' + q.sub + ')' : '') + ' — ' + q.marks + ' marks';
+    document.getElementById('rp-scroll').innerHTML = html;
+  }
+}
+
+// ─── BUILD ANSWER PANEL ────────────────────────────────────────────────────
+
+function buildAnswerPanel(q) {
+  const answer = q.answer || 'Model answer coming soon.';
+  const steps = q.steps && Array.isArray(q.steps) ? q.steps : (q.steps ? JSON.parse(q.steps) : null);
+  const col = q.color || ACCENT;
+
+  let stepsHTML = '';
+  if (steps && steps.length) {
+    const stepItems = steps.map((s,i) => `
+      <div class="step-item${i <= currentStep ? ' shown' : ''}" id="sp-${q.id}-${i}" style="transition-delay:${i*.06}s;">
+        <div class="step-col">
+          <div class="step-circle" style="background:${i<currentStep?'var(--green)':i===currentStep?col:'var(--line)'};color:${i<=currentStep?'#fff':'var(--faint)'};">
+            ${i < currentStep ? '✓' : i+1}
+          </div>
+          ${i < steps.length-1 ? `<div class="step-line" style="background:${i<currentStep?'rgba(34,197,94,.4)':'var(--line)'};"></div>` : ''}
+        </div>
+        <div class="step-text">${esc(s)}</div>
+      </div>`).join('');
+
+    const showNext = currentStep < steps.length - 1;
+    stepsHTML = `
+      <div class="steps-lbl" style="color:${col};">Step-by-step working</div>
+      <div id="step-list-${q.id}">${stepItems}</div>
+      ${showNext ? `<button class="next-btn" id="next-btn-${q.id}" onclick="nextStep('${q.id}')" style="background:${col};">Next step →</button>` : ''}
+      <button class="replay-btn" id="replay-btn-${q.id}" onclick="replaySteps('${q.id}')" style="${showNext?'display:none':''}">↺ Replay steps</button>`;
+  }
+
+  return `
+    <div class="ans-final" style="background:${col}12;border:1.5px solid ${col}30;">
+      <div class="ans-check">
+        <div class="ans-check-circle">✓</div>
+        <span class="ans-lbl">Final answer</span>
+      </div>
+      <div class="ans-text">${esc(answer)}</div>
+    </div>
+    ${stepsHTML}
+    <button class="re-btn" onclick="toggleReExplain(this)">💡 Still don't understand? Explain differently</button>
+    <div class="re-box" id="re-box-${q.id}">
+      <div class="re-box-lbl">Simpler explanation</div>
+      <div class="re-box-text">A simpler explanation for this question will be available soon. Try breaking the problem into smaller parts, or ask your teacher for help.</div>
+    </div>`;
+}
+
+// ─── STEPS ─────────────────────────────────────────────────────────────────
+
+function nextStep(id) {
+  const q = ANSWERS.find(a => a.id === id);
+  if (!q) return;
+  const steps = Array.isArray(q.steps) ? q.steps : JSON.parse(q.steps||'[]');
+  if (currentStep < steps.length - 1) {
+    currentStep++;
+    openAnswer(id); // re-render with updated step
+  }
+}
+
+function replaySteps(id) {
+  currentStep = 0;
+  openAnswer(id);
+}
+
+function toggleReExplain(btn) {
+  const box = btn.nextElementSibling;
+  if (box) { box.style.display = box.style.display === 'none' ? 'block' : 'none'; }
+}
+
+// ─── STEP MODE ─────────────────────────────────────────────────────────────
+
+function renderStepQ() {
+  const g = GROUPS[stepQIdx];
+  if (!g) return;
+  const num = g.num;
+  // Find first sub for this question
+  const subs = ANSWERS.filter(a => a.qNum === num);
+  const first = subs[0];
+
+  const text = LANG === 'np' && first?.np ? first.np : first?.en || '';
+
+  document.getElementById('step-main').innerHTML = `
+    <div class="step-qcard">
+      <div class="step-qnum">Q${num}</div>
+      <div class="step-qtext">${esc(text)}</div>
+      ${g.topic ? `<div style="margin-top:12px;"><span class="qtag" style="background:${ACCENT}18;color:${ACCENT};">${esc(g.topic)}</span></div>` : ''}
+    </div>
+    ${MODE === 'check' && first ? `
+    <div style="max-width:640px;margin:0 auto;">
+      ${buildAnswerPanel(first)}
+    </div>` : ''}`;
+
+  // Update dots
+  document.querySelectorAll('.step-dot').forEach((d,i) => {
+    d.classList.remove('act','done');
+    if (i === stepQIdx) d.classList.add('act');
+    else if (doneSet.has(GROUPS[i]?.num)) d.classList.add('done');
+  });
+
+  document.getElementById('step-ctr').textContent = (stepQIdx+1) + ' / ' + TOTAL;
+  document.getElementById('step-mid').textContent = 'Q'+(stepQIdx+1)+' of '+TOTAL;
+  document.getElementById('sp-prev').disabled = stepQIdx === 0;
+  document.getElementById('sp-next').disabled = stepQIdx === GROUPS.length - 1;
+
+  // Right panel on desktop
+  if (!isMobile() && first) openAnswer(first.id);
+
+  currentStep = 0;
+}
+
+function stepPrev() { if (stepQIdx > 0) { stepQIdx--; renderStepQ(); } }
+function stepNext() { if (stepQIdx < GROUPS.length-1) { stepQIdx++; renderStepQ(); } }
+function goStep(num) { stepQIdx = GROUPS.findIndex(g => g.num === num); renderStepQ(); }
+
+// ─── QUESTION CARD CLICK ───────────────────────────────────────────────────
+
+function qCardClick(num) {
+  if (MODE !== 'check' && MODE !== 'step') return;
+  const subs = ANSWERS.filter(a => a.qNum === num);
+  if (subs.length) openAnswer(subs[0].id);
+}
+
+function scrollToQ(num) {
+  const card = document.getElementById('qcard-' + num);
+  if (card) card.scrollIntoView({ behavior:'smooth', block:'start' });
+  document.querySelectorAll('.sb-row').forEach(r => r.classList.remove('act'));
+  document.getElementById('sb-' + num)?.classList.add('act');
+}
+
+// ─── MCQ ───────────────────────────────────────────────────────────────────
+
+function pickOpt(btn, correct, chosen) {
+  const grid = btn.closest('.mcq-grid');
+  grid.querySelectorAll('.mcq-opt').forEach(b => b.classList.remove('correct','wrong'));
+  btn.classList.add(chosen === correct ? 'correct' : 'wrong');
+  btn.innerHTML += chosen === correct ? ' <span>✓</span>' : ' <span>✗</span>';
+}
+
+// ─── MARK DONE ─────────────────────────────────────────────────────────────
+
+function markDone(num) {
+  const btn = document.getElementById('done-' + num);
+  const card = document.getElementById('qcard-' + num);
+  const sbRow = document.getElementById('sb-' + num);
+  const sbNum = document.getElementById('sb-num-' + num);
+  const strip = document.getElementById('strip-' + num);
+
+  if (doneSet.has(num)) {
+    doneSet.delete(num);
+    btn.className = 'done-btn undone'; btn.textContent = 'Mark done';
+    card?.classList.remove('done-card');
+    if (strip) { strip.style.background=''; strip.style.width='0'; }
+    sbRow?.classList.remove('done');
+    if (sbNum) { sbNum.style.background = ACCENT+'18'; sbNum.style.color = ACCENT; sbNum.textContent = num; }
+  } else {
+    doneSet.add(num);
+    btn.className = 'done-btn done'; btn.textContent = '✓ Done';
+    card?.classList.add('done-card');
+    if (strip) { strip.style.background = 'var(--green)'; strip.style.width = '100%'; }
+    sbRow?.classList.add('done');
+    if (sbNum) { sbNum.style.background = 'rgba(34,197,94,.18)'; sbNum.style.color = 'var(--green)'; sbNum.textContent = '✓'; }
+  }
+  updateProgress();
+  saveProgress();
+}
+
+// ─── PROGRESS ──────────────────────────────────────────────────────────────
+
+function updateProgress() {
+  const done = doneSet.size;
+  const pct = Math.round((done / TOTAL) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('sb-fill').style.width = pct + '%';
+  document.getElementById('sb-cnt').textContent = done + ' / ' + TOTAL + ' reviewed';
+  // Dots in step mode
+  document.querySelectorAll('.step-dot').forEach((d,i) => {
+    if (doneSet.has(GROUPS[i]?.num)) d.classList.add('done');
+    else d.classList.remove('done');
+  });
+}
+
+function saveProgress() {
+  try {
+    const all = JSON.parse(localStorage.getItem('ujyalo_progress') || '{}');
+    all[PAPER_KEY] = { pct: Math.round((doneSet.size/TOTAL)*100), done: [...doneSet], started: true };
+    localStorage.setItem('ujyalo_progress', JSON.stringify(all));
+  } catch(e) {}
+}
+
+function loadProgress() {
+  try {
+    const all = JSON.parse(localStorage.getItem('ujyalo_progress') || '{}');
+    const saved = all[PAPER_KEY];
+    if (saved?.done) {
+      saved.done.forEach(n => {
+        doneSet.add(n);
+        const btn = document.getElementById('done-' + n);
+        const card = document.getElementById('qcard-' + n);
+        if (btn) { btn.className = 'done-btn done'; btn.textContent = '✓ Done'; }
+        card?.classList.add('done-card');
+      });
+      updateProgress();
+    }
+  } catch(e) {}
+}
+
+// ─── BOOKMARKS ─────────────────────────────────────────────────────────────
+
+function toggleBookmark(btn, id) {
+  btn.classList.toggle('saved');
+  const q = ANSWERS.find(a => a.id === id);
+  if (!q) return;
+  try {
+    const bks = JSON.parse(localStorage.getItem('ujyalo_bookmarks') || '[]');
+    const idx = bks.findIndex(b => b.id === id);
+    if (idx > -1) bks.splice(idx, 1);
+    else bks.push({
+      id, qNum: q.qNum, sub: q.sub, marks: q.marks,
+      topic: q.topic, subjectCode: '${subject.code}',
+      year: '${paper.year}', province: '${paper.province}',
+      paper: 'SEE ${paper.year} ${subject.name}',
+      questionText: (LANG === 'np' ? q.np : q.en).substring(0, 200),
+    });
+    localStorage.setItem('ujyalo_bookmarks', JSON.stringify(bks));
+  } catch(e) {}
+}
+
+// ─── LANGUAGE ──────────────────────────────────────────────────────────────
+
+function setLang(l) {
+  LANG = l;
+  document.getElementById('lt-en').className = 'lt-btn ' + (l==='en'?'act':'off');
+  document.getElementById('lt-np').className = 'lt-btn ' + (l==='np'?'act':'off');
+  document.getElementById('lang-indicator').textContent = l==='en' ? 'English' : 'नेपाली';
+  // Re-open active answer in new language
+  if (activeId) { currentStep = 0; openAnswer(activeId); }
+  if (MODE === 'step') renderStepQ();
+}
+
+// ─── DOWNLOAD ──────────────────────────────────────────────────────────────
+
+function openDownload() { document.getElementById('dl-overlay').classList.add('open'); }
+function closeDownload() { document.getElementById('dl-overlay').classList.remove('open'); }
+
+function downloadPDF(lang, btn) {
+  document.querySelectorAll('.dl-opt').forEach(o => o.classList.remove('selected'));
+  btn.classList.add('selected');
+  const flag = btn.querySelector('.dl-flag');
+  const origFlag = flag.textContent;
+  flag.textContent = '✓';
+  if (typeof gtag !== 'undefined') gtag('event', 'pdf_download', { paper: PAPER_KEY, language: lang });
+  setTimeout(() => {
+    window.open(PRINT_BASE + '&lang=' + lang, '_blank');
+    flag.textContent = origFlag;
+    btn.classList.remove('selected');
+    closeDownload();
+  }, 800);
+}
+
+// ─── SHARE ────────────────────────────────────────────────────────────────
+
+function shareUrl() {
+  if (navigator.share) {
+    navigator.share({ title: document.title, url: SHARE_URL }).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(SHARE_URL).then(() => {
+      const btn = document.querySelector('.share-btn');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    });
+  }
   if (typeof gtag !== 'undefined') gtag('event', 'share', { paper: PAPER_KEY });
 }
 
-function shareQ(id, e) {
-  e.stopPropagation();
-  const d = ANSWERS[id];
-  const url = SHARE_URL;
-  navigator.clipboard.writeText(url).then(() => {
-    const btn = e.target;
-    btn.textContent = '✓ Link copied!';
-    setTimeout(() => { btn.textContent = '↗ Share this Q&A'; }, 2000);
-  }).catch(() => { prompt('Copy this link:', url); });
+// ─── MOBILE DRAWER ────────────────────────────────────────────────────────
+
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
 }
 
-// ── DOWNLOAD PDF ──────────────────────────────────────
-function toggleDl() {
-  const dd = document.getElementById('dl-dd');
-  if (dd) dd.classList.toggle('open');
-}
-document.addEventListener('click', e => {
-  const dd2 = document.getElementById('dl-dd'); if (dd2 && !e.target.closest('.tb-dl-wrap')) dd2.classList.remove('open');
-});
-
-function downloadPDF(lang) {
-  const dd = document.getElementById('dl-dd');
-  if (dd) dd.classList.remove('open');
-  // GA tracking
-  if (typeof gtag !== 'undefined') gtag('event', 'pdf_download', { paper: PAPER_KEY, language: lang });
-  // Open dedicated print page in new tab — fonts load correctly, clean output
-  window.open(PRINT_BASE + '&lang=' + lang, '_blank');
-}
-
-// ── INIT ──────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  // Set layout height accounting for nav + topbar
-  function setLayoutHeight() {
-    const nav = document.getElementById('site-nav');
-    const topbar = document.querySelector('.topbar');
-    const navH = nav ? nav.offsetHeight : 0;
-    const topbarH = topbar ? topbar.offsetHeight : 56;
-    const layout = document.querySelector('.paper-layout');
-    const qPanel = document.getElementById('q-panel');
-    const ansPanel = document.getElementById('ans-panel');
-    if (layout) {
-      const h = window.innerHeight - navH - topbarH;
-      layout.style.height = h + 'px';
-      if (qPanel) qPanel.style.maxHeight = h + 'px';
-      if (ansPanel) ansPanel.style.height = h + 'px';
-    }
-  }
-  // Run after nav loads (components.js injects it)
-  setTimeout(setLayoutHeight, 300);
-  window.addEventListener('resize', setLayoutHeight);
-
-  // Auto-select first question on desktop
-  if (!isMobile() && ALL_SUBS.length > 0) {
-    selectQ(ALL_SUBS[0]);
-  }
-});
 </script>
 </body>
 </html>`;
 }
 
+// ── HANDLER ───────────────────────────────────────────────────────────────
+
 export default async function handler(req, res) {
   try {
     let { year, province, subject } = req.query;
 
+    // Support clean URL: /see/past-papers/2082/Koshi/maths
     if (!year || !province || !subject) {
       const match = (req.url||'').match(/\/see\/past-papers\/(\d+)\/([^\/\?]+)\/([^\/\?]+)/);
-      if (match) { year=year||match[1]; province=province||match[2]; subject=subject||match[3]; }
+      if (match) {
+        year = year || match[1];
+        province = province || match[2];
+        subject = subject || match[3];
+      }
     }
 
     if (!year || !province || !subject) {
-      return res.status(400).send(`Missing: year=${year} province=${province} subject=${subject}`);
+      return res.status(400).send('Missing params: year, province, subject');
     }
 
-    const subjects = await fetchFromSupabase(`/exam_subjects?code=eq.${subject.toLowerCase()}&select=id,name,code`);
+    const subjectCode = subject.toLowerCase();
+    const subjects = await fetchFromSupabase(`/exam_subjects?code=eq.${subjectCode}&select=id,name,code`);
     if (!subjects[0]) return res.status(404).send(`Subject not found: ${subject}`);
-    const subjectData = subjects[0];
 
-    const provinceName = province.charAt(0).toUpperCase() + province.slice(1).toLowerCase();
-    const papers = await fetchFromSupabase(`/past_papers?subject_id=eq.${subjectData.id}&year=eq.${year}&province=eq.${provinceName}&select=*`);
-    if (!papers[0]) return res.status(404).send(`Paper not found: ${year}/${provinceName}/${subject}`);
-    const paper = papers[0];
+    // Normalise province name: Koshi, Madhesh etc (handle URL variants)
+    const provNorm = province.charAt(0).toUpperCase() + province.slice(1).toLowerCase();
+    // Special case: sudurpashchim
+    const provinceFixed = provNorm === 'Sudurpashchim' ? 'Sudurpashchim'
+      : provNorm.replace('pashchim','Pashchim').replace('pashchim','pashchim');
 
-    const questions = await fetchFromSupabase(`/past_paper_questions?paper_id=eq.${paper.id}&order=question_number.asc,sub_part.asc&select=*`);
+    const papers = await fetchFromSupabase(
+      `/past_papers?subject_id=eq.${subjects[0].id}&year=eq.${year}&province=eq.${provNorm}&select=*`
+    );
+    if (!papers[0]) return res.status(404).send(`Paper not found: ${year}/${provNorm}/${subject}`);
 
-    const html = buildHTML({ paper, subject: subjectData, questions });
+    const questions = await fetchFromSupabase(
+      `/past_paper_questions?paper_id=eq.${papers[0].id}&order=question_number.asc,sub_part.asc&select=*`
+    );
+
+    const html = buildHTML({ paper: papers[0], subject: subjects[0], questions });
+
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     return res.status(200).send(html);
 
-  } catch (err) {
+  } catch(err) {
     console.error('Paper error:', err);
-    return res.status(500).send(`<html><body><h1>Error</h1><p>${err.message}</p><a href="/see.html">Back</a></body></html>`);
+    return res.status(500).send(`<html><body style="font-family:sans-serif;padding:40px"><h2>Error loading paper</h2><p>${err.message}</p><a href="/see">← Back to papers</a></body></html>`);
   }
 }
