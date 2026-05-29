@@ -33,8 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles/main.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
 
     /* ══════════════════════════════════════
@@ -64,8 +63,8 @@
     }
     .hero-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      background: var(--brand-light,#eff6ff); border: 1px solid var(--brand,#2563eb);
-      color: var(--brand,#2563eb); font-size: 11px; font-weight: 700;
+      background: var(--brand-light,#e8f0ff); border: 1px solid var(--blue,#1a6fff);
+      color: var(--blue,#1a6fff); font-size: 11px; font-weight: 700;
       letter-spacing: 0.07em; text-transform: uppercase;
       padding: 5px 14px; border-radius: 999px;
       margin-bottom: 24px; align-self: flex-start;
@@ -77,7 +76,7 @@
       color: var(--ink-900,#0f172a);
       letter-spacing: -0.025em; margin-bottom: 20px;
     }
-    .hero-promise em { font-style: italic; color: var(--brand,#2563eb); }
+    .hero-promise em { font-style: italic; color: var(--blue,#1a6fff); }
     .hero-promise-sub {
       font-size: 15px; color: var(--ink-500,#64748b);
       line-height: 1.75; margin-bottom: 32px; max-width: 400px;
@@ -164,7 +163,7 @@
     .hfc-ch    { font-size: 12px; font-weight: 600; color: #334155; flex: 1; }
     .hfc-pct   { font-size: 11px; color: var(--ink-400,#94a3b8); }
     .hfc-pbar  { height: 4px; background: #e2e8f0; border-radius: 2px; margin-top: 9px; overflow: hidden; }
-    .hfc-pbar-fill { width: 34%; height: 100%; background: var(--brand,#2563eb); border-radius: 2px; }
+    .hfc-pbar-fill { width: 34%; height: 100%; background: var(--blue,#1a6fff); border-radius: 2px; }
     .hfc-pbar-lbl  { font-size: 10px; color: var(--ink-400,#94a3b8); margin-top: 4px; }
 
     /* ── PATH STRIP ── */
@@ -213,7 +212,7 @@
     .exam-paper-body{padding:28px 28px 28px 80px;position:relative;z-index:1;}
     .exam-q-num{position:absolute;left:20px;top:30px;font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:#8B7355;}
     .exam-q-text{font-family:'Fraunces',serif;font-size:clamp(17px,2.5vw,21px);line-height:1.6;color:#2C1810;margin-bottom:20px;}
-    .exam-ans{width:100%;min-height:96px;padding:12px 14px;border:none;border-bottom:2px solid #C8B89A;background:transparent;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:#1A0F08;line-height:1.7;resize:none;outline:none;transition:border-color 0.2s;}
+    .exam-ans{width:100%;min-height:96px;padding:12px 14px;border:none;border-bottom:2px solid #C8B89A;background:transparent;font-family:'DM Sans',sans-serif;font-size:15px;color:#1A0F08;line-height:1.7;resize:none;outline:none;transition:border-color 0.2s;}
     .exam-ans:focus{border-bottom-color:#C25B2A;}
     .exam-ans::placeholder{color:#B8A990;font-style:italic;}
     .exam-ans.shake{animation:wshake 0.4s ease;border-bottom-color:#C25B2A !important;}
@@ -224,7 +223,7 @@
     .exam-dots{display:flex;gap:4px;}
     .exam-dot{width:7px;height:7px;border-radius:50%;background:#D4C4A0;cursor:pointer;transition:background 0.2s;}
     .exam-dot.active{background:#C25B2A;}
-    .exam-btn-reveal{background:#2C1810;color:#F5F0E8;border:none;padding:12px 28px;border-radius:4px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;display:flex;align-items:center;gap:8px;}
+    .exam-btn-reveal{background:#2C1810;color:#F5F0E8;border:none;padding:12px 28px;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;display:flex;align-items:center;gap:8px;}
     .exam-btn-reveal:hover{background:#C25B2A;transform:translateY(-2px);box-shadow:0 6px 20px rgba(194,91,42,0.3);}
     .exam-answer-reveal{border-top:2px dashed #C8B89A;margin-top:20px;padding-top:20px;animation:slidedown 0.4s cubic-bezier(0.16,1,0.3,1) both;}
     @keyframes slidedown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
@@ -234,9 +233,9 @@
     .exam-after-cta{display:flex;align-items:center;justify-content:space-between;margin-top:20px;padding-top:16px;border-top:1px solid #E8DFC8;flex-wrap:wrap;gap:12px;animation:slidedown 0.4s 0.15s cubic-bezier(0.16,1,0.3,1) both;}
     .exam-after-cta-left{font-size:13px;color:#8B7355;font-weight:500;}
     .exam-after-cta-left strong{color:#2C1810;}
-    .exam-btn-next{background:#C25B2A;color:white;border:none;padding:10px 22px;border-radius:4px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
+    .exam-btn-next{background:#C25B2A;color:white;border:none;padding:10px 22px;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
     .exam-btn-next:hover{background:#A34820;transform:translateY(-1px);}
-    .exam-btn-practice{background:#2C1810;color:#F5F0E8;text-decoration:none;padding:10px 22px;border-radius:4px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
+    .exam-btn-practice{background:#2C1810;color:#F5F0E8;text-decoration:none;padding:10px 22px;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
     .exam-btn-practice:hover{background:#C25B2A;transform:translateY(-1px);}
     .exam-paper-footer{background:#F0E8D8;border-top:1px solid #E0D4BE;padding:10px 24px 10px 80px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;}
     .exam-paper-footer-txt{font-size:11px;color:#8B7355;font-style:italic;}

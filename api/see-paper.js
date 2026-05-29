@@ -291,9 +291,9 @@ function buildHTML({ paper, subject, questions }) {
 <script type="application/ld+json">${schema}<\/script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"><\/script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');<\/script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4CPQWFLERD"><\/script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4CPQWFLERD');<\/script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -564,6 +564,7 @@ body{background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direct
 </style>
 </head>
 <body>
+<div id="site-nav"></div>
 
 <!-- HEADER -->
 <div class="hdr">
@@ -1237,6 +1238,8 @@ function closeDrawer() {
 }
 
 </script>
+<div id="site-footer"></div>
+<script src="/scripts/components.js"><\/script>
 </body>
 </html>`;
 }

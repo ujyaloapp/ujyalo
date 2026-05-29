@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://ujyalo.app/see/past-papers"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -20,19 +20,7 @@
 body{background:var(--bg);color:var(--ink);height:100vh;overflow:hidden;display:flex;flex-direction:column;}
 
 /* ANNOUNCE */
-.announce{background:var(--orange);padding:7px 24px;text-align:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0;}
-.announce a{color:#fff;text-decoration:underline;}
-
-/* NAV */
-.gnav{background:var(--card);border-bottom:1px solid var(--line);padding:0 28px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:20;}
-.logo{font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:var(--navy);letter-spacing:-.5px;text-decoration:none;}
-.logo span{color:var(--blue);}
-.nav-links{display:flex;gap:26px;}
-.nav-links a{font-size:13px;color:var(--muted);text-decoration:none;font-weight:500;}
-.nav-links a.act{color:var(--blue);font-weight:700;border-bottom:2px solid var(--blue);padding-bottom:2px;}
-.nav-auth{display:flex;gap:12px;align-items:center;}
-.btn-li{font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;}
-.btn-su{background:var(--navy);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;}
+/* nav handled by components.js */
 
 /* LAYOUT */
 .app{display:flex;flex:1;overflow:hidden;}
@@ -219,20 +207,7 @@ body{background:var(--bg);color:var(--ink);height:100vh;overflow:hidden;display:
 </head>
 <body>
 
-<div class="announce">📚 Free SEE practice · No signup needed · <a href="/see">Start now →</a></div>
-
-<nav class="gnav">
-  <a href="/" class="logo">ujy<span>a</span>lo</a>
-  <div class="nav-links">
-    <a href="/see" class="act">SEE</a>
-    <a href="/pricing">Pricing</a>
-    <a href="/about">About</a>
-  </div>
-  <div class="nav-auth">
-    <button class="btn-li">Log in</button>
-    <button class="btn-su">Sign up free →</button>
-  </div>
-</nav>
+<div id="site-nav"></div>
 
 <div class="app">
 
@@ -768,5 +743,7 @@ function getProgress(key){
 
 function subj(code){return SUBJECTS.find(s=>s.code===code)||SUBJECTS[0];}
 </script>
+<div id="site-footer"></div>
+<script src="/scripts/components.js"></script>
 </body>
 </html>
