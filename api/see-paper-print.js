@@ -317,7 +317,7 @@ function buildPrintHTML({ paper, subject, questions, lang }) {
       text-align: center;
       font-size: 9pt;
       color: #888;
-      margin-top: 20pt;
+      margin-top: 24pt;
       padding-top: 8pt;
       border-top: 0.5pt solid #ddd;
     }
@@ -325,17 +325,20 @@ function buildPrintHTML({ paper, subject, questions, lang }) {
     /* Print-specific */
     @page {
       size: A4;
-      margin: 15mm 15mm 20mm 15mm;
+      margin: 15mm 15mm 25mm 15mm;
     }
 
     @media print {
       body { padding: 0; }
+      /* Footer on every page using running element */
       .footer {
-        position: fixed;
-        bottom: 0; left: 0; right: 0;
-        background: white;
-        padding: 6pt 15mm;
+        display: block;
+        margin-top: 20pt;
+        padding-top: 8pt;
         border-top: 0.5pt solid #ddd;
+        text-align: center;
+        font-size: 9pt;
+        color: #888;
       }
     }
   </style>
