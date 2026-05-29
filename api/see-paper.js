@@ -131,8 +131,9 @@ function buildHTML({ paper, subject, questions }) {
       let optionsHTML = '';
       if (s.opts_en) {
         const opts = Array.isArray(s.opts_en) ? s.opts_en : JSON.parse(s.opts_en);
-        optionsHTML = `<div class="mcq-grid">${opts.map((o,oi)=>`
-          <button class="mcq-opt" onclick="pickOpt(this,${s.correct_opt??-1},${oi})">${esc(o)}</button>`).join('')}</div>`;
+        optionsHTML = '<div class="mcq-grid">' + opts.map(function(o,oi){
+          return '<button class="mcq-opt" onclick="pickOpt(this,'+(s.correct_opt??-1)+','+oi+')">'+esc(o)+'</button>';
+        }).join('') + '</div>';
       }
 
       subsHTML += `
@@ -173,8 +174,9 @@ function buildHTML({ paper, subject, questions }) {
       let optionsHTML = '';
       if (parent.opts_en) {
         const opts = Array.isArray(parent.opts_en) ? parent.opts_en : JSON.parse(parent.opts_en);
-        optionsHTML = `<div class="mcq-grid">${opts.map((o,oi)=>`
-          <button class="mcq-opt" onclick="pickOpt(this,${parent.correct_opt??-1},${oi})">${esc(o)}</button>`).join('')}</div>`;
+        optionsHTML = '<div class="mcq-grid">' + opts.map(function(o,oi){
+          return '<button class="mcq-opt" onclick="pickOpt(this,'+(parent.correct_opt??-1)+','+oi+')">'+esc(o)+'</button>';
+        }).join('') + '</div>';
       }
 
       subsHTML = `
@@ -193,7 +195,12 @@ function buildHTML({ paper, subject, questions }) {
         <div class="qch-l">
           <div class="qnum" id="qnum-${num}" style="background:${cfg.accent};">${num}</div>
           ${topic ? `<span class="qtag" style="background:${cfg.accent}18;color:${cfg.accent};">${esc(topic)}</span>` : ''}
-          ${difficulty ? `<span class="qtag" style="background:${difficulty==='Hard'?'rgba(239,68,68,.1)':difficulty==='Medium'?'rgba(245,156,26,.1)':'rgba(34,197,94,.1)';};color:${difficulty==='Hard'?'#ef4444':difficulty==='Medium'?'#f59c1a':'#22c55e'};">${esc(difficulty)}</span>` : ''}
+          ${(function(){
+            if(!difficulty) return '';
+            const bg = difficulty==='Hard'?'rgba(239,68,68,.1)':difficulty==='Medium'?'rgba(245,156,26,.1)':'rgba(34,197,94,.1)';
+            const col2 = difficulty==='Hard'?'#ef4444':difficulty==='Medium'?'#f59c1a':'#22c55e';
+            return '<span class="qtag" style="background:'+bg+';color:'+col2+';">'+esc(difficulty)+'</span>';
+          })()}
           ${frequency ? `<span class="qtag" style="background:var(--bg);color:var(--muted);">${esc(frequency)}</span>` : ''}
         </div>
         <div class="qch-r">
@@ -233,20 +240,21 @@ function buildHTML({ paper, subject, questions }) {
     { mode:'check',   icon:'✅', title:'Check my answers',       desc:"I've already attempted it — show answers", col:'#38c9b0' },
     { mode:'step',    icon:'⚡', title:'Question by question',    desc:'One question at a time — reveal and move on', col:'#f59c1a' },
     { mode:'download',icon:'📥', title:'Download PDF',           desc:'Nepali, English, or both languages', col:'#7c3aed' },
-  ].map(c=>`
-    <button class="ov-card" onclick="enterMode('${c.mode}')" style="--mc:${c.col};">
-      <div class="ov-icon" style="background:${c.col}18;color:${c.col};">${c.icon}</div>
-      <div class="ov-info">
-        <div class="ov-title">${c.title}</div>
-        <div class="ov-desc">${c.desc}</div>
-      </div>
-      <div class="ov-arr" style="color:${c.col};">›</div>
-    </button>`).join('');
+  ].map(function(c){
+    return '<button class="ov-card" data-mode="'+c.mode+'" onclick="enterMode(this.dataset.mode)" style="--mc:'+c.col+';">'
+      + '<div class="ov-icon" style="background:'+c.col+'18;color:'+c.col+';">'+c.icon+'</div>'
+      + '<div class="ov-info">'
+      + '<div class="ov-title">'+c.title+'</div>'
+      + '<div class="ov-desc">'+c.desc+'</div>'
+      + '</div>'
+      + '<div class="ov-arr" style="color:'+c.col+';">&#8250;</div>'
+      + '</button>';
+  }).join('');
 
   // ── Step mode question dots ────────────────────────────
-  const stepDots = groupEntries.map(([num],i) =>
-    `<div class="step-dot" id="sdot-${num}" onclick="goStep(${parseInt(num)})" title="Q${num}"></div>`
-  ).join('');
+  const stepDots = groupEntries.map(function([num],i){
+    return '<div class="step-dot" id="sdot-'+num+'" onclick="goStep('+parseInt(num)+')" title="Q'+num+'"></div>';
+  }).join('');
 
   // ── Serialise data for client ──────────────────────────
   const ANSWERS_JSON = JSON.stringify(allSubsData);
@@ -813,42 +821,46 @@ function buildAnswerPanel(q) {
   const answer = q.answer || 'Model answer coming soon.';
   const steps = q.steps && Array.isArray(q.steps) ? q.steps : (q.steps ? JSON.parse(q.steps) : null);
   const col = q.color || ACCENT;
-
   let stepsHTML = '';
   if (steps && steps.length) {
-    const stepItems = steps.map((s,i) => `
-      <div class="step-item${i <= currentStep ? ' shown' : ''}" id="sp-${q.id}-${i}" style="transition-delay:${i*.06}s;">
-        <div class="step-col">
-          <div class="step-circle" style="background:${i<currentStep?'var(--green)':i===currentStep?col:'var(--line)'};color:${i<=currentStep?'#fff':'var(--faint)'};">
-            ${i < currentStep ? '✓' : i+1}
-          </div>
-          ${i < steps.length-1 ? `<div class="step-line" style="background:${i<currentStep?'rgba(34,197,94,.4)':'var(--line)'};"></div>` : ''}
-        </div>
-        <div class="step-text">${esc(s)}</div>
-      </div>`).join('');
-
+    let stepItems = '';
+    steps.forEach(function(s,i) {
+      const shown = i <= currentStep ? ' shown' : '';
+      const circBg = i < currentStep ? 'var(--green)' : i === currentStep ? col : 'var(--line)';
+      const circCol = i <= currentStep ? '#fff' : 'var(--faint)';
+      const circTxt = i < currentStep ? '&#10003;' : String(i+1);
+      const delay = (i * 0.06).toFixed(2);
+      const lineHtml = i < steps.length-1
+        ? '<div class="step-line" style="background:' + (i < currentStep ? 'rgba(34,197,94,.4)' : 'var(--line)') + ';"></div>'
+        : '';
+      stepItems += '<div class="step-item' + shown + '" id="sp-' + q.id + '-' + i + '" style="transition-delay:' + delay + 's;">'
+        + '<div class="step-col">'
+        + '<div class="step-circle" style="background:' + circBg + ';color:' + circCol + ';">' + circTxt + '</div>'
+        + lineHtml
+        + '</div>'
+        + '<div class="step-text">' + esc(String(s)) + '</div>'
+        + '</div>';
+    });
     const showNext = currentStep < steps.length - 1;
-    stepsHTML = `
-      <div class="steps-lbl" style="color:${col};">Step-by-step working</div>
-      <div id="step-list-${q.id}">${stepItems}</div>
-      ${showNext ? `<button class="next-btn" id="next-btn-${q.id}" onclick="nextStep('${q.id}')" style="background:${col};">Next step →</button>` : ''}
-      <button class="replay-btn" id="replay-btn-${q.id}" onclick="replaySteps('${q.id}')" style="${showNext?'display:none':''}">↺ Replay steps</button>`;
+    const nextHtml = showNext
+      ? '<button class="next-btn" data-id="' + q.id + '" onclick="nextStep(this.dataset.id)" style="background:' + col + ';">Next step &#8594;</button>'
+      : '';
+    const replayStyle = showNext ? 'display:none' : '';
+    stepsHTML = '<div class="steps-lbl" style="color:' + col + ';">Step-by-step working</div>'
+      + '<div id="step-list-' + q.id + '">' + stepItems + '</div>'
+      + nextHtml
+      + '<button class="replay-btn" data-id="' + q.id + '" onclick="replaySteps(this.dataset.id)" style="' + replayStyle + '">&#8635; Replay steps</button>';
   }
-
-  return `
-    <div class="ans-final" style="background:${col}12;border:1.5px solid ${col}30;">
-      <div class="ans-check">
-        <div class="ans-check-circle">✓</div>
-        <span class="ans-lbl">Final answer</span>
-      </div>
-      <div class="ans-text">${esc(answer)}</div>
-    </div>
-    ${stepsHTML}
-    <button class="re-btn" onclick="toggleReExplain(this)">💡 Still don't understand? Explain differently</button>
-    <div class="re-box" id="re-box-${q.id}">
-      <div class="re-box-lbl">Simpler explanation</div>
-      <div class="re-box-text">A simpler explanation for this question will be available soon. Try breaking the problem into smaller parts, or ask your teacher for help.</div>
-    </div>`;
+  return '<div class="ans-final" style="background:' + col + '12;border:1.5px solid ' + col + '30;">'
+    + '<div class="ans-check"><div class="ans-check-circle">&#10003;</div><span class="ans-lbl">Final answer</span></div>'
+    + '<div class="ans-text">' + esc(answer) + '</div>'
+    + '</div>'
+    + stepsHTML
+    + '<button class="re-btn" onclick="toggleReExplain(this)">&#128161; Still don't understand?</button>'
+    + '<div class="re-box" id="re-box-' + q.id + '">'
+    + '<div class="re-box-lbl">Simpler explanation</div>'
+    + '<div class="re-box-text">A simpler explanation will be available soon.</div>'
+    + '</div>';
 }
 
 // ─── STEPS ─────────────────────────────────────────────────────────────────
@@ -885,16 +897,19 @@ function renderStepQ() {
 
   const text = LANG === 'np' && first?.np ? first.np : first?.en || '';
 
-  document.getElementById('step-main').innerHTML = `
-    <div class="step-qcard">
-      <div class="step-qnum">Q${num}</div>
-      <div class="step-qtext">${esc(text)}</div>
-      ${g.topic ? `<div style="margin-top:12px;"><span class="qtag" style="background:${ACCENT}18;color:${ACCENT};">${esc(g.topic)}</span></div>` : ''}
-    </div>
-    ${MODE === 'check' && first ? `
-    <div style="max-width:640px;margin:0 auto;">
-      ${buildAnswerPanel(first)}
-    </div>` : ''}`;
+  const topicHtml = g.topic
+    ? '<div style="margin-top:12px;"><span class="qtag" style="background:' + ACCENT + '18;color:' + ACCENT + ';">' + esc(g.topic) + '</span></div>'
+    : '';
+  const ansHtml = MODE === 'check' && first
+    ? '<div style="max-width:640px;margin:0 auto;">' + buildAnswerPanel(first) + '</div>'
+    : '';
+  document.getElementById('step-main').innerHTML =
+    '<div class="step-qcard">'
+    + '<div class="step-qnum">Q' + num + '</div>'
+    + '<div class="step-qtext">' + esc(text) + '</div>'
+    + topicHtml
+    + '</div>'
+    + ansHtml;
 
   // Update dots
   document.querySelectorAll('.step-dot').forEach((d,i) => {
@@ -1116,11 +1131,8 @@ export default async function handler(req, res) {
     const subjects = await fetchFromSupabase(`/exam_subjects?code=eq.${subjectCode}&select=id,name,code`);
     if (!subjects[0]) return res.status(404).send(`Subject not found: ${subject}`);
 
-    // Normalise province name: Koshi, Madhesh etc (handle URL variants)
+    // Normalise province: capitalise first letter only (koshi→Koshi, sudurpashchim→Sudurpashchim)
     const provNorm = province.charAt(0).toUpperCase() + province.slice(1).toLowerCase();
-    // Special case: sudurpashchim
-    const provinceFixed = provNorm === 'Sudurpashchim' ? 'Sudurpashchim'
-      : provNorm.replace('pashchim','Pashchim').replace('pashchim','pashchim');
 
     const papers = await fetchFromSupabase(
       `/past_papers?subject_id=eq.${subjects[0].id}&year=eq.${year}&province=eq.${provNorm}&select=*`
