@@ -140,13 +140,7 @@ const GLOBAL_STYLES = `
   --ink-50:  #f3f5fb;
 }
 
-/* ── Fonts — injected once, apply everywhere ── */
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=DM+Sans:wght@400;500;600;700&display=swap');
-
-/* Override Plus Jakarta Sans wherever it's set */
-body, button, input, select, textarea {
-  font-family: 'DM Sans', system-ui, sans-serif !important;
-}
+/* DM Sans applied only to ujyalo nav/footer components, not globally */
 
 /* ── ANNOUNCEMENT BAR ── */
 .ujyalo-announce {
@@ -415,19 +409,7 @@ body, button, input, select, textarea {
 }
 .ujyalo-help-bubble:hover { opacity: .85; }
 
-/* ── INDEX PAGE OVERRIDES — keep --brand in sync ── */
-.btn-primary, .btn.btn-primary {
-  background: var(--navy) !important;
-  color: #fff !important;
-}
-.btn-primary:hover, .btn.btn-primary:hover {
-  background: var(--blue) !important;
-  opacity: 1 !important;
-}
-h1 em, h2 em, .hero-promise em, .section-title em {
-  color: var(--blue) !important;
-  font-style: italic;
-}
+
 </style>`;
 
 /* ── JS functions ── */

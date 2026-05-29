@@ -304,6 +304,8 @@ function buildHTML({ paper, subject, questions }) {
 }
 *{font-family:'DM Sans',sans-serif;}
 body{background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+.ujyalo-nav,.ujyalo-announce{flex-shrink:0;}
+.ujyalo-nav{position:relative;}
 
 /* ── HEADER ── */
 .hdr{background:var(--navy);flex-shrink:0;z-index:20;position:sticky;top:0;}
