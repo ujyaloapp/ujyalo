@@ -11,95 +11,6 @@
 //   - Share button in topbar
 // ============================================================
 
-const DIAGRAMS = {
-  6: `<svg width="120" height="155" viewBox="0 0 120 155" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="60" cy="108" rx="40" ry="11" fill="none" stroke="#1a1208" stroke-width="1.5"/>
-    <path d="M 20 108 A 40 40 0 0 0 100 108" fill="#f0f4ff" stroke="#1a1208" stroke-width="1.5"/>
-    <line x1="20" y1="108" x2="60" y2="22" stroke="#1a1208" stroke-width="1.5"/>
-    <line x1="100" y1="108" x2="60" y2="22" stroke="#1a1208" stroke-width="1.5"/>
-    <line x1="108" y1="22" x2="108" y2="143" stroke="#888" stroke-width="0.75" stroke-dasharray="3,2"/>
-    <text x="112" y="88" font-size="9" fill="#444" font-family="serif" font-style="italic">20cm</text>
-    <line x1="20" y1="126" x2="100" y2="126" stroke="#888" stroke-width="0.75" stroke-dasharray="3,2"/>
-    <text x="44" y="138" font-size="9" fill="#444" font-family="serif" font-style="italic">14cm</text>
-  </svg>`,
-  11: `<svg width="200" height="125" viewBox="0 0 200 125" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="38,108 97,108 66,18 8,18" fill="rgba(37,99,235,0.07)" stroke="#2563EB" stroke-width="1.5"/>
-    <polygon points="38,108 97,108 188,18 130,18" fill="rgba(29,158,117,0.07)" stroke="#1D9E75" stroke-width="1.5"/>
-    <line x1="38" y1="108" x2="130" y2="18" stroke="#999" stroke-width="1" stroke-dasharray="4,2"/>
-    <line x1="66" y1="18" x2="97" y2="108" stroke="#999" stroke-width="1" stroke-dasharray="4,2"/>
-    <circle cx="77" cy="65" r="2.5" fill="#888"/>
-    <text x="80" y="62" font-size="9" font-family="serif" font-style="italic" fill="#888">A</text>
-    <text x="2" y="16" font-size="11" font-family="serif" font-style="italic">S</text>
-    <text x="61" y="14" font-size="11" font-family="serif" font-style="italic">Q</text>
-    <text x="126" y="14" font-size="11" font-family="serif" font-style="italic">R</text>
-    <text x="184" y="16" font-size="11" font-family="serif" font-style="italic">P</text>
-    <text x="32" y="120" font-size="11" font-family="serif" font-style="italic">M</text>
-    <text x="95" y="120" font-size="11" font-family="serif" font-style="italic">N</text>
-  </svg>`,
-  12: `<svg width="155" height="155" viewBox="0 0 155 155" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="77" cy="77" r="58" fill="rgba(37,99,235,0.04)" stroke="#1a1208" stroke-width="1.5"/>
-    <circle cx="77" cy="77" r="2.5" fill="#1a1208"/>
-    <text x="80" y="82" font-size="10" font-family="serif" font-style="italic">O</text>
-    <circle cx="28" cy="116" r="2.5" fill="#1a1208"/>
-    <circle cx="126" cy="116" r="2.5" fill="#1a1208"/>
-    <circle cx="77" cy="19" r="2.5" fill="#1a1208"/>
-    <circle cx="19" cy="58" r="2.5" fill="#1a1208"/>
-    <line x1="77" y1="77" x2="28" y2="116" stroke="#2563EB" stroke-width="1.5"/>
-    <line x1="77" y1="77" x2="126" y2="116" stroke="#2563EB" stroke-width="1.5"/>
-    <line x1="77" y1="19" x2="28" y2="116" stroke="#1D9E75" stroke-width="1.2"/>
-    <line x1="77" y1="19" x2="126" y2="116" stroke="#1D9E75" stroke-width="1.2"/>
-    <line x1="19" y1="58" x2="28" y2="116" stroke="#f59e0b" stroke-width="1.2"/>
-    <line x1="19" y1="58" x2="126" y2="116" stroke="#f59e0b" stroke-width="1.2"/>
-    <text x="21" y="128" font-size="10" font-family="serif" font-style="italic">S</text>
-    <text x="127" y="128" font-size="10" font-family="serif" font-style="italic">P</text>
-    <text x="74" y="13" font-size="10" font-family="serif" font-style="italic">R</text>
-    <text x="6" y="58" font-size="10" font-family="serif" font-style="italic">T</text>
-  </svg>`,
-  14: `<svg width="220" height="135" viewBox="0 0 220 135" xmlns="http://www.w3.org/2000/svg">
-    <line x1="8" y1="88" x2="212" y2="88" stroke="#2563EB" stroke-width="0.75" stroke-dasharray="4,3"/>
-    <text x="10" y="84" font-size="8" fill="#2563EB" font-family="sans-serif">Water level</text>
-    <line x1="8" y1="97" x2="75" y2="97" stroke="#1a1208" stroke-width="1.5"/>
-    <line x1="138" y1="97" x2="212" y2="97" stroke="#1a1208" stroke-width="1.5"/>
-    <path d="M 75 97 Q 107 104 138 97" fill="rgba(37,99,235,0.1)" stroke="#1a1208" stroke-width="1"/>
-    <line x1="107" y1="19" x2="107" y2="97" stroke="#1a1208" stroke-width="2"/>
-    <circle cx="28" cy="93" r="4" fill="none" stroke="#1a1208" stroke-width="1.5"/>
-    <line x1="28" y1="97" x2="28" y2="112" stroke="#1a1208" stroke-width="1.5"/>
-    <line x1="28" y1="97" x2="107" y2="19" stroke="#dc2626" stroke-width="1" stroke-dasharray="3,2"/>
-    <path d="M 48 97 A 20 20 0 0 1 37 80" fill="none" stroke="#dc2626" stroke-width="1"/>
-    <text x="50" y="93" font-size="10" font-family="serif" font-style="italic" fill="#dc2626">θ</text>
-    <text x="52" y="131" font-size="8" fill="#444" font-family="sans-serif">50m</text>
-    <text x="110" y="62" font-size="8" fill="#444" font-family="sans-serif">51.5m</text>
-    <text x="78" y="96" font-size="8" fill="#2563EB" font-family="sans-serif">1.5m</text>
-    <text x="110" y="16" font-size="10" font-family="serif" font-style="italic">T</text>
-  </svg>`,
-  16: `<svg width="255" height="175" viewBox="0 0 255 175" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="28" cy="87" r="4" fill="#1a1208"/>
-    <text x="6" y="84" font-size="8" fill="#444" font-family="sans-serif">Start</text>
-    <line x1="32" y1="84" x2="98" y2="43" stroke="#1a1208" stroke-width="1.2"/>
-    <text x="52" y="56" font-size="8" fill="#1D9E75" font-family="sans-serif">W (6/10)</text>
-    <circle cx="102" cy="41" r="4" fill="#1D9E75"/>
-    <line x1="32" y1="90" x2="98" y2="131" stroke="#1a1208" stroke-width="1.2"/>
-    <text x="52" y="120" font-size="8" fill="#1a1208" font-family="sans-serif">B (4/10)</text>
-    <circle cx="102" cy="133" r="4" fill="#1a1208"/>
-    <line x1="106" y1="39" x2="172" y2="18" stroke="#1a1208" stroke-width="1"/>
-    <text x="125" y="22" font-size="8" fill="#1D9E75" font-family="sans-serif">W (6/10)</text>
-    <circle cx="176" cy="16" r="3" fill="#1D9E75"/>
-    <text x="182" y="20" font-size="9" fill="#444" font-family="sans-serif">WW: 36/100</text>
-    <line x1="106" y1="43" x2="172" y2="63" stroke="#1a1208" stroke-width="1"/>
-    <text x="125" y="59" font-size="8" fill="#1a1208" font-family="sans-serif">B (4/10)</text>
-    <circle cx="176" cy="65" r="3" fill="#1a1208"/>
-    <text x="182" y="69" font-size="9" fill="#444" font-family="sans-serif">WB: 24/100</text>
-    <line x1="106" y1="131" x2="172" y2="110" stroke="#1a1208" stroke-width="1"/>
-    <text x="125" y="113" font-size="8" fill="#1D9E75" font-family="sans-serif">W (6/10)</text>
-    <circle cx="176" cy="108" r="3" fill="#1D9E75"/>
-    <text x="182" y="112" font-size="9" fill="#444" font-family="sans-serif">BW: 24/100</text>
-    <line x1="106" y1="135" x2="172" y2="155" stroke="#1a1208" stroke-width="1"/>
-    <text x="125" y="153" font-size="8" fill="#1a1208" font-family="sans-serif">B (4/10)</text>
-    <circle cx="176" cy="157" r="3" fill="#1a1208"/>
-    <text x="182" y="161" font-size="9" fill="#444" font-family="sans-serif">BB: 16/100</text>
-  </svg>`
-};
-
 async function fetchFromSupabase(path) {
   const res = await fetch(`${process.env.SUPABASE_URL}/rest/v1${path}`, {
     headers: {
@@ -173,7 +84,7 @@ function buildHTML({ paper, subject, questions }) {
     .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
     .forEach(([num, g]) => {
       const parent = g.parent;
-      const diagram = subject.code === 'maths' ? DIAGRAMS[parseInt(num)] : null;
+      const diagram = parent?.diagram_svg || null;
 
       questionsHTML += `<div class="q-block" id="qb-${num}">
         <div class="q-parent-row">
@@ -226,7 +137,7 @@ function buildHTML({ paper, subject, questions }) {
       ctxEn: parent?.question_text_english || '',
       ctxNp: parent?.question_text_nepali || '',
       answer: q.answer_text || 'Model answer coming soon.',
-      hasDiagram: !!DIAGRAMS[q.question_number]
+      diagram: groups[q.question_number]?.parent?.diagram_svg || ''
     };
   });
 
@@ -662,7 +573,6 @@ function buildHTML({ paper, subject, questions }) {
 <script>
 const ANSWERS = ${JSON.stringify(answersData)};
 const ALL_SUBS = ${JSON.stringify(allSubs)};
-const DIAGRAMS_JS = ${JSON.stringify(Object.fromEntries(Object.entries(DIAGRAMS)))};
 const SHARE_URL = '${shareUrl}';
 const IS_ENGLISH_SUBJECT = ${subject.code === 'english' ? 'true' : 'false'};
 const PAPER_KEY = 'SEE-${paper.year}-${paper.province}-${subject.code}';
@@ -707,7 +617,7 @@ function selectQ(id) {
   const showNp = LANG === 'np';
   const ctx = showNp ? (d.ctxNp || d.ctxEn) : (d.ctxEn || '');
   const qText = showNp ? (d.textNp || d.textEn) : (d.textEn || '');
-  const diagram = IS_ENGLISH_SUBJECT ? '' : (DIAGRAMS_JS[d.qNum] || '');
+  const diagram = d.diagram || '';
   const isNpClass = showNp ? 'ans-ctx-np' : 'ans-ctx';
   const qClass = showNp ? 'ans-q-text-np' : 'ans-q-text';
 
@@ -785,11 +695,12 @@ function toggleDl() {
   if (dd) dd.classList.toggle('open');
 }
 document.addEventListener('click', e => {
-  if (!e.target.closest('.tb-dl-wrap')) document.getElementById('dl-dd').classList.remove('open');
+  const dd2 = document.getElementById('dl-dd'); if (dd2 && !e.target.closest('.tb-dl-wrap')) dd2.classList.remove('open');
 });
 
 function downloadPDF(lang) {
-  document.getElementById('dl-dd').classList.remove('open');
+  const dd = document.getElementById('dl-dd');
+  if (dd) dd.classList.remove('open');
   // GA tracking
   if (typeof gtag !== 'undefined') gtag('event', 'pdf_download', { paper: PAPER_KEY, language: lang });
   // Open dedicated print page in new tab — fonts load correctly, clean output
