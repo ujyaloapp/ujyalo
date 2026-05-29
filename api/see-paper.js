@@ -173,7 +173,7 @@ function buildHTML({ paper, subject, questions }) {
     .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
     .forEach(([num, g]) => {
       const parent = g.parent;
-      const diagram = DIAGRAMS[parseInt(num)];
+      const diagram = subject.code === 'maths' ? DIAGRAMS[parseInt(num)] : null;
 
       questionsHTML += `<div class="q-block" id="qb-${num}">
         <div class="q-parent-row">
@@ -582,12 +582,15 @@ function buildHTML({ paper, subject, questions }) {
     <div class="tb-sub">${escape(paper.province)} Province · Full marks: ${paper.total_marks}</div>
   </div>
   <div class="tb-actions">
-    <div class="tb-lang">
+    <div class="tb-lang" id="lang-toggle" style="${subject.code === 'english' ? 'display:none' : ''}">
       <button class="tb-lang-btn active" id="btn-en" onclick="setLang('en')">🇬🇧 English</button>
       <button class="tb-lang-btn" id="btn-np" onclick="setLang('np')">🇳🇵 नेपाली</button>
     </div>
     <button class="tb-share" id="share-btn" onclick="shareLink()">↗ Share</button>
     <div class="tb-dl-wrap">
+      ${subject.code === 'english' ? `
+      <button class="tb-dl" onclick="downloadPDF('en')">⬇ <span>Download PDF</span></button>
+      ` : `
       <button class="tb-dl" onclick="toggleDl()">⬇ <span>Download PDF</span> ▾</button>
       <div class="dl-dd" id="dl-dd">
         <div class="dl-opt" onclick="downloadPDF('en')">
@@ -603,6 +606,7 @@ function buildHTML({ paper, subject, questions }) {
           <div><div>Both languages</div><div class="dl-opt-sub">Nepali then English</div></div>
         </div>
       </div>
+      `}
     </div>
   </div>
 </div>
@@ -660,6 +664,7 @@ const ANSWERS = ${JSON.stringify(answersData)};
 const ALL_SUBS = ${JSON.stringify(allSubs)};
 const DIAGRAMS_JS = ${JSON.stringify(Object.fromEntries(Object.entries(DIAGRAMS)))};
 const SHARE_URL = '${shareUrl}';
+const IS_ENGLISH_SUBJECT = ${subject.code === 'english' ? 'true' : 'false'};
 const PAPER_KEY = 'SEE-${paper.year}-${paper.province}-${subject.code}';
 const PRINT_BASE = '/api/see-paper-print?year=${paper.year}&province=${paper.province}&subject=${subject.code}';
 
@@ -702,7 +707,7 @@ function selectQ(id) {
   const showNp = LANG === 'np';
   const ctx = showNp ? (d.ctxNp || d.ctxEn) : (d.ctxEn || '');
   const qText = showNp ? (d.textNp || d.textEn) : (d.textEn || '');
-  const diagram = DIAGRAMS_JS[d.qNum] || '';
+  const diagram = IS_ENGLISH_SUBJECT ? '' : (DIAGRAMS_JS[d.qNum] || '');
   const isNpClass = showNp ? 'ans-ctx-np' : 'ans-ctx';
   const qClass = showNp ? 'ans-q-text-np' : 'ans-q-text';
 
@@ -775,7 +780,10 @@ function shareQ(id, e) {
 }
 
 // ── DOWNLOAD PDF ──────────────────────────────────────
-function toggleDl() { document.getElementById('dl-dd').classList.toggle('open'); }
+function toggleDl() {
+  const dd = document.getElementById('dl-dd');
+  if (dd) dd.classList.toggle('open');
+}
 document.addEventListener('click', e => {
   if (!e.target.closest('.tb-dl-wrap')) document.getElementById('dl-dd').classList.remove('open');
 });
