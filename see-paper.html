@@ -30,171 +30,58 @@
 <!-- APP BODY -->
 <div id="app-body" style="display:none;">
 
-
-
-  <!-- SECTION JUMP BAR -->
-  <div class="sec-jump-bar" id="sec-jump-bar" style="display:none;">
-    <button class="sjb-formula-btn" id="formulas-btn" onclick="toggleFormula()" style="display:none;">📐 Formulas</button>
-  </div>
-
-  <!-- MODE TABS -->
-  <div class="mode-tabs" id="mode-tabs" style="display:none;">
-    <button class="mtab act" id="mtab-read"  onclick="setMode('read')">📖 Read</button>
-    <button class="mtab"     id="mtab-check" onclick="setMode('check')">✅ Check</button>
-    <button class="mtab"     id="mtab-step"  onclick="setMode('step')">⚡ Step</button>
-  </div>
-
-  <!-- SCREENS -->
-
-  <!-- Overview (hidden by default - only shown if needed) -->
-  <div id="screen-overview" style="display:none;">
-    <div class="ov-layout">
-      <div class="ov-left">
-        <div class="ov-subj-row">
-          <div class="ov-subj-ico" id="ov-icon"></div>
-          <div>
-            <div class="ov-subj-nm" id="ov-subj-name"></div>
-            <div class="ov-subj-yr" id="ov-subj-yr"></div>
+  <!-- HERO HEADER -->
+  <div class="paper-hero" id="paper-hero">
+    <div class="hero-bg-circle"></div>
+    <div class="hero-bg-circle2"></div>
+    <div class="hero-inner">
+      <div class="hero-top-row">
+        <button class="hero-back" onclick="history.back()">← Back</button>
+        <div class="hero-actions">
+          <div class="lang-tog" id="lang-tog">
+            <button class="lt-btn act" id="lt-en" onclick="setLang('en')">EN</button>
+            <button class="lt-btn off" id="lt-np" onclick="setLang('np')">NP</button>
           </div>
-        </div>
-        <div class="ov-section">
-          <div class="ov-sec-lbl">Your selection</div>
-          <div class="trail" id="ov-trail"></div>
-          <div class="prov-pill" id="ov-prov-pill"></div>
-        </div>
-        <div class="ov-section">
-          <div class="ov-sec-lbl">Paper info</div>
-          <div class="ov-stats-grid" id="ov-stats"></div>
-        </div>
-        <div class="ov-section" id="ov-topics-section" style="display:none;">
-          <div class="ov-sec-lbl">Topics covered</div>
-          <div class="topic-pills" id="ov-topics"></div>
-        </div>
-        <div class="ov-section" id="ov-progress-section" style="display:none;">
-          <div class="ov-sec-lbl">Your progress</div>
-          <div class="ov-progress-box">
-            <div class="ov-progress-pct" id="ov-progress-pct">0%</div>
-            <div class="ov-progress-lbl" id="ov-progress-lbl"></div>
-            <div class="ov-progress-track"><div class="ov-progress-fill" id="ov-progress-fill"></div></div>
-          </div>
+          <button class="hero-btn" onclick="openDownload()">⬇ PDF</button>
+          <button class="finish-btn" id="finish-btn" onclick="finishPaper()" style="display:none;">Finish Paper →</button>
         </div>
       </div>
-      <div class="ov-right">
-        <div class="ov-how-lbl">How do you want to use this paper?</div>
-        <div class="ov-cards">
-          <button class="ov-card" onclick="enterMode('read')" style="--mc:#1a6fff;">
-            <div class="ov-card-icon" style="background:#e8f0ff;color:#1a6fff;">📖</div>
-            <div class="ov-card-info"><div class="ov-card-title">Read full paper</div><div class="ov-card-desc">Browse all questions — answers hidden</div></div>
-            <div class="ov-card-arr" style="color:#1a6fff;">›</div>
-          </button>
-          <button class="ov-card" onclick="enterMode('check')" style="--mc:#38c9b0;">
-            <div class="ov-card-icon" style="background:#e0f7f2;color:#38c9b0;">✅</div>
-            <div class="ov-card-info"><div class="ov-card-title">Check my answers</div><div class="ov-card-desc">I have already attempted it — show answers</div></div>
-            <div class="ov-card-arr" style="color:#38c9b0;">›</div>
-          </button>
-          <button class="ov-card" onclick="enterMode('step')" style="--mc:#f59c1a;">
-            <div class="ov-card-icon" style="background:#fff4e0;color:#f59c1a;">⚡</div>
-            <div class="ov-card-info"><div class="ov-card-title">Question by question</div><div class="ov-card-desc">One at a time — reveal and move on</div></div>
-            <div class="ov-card-arr" style="color:#f59c1a;">›</div>
-          </button>
-          <button class="ov-card" onclick="openDownload()" style="--mc:#7c3aed;">
-            <div class="ov-card-icon" style="background:#f0ebff;color:#7c3aed;">📥</div>
-            <div class="ov-card-info"><div class="ov-card-title">Download PDF</div><div class="ov-card-desc">Nepali, English, or both languages</div></div>
-            <div class="ov-card-arr" style="color:#7c3aed;">›</div>
-          </button>
-        </div>
-      </div>
+      <div class="hero-badge" id="hero-badge"></div>
+      <div class="hero-title" id="hero-title"></div>
+      <div class="hero-np" id="hero-np"></div>
+      <div class="hero-stats" id="hero-stats"></div>
+      <div class="hero-inst" id="hero-inst"></div>
     </div>
   </div>
 
-  <!-- Read/Check screen -->
-  <div id="screen-paper" style="display:none;flex:1;overflow:hidden;">
-    <div class="paper-layout">
-      <aside class="sidebar" id="sidebar">
-        <div class="sb-head">
-          <div class="sb-label">ALL QUESTIONS</div>
-          <div class="sb-count" id="sb-count">0 / 0 reviewed</div>
-          <div class="sb-progress"><div class="sb-progress-fill" id="sb-progress-fill"></div></div>
-        </div>
-        <div class="sb-scroll" id="sb-scroll"></div>
-      </aside>
-      <main class="paper-main">
-        <div class="info-strip" id="info-strip"></div>
-        <div class="questions-area" id="questions-area"></div>
-      </main>
-      <div class="answer-panel" id="answer-panel">
-        <div class="ap-head">
-          <div class="ap-label">ANSWER &amp; EXPLANATION</div>
-          <div class="ap-q" id="ap-q">Select a question</div>
-        </div>
-        <div class="ap-body" id="ap-body">
-          <div class="ap-empty">
-            <div style="font-size:32px;margin-bottom:10px;">👆</div>
-            <div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px;">Click any question</div>
-            <div style="font-size:13px;color:var(--muted);">The answer appears here.</div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- PROGRESS STRIP -->
+  <div class="prog-strip" id="prog-strip"></div>
+
+  <!-- QUESTIONS AREA -->
+  <div class="questions-wrap">
+    <div class="questions-area" id="questions-area"></div>
   </div>
 
-  <!-- Step screen -->
-  <div id="screen-step" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
-    <div class="step-dots-strip" id="step-dots"></div>
-    <div class="step-content">
-      <div class="step-question-area" id="step-question"></div>
-      <div class="answer-panel step-answer-panel">
-        <div class="ap-head">
-          <div class="ap-label">ANSWER &amp; EXPLANATION</div>
-          <div class="ap-q" id="step-ap-q"></div>
-        </div>
-        <div class="ap-body" id="step-ap-body">
-          <div class="ap-empty" style="font-size:13px;color:var(--muted);padding:20px;">Tap a question to see the answer.</div>
-        </div>
+  <!-- RESULTS -->
+  <div class="results-section" id="results-section" style="display:none;">
+    <div class="results-hero">
+      <div class="res-ring">
+        <div class="res-score-num" id="res-score-num">0</div>
+        <div class="res-score-of">/ <span id="res-score-of">75</span></div>
       </div>
+      <div class="res-title" id="res-title">Paper complete!</div>
+      <div class="res-sub" id="res-sub"></div>
     </div>
-    <div class="step-nav">
-      <button class="step-prev" id="step-prev" onclick="stepPrev()">← Previous</button>
-      <span class="step-counter" id="step-counter">Q1 of 1</span>
-      <button class="step-next" id="step-next" onclick="stepNext()">Next →</button>
+    <div class="results-body">
+      <div class="res-stats-row" id="res-stats-row"></div>
+      <div class="res-breakdown-label">Topic breakdown</div>
+      <div class="res-breakdown" id="res-breakdown"></div>
+      <button class="res-cta" id="res-cta" onclick="window.location.href='/see.html'">Try another paper →</button>
+      <button class="res-sec" onclick="resetPaper()">Review this paper again</button>
     </div>
   </div>
 
 </div><!-- /app-body -->
-
-<!-- Celebration toast -->
-<div id="celeb-toast" class="celeb-toast">
-  <span class="celeb-emoji">🎉</span>
-  <span class="celeb-msg">Great work! You got it right!</span>
-</div>
-
-<!-- Formula panel (slide-in) -->
-<div class="formula-panel" id="formula-panel">
-  <div class="fp-head">
-    <span style="font-weight:700;font-size:14px;">📐 SEE Formulas</span>
-    <button onclick="toggleFormula()" style="background:none;border:none;cursor:pointer;font-size:16px;">✕</button>
-  </div>
-  <div class="fp-body" id="fp-body"></div>
-</div>
-<div class="formula-overlay" id="formula-overlay" onclick="toggleFormula()" style="display:none;"></div>
-
-<!-- Timer modal -->
-<div class="modal-overlay" id="timer-modal" onclick="if(event.target===this)closeTimer()" style="display:none;">
-  <div class="modal-box" style="max-width:320px;">
-    <div class="modal-hd">
-      <span class="modal-title">⏱ Set Timer</span>
-      <button class="modal-close" onclick="closeTimer()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <button class="timer-opt" onclick="startTimer(180)">3:00:00 <span>Full paper</span></button>
-        <button class="timer-opt" onclick="startTimer(120)">2:00:00 <span>Timed practice</span></button>
-        <button class="timer-opt" onclick="startTimer(60)">1:00:00 <span>Quick review</span></button>
-        <button class="timer-opt" onclick="startTimer(30)">0:30:00 <span>Speed round</span></button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Download modal -->
 <div class="dl-overlay" id="dl-overlay" onclick="if(event.target===this)closeDownload()" style="display:none;">
@@ -211,7 +98,7 @@
   </div>
 </div>
 
-<!-- Mobile drawer -->
+<!-- Mobile answer drawer -->
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
 <div id="drawer" class="drawer">
   <div class="drawer-handle"></div>
