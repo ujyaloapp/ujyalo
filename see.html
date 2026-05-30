@@ -140,6 +140,24 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .vtitle em{font-style:italic;}
 .vsub{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
 
+/* COMING SOON STATES */
+.cs-wrap{position:relative;border-radius:20px;overflow:hidden;border:1.5px solid var(--line);background:var(--card);}
+.cs-preview{padding:24px;filter:blur(3px);opacity:.45;pointer-events:none;user-select:none;}
+.cs-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 24px;background:linear-gradient(180deg,rgba(243,245,251,.4),rgba(243,245,251,.85));}
+.cs-icon-ring{width:64px;height:64px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px;box-shadow:0 8px 24px rgba(13,27,62,.25);}
+.cs-premium{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(90deg,#f59c1a,#f5b94a);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:99px;margin-bottom:12px;box-shadow:0 2px 8px rgba(245,156,26,.3);}
+.cs-title{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--ink);margin-bottom:8px;}
+.cs-title em{font-style:italic;}
+.cs-desc{font-size:14px;color:var(--muted);line-height:1.7;max-width:440px;margin-bottom:20px;}
+.cs-bullets{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;text-align:left;width:fit-content;}
+.cs-bullet{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink);font-weight:600;}
+.cs-bullet-ico{width:24px;height:24px;border-radius:7px;background:rgba(26,111,255,.1);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.cs-status{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--line);border-radius:99px;padding:8px 18px;font-size:13px;font-weight:700;color:var(--ink);}
+.cs-pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:cspulse 1.6s ease-in-out infinite;}
+@keyframes cspulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.3);}}
+.cs-mini{display:flex;gap:8px;margin-bottom:16px;}
+.cs-mini-bar{height:8px;border-radius:99px;background:var(--line);}
+
 /* SUBJECT FILTER PILLS */
 .spills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
 .spill{padding:7px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;}
@@ -275,13 +293,21 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
         <div class="vpad">
           <div class="vtitle">Hot <em>Topics</em></div>
           <div class="vsub">Which topics appear most across the last 10 years of SEE exams.</div>
-          <div class="spills" id="h-spills"></div>
-          <div id="h-list"></div>
-          <div class="hlegend">
-            <div class="hleg">🔥 <span>90%+ Almost certain</span></div>
-            <div class="hleg">📈 <span>70–89% Very likely</span></div>
-            <div class="hleg">📊 <span>50–69% Likely</span></div>
-            <div class="hleg">📉 <span>&lt;50% Less common</span></div>
+          <div class="cs-wrap">
+            <div class="cs-preview">
+              <div class="cs-mini"><div class="cs-mini-bar" style="width:95%;background:#ef4444;"></div></div>
+              <div class="cs-mini"><div class="cs-mini-bar" style="width:88%;background:#ef4444;"></div></div>
+              <div class="cs-mini"><div class="cs-mini-bar" style="width:72%;background:#f59c1a;"></div></div>
+              <div class="cs-mini"><div class="cs-mini-bar" style="width:60%;background:#f59c1a;"></div></div>
+              <div class="cs-mini"><div class="cs-mini-bar" style="width:45%;background:#1a6fff;"></div></div>
+            </div>
+            <div class="cs-overlay">
+              <div class="cs-icon-ring">🔥</div>
+              <div class="cs-premium">⭐ ujyalo Plus</div>
+              <div class="cs-title">Hot <em>Topics</em></div>
+              <div class="cs-desc">We're analysing 10 years of SEE papers to show you exactly which topics appear most — so you study what matters.</div>
+              <div class="cs-status"><span class="cs-pulse"></span> Analysing past papers — coming soon</div>
+            </div>
           </div>
         </div>
       </div>
@@ -291,22 +317,21 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
         <div class="vpad">
           <div class="vtitle">Year vs Year <em>Comparison</em></div>
           <div class="vsub">See how exam questions evolved between two years.</div>
-          <div class="cmp-ctrl">
-            <select class="cmp-sel" id="c-subj" onchange="renderCompare()">
-              <option value="maths">Maths</option>
-              <option value="english">English</option>
-              <option value="science">Science</option>
-            </select>
-            <select class="cmp-sel" id="c-y1" style="border-color:var(--blue);color:var(--blue);" onchange="renderCompare()">
-              <option value="2082">2082</option><option value="2081">2081</option><option value="2080">2080</option>
-            </select>
-            <span class="vs">vs</span>
-            <select class="cmp-sel" id="c-y2" style="border-color:var(--purple);color:var(--purple);" onchange="renderCompare()">
-              <option value="2081">2081</option><option value="2082">2082</option><option value="2080">2080</option>
-            </select>
+          <div class="cs-wrap">
+            <div class="cs-preview">
+              <div style="display:flex;gap:12px;">
+                <div style="flex:1;height:90px;border-radius:12px;background:linear-gradient(135deg,#1a6fff,#4da3ff);"></div>
+                <div style="flex:1;height:90px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#9d6bf0);"></div>
+              </div>
+            </div>
+            <div class="cs-overlay">
+              <div class="cs-icon-ring">↔️</div>
+              <div class="cs-premium">⭐ ujyalo Plus</div>
+              <div class="cs-title">Year vs Year <em>Comparison</em></div>
+              <div class="cs-desc">Compare any two years side by side and spot the patterns examiners repeat — so nothing surprises you.</div>
+              <div class="cs-status"><span class="cs-pulse"></span> Building comparisons — coming soon</div>
+            </div>
           </div>
-          <div class="cgrid" id="cgrid"></div>
-          <div class="pat" id="pat" style="display:none"><div class="pat-l">Pattern insight</div><div class="pat-t" id="pat-t"></div></div>
         </div>
       </div>
 
@@ -314,9 +339,21 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
       <div class="vw" id="vw-predict">
         <div class="vpad">
           <div class="vtitle">Topic <em>Predictions</em></div>
-          <div class="vsub">Topics most likely to appear in SEE 2083, based on 10-year frequency analysis.</div>
-          <div class="spills" id="p-spills"></div>
-          <div id="p-list"></div>
+          <div class="vsub">Topics most likely to appear in your next SEE exam, based on frequency analysis.</div>
+          <div class="cs-wrap">
+            <div class="cs-preview">
+              <div class="cs-mini"><div class="cs-mini-bar" style="width:95%;background:#ef4444;"></div></div>
+              <div class="cs-mini"><div class="cs-mini-bar" style="width:90%;background:#ef4444;"></div></div>
+              <div class="cs-mini"><div class="cs-mini-bar" style="width:80%;background:#f59c1a;"></div></div>
+            </div>
+            <div class="cs-overlay">
+              <div class="cs-icon-ring">🎯</div>
+              <div class="cs-premium">⭐ ujyalo Plus</div>
+              <div class="cs-title">Topic <em>Predictions</em></div>
+              <div class="cs-desc">Our analysis of past trends will show which topics are most likely to appear next — so you walk in prepared, not guessing.</div>
+              <div class="cs-status"><span class="cs-pulse"></span> Training predictions — coming soon</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -325,14 +362,25 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
         <div class="vpad">
           <div class="vtitle">My <em>Paper</em></div>
           <div class="vsub">A personalised practice paper built from your weak topics.</div>
-          <div class="mp-banner">
-            <h3>⚡ Your personalised paper</h3>
-            <p>Complete chapter practice first and we'll detect your weak topics. Then generate a custom paper targeting exactly what you need to improve.</p>
+          <div class="cs-wrap">
+            <div class="cs-preview">
+              <div style="height:60px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#9d6bf0);margin-bottom:10px;"></div>
+              <div class="cs-mini"><div class="cs-mini-bar" style="width:70%;background:#ef4444;"></div></div>
+              <div class="cs-mini"><div class="cs-mini-bar" style="width:55%;background:#f59c1a;"></div></div>
+            </div>
+            <div class="cs-overlay">
+              <div class="cs-icon-ring">⚡</div>
+              <div class="cs-premium">⭐ ujyalo Plus</div>
+              <div class="cs-title">My <em>Paper</em></div>
+              <div class="cs-desc">Practice past papers and we'll learn where you struggle. Then we build a custom paper targeting exactly your weak topics.</div>
+              <div class="cs-bullets">
+                <div class="cs-bullet"><span class="cs-bullet-ico">1</span> Attempt past papers</div>
+                <div class="cs-bullet"><span class="cs-bullet-ico">2</span> We detect your weak topics</div>
+                <div class="cs-bullet"><span class="cs-bullet-ico">3</span> Get a paper made just for you</div>
+              </div>
+              <div class="cs-status"><span class="cs-pulse"></span> Start practising to unlock</div>
+            </div>
           </div>
-          <div id="weak-list" style="margin-bottom:16px;">
-            <div class="bk-empty"><div style="font-size:36px;margin-bottom:12px;">📊</div><div style="font-weight:700;color:var(--ink);margin-bottom:6px;">No weak topics detected yet</div><div style="font-size:13px;color:var(--muted);">Complete some chapter practice to get started.</div></div>
-          </div>
-          <button class="gen-btn" disabled>⚡ Generate my personal paper →</button>
         </div>
       </div>
 
@@ -422,9 +470,7 @@ const S = {subj:'maths', year:'all', data:null};
 
 (async function init(){
   renderTabs();
-  renderHeatPills(); renderPredPills();
-  renderHeat('maths'); renderPred('maths');
-  renderCompare(); renderBookmarks();
+  renderBookmarks();
   await loadPapers();
 })();
 
@@ -589,7 +635,9 @@ function goView(id){
 function hCol(p){return p>=90?'#ef4444':p>=70?'#f59c1a':p>=50?'#1a6fff':'#94a3b8';}
 
 function renderHeatPills(){
-  document.getElementById('h-spills').innerHTML = Object.keys(HEAT).map((code,i)=>{
+  var _el = document.getElementById('h-spills');
+  if(!_el) return;
+  _el.innerHTML = Object.keys(HEAT).map((code,i)=>{
     const s=subj(code);
     return `<button class="spill${i===0?' act':''}"
       style="${i===0?`background:${s.accent};color:#fff;border-color:${s.accent};`:''}"
@@ -603,8 +651,10 @@ function heatSwitch(code,el){
   renderHeat(code);
 }
 function renderHeat(code){
+  var _el = document.getElementById('h-list');
+  if(!_el) return;
   const topics=HEAT[code]||[];
-  document.getElementById('h-list').innerHTML = topics.sort((a,b)=>b.f-a.f).map(t=>{
+  _el.innerHTML = topics.sort((a,b)=>b.f-a.f).map(t=>{
     const pct=(t.f/10)*100, col=hCol(pct);
     const lbl=pct>=90?'🔥 Almost certain':pct>=70?'📈 Very likely':pct>=50?'📊 Likely':'📉 Less common';
     return `<div class="hcard">
@@ -621,7 +671,9 @@ function renderHeat(code){
 // ─── PREDICT ─────────────────────────────────────────────────────────────────
 
 function renderPredPills(){
-  document.getElementById('p-spills').innerHTML = Object.keys(HEAT).map((code,i)=>{
+  var _el = document.getElementById('p-spills');
+  if(!_el) return;
+  _el.innerHTML = Object.keys(HEAT).map((code,i)=>{
     const s=subj(code);
     return `<button class="spill${i===0?' act':''}"
       style="${i===0?`background:${s.accent};color:#fff;border-color:${s.accent};`:''}"
@@ -635,8 +687,10 @@ function predSwitch(code,el){
   renderPred(code);
 }
 function renderPred(code){
+  var _el = document.getElementById('p-list');
+  if(!_el) return;
   const topics=HEAT[code]||[];
-  document.getElementById('p-list').innerHTML = topics.sort((a,b)=>b.l-a.l).map(t=>{
+  _el.innerHTML = topics.sort((a,b)=>b.l-a.l).map(t=>{
     const col=hCol(t.l);
     const emoji=t.l>=90?'🔥':t.l>=70?'⚡':t.l>=50?'📖':'💡';
     return `<div class="hcard" style="border-color:${t.l>=80?col+'44':'var(--line)'};">
@@ -661,7 +715,9 @@ function renderPred(code){
 // ─── COMPARE ─────────────────────────────────────────────────────────────────
 
 function renderCompare(){
-  const code=document.getElementById('c-subj').value;
+  var _cs = document.getElementById('c-subj');
+  if(!_cs) return;
+  const code=_cs.value;
   const y1=document.getElementById('c-y1').value;
   const y2=document.getElementById('c-y2').value;
   const s=subj(code), key=`${code}-${y1}-${y2}`;
