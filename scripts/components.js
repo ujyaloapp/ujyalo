@@ -161,7 +161,7 @@ const GLOBAL_STYLES = `
 /* ── LOGO ── */
 .ujyalo-logo {
   font-family: 'Fraunces', serif;
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 900;
   color: var(--navy);
   text-decoration: none;
@@ -183,8 +183,8 @@ const GLOBAL_STYLES = `
 .ujyalo-nav-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 28px;
-  height: 58px;
+  padding: 0 32px;
+  height: 64px;
   display: flex;
   align-items: center;
   gap: 32px;
@@ -196,7 +196,7 @@ const GLOBAL_STYLES = `
   flex: 1;
 }
 .ujyalo-nav-links a {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--muted);
   text-decoration: none;

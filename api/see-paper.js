@@ -306,6 +306,11 @@ function buildHTML({ paper, subject, questions }) {
 body{background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 .ujyalo-nav,.ujyalo-announce{flex-shrink:0;}
 .ujyalo-nav{position:relative;}
+#site-footer,#site-footer~*,.ujyalo-footer,.ujyalo-help-bubble{display:none!important;}
+.ujyalo-nav-inner{height:62px!important;}
+.ujyalo-logo{font-size:26px!important;}
+.ujyalo-nav-links a{font-size:14px!important;}
+.ujyalo-btn-primary{font-size:14px!important;padding:10px 20px!important;}
 
 /* ── HEADER ── */
 .hdr{background:var(--navy);flex-shrink:0;z-index:20;position:sticky;top:0;}
