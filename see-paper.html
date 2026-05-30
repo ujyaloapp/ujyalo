@@ -6,15 +6,20 @@
 <title>SEE Past Paper — ujyalo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=DM+Sans:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="/styles/see-paper.css"/>
 </head>
 <body>
 
+<!-- ── CELEBRATION TOAST ── -->
+<div class="celeb-wrap" id="celeb-wrap">
+  <div class="celeb-toast" id="celeb-toast">🎉 You got it!</div>
+</div>
+
 <!-- Global nav injected by components.js -->
 <div id="site-nav"></div>
 
-<!-- Paper header — filled by JS -->
+<!-- Paper header -->
 <div class="hdr" id="hdr" style="display:none;">
   <div class="hdr-main">
     <div class="hdr-l">
@@ -28,10 +33,26 @@
       </div>
     </div>
     <div class="hdr-r">
+      <!-- Text size -->
+      <div class="size-ctrl">
+        <button class="sz-btn" onclick="changeSize(-1)">A−</button>
+        <button class="sz-btn" onclick="changeSize(1)">A+</button>
+      </div>
+      <!-- Progress -->
       <div class="prog-pill">
         <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
         <span class="prog-pct" id="prog-pct">0%</span>
       </div>
+      <!-- Formula -->
+      <button class="hdr-icon-btn" id="formula-toggle-btn" onclick="toggleFormula()" title="Formula sheet">📐</button>
+      <!-- Dark mode -->
+      <button class="hdr-icon-btn" id="dark-btn" onclick="toggleDark()" title="Dark mode">🌙</button>
+      <!-- Timer -->
+      <button class="timer-pill" id="timer-pill" onclick="openTimer()">
+        <span class="timer-ico">⏱</span>
+        <span class="timer-val" id="timer-val">3:00:00</span>
+      </button>
+      <!-- Language -->
       <div class="lang-tog" id="lang-tog">
         <button class="lt-btn act" id="lt-en" onclick="setLang('en')">🇬🇧 EN</button>
         <button class="lt-btn off" id="lt-np" onclick="setLang('np')">🇳🇵 NP</button>
@@ -45,15 +66,17 @@
     <button class="mtab" id="mtab-check" onclick="setMode('check')">✅ Check</button>
     <button class="mtab" id="mtab-step"  onclick="setMode('step')">⚡ Step</button>
   </div>
+  <!-- Section jump bar -->
+  <div class="sec-jump-bar" id="sec-jump-bar" style="display:none;"></div>
 </div>
 
-<!-- Loading state -->
+<!-- Loading -->
 <div id="loading-state">
   <div class="loading-spinner"></div>
   <div class="loading-text">Loading paper...</div>
 </div>
 
-<!-- Error state -->
+<!-- Error -->
 <div id="error-state" style="display:none;">
   <div class="error-icon">⚠️</div>
   <div class="error-title">Could not load paper</div>
@@ -61,14 +84,12 @@
   <a href="/see.html" class="error-back">← Back to papers</a>
 </div>
 
-<!-- App body — shown after data loads -->
+<!-- App body -->
 <div class="app-body" id="app-body" style="display:none;">
 
-  <!-- SCREEN: OVERVIEW -->
+  <!-- OVERVIEW -->
   <div id="screen-overview" class="screen">
     <div class="ov-layout">
-
-      <!-- Left: journey + paper info -->
       <div class="ov-left">
         <div class="ov-subj-row">
           <div class="ov-subj-ico" id="ov-icon"></div>
@@ -77,23 +98,19 @@
             <div class="ov-subj-yr" id="ov-subj-yr"></div>
           </div>
         </div>
-
         <div class="ov-section">
           <div class="ov-sec-lbl">Your selection</div>
           <div class="trail" id="ov-trail"></div>
           <div class="prov-pill" id="ov-prov-pill"></div>
         </div>
-
         <div class="ov-section">
           <div class="ov-sec-lbl">Paper info</div>
           <div class="ov-stats-grid" id="ov-stats"></div>
         </div>
-
         <div class="ov-section" id="ov-topics-section" style="display:none;">
           <div class="ov-sec-lbl">Topics covered</div>
           <div class="topic-pills" id="ov-topics"></div>
         </div>
-
         <div class="ov-section" id="ov-progress-section" style="display:none;">
           <div class="ov-sec-lbl">Your progress</div>
           <div class="ov-progress-box">
@@ -103,8 +120,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Right: mode cards -->
       <div class="ov-right">
         <div class="ov-how-lbl">How do you want to use this paper?</div>
         <div class="ov-cards">
@@ -150,10 +165,9 @@
     </div>
   </div>
 
-  <!-- SCREEN: READ / CHECK -->
+  <!-- READ / CHECK -->
   <div id="screen-paper" class="screen" style="display:none;">
     <div class="paper-layout">
-      <!-- Sidebar -->
       <div class="sidebar" id="sidebar">
         <div class="sb-head">
           <div class="sb-label">All Questions</div>
@@ -162,12 +176,10 @@
         </div>
         <div class="sb-scroll" id="sb-scroll"></div>
       </div>
-      <!-- Main questions -->
       <div class="paper-main">
         <div class="info-strip" id="info-strip"></div>
         <div class="questions-area" id="questions-area"></div>
       </div>
-      <!-- Right answer panel -->
       <div class="answer-panel" id="answer-panel">
         <div class="ap-head">
           <div class="ap-label">Answer &amp; Explanation</div>
@@ -181,10 +193,18 @@
           </div>
         </div>
       </div>
+      <!-- Formula panel -->
+      <div class="formula-panel" id="formula-panel">
+        <div class="fp-head">
+          <span class="fp-title">📐 Formulas</span>
+          <button class="fp-close" onclick="toggleFormula()">✕</button>
+        </div>
+        <div class="fp-body" id="fp-body"></div>
+      </div>
     </div>
   </div>
 
-  <!-- SCREEN: STEP -->
+  <!-- STEP -->
   <div id="screen-step" class="screen" style="display:none;">
     <div class="step-layout">
       <div class="step-progress-strip" id="step-dots"></div>
@@ -224,6 +244,29 @@
     </div>
     <div class="dl-opts" id="dl-opts"></div>
     <div class="dl-note">🔒 Invisible watermark included for copyright protection.</div>
+  </div>
+</div>
+
+<!-- Timer Modal -->
+<div class="timer-modal-overlay" id="timer-modal" onclick="if(event.target===this)closeTimer()">
+  <div class="timer-modal-box">
+    <div class="tm-title">Start exam timer?</div>
+    <div class="tm-sub">Practice under real exam conditions. Timer turns red in the last 30 minutes.</div>
+    <div class="tm-opts">
+      <div class="tm-opt" onclick="startTimer(180)">
+        <div><div class="tm-opt-label">Full paper</div><div class="tm-opt-sub">Real exam conditions</div></div>
+        <span class="tm-opt-time">3:00:00</span>
+      </div>
+      <div class="tm-opt" onclick="startTimer(90)">
+        <div><div class="tm-opt-label">Half paper</div><div class="tm-opt-sub">Practice sprint</div></div>
+        <span class="tm-opt-time">1:30:00</span>
+      </div>
+      <div class="tm-opt" onclick="startTimer(30)">
+        <div><div class="tm-opt-label">Short focus</div><div class="tm-opt-sub">Group B only</div></div>
+        <span class="tm-opt-time">0:30:00</span>
+      </div>
+    </div>
+    <button class="tm-cancel" onclick="closeTimer()">Not now</button>
   </div>
 </div>
 
