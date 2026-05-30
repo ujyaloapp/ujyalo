@@ -133,11 +133,9 @@ function buildSidebar() {
     row.onclick = (function(grp) {
       return function() {
         scrollToQ(grp.num);
-        if (MODE === 'check' || MODE === 'step') {
-          var src   = grp.subs.length > 0 ? grp.subs[0] : grp.parent;
-          var subId = grp.subs.length > 0 ? ('q-' + grp.num + '-' + grp.subs[0].sub) : ('q-' + grp.num + '-main');
-          if (src) openAnswer(subId, src, grp.num);
-        }
+        var src   = grp.subs.length > 0 ? grp.subs[0] : grp.parent;
+        var subId = grp.subs.length > 0 ? ('q-' + grp.num + '-' + grp.subs[0].sub) : ('q-' + grp.num + '-main');
+        if (src) openAnswer(subId, src, grp.num);
       };
     })(g);
 
@@ -265,6 +263,15 @@ function buildQuestions() {
 
   DATA.groups.forEach(function(g) {
     var card  = document.createElement('div'); card.className = 'qcard'; card.id = 'qcard-' + g.num;
+    card.style.cursor = 'pointer';
+    card.onclick = (function(grp) {
+      return function(e) {
+        if (e.target.closest('button, textarea, .mcq-opt')) return;
+        var src   = grp.subs.length > 0 ? grp.subs[0] : grp.parent;
+        var subId = grp.subs.length > 0 ? ('q-' + grp.num + '-' + grp.subs[0].sub) : ('q-' + grp.num + '-main');
+        if (src) openAnswer(subId, src, grp.num);
+      };
+    })(g);
     var strip = document.createElement('div'); strip.className = 'qcard-strip'; strip.id = 'qstrip-' + g.num;
     card.appendChild(strip);
 
@@ -489,7 +496,7 @@ function enterMode(mode) {
 
   setActiveTab(mode);
 
-  if (!isMobile() && mode === 'check' && DATA.groups.length > 0) {
+  if (!isMobile() && mode !== 'step' && DATA.groups.length > 0) {
     var g = DATA.groups[0];
     var firstId = g.subs.length > 0 ? ('q-' + g.num + '-' + g.subs[0].sub) : ('q-' + g.num + '-main');
     var firstQ  = g.subs.length > 0 ? g.subs[0] : g.parent;
@@ -520,7 +527,7 @@ function setMode(mode) {
     btn.style.display = mode === 'read' ? 'none' : '';
   });
 
-  if (!isMobile() && mode === 'check' && DATA.groups.length > 0) {
+  if (!isMobile() && mode !== 'step' && DATA.groups.length > 0) {
     var g = DATA.groups[0];
     var firstId = g.subs.length > 0 ? ('q-' + g.num + '-' + g.subs[0].sub) : ('q-' + g.num + '-main');
     var firstQ  = g.subs.length > 0 ? g.subs[0] : g.parent;

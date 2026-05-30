@@ -43,24 +43,22 @@
       </div>
     </div>
     <div class="hdr-right">
-      <button class="hdr-btn" onclick="changeSize(-1)">A−</button>
-      <button class="hdr-btn" onclick="changeSize(1)">A+</button>
-      <button class="hdr-btn" id="formulas-btn" onclick="toggleFormula()" style="display:none;">📐 Formulas</button>
       <button class="hdr-btn" id="dark-btn" onclick="toggleDark()">🌙</button>
-      <div class="timer-pill" id="timer-pill" onclick="openTimer()" style="cursor:pointer;">
+      <div class="timer-pill" id="timer-pill" onclick="openTimer()" title="Set timer">
         <span id="timer-val">3:00:00</span>
       </div>
       <div class="lang-tog" id="lang-tog">
-        <button class="lt-btn act" id="lt-en" onclick="setLang('en')">🇬🇧 EN</button>
-        <button class="lt-btn off" id="lt-np" onclick="setLang('np')">🇳🇵 NP</button>
+        <button class="lt-btn act" id="lt-en" onclick="setLang('en')">EN</button>
+        <button class="lt-btn off" id="lt-np" onclick="setLang('np')">NP</button>
       </div>
-      <button class="share-btn hdr-btn" onclick="shareUrl()">🔗</button>
       <button class="hdr-btn dl-btn" onclick="openDownload()">⬇ PDF</button>
     </div>
   </header>
 
   <!-- SECTION JUMP BAR -->
-  <div class="sec-jump-bar" id="sec-jump-bar" style="display:none;"></div>
+  <div class="sec-jump-bar" id="sec-jump-bar" style="display:none;">
+    <button class="sjb-formula-btn" id="formulas-btn" onclick="toggleFormula()" style="display:none;">📐 Formulas</button>
+  </div>
 
   <!-- MODE TABS -->
   <div class="mode-tabs" id="mode-tabs" style="display:none;">
