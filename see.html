@@ -141,22 +141,19 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .vsub{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
 
 /* COMING SOON STATES */
-.cs-wrap{position:relative;border-radius:20px;overflow:hidden;border:1.5px solid var(--line);background:var(--card);}
-.cs-preview{padding:24px;filter:blur(3px);opacity:.45;pointer-events:none;user-select:none;}
-.cs-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 24px;background:linear-gradient(180deg,rgba(243,245,251,.4),rgba(243,245,251,.85));}
-.cs-icon-ring{width:64px;height:64px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px;box-shadow:0 8px 24px rgba(13,27,62,.25);}
-.cs-premium{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(90deg,#f59c1a,#f5b94a);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:99px;margin-bottom:12px;box-shadow:0 2px 8px rgba(245,156,26,.3);}
-.cs-title{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--ink);margin-bottom:8px;}
+.cs-wrap{position:relative;border-radius:20px;overflow:hidden;border:1.5px solid var(--line);background:var(--card);padding:44px 28px;text-align:center;}
+.cs-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#1a6fff,#7c3aed);}
+.cs-icon-ring{width:68px;height:68px;border-radius:20px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 18px;box-shadow:0 10px 30px rgba(13,27,62,.28);}
+.cs-premium{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(90deg,#f59c1a,#f5b94a);color:#fff;font-size:11px;font-weight:700;padding:5px 13px;border-radius:99px;margin-bottom:14px;box-shadow:0 3px 10px rgba(245,156,26,.32);letter-spacing:.3px;}
+.cs-title{font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:var(--ink);margin-bottom:10px;}
 .cs-title em{font-style:italic;}
-.cs-desc{font-size:14px;color:var(--muted);line-height:1.7;max-width:440px;margin-bottom:20px;}
-.cs-bullets{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;text-align:left;width:fit-content;}
-.cs-bullet{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink);font-weight:600;}
-.cs-bullet-ico{width:24px;height:24px;border-radius:7px;background:rgba(26,111,255,.1);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-.cs-status{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--line);border-radius:99px;padding:8px 18px;font-size:13px;font-weight:700;color:var(--ink);}
+.cs-desc{font-size:17px;color:var(--ink);line-height:1.6;max-width:480px;margin:0 auto 24px;font-weight:600;}
+.cs-bullets{display:flex;flex-direction:column;gap:12px;margin:0 auto 26px;text-align:left;width:fit-content;}
+.cs-bullet{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--ink);font-weight:600;}
+.cs-bullet-ico{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#1a6fff,#4da3ff);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.cs-status{display:inline-flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--line);border-radius:99px;padding:9px 20px;font-size:13px;font-weight:700;color:var(--muted);}
 .cs-pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:cspulse 1.6s ease-in-out infinite;}
 @keyframes cspulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.3);}}
-.cs-mini{display:flex;gap:8px;margin-bottom:16px;}
-.cs-mini-bar{height:8px;border-radius:99px;background:var(--line);}
 
 /* SUBJECT FILTER PILLS */
 .spills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
@@ -240,11 +237,11 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
     </div>
     <nav class="lsb-nav">
       <button class="li act" onclick="showView('papers',this)" id="nav-papers"><span class="li-icon">📄</span><span class="li-lbl">Papers</span></button>
+      <button class="li" onclick="showView('saved',this)" id="nav-saved"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
       <button class="li" onclick="showView('heatmap',this)" id="nav-heatmap"><span class="li-icon">🔥</span><span class="li-lbl">Hot Topics</span></button>
       <button class="li" onclick="showView('compare',this)" id="nav-compare"><span class="li-icon">↔</span><span class="li-lbl">Compare</span></button>
       <button class="li" onclick="showView('predict',this)" id="nav-predict"><span class="li-icon">🎯</span><span class="li-lbl">Predict</span></button>
       <button class="li" onclick="showView('mypaper',this)" id="nav-mypaper"><span class="li-icon">⚡</span><span class="li-lbl">My Paper</span></button>
-      <button class="li" onclick="showView('saved',this)" id="nav-saved"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
     </nav>
     <div class="lsb-foot"><p>SEE 2082 live · 7 provinces<br/>6 subjects · Free forever</p></div>
   </aside>
@@ -292,22 +289,13 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
       <div class="vw" id="vw-heatmap">
         <div class="vpad">
           <div class="vtitle">Hot <em>Topics</em></div>
-          <div class="vsub">Which topics appear most across the last 10 years of SEE exams.</div>
+          <div class="vsub">Which topics appear most across years of SEE exams.</div>
           <div class="cs-wrap">
-            <div class="cs-preview">
-              <div class="cs-mini"><div class="cs-mini-bar" style="width:95%;background:#ef4444;"></div></div>
-              <div class="cs-mini"><div class="cs-mini-bar" style="width:88%;background:#ef4444;"></div></div>
-              <div class="cs-mini"><div class="cs-mini-bar" style="width:72%;background:#f59c1a;"></div></div>
-              <div class="cs-mini"><div class="cs-mini-bar" style="width:60%;background:#f59c1a;"></div></div>
-              <div class="cs-mini"><div class="cs-mini-bar" style="width:45%;background:#1a6fff;"></div></div>
-            </div>
-            <div class="cs-overlay">
-              <div class="cs-icon-ring">🔥</div>
-              <div class="cs-premium">⭐ ujyalo Plus</div>
-              <div class="cs-title">Hot <em>Topics</em></div>
-              <div class="cs-desc">We're analysing 10 years of SEE papers to show you exactly which topics appear most — so you study what matters.</div>
-              <div class="cs-status"><span class="cs-pulse"></span> Analysing past papers — coming soon</div>
-            </div>
+            <div class="cs-icon-ring">🔥</div>
+            <div class="cs-premium">⭐ ujyalo Plus</div>
+            <div class="cs-title">Hot <em>Topics</em></div>
+            <div class="cs-desc">Stop guessing what to study. See the topics that show up year after year — and spend your time where it counts.</div>
+            <div class="cs-status"><span class="cs-pulse"></span> Analysing past papers — coming soon</div>
           </div>
         </div>
       </div>
@@ -316,21 +304,13 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
       <div class="vw" id="vw-compare">
         <div class="vpad">
           <div class="vtitle">Year vs Year <em>Comparison</em></div>
-          <div class="vsub">See how exam questions evolved between two years.</div>
+          <div class="vsub">See how exam questions evolve between two years.</div>
           <div class="cs-wrap">
-            <div class="cs-preview">
-              <div style="display:flex;gap:12px;">
-                <div style="flex:1;height:90px;border-radius:12px;background:linear-gradient(135deg,#1a6fff,#4da3ff);"></div>
-                <div style="flex:1;height:90px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#9d6bf0);"></div>
-              </div>
-            </div>
-            <div class="cs-overlay">
-              <div class="cs-icon-ring">↔️</div>
-              <div class="cs-premium">⭐ ujyalo Plus</div>
-              <div class="cs-title">Year vs Year <em>Comparison</em></div>
-              <div class="cs-desc">Compare any two years side by side and spot the patterns examiners repeat — so nothing surprises you.</div>
-              <div class="cs-status"><span class="cs-pulse"></span> Building comparisons — coming soon</div>
-            </div>
+            <div class="cs-icon-ring">↔️</div>
+            <div class="cs-premium">⭐ ujyalo Plus</div>
+            <div class="cs-title">Year vs Year <em>Comparison</em></div>
+            <div class="cs-desc">Two years, side by side. See exactly what the examiner keeps repeating — so nothing in your exam catches you off guard.</div>
+            <div class="cs-status"><span class="cs-pulse"></span> Building comparisons — coming soon</div>
           </div>
         </div>
       </div>
@@ -339,20 +319,13 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
       <div class="vw" id="vw-predict">
         <div class="vpad">
           <div class="vtitle">Topic <em>Predictions</em></div>
-          <div class="vsub">Topics most likely to appear in your next SEE exam, based on frequency analysis.</div>
+          <div class="vsub">Topics most likely to appear in your next SEE exam.</div>
           <div class="cs-wrap">
-            <div class="cs-preview">
-              <div class="cs-mini"><div class="cs-mini-bar" style="width:95%;background:#ef4444;"></div></div>
-              <div class="cs-mini"><div class="cs-mini-bar" style="width:90%;background:#ef4444;"></div></div>
-              <div class="cs-mini"><div class="cs-mini-bar" style="width:80%;background:#f59c1a;"></div></div>
-            </div>
-            <div class="cs-overlay">
-              <div class="cs-icon-ring">🎯</div>
-              <div class="cs-premium">⭐ ujyalo Plus</div>
-              <div class="cs-title">Topic <em>Predictions</em></div>
-              <div class="cs-desc">Our analysis of past trends will show which topics are most likely to appear next — so you walk in prepared, not guessing.</div>
-              <div class="cs-status"><span class="cs-pulse"></span> Training predictions — coming soon</div>
-            </div>
+            <div class="cs-icon-ring">🎯</div>
+            <div class="cs-premium">⭐ ujyalo Plus</div>
+            <div class="cs-title">Topic <em>Predictions</em></div>
+            <div class="cs-desc">Walk into your exam knowing what's coming. We read years of patterns and tell you the topics most likely to appear next.</div>
+            <div class="cs-status"><span class="cs-pulse"></span> Training predictions — coming soon</div>
           </div>
         </div>
       </div>
@@ -363,23 +336,16 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
           <div class="vtitle">My <em>Paper</em></div>
           <div class="vsub">A personalised practice paper built from your weak topics.</div>
           <div class="cs-wrap">
-            <div class="cs-preview">
-              <div style="height:60px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#9d6bf0);margin-bottom:10px;"></div>
-              <div class="cs-mini"><div class="cs-mini-bar" style="width:70%;background:#ef4444;"></div></div>
-              <div class="cs-mini"><div class="cs-mini-bar" style="width:55%;background:#f59c1a;"></div></div>
+            <div class="cs-icon-ring">⚡</div>
+            <div class="cs-premium">⭐ ujyalo Plus</div>
+            <div class="cs-title">My <em>Paper</em></div>
+            <div class="cs-desc">Your weak spots, turned into one paper built just for you. The more you practise, the smarter it gets.</div>
+            <div class="cs-bullets">
+              <div class="cs-bullet"><span class="cs-bullet-ico">1</span> Attempt past papers</div>
+              <div class="cs-bullet"><span class="cs-bullet-ico">2</span> We find where you struggle</div>
+              <div class="cs-bullet"><span class="cs-bullet-ico">3</span> Get a paper made just for you</div>
             </div>
-            <div class="cs-overlay">
-              <div class="cs-icon-ring">⚡</div>
-              <div class="cs-premium">⭐ ujyalo Plus</div>
-              <div class="cs-title">My <em>Paper</em></div>
-              <div class="cs-desc">Practice past papers and we'll learn where you struggle. Then we build a custom paper targeting exactly your weak topics.</div>
-              <div class="cs-bullets">
-                <div class="cs-bullet"><span class="cs-bullet-ico">1</span> Attempt past papers</div>
-                <div class="cs-bullet"><span class="cs-bullet-ico">2</span> We detect your weak topics</div>
-                <div class="cs-bullet"><span class="cs-bullet-ico">3</span> Get a paper made just for you</div>
-              </div>
-              <div class="cs-status"><span class="cs-pulse"></span> Start practising to unlock</div>
-            </div>
+            <div class="cs-status"><span class="cs-pulse"></span> Start practising to unlock</div>
           </div>
         </div>
       </div>
