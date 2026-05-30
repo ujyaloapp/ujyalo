@@ -326,6 +326,16 @@ function buildQuestions() {
       body.appendChild(diag);
     }
 
+    // Social proof
+    if (g.parent && g.parent.student_count) {
+      var scEl = document.createElement('div'); scEl.className = 'social-proof';
+      var scTxt = String.fromCodePoint(0x1F465) + ' ' + g.parent.student_count.toLocaleString() + ' students';
+      if (g.parent.error_rate) { scTxt += ' · ' + g.parent.error_rate + '% got it wrong'; }
+      scEl.textContent = scTxt;
+      if (g.parent.error_rate >= 50) scEl.style.color = 'var(--red)';
+      body.appendChild(scEl);
+    }
+
     if (g.subs.length > 0) {
       g.subs.forEach(function(s) { body.appendChild(buildSubItem(s, g.num, accent)); });
     } else if (g.parent) {
@@ -611,6 +621,25 @@ function buildAnswerHTML(q, qNum) {
     } else {
       html += '<button class="replay-btn" onclick="replaySteps()">\u21BA Replay steps</button>';
     }
+  }
+
+  // Why examiner
+  if (q.why_examiner) {
+    html += '<div class="why-box"><div class="why-label">Why the examiner tests this</div><div class="why-text">' + escapeHTML(q.why_examiner) + '</div></div>';
+  }
+  // Common mistake
+  if (q.common_mistake) {
+    html += '<div class="mistake-box"><div class="mistake-label">Most common mistake</div><div class="mistake-text">' + escapeHTML(q.common_mistake) + '</div></div>';
+  }
+  // Marking scheme
+  if (q.marking_scheme && Array.isArray(q.marking_scheme) && q.marking_scheme.length) {
+    html += '<div class="marking-scheme"><div class="ms-label">Marking scheme</div>';
+    q.marking_scheme.forEach(function(row) {
+      var step = typeof row === 'object' ? (row.step || '') : String(row);
+      var mark = typeof row === 'object' && row.mark ? row.mark + 'm' : '';
+      html += '<div class="ms-row"><span class="ms-step">' + escapeHTML(step) + '</span>' + (mark ? '<span class="ms-mark">' + mark + '</span>' : '') + '</div>';
+    });
+    html += '</div>';
   }
 
   html += '<button class="re-btn" onclick="toggleReExplain(this)">\uD83D\uDCA1 Still stuck? Explain differently</button>'
