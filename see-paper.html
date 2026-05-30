@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SEE Past Paper — ujyalo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles/see-paper.css"/>
+</head>
+<body>
+
+<!-- Global nav injected by components.js -->
+<div id="site-nav"></div>
+
+<!-- Paper header — filled by JS -->
+<div class="hdr" id="hdr" style="display:none;">
+  <div class="hdr-main">
+    <div class="hdr-l">
+      <button class="back-btn" onclick="history.back()">← Back</button>
+      <div class="paper-id">
+        <div class="subj-ico" id="hdr-icon"></div>
+        <div>
+          <div class="paper-nm" id="hdr-title"></div>
+          <div class="paper-mt" id="hdr-sub"></div>
+        </div>
+      </div>
+    </div>
+    <div class="hdr-r">
+      <div class="prog-pill">
+        <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+        <span class="prog-pct" id="prog-pct">0%</span>
+      </div>
+      <div class="lang-tog" id="lang-tog">
+        <button class="lt-btn act" id="lt-en" onclick="setLang('en')">🇬🇧 EN</button>
+        <button class="lt-btn off" id="lt-np" onclick="setLang('np')">🇳🇵 NP</button>
+      </div>
+      <button class="share-btn" onclick="shareUrl()">🔗</button>
+      <button class="dl-btn" onclick="openDownload()">⬇ PDF</button>
+    </div>
+  </div>
+  <div class="mode-tabs" id="mode-tabs" style="display:none;">
+    <button class="mtab" id="mtab-read"  onclick="setMode('read')">📖 Read</button>
+    <button class="mtab" id="mtab-check" onclick="setMode('check')">✅ Check</button>
+    <button class="mtab" id="mtab-step"  onclick="setMode('step')">⚡ Step</button>
+  </div>
+</div>
+
+<!-- Loading state -->
+<div id="loading-state">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading paper...</div>
+</div>
+
+<!-- Error state -->
+<div id="error-state" style="display:none;">
+  <div class="error-icon">⚠️</div>
+  <div class="error-title">Could not load paper</div>
+  <div class="error-sub" id="error-msg"></div>
+  <a href="/see.html" class="error-back">← Back to papers</a>
+</div>
+
+<!-- App body — shown after data loads -->
+<div class="app-body" id="app-body" style="display:none;">
+
+  <!-- SCREEN: OVERVIEW -->
+  <div id="screen-overview" class="screen">
+    <div class="ov-layout">
+
+      <!-- Left: journey + paper info -->
+      <div class="ov-left">
+        <div class="ov-subj-row">
+          <div class="ov-subj-ico" id="ov-icon"></div>
+          <div>
+            <div class="ov-subj-nm" id="ov-subj-name"></div>
+            <div class="ov-subj-yr" id="ov-subj-yr"></div>
+          </div>
+        </div>
+
+        <div class="ov-section">
+          <div class="ov-sec-lbl">Your selection</div>
+          <div class="trail" id="ov-trail"></div>
+          <div class="prov-pill" id="ov-prov-pill"></div>
+        </div>
+
+        <div class="ov-section">
+          <div class="ov-sec-lbl">Paper info</div>
+          <div class="ov-stats-grid" id="ov-stats"></div>
+        </div>
+
+        <div class="ov-section" id="ov-topics-section" style="display:none;">
+          <div class="ov-sec-lbl">Topics covered</div>
+          <div class="topic-pills" id="ov-topics"></div>
+        </div>
+
+        <div class="ov-section" id="ov-progress-section" style="display:none;">
+          <div class="ov-sec-lbl">Your progress</div>
+          <div class="ov-progress-box">
+            <div class="ov-progress-pct" id="ov-progress-pct">0%</div>
+            <div class="ov-progress-lbl" id="ov-progress-lbl"></div>
+            <div class="ov-progress-track"><div class="ov-progress-fill" id="ov-progress-fill"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: mode cards -->
+      <div class="ov-right">
+        <div class="ov-how-lbl">How do you want to use this paper?</div>
+        <div class="ov-cards">
+          <button class="ov-card" onclick="enterMode('read')" style="--mc:#1a6fff;">
+            <div class="ov-card-icon" style="background:#e8f0ff;color:#1a6fff;">📖</div>
+            <div class="ov-card-info">
+              <div class="ov-card-title">Read full paper</div>
+              <div class="ov-card-desc">Browse all questions — answers hidden</div>
+            </div>
+            <div class="ov-card-arr" style="color:#1a6fff;">›</div>
+          </button>
+          <button class="ov-card" onclick="enterMode('check')" style="--mc:#38c9b0;">
+            <div class="ov-card-icon" style="background:#e0f7f2;color:#38c9b0;">✅</div>
+            <div class="ov-card-info">
+              <div class="ov-card-title">Check my answers</div>
+              <div class="ov-card-desc">I have already attempted it — show answers</div>
+            </div>
+            <div class="ov-card-arr" style="color:#38c9b0;">›</div>
+          </button>
+          <button class="ov-card" onclick="enterMode('step')" style="--mc:#f59c1a;">
+            <div class="ov-card-icon" style="background:#fff4e0;color:#f59c1a;">⚡</div>
+            <div class="ov-card-info">
+              <div class="ov-card-title">Question by question</div>
+              <div class="ov-card-desc">One at a time — reveal and move on</div>
+            </div>
+            <div class="ov-card-arr" style="color:#f59c1a;">›</div>
+          </button>
+          <button class="ov-card" onclick="openDownload()" style="--mc:#7c3aed;">
+            <div class="ov-card-icon" style="background:#f0ebff;color:#7c3aed;">📥</div>
+            <div class="ov-card-info">
+              <div class="ov-card-title">Download PDF</div>
+              <div class="ov-card-desc">Nepali, English, or both languages</div>
+            </div>
+            <div class="ov-card-arr" style="color:#7c3aed;">›</div>
+          </button>
+        </div>
+        <div class="ov-tip">
+          <strong>Tip:</strong> Start with <strong>Read</strong> to get familiar.
+          Use <strong>Check</strong> after attempting it yourself.
+          Use <strong>Step</strong> for guided practice.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: READ / CHECK -->
+  <div id="screen-paper" class="screen" style="display:none;">
+    <div class="paper-layout">
+      <!-- Sidebar -->
+      <div class="sidebar" id="sidebar">
+        <div class="sb-head">
+          <div class="sb-label">All Questions</div>
+          <div class="sb-progress"><div class="sb-progress-fill" id="sb-progress-fill"></div></div>
+          <div class="sb-count" id="sb-count">0 reviewed</div>
+        </div>
+        <div class="sb-scroll" id="sb-scroll"></div>
+      </div>
+      <!-- Main questions -->
+      <div class="paper-main">
+        <div class="info-strip" id="info-strip"></div>
+        <div class="questions-area" id="questions-area"></div>
+      </div>
+      <!-- Right answer panel -->
+      <div class="answer-panel" id="answer-panel">
+        <div class="ap-head">
+          <div class="ap-label">Answer &amp; Explanation</div>
+          <div class="ap-q" id="ap-q">Select a question</div>
+        </div>
+        <div class="ap-body" id="ap-body">
+          <div class="ap-empty">
+            <div style="font-size:32px;margin-bottom:10px;">👆</div>
+            <div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px;">Click any question</div>
+            <div style="font-size:13px;color:var(--muted);">The answer appears here.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: STEP -->
+  <div id="screen-step" class="screen" style="display:none;">
+    <div class="step-layout">
+      <div class="step-progress-strip" id="step-dots"></div>
+      <div class="step-content">
+        <div class="step-question-area" id="step-question"></div>
+        <div class="answer-panel step-answer-panel" id="step-answer-panel">
+          <div class="ap-head">
+            <div class="ap-label">Answer &amp; Explanation</div>
+            <div class="ap-q" id="step-ap-q"></div>
+          </div>
+          <div class="ap-body" id="step-ap-body">
+            <div class="ap-empty">
+              <div style="font-size:13px;color:var(--muted);">Answer appears here after you reveal it.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="step-prev" id="step-prev" onclick="stepPrev()">← Previous</button>
+        <span class="step-counter" id="step-counter">Q1 of 1</span>
+        <button class="step-next" id="step-next" onclick="stepNext()">Next →</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app-body -->
+
+<!-- Download Modal -->
+<div id="dl-overlay" class="dl-overlay" onclick="if(event.target===this)closeDownload()">
+  <div class="dl-modal">
+    <div class="dl-modal-head">
+      <div>
+        <div class="dl-modal-title">Download PDF</div>
+        <div class="dl-modal-sub" id="dl-modal-sub"></div>
+      </div>
+      <button class="dl-close" onclick="closeDownload()">✕</button>
+    </div>
+    <div class="dl-opts" id="dl-opts"></div>
+    <div class="dl-note">🔒 Invisible watermark included for copyright protection.</div>
+  </div>
+</div>
+
+<!-- Mobile drawer -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+<div id="drawer" class="drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-head">
+    <div>
+      <div class="drawer-q" id="drawer-q"></div>
+      <div class="drawer-marks" id="drawer-marks"></div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()">✕ Close</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+</div>
+
+<div id="site-footer"></div>
+<script src="/scripts/components.js"></script>
+<script src="/scripts/see-paper-client.js"></script>
+</body>
+</html>
