@@ -1032,3 +1032,33 @@ body.dark .note-area textarea { background: rgba(255,255,255,.04); border-color:
   .formula-panel { display: none; }
   .size-ctrl { display: none; }
 }
+
+/* ── SIDEBAR SECTION HEADERS ── */
+.sb-sec-hdr {
+  padding: 6px 12px 4px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.sb-sec-badge {
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-weight: 900; font-size: 8px; color: #fff;
+  flex-shrink: 0;
+}
+.sb-sec-lbl {
+  font-size: 10px; font-weight: 700; color: var(--muted);
+}
+body.dark .sb-sec-hdr {
+  background: rgba(255,255,255,.03);
+  border-color: var(--dm-line);
+}
+body.dark .sb-sec-lbl { color: var(--dm-muted); }

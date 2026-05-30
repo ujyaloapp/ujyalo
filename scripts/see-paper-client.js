@@ -161,15 +161,50 @@ function buildOverview() {
 // ─── SIDEBAR ──────────────────────────────────────────────────────────────
 
 function buildSidebar() {
-  var accent = DATA.subject.accent;
-  var frag   = document.createDocumentFragment();
+  var accent     = DATA.subject.accent;
+  var frag       = document.createDocumentFragment();
+  var lastSection = null;
+
+  var secColors = { A: '#1a6fff', B: '#38c9b0', C: '#f59c1a', D: '#7c3aed' };
+  var secLabels = { A: 'Group A — Objective', B: 'Group B — Short answer', C: 'Group C — Long answer' };
 
   DATA.groups.forEach(function(g) {
+    // Section divider — insert when section changes
+    var thisSec = getGroupSection(g);
+    if (thisSec !== lastSection) {
+      lastSection = thisSec;
+      var secHdr = document.createElement('div');
+      secHdr.className = 'sb-sec-hdr';
+      var secBadge = document.createElement('div');
+      secBadge.className = 'sb-sec-badge';
+      secBadge.style.background = secColors[thisSec] || accent;
+      secBadge.textContent = thisSec;
+      var secLbl = document.createElement('span');
+      secLbl.className = 'sb-sec-lbl';
+      secLbl.textContent = secLabels[thisSec] || ('Group ' + thisSec);
+      secHdr.appendChild(secBadge);
+      secHdr.appendChild(secLbl);
+      frag.appendChild(secHdr);
+    }
+
     var row = document.createElement('div');
     row.className = 'sb-row';
     row.id = 'sb-' + g.num;
     row.setAttribute('data-num', g.num);
-    row.onclick = function() { scrollToQ(g.num); };
+
+    // Click: scroll to question AND open answer if in check/step mode
+    row.onclick = (function(grp) {
+      return function() {
+        scrollToQ(grp.num);
+        if (MODE === 'check' || MODE === 'step') {
+          var src   = grp.subs.length > 0 ? grp.subs[0] : grp.parent;
+          var subId = grp.subs.length > 0
+            ? ('q-' + grp.num + '-' + grp.subs[0].sub)
+            : ('q-' + grp.num + '-main');
+          if (src) openAnswer(subId, src, grp.num);
+        }
+      };
+    })(g);
 
     var numEl = document.createElement('div');
     numEl.className        = 'sb-num';
@@ -180,10 +215,15 @@ function buildSidebar() {
 
     var info   = document.createElement('div'); info.className = 'sb-info';
     var topic  = document.createElement('div'); topic.className = 'sb-topic';
+    // Prefer Nepali topic if language is NP, else English
     var topicT = (g.parent && g.parent.topic) ? g.parent.topic
-      : (g.parent && g.parent.en ? g.parent.en.split(' ').slice(0, 5).join(' ') + (g.parent.en.split(' ').length > 5 ? '...' : '') : 'Question ' + g.num);
+      : (g.parent && (g.parent.en || g.parent.np)
+        ? (LANG === 'np' && g.parent.np ? g.parent.np : g.parent.en || '').split(' ').slice(0, 5).join(' ') + '...'
+        : 'Question ' + g.num);
     topic.textContent = topicT;
-    var marks = g.subs.length ? g.subs.reduce(function(a, s) { return a + (s.marks || 0); }, 0) : (g.parent ? g.parent.marks || 0 : 0);
+    var marks = g.subs.length
+      ? g.subs.reduce(function(a, s) { return a + (s.marks || 0); }, 0)
+      : (g.parent ? g.parent.marks || 0 : 0);
     var meta  = document.createElement('div'); meta.className = 'sb-meta'; meta.textContent = marks + 'm';
     info.appendChild(topic); info.appendChild(meta);
     row.appendChild(numEl); row.appendChild(info);
@@ -1176,6 +1216,9 @@ function scrollToQ(num) {
   document.querySelectorAll('.sb-row').forEach(function(r) { r.classList.remove('active'); });
   var sb = document.getElementById('sb-' + num);
   if (sb) sb.classList.add('active');
+  // Highlight the card
+  document.querySelectorAll('.qcard').forEach(function(c) { c.classList.remove('active'); });
+  if (card) card.classList.add('active');
 }
 
 // ─── BOOKMARKS ────────────────────────────────────────────────────────────
