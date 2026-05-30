@@ -57,16 +57,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function init() {
   document.getElementById('loading-state').style.display = 'none';
   document.getElementById('app-body').style.display      = 'flex';
-  document.getElementById('hdr').style.display           = 'block';
 
   document.documentElement.style.setProperty('--accent', DATA.subject.accent);
-
-  var hdrIcon = document.getElementById('hdr-icon');
-  hdrIcon.textContent        = DATA.subject.icon;
-  hdrIcon.style.background   = DATA.subject.light;
-  hdrIcon.style.color        = DATA.subject.accent;
-  document.getElementById('hdr-title').textContent = DATA.subject.name + ' · SEE ' + DATA.paper.year;
-  document.getElementById('hdr-sub').textContent   = DATA.paper.province + ' Province · ' + DATA.paper.marks + ' marks · ' + DATA.paper.duration;
 
   if (DATA.meta.isEnglish) {
     var lt = document.getElementById('lang-tog');
@@ -263,15 +255,6 @@ function buildQuestions() {
 
   DATA.groups.forEach(function(g) {
     var card  = document.createElement('div'); card.className = 'qcard'; card.id = 'qcard-' + g.num;
-    card.style.cursor = 'pointer';
-    card.onclick = (function(grp) {
-      return function(e) {
-        if (e.target.closest('button, textarea, .mcq-opt')) return;
-        var src   = grp.subs.length > 0 ? grp.subs[0] : grp.parent;
-        var subId = grp.subs.length > 0 ? ('q-' + grp.num + '-' + grp.subs[0].sub) : ('q-' + grp.num + '-main');
-        if (src) openAnswer(subId, src, grp.num);
-      };
-    })(g);
     var strip = document.createElement('div'); strip.className = 'qcard-strip'; strip.id = 'qstrip-' + g.num;
     card.appendChild(strip);
 
@@ -367,6 +350,13 @@ function buildQuestions() {
 function buildSubItem(s, qNum, accent, isParent) {
   var subId = isParent ? ('q-' + qNum + '-main') : ('q-' + qNum + '-' + s.sub);
   var item  = document.createElement('div'); item.className = 'sub-item'; item.id = subId;
+  item.style.cursor = 'pointer';
+  item.onclick = (function(id, q, num) {
+    return function(e) {
+      if (e.target.closest('button, .mcq-opt')) return;
+      openAnswer(id, q, num);
+    };
+  })(subId, s, qNum);
 
   if (!isParent) {
     var subHead = document.createElement('div'); subHead.className = 'sub-head';
