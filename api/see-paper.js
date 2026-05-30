@@ -156,7 +156,7 @@ function buildHTML({ paper, subject, questions }) {
           <span class="sub-marks">${s.marks||0}m</span>
           <button class="bk-btn" onclick="toggleBookmark(this,'${sid}')" title="Bookmark">🔖</button>
         </div>
-        <div class="sub-text">${esc(sText)}</div>
+        <div class="sub-text" data-en="${esc(s.question_text_english||'')} " data-np="${esc(s.question_text_nepali||s.question_text_english||'')} ">${esc(sText)}</div>
         ${optionsHTML}
         <button class="ans-btn" onclick="openAnswer('${sid}')">
           <span>💡</span> See answer &amp; explanation
@@ -222,7 +222,7 @@ function buildHTML({ paper, subject, questions }) {
         </div>
       </div>
       <div class="qcard-body">
-        ${qText ? `<div class="q-text">${esc(qText)}</div>` : ''}
+        ${(parent?.question_text_english||parent?.question_text_nepali) ? `<div class="q-text" data-en="${esc(parent?.question_text_english||'')} " data-np="${esc(parent?.question_text_nepali||parent?.question_text_english||'')} ">${esc(qText)}</div>` : ''}
         ${diagram ? `<div class="q-diagram">${diagram}</div>` : ''}
         ${subsHTML}
       </div>
@@ -240,7 +240,7 @@ function buildHTML({ paper, subject, questions }) {
     <div class="sb-row" id="sb-${num}" onclick="scrollToQ(${num})">
       <div class="sb-num" id="sb-num-${num}" style="background:${cfg.accent}18;color:${cfg.accent};">${num}</div>
       <div class="sb-info">
-        <div class="sb-topic">${esc(topic)||'Question '+num}</div>
+        <div class="sb-topic">${esc(topic) || (g.parent?.question_text_english ? g.parent.question_text_english.split(' ').slice(0,5).join(' ')+(g.parent.question_text_english.split(' ').length>5?'...':'') : 'Question '+num)}</div>
         <div class="sb-meta">${marks}m</div>
       </div>
       <div class="sb-dot" id="sb-dot-${num}" style="background:${cfg.accent};"></div>
@@ -700,7 +700,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
   </div><!-- /ov-wrap -->
 
   <!-- PAPER INSIDE (hidden until mode selected) -->
-  <div style="flex:1;display:flex;overflow:hidden;" id="paper-wrap" style="display:none;flex:1;overflow:hidden;">
+  <div id="paper-wrap" style="display:none;flex:1;overflow:hidden;">
 
     <!-- SIDEBAR -->
     <div class="sb">
@@ -725,7 +725,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
           <span class="info-sep">|</span>
           <div class="info-item"><span class="info-k">Questions</span><span class="info-v">${totalQuestions}</span></div>
           <span class="info-sep">|</span>
-          <div class="info-item"><span class="info-k">Language</span><span class="info-v" id="lang-indicator">${isEnglish?'English':'Nepali / English'}</span></div>
+          <div class="info-item"><span class="info-k">Language</span><span class="info-v" id="lang-indicator">${isEnglish?'English only':'Nepali / English'}</span></div>
         </div>
         <!-- Question cards -->
         <div style="padding:14px 16px;" id="qcards">${qCardsHTML}</div>
@@ -1200,11 +1200,21 @@ function toggleBookmark(btn, id) {
 
 function setLang(l) {
   LANG = l;
+  // Update toggle buttons
   document.getElementById('lt-en').className = 'lt-btn ' + (l==='en'?'act':'off');
   document.getElementById('lt-np').className = 'lt-btn ' + (l==='np'?'act':'off');
   document.getElementById('lang-indicator').textContent = l==='en' ? 'English' : 'नेपाली';
-  // Re-open active answer in new language
+
+  // Update ALL question text elements in the DOM
+  const attr = l === 'np' ? 'data-np' : 'data-en';
+  document.querySelectorAll('.q-text[data-en], .sub-text[data-en]').forEach(function(el) {
+    const txt = el.getAttribute(attr);
+    if (txt && txt.trim()) el.textContent = txt.trim();
+  });
+
+  // Re-open active answer (answer text stays in English, only questions switch)
   if (activeId) { currentStep = 0; openAnswer(activeId); }
+  // Re-render step mode question
   if (MODE === 'step') renderStepQ();
 }
 
