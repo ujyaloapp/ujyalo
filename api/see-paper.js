@@ -303,14 +303,11 @@ function buildHTML({ paper, subject, questions }) {
   --accent:${cfg.accent};
 }
 *{font-family:'DM Sans',sans-serif;}
-body{background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+html,body{height:100%;margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;overflow:hidden;height:100vh;}
 .ujyalo-nav,.ujyalo-announce{flex-shrink:0;}
-.ujyalo-nav{position:relative;}
-#site-footer,#site-footer~*,.ujyalo-footer,.ujyalo-help-bubble{display:none!important;}
-.ujyalo-nav-inner{height:62px!important;}
-.ujyalo-logo{font-size:26px!important;}
-.ujyalo-nav-links a{font-size:14px!important;}
-.ujyalo-btn-primary{font-size:14px!important;padding:10px 20px!important;}
+.ujyalo-nav{position:relative!important;flex-shrink:0;}
+#site-footer,.ujyalo-footer,.ujyalo-help-bubble{display:none!important;}
 
 /* ── HEADER ── */
 .hdr{background:var(--navy);flex-shrink:0;z-index:20;position:sticky;top:0;}
@@ -552,6 +549,10 @@ body{background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direct
 
 /* HIDDEN */
 .hidden{display:none!important;}
+#paper-wrap{flex:1;display:flex;overflow:hidden;}
+#paper-wrap.hidden{display:none!important;}
+#ov-wrap{flex:1;display:flex;overflow:hidden;}
+#ov-wrap.hidden{display:none!important;}
 
 /* ── MOBILE ── */
 @media(max-width:767px){
@@ -611,7 +612,7 @@ body{background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direct
 <div class="body" id="body">
 
   <!-- OVERVIEW SCREEN -->
-  <div class="ov-wrap" id="ov-wrap">
+  <div class="ov-wrap" id="ov-wrap" style="display:flex;flex:1;overflow:hidden;">
 
     <!-- LEFT PANEL — journey + paper info -->
     <div class="ov-left">
@@ -699,7 +700,7 @@ body{background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direct
   </div><!-- /ov-wrap -->
 
   <!-- PAPER INSIDE (hidden until mode selected) -->
-  <div style="flex:1;display:flex;overflow:hidden;" id="paper-wrap" class="hidden">
+  <div style="flex:1;display:flex;overflow:hidden;" id="paper-wrap" style="display:none;flex:1;overflow:hidden;">
 
     <!-- SIDEBAR -->
     <div class="sb">
@@ -715,7 +716,7 @@ body{background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direct
     <div class="main-area">
 
       <!-- READ / CHECK modes -->
-      <div class="paper-scroll" id="read-check-scroll">
+      <div class="paper-scroll" id="read-check-scroll" style="flex:1;overflow-y:auto;">
         <!-- Info strip -->
         <div class="info-strip">
           <div class="info-item"><span class="info-k">Marks</span><span class="info-v">${totalMarks}</span></div>
@@ -731,7 +732,7 @@ body{background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direct
       </div>
 
       <!-- STEP mode -->
-      <div class="hidden" id="step-wrap" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+      <div class="hidden" id="step-wrap" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
         <div class="step-strip">
           ${stepDots}
           <span class="step-counter" id="step-ctr">1 / ${totalQuestions}</span>
@@ -858,9 +859,15 @@ const isMobile = () => window.innerWidth < 768;
 function enterMode(mode) {
   if (mode === 'download') { openDownload(); return; }
   MODE = mode;
-  document.getElementById('ov-wrap').classList.add('hidden');
-  document.getElementById('paper-wrap').classList.remove('hidden');
-  document.getElementById('mode-tabs').classList.remove('hidden');
+  // Hide overview, show paper inside
+  const ovWrap = document.getElementById('ov-wrap');
+  const paperWrap = document.getElementById('paper-wrap');
+  const modeTabs = document.getElementById('mode-tabs');
+  ovWrap.style.display = 'none';
+  paperWrap.style.display = 'flex';
+  paperWrap.style.flex = '1';
+  paperWrap.style.overflow = 'hidden';
+  if (modeTabs) modeTabs.classList.remove('hidden');
 
   // Update mode tab
   document.querySelectorAll('.mtab').forEach(t => t.classList.remove('act'));

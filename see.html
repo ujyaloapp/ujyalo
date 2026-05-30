@@ -17,15 +17,11 @@
   --ink:#0f1923;--muted:#5c6a80;--faint:#94a3b8;--line:#e8edf5;--bg:#f3f5fb;--card:#fff;
 }
 *{font-family:'DM Sans',sans-serif;}
-body{background:var(--bg);color:var(--ink);height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+html,body{height:100%;margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;overflow:hidden;height:100vh;}
 .ujyalo-nav,.ujyalo-announce{flex-shrink:0;}
-.ujyalo-nav{position:relative;}
-#site-footer{display:none!important;}
-.ujyalo-help-bubble{display:none!important;}
-.ujyalo-nav-inner{height:62px!important;}
-.ujyalo-logo{font-size:26px!important;}
-.ujyalo-nav-links a{font-size:14px!important;}
-.ujyalo-btn-primary{font-size:14px!important;padding:10px 20px!important;}
+.ujyalo-nav{position:relative!important;}
+#site-footer,.ujyalo-footer,.ujyalo-help-bubble{display:none!important;}
 
 /* ANNOUNCE */
 /* nav handled by components.js */
