@@ -159,13 +159,6 @@ function buildQuestions() {
       t.textContent = g.parent.topic;
       head.appendChild(t);
     }
-    if (g.parent && g.parent.difficulty) {
-      var d = g.parent.difficulty.toLowerCase();
-      var dtag = document.createElement('span');
-      dtag.className = 'qtag qtag-' + (d === 'easy' ? 'easy' : d === 'hard' ? 'hard' : 'med');
-      dtag.textContent = g.parent.difficulty;
-      head.appendChild(dtag);
-    }
     if (g.parent && g.parent.frequency) {
       var ftag = document.createElement('span');
       ftag.className = 'qtag qtag-freq';
@@ -178,7 +171,7 @@ function buildQuestions() {
       : (g.parent ? g.parent.marks || 0 : 0);
     var marksEl = document.createElement('span');
     marksEl.className = 'qcard-marks';
-    marksEl.textContent = totalMarks + 'm';
+    marksEl.textContent = totalMarks + ' marks';
     head.appendChild(marksEl);
     card.appendChild(head);
 
