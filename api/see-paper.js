@@ -549,10 +549,6 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 
 /* HIDDEN */
 .hidden{display:none!important;}
-#paper-wrap{flex:1;display:flex;overflow:hidden;}
-#paper-wrap.hidden{display:none!important;}
-#ov-wrap{flex:1;display:flex;overflow:hidden;}
-#ov-wrap.hidden{display:none!important;}
 
 /* ── MOBILE ── */
 @media(max-width:767px){
@@ -601,7 +597,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
     </div>
   </div>
   <!-- MODE TABS — hidden on overview screen -->
-  <div class="mode-tabs hidden" id="mode-tabs">
+  <div class="mode-tabs" id="mode-tabs" style="display:none;">
     <button class="mtab act" onclick="setMode('read',this)">📖 Read</button>
     <button class="mtab" onclick="setMode('check',this)">✅ Check</button>
     <button class="mtab" onclick="setMode('step',this)">⚡ Step</button>
@@ -859,31 +855,28 @@ const isMobile = () => window.innerWidth < 768;
 function enterMode(mode) {
   if (mode === 'download') { openDownload(); return; }
   MODE = mode;
-  // Hide overview, show paper inside
-  const ovWrap = document.getElementById('ov-wrap');
+  // Hide overview, show paper inside — use inline styles only, no class toggling
+  document.getElementById('ov-wrap').style.display = 'none';
   const paperWrap = document.getElementById('paper-wrap');
+  paperWrap.style.cssText = 'display:flex;flex:1;overflow:hidden;';
   const modeTabs = document.getElementById('mode-tabs');
-  ovWrap.style.display = 'none';
-  paperWrap.style.display = 'flex';
-  paperWrap.style.flex = '1';
-  paperWrap.style.overflow = 'hidden';
-  if (modeTabs) modeTabs.classList.remove('hidden');
+  if (modeTabs) { modeTabs.style.display = 'flex'; }
 
   // Update mode tab
   document.querySelectorAll('.mtab').forEach(t => t.classList.remove('act'));
   const modeMap = {read:0, check:1, step:2};
   document.querySelectorAll('.mtab')[modeMap[mode]]?.classList.add('act');
 
+  const rcs = document.getElementById('read-check-scroll');
+  const sw  = document.getElementById('step-wrap');
   if (mode === 'step') {
-    document.getElementById('read-check-scroll').classList.add('hidden');
-    document.getElementById('step-wrap').classList.remove('hidden');
-    document.getElementById('step-wrap').style.display = 'flex';
+    rcs.style.display = 'none';
+    sw.style.cssText = 'display:flex;flex:1;flex-direction:column;overflow:hidden;';
     stepQIdx = 0;
     renderStepQ();
   } else {
-    document.getElementById('step-wrap').classList.add('hidden');
-    document.getElementById('step-wrap').style.display = 'none';
-    document.getElementById('read-check-scroll').classList.remove('hidden');
+    sw.style.display = 'none';
+    rcs.style.cssText = 'flex:1;overflow-y:auto;display:block;';
   }
 
   // Check mode: show answer buttons prominently; Read mode: hide them
@@ -904,21 +897,19 @@ function setMode(mode, btn) {
   MODE = mode;
   document.querySelectorAll('.mtab').forEach(t => t.classList.remove('act'));
   btn.classList.add('act');
-
+  const rcs = document.getElementById('read-check-scroll');
+  const sw  = document.getElementById('step-wrap');
   if (mode === 'step') {
-    document.getElementById('read-check-scroll').classList.add('hidden');
-    document.getElementById('step-wrap').classList.remove('hidden');
-    document.getElementById('step-wrap').style.display = 'flex';
+    rcs.style.display = 'none';
+    sw.style.cssText = 'display:flex;flex:1;flex-direction:column;overflow:hidden;';
     stepQIdx = 0;
     renderStepQ();
   } else {
-    document.getElementById('step-wrap').classList.add('hidden');
-    document.getElementById('step-wrap').style.display = 'none';
-    document.getElementById('read-check-scroll').classList.remove('hidden');
+    sw.style.display = 'none';
+    rcs.style.cssText = 'flex:1;overflow-y:auto;display:block;';
   }
-
-  document.querySelectorAll('.ans-btn').forEach(btn => {
-    btn.style.display = mode === 'read' ? 'none' : '';
+  document.querySelectorAll('.ans-btn').forEach(function(b){
+    b.style.display = mode === 'read' ? 'none' : '';
   });
 }
 
