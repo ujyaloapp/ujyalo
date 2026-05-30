@@ -30,27 +30,23 @@
 <!-- APP BODY -->
 <div id="app-body" style="display:none;">
 
-  <!-- HERO HEADER -->
+  <!-- COMPACT HEADER BAR -->
   <div class="paper-hero" id="paper-hero">
     <div class="hero-bg-circle"></div>
-    <div class="hero-bg-circle2"></div>
     <div class="hero-inner">
-      <div class="hero-top-row">
+      <div class="hero-bar-left">
         <button class="hero-back" onclick="history.back()">← Back</button>
-        <div class="hero-actions">
-          <div class="lang-tog" id="lang-tog">
-            <button class="lt-btn act" id="lt-en" onclick="setLang('en')">EN</button>
-            <button class="lt-btn off" id="lt-np" onclick="setLang('np')">NP</button>
-          </div>
-          <button class="hero-btn" onclick="openDownload()">⬇ PDF</button>
-          <button class="finish-btn" id="finish-btn" onclick="finishPaper()" style="display:none;">Finish Paper →</button>
-        </div>
+        <div class="hero-badge" id="hero-badge"></div>
+        <div class="hero-sub-text" id="hero-sub-text"></div>
       </div>
-      <div class="hero-badge" id="hero-badge"></div>
-      <div class="hero-title" id="hero-title"></div>
-      <div class="hero-np" id="hero-np"></div>
-      <div class="hero-stats" id="hero-stats"></div>
-      <div class="hero-inst" id="hero-inst"></div>
+      <div class="hero-actions">
+        <div class="lang-tog" id="lang-tog">
+          <button class="lt-btn act" id="lt-en" onclick="setLang('en')">EN</button>
+          <button class="lt-btn off" id="lt-np" onclick="setLang('np')">NP</button>
+        </div>
+        <button class="hero-btn" onclick="openDownload()">⬇ PDF</button>
+        <button class="finish-btn" id="finish-btn" onclick="finishPaper()" style="display:none;">Finish →</button>
+      </div>
     </div>
   </div>
 

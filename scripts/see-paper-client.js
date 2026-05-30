@@ -44,19 +44,9 @@ function init() {
   document.getElementById('app-body').style.display = 'flex';
   document.documentElement.style.setProperty('--accent', DATA.subject.accent || '#1a6fff');
 
-  // Hero header
-  document.getElementById('hero-badge').textContent = 'SEE ' + DATA.paper.year + ' · ' + DATA.paper.province + ' Province';
-  document.getElementById('hero-title').textContent = DATA.subject.name;
-  document.getElementById('hero-np').textContent    = DATA.subject.nameNepali || '';
-  document.getElementById('hero-inst').textContent  = DATA.paper.instruction || 'Answer all the questions.';
-
-  var statsEl = document.getElementById('hero-stats');
-  statsEl.innerHTML =
-    '<div class="hstat"><div class="hstat-n">' + DATA.paper.marks + '</div><div class="hstat-l">Marks</div></div>' +
-    '<div class="hstat"><div class="hstat-n">' + DATA.paper.duration + '</div><div class="hstat-l">Duration</div></div>' +
-    '<div class="hstat"><div class="hstat-n">' + DATA.meta.totalQuestions + '</div><div class="hstat-l">Questions</div></div>' +
-    (DATA.meta.totalAttempts ? '<div class="hstat"><div class="hstat-n">' + DATA.meta.totalAttempts.toLocaleString() + '</div><div class="hstat-l">Attempted</div></div>' : '');
-
+  // Compact header bar
+  document.getElementById('hero-badge').textContent    = DATA.subject.name + ' · SEE ' + DATA.paper.year;
+  document.getElementById('hero-sub-text').textContent = DATA.paper.province + ' · ' + DATA.paper.marks + 'm · ' + DATA.paper.duration;
   document.title = 'SEE ' + DATA.paper.year + ' ' + DATA.paper.province + ' ' + DATA.subject.name + ' | ujyalo';
 
   // Hide lang toggle for English papers
@@ -129,6 +119,24 @@ function buildQuestions() {
   var area  = document.getElementById('questions-area');
   area.innerHTML = '';
   var accent = DATA.subject.accent || '#1a6fff';
+
+  // Paper cover card — like the real exam paper header
+  var cover = document.createElement('div');
+  cover.className = 'paper-cover-card';
+  cover.innerHTML =
+    '<div class="pc-exam">Secondary Education Examination ' + DATA.paper.year + '</div>' +
+    '<div class="pc-title">SEE ' + DATA.paper.year + ' BS · ' + DATA.paper.province + ' Province</div>' +
+    '<div class="pc-subject">' + escapeHTML(DATA.subject.name) +
+      (DATA.subject.nameNepali ? ' / <span class="pc-subject-np">' + escapeHTML(DATA.subject.nameNepali) + '</span>' : '') +
+    '</div>' +
+    '<div class="pc-divider"></div>' +
+    '<div class="pc-stats">' +
+      '<div class="pc-stat"><div class="pc-stat-n">' + DATA.paper.marks + '</div><div class="pc-stat-l">Full Marks</div></div>' +
+      '<div class="pc-stat"><div class="pc-stat-n">' + DATA.paper.duration + '</div><div class="pc-stat-l">Duration</div></div>' +
+      '<div class="pc-stat"><div class="pc-stat-n">' + DATA.meta.totalQuestions + '</div><div class="pc-stat-l">Questions</div></div>' +
+    '</div>' +
+    '<div class="pc-inst">' + escapeHTML(DATA.paper.instruction || 'Answer all the questions in your own creative style.') + '</div>';
+  area.appendChild(cover);
 
   DATA.groups.forEach(function(g) {
     var card = document.createElement('div');
