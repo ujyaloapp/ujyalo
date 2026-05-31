@@ -137,6 +137,126 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .subj-bar{height:5px;background:var(--line);border-radius:99px;margin-top:18px;overflow:hidden;}
 .subj-fill{height:100%;border-radius:99px;transition:width .4s;}
 .subj-meta{font-size:13px;color:var(--faint);font-weight:600;margin-top:9px;}
+.subj-card.soon{opacity:.6;cursor:default;}
+.subj-card.soon:hover{transform:none;box-shadow:none;border-color:var(--line);}
+.soon-tag{position:absolute;top:16px;right:16px;font-size:10px;font-weight:700;color:var(--muted);background:var(--line);padding:3px 9px;border-radius:99px;}
+
+/* PRACTICE 3-STEP FLOW */
+.prac-step{display:none;}
+.prac-step.show{display:block;animation:pracFade .25s ease;}
+@keyframes pracFade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.prac-crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:18px;}
+.prac-bk{display:flex;align-items:center;gap:5px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;font-size:13px;}
+.prac-sep{color:var(--line);}
+.prac-crumb strong{color:var(--ink);}
+
+/* CHAPTER CARDS */
+.chap-grp{margin-bottom:22px;}
+.chap-grp-h{display:flex;align-items:center;gap:8px;margin-bottom:11px;}
+.chap-grp-nm{font-size:14px;font-weight:700;color:var(--ink);}
+.chap-grp-line{flex:1;height:1px;background:var(--line);}
+.chap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:11px;max-width:920px;}
+.chap-card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 15px;cursor:pointer;text-align:left;transition:transform .15s,box-shadow .15s,border-color .15s;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.chap-card:active{transform:scale(.98);}
+.chap-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(13,27,62,.08);border-color:rgba(26,111,255,.3);}
+.chap-card.done{border-color:rgba(34,197,94,.4);}
+.chap-nm{font-size:14px;font-weight:600;color:var(--ink);}
+.chap-prog{font-size:11px;color:var(--faint);margin-top:3px;}
+.chap-ct{font-size:11px;font-weight:700;color:var(--blue);background:rgba(26,111,255,.1);padding:3px 9px;border-radius:99px;flex-shrink:0;}
+.chap-card.done .chap-ct{background:var(--green);color:#fff;}
+
+/* PRACTICE ENGINE */
+.prac-wrap{max-width:680px;}
+.cp-prog{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.cp-pbar{flex:1;height:6px;background:var(--line);border-radius:99px;overflow:hidden;}
+.cp-pfill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:99px;transition:width .4s;}
+.cp-ptxt{font-size:12px;font-weight:700;color:var(--muted);min-width:38px;}
+.cp-qcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 2px 16px rgba(10,22,40,.05);}
+.cp-qmeta{display:flex;justify-content:space-between;margin-bottom:14px;}
+.cp-qnum{font-size:11px;font-weight:600;color:var(--faint);background:var(--bg);padding:2px 8px;border-radius:4px;}
+.cp-qmarks{font-size:11px;font-weight:700;background:#fef3c7;color:#854f0b;padding:3px 10px;border-radius:99px;}
+.cp-qtext{font-family:'Fraunces',serif;font-size:19px;line-height:1.5;color:var(--ink);margin-bottom:16px;}
+.cp-qans{width:100%;min-height:96px;padding:13px;border:2px solid var(--line);border-radius:14px;font-size:15px;background:var(--bg);resize:none;line-height:1.6;font-family:inherit;}
+.cp-qans:focus{outline:none;border-color:var(--blue);background:#fff;}
+.cp-qact{display:flex;justify-content:space-between;align-items:center;margin-top:14px;}
+.cp-bskip{font-size:13px;color:var(--faint);background:none;border:none;cursor:pointer;font-weight:500;}
+.cp-bcheck{background:var(--blue);color:#fff;border:none;padding:12px 24px;border-radius:99px;font-size:14px;font-weight:700;cursor:pointer;}
+.cp-bcheck:active{transform:scale(.97);}
+.cp-model{background:#fff;border:1px solid #86efac;border-left:3px solid var(--green);border-radius:12px;padding:15px 17px;margin-top:14px;}
+.cp-model-t{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;}
+.cp-model-b{font-size:15px;color:#334155;line-height:1.8;white-space:pre-line;}
+.cp-assess{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 17px;display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:12px;flex-wrap:wrap;}
+.cp-assess p{font-size:14px;font-weight:600;color:#334155;}
+.cp-assess-btns{display:flex;gap:8px;}
+.cp-bgot{background:#dcfce7;color:var(--green);border:1.5px solid #86efac;padding:10px 18px;border-radius:99px;font-size:13px;font-weight:700;cursor:pointer;}
+.cp-bnext{background:var(--bg);color:var(--muted);border:1.5px solid var(--line);padding:10px 18px;border-radius:99px;font-size:13px;font-weight:700;cursor:pointer;}
+.cp-tips{margin-top:16px;}
+.cp-tips-tog{width:100%;display:flex;justify-content:space-between;padding:12px 15px;background:#fff;border:1.5px solid var(--line);border-radius:14px;font-size:13px;font-weight:700;color:#334155;cursor:pointer;}
+.cp-tips-tog.open{border-color:var(--blue);background:rgba(26,111,255,.05);color:var(--blue);border-radius:14px 14px 0 0;}
+.cp-tips-body{display:none;background:#fff;border:1.5px solid var(--blue);border-top:none;border-radius:0 0 14px 14px;padding:14px 15px;}
+.cp-tips-body.open{display:block;}
+.cp-tip-f{font-size:13px;color:#334155;line-height:1.6;padding:6px 10px;background:var(--bg);border-radius:6px;margin-bottom:5px;font-family:'Courier New',monospace;}
+.cp-tip-m{font-size:13px;color:#334155;line-height:1.5;padding:5px 10px 5px 26px;position:relative;margin-bottom:4px;}
+.cp-tip-m::before{content:'⚠️';position:absolute;left:6px;font-size:11px;}
+.cp-tip-h{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin:8px 0 6px;}
+.cp-done{background:#fff;border:1px solid var(--line);border-radius:20px;padding:34px 26px;text-align:center;box-shadow:0 4px 24px rgba(10,22,40,.06);}
+.cp-done-ic{font-size:52px;margin-bottom:12px;}
+.cp-done-t{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--ink);margin-bottom:6px;}
+.cp-done-s{font-size:14px;color:var(--muted);margin-bottom:22px;}
+.cp-done-scores{display:flex;justify-content:center;gap:14px;margin-bottom:24px;flex-wrap:wrap;}
+.cp-done-box{background:var(--bg);border-radius:14px;padding:16px 22px;min-width:96px;}
+.cp-done-box.good{background:#dcfce7;}
+.cp-done-num{font-family:'Fraunces',serif;font-size:30px;font-weight:900;color:var(--blue);line-height:1;margin-bottom:3px;}
+.cp-done-box.good .cp-done-num{color:var(--green);}
+.cp-done-lbl{font-size:12px;color:var(--muted);font-weight:600;}
+.cp-done-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.cp-bretry{background:var(--bg);color:var(--ink);border:1.5px solid var(--line);padding:12px 22px;border-radius:99px;font-size:14px;font-weight:700;cursor:pointer;}
+.cp-bnextch{background:var(--blue);color:#fff;border:none;padding:12px 22px;border-radius:99px;font-size:14px;font-weight:700;cursor:pointer;}
+
+/* PLUS HUB */
+.plus-hero{background:linear-gradient(135deg,#fff6e0,#ffe9c2);border:1.5px solid #ffdd9e;border-radius:18px;padding:24px;margin-bottom:20px;}
+.plus-hero-badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#3a2a05;background:linear-gradient(135deg,#ffd86b,#f5a623);padding:4px 12px;border-radius:99px;margin-bottom:10px;}
+.plus-hero-title{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--navy);}
+.plus-hero-sub{font-size:14px;color:#7a5a1a;margin-top:4px;}
+.plus-cards{display:grid;gap:12px;max-width:620px;}
+.plus-card{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:16px 18px;cursor:pointer;text-align:left;transition:transform .15s,box-shadow .15s,border-color .15s;width:100%;}
+.plus-card:active{transform:scale(.98);}
+.plus-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(13,27,62,.08);border-color:#ffd98a;}
+.plus-card-ico{width:46px;height:46px;border-radius:13px;background:#fff6e0;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.plus-card-body{flex:1;}
+.plus-card-nm{font-size:16px;font-weight:700;color:var(--ink);}
+.plus-card-ds{font-size:12.5px;color:var(--faint);margin-top:2px;}
+.plus-card-star{color:var(--orange);font-size:14px;}
+
+/* MOBILE HEADER + BOTTOM NAV (hidden on desktop) */
+.mtop{display:none;align-items:center;gap:10px;padding:12px 16px;background:var(--navy);position:sticky;top:0;z-index:30;}
+.mtop-back{background:rgba(255,255,255,.12);border:none;color:#fff;width:34px;height:34px;border-radius:10px;font-size:18px;cursor:pointer;flex-shrink:0;display:none;align-items:center;justify-content:center;}
+.mtop-title{font-family:'Fraunces',serif;font-size:17px;font-weight:900;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.mtop-slash{color:var(--teal);font-style:italic;}
+.mbtm{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--navy);border-top:1px solid rgba(255,255,255,.08);z-index:40;padding:6px 4px;}
+.mbtm-i{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;background:none;border:none;cursor:pointer;}
+.mbtm-ic{font-size:19px;line-height:1;opacity:.55;}
+.mbtm-tx{font-size:10px;font-weight:600;color:rgba(255,255,255,.5);}
+.mbtm-i.act .mbtm-ic{opacity:1;}
+.mbtm-i.act .mbtm-tx{color:#fff;}
+.mbtm-plus .mbtm-tx{color:var(--orange);}
+.mbtm-plus.act .mbtm-tx{color:var(--orange);}
+
+@media(max-width:760px){
+  .lsb{display:none;}
+  .mtop{display:flex;}
+  .mbtm{display:flex;}
+  .mn{padding-bottom:62px;}
+  .prac-pad{padding:18px 16px;}
+  .prac-crumb{display:none;}
+  .subj-grid{grid-template-columns:1fr 1fr;gap:12px;}
+  .subj-card{padding:16px;}
+  .subj-ico{width:46px;height:46px;font-size:21px;margin-bottom:12px;}
+  .subj-nm{font-size:16px;}
+  .chap-grid{grid-template-columns:1fr;}
+  .cp-qtext{font-size:18px;}
+  .vpad{padding:18px 16px;}
+}
 
 /* PROVINCE CARD */
 .pc{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;}
@@ -278,59 +398,109 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
   </aside>
 
   <div class="mn">
+    <div class="mtop">
+      <button class="mtop-back" id="mtop-back" onclick="mobileBack()">←</button>
+      <div class="mtop-title" id="mtop-title">SEE <span class="mtop-slash">/</span> Practice</div>
+    </div>
     <div class="stabs" id="stabs"></div>
 
     <div class="scroll" id="scroll">
 
-      <!-- PRACTICE VIEW -->
+      <!-- PRACTICE VIEW (3-step flow) -->
       <div class="vw" id="vw-practice">
-        <div class="prac-pad">
-          <div class="prac-label">PICK A SUBJECT TO PRACTICE</div>
-          <div class="subj-grid" id="subj-grid">
-            <button class="subj-card" data-accent="#1a6fff" onclick="pickSubject('maths')">
-              <div class="subj-ico" style="background:rgba(26,111,255,.12);color:#1a6fff;">∫</div>
-              <div class="subj-nm">Maths</div>
-              <div class="subj-np">गणित</div>
-              <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#1a6fff;"></div></div>
-              <div class="subj-meta">Not started</div>
-            </button>
-            <button class="subj-card" data-accent="#38c9b0" onclick="pickSubject('science')">
-              <div class="subj-ico" style="background:rgba(56,201,176,.14);color:#1aa890;">🔬</div>
-              <div class="subj-nm">Science</div>
-              <div class="subj-np">विज्ञान</div>
-              <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#38c9b0;"></div></div>
-              <div class="subj-meta">Not started</div>
-            </button>
-            <button class="subj-card" data-accent="#f59c1a" onclick="pickSubject('english')">
-              <div class="subj-ico" style="background:rgba(245,156,26,.14);color:#e08a0a;">Aa</div>
-              <div class="subj-nm">English</div>
-              <div class="subj-np">अङ्ग्रेजी</div>
-              <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#f59c1a;"></div></div>
-              <div class="subj-meta">Not started</div>
-            </button>
-            <button class="subj-card" data-accent="#e84393" onclick="pickSubject('nepali')">
-              <div class="subj-ico" style="background:rgba(232,67,147,.12);color:#e84393;">क</div>
-              <div class="subj-nm">Nepali</div>
-              <div class="subj-np">नेपाली</div>
-              <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#e84393;"></div></div>
-              <div class="subj-meta">Not started</div>
-            </button>
-            <button class="subj-card" data-accent="#7c3aed" onclick="pickSubject('social')">
-              <div class="subj-ico" style="background:rgba(124,58,237,.12);color:#7c3aed;">◉</div>
-              <div class="subj-nm">Social</div>
-              <div class="subj-np">सामाजिक</div>
-              <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#7c3aed;"></div></div>
-              <div class="subj-meta">Not started</div>
-            </button>
-            <button class="subj-card" data-accent="#ef4444" onclick="pickSubject('hpe')">
-              <div class="subj-ico" style="background:rgba(239,68,68,.10);color:#ef4444;">♡</div>
-              <div class="subj-nm">HPE</div>
-              <div class="subj-np">स्वास्थ्य</div>
-              <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#ef4444;"></div></div>
-              <div class="subj-meta">Not started</div>
-            </button>
+
+        <!-- Step 1: Subjects -->
+        <div class="prac-step show" id="prac-subjects">
+          <div class="prac-pad">
+            <div class="prac-label">PICK A SUBJECT TO PRACTICE</div>
+            <div class="subj-grid" id="subj-grid">
+              <button class="subj-card" onclick="practiceChapters('maths')">
+                <div class="subj-ico" style="background:rgba(26,111,255,.12);color:#1a6fff;">∫</div>
+                <div class="subj-nm">Maths</div><div class="subj-np">गणित</div>
+                <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#1a6fff;"></div></div>
+                <div class="subj-meta">Tap to start</div>
+              </button>
+              <button class="subj-card" onclick="practiceChapters('science')">
+                <div class="subj-ico" style="background:rgba(56,201,176,.14);color:#1aa890;">🔬</div>
+                <div class="subj-nm">Science</div><div class="subj-np">विज्ञान</div>
+                <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#38c9b0;"></div></div>
+                <div class="subj-meta">Tap to start</div>
+              </button>
+              <button class="subj-card soon">
+                <div class="soon-tag">Soon</div>
+                <div class="subj-ico" style="background:rgba(245,156,26,.14);color:#e08a0a;">Aa</div>
+                <div class="subj-nm">English</div><div class="subj-np">अङ्ग्रेजी</div>
+                <div class="subj-bar"><div class="subj-fill" style="width:0%;"></div></div>
+                <div class="subj-meta">Coming soon</div>
+              </button>
+              <button class="subj-card soon">
+                <div class="soon-tag">Soon</div>
+                <div class="subj-ico" style="background:rgba(232,67,147,.12);color:#e84393;">क</div>
+                <div class="subj-nm">Nepali</div><div class="subj-np">नेपाली</div>
+                <div class="subj-bar"><div class="subj-fill" style="width:0%;"></div></div>
+                <div class="subj-meta">Coming soon</div>
+              </button>
+              <button class="subj-card soon">
+                <div class="soon-tag">Soon</div>
+                <div class="subj-ico" style="background:rgba(124,58,237,.12);color:#7c3aed;">◉</div>
+                <div class="subj-nm">Social</div><div class="subj-np">सामाजिक</div>
+                <div class="subj-bar"><div class="subj-fill" style="width:0%;"></div></div>
+                <div class="subj-meta">Coming soon</div>
+              </button>
+              <button class="subj-card soon">
+                <div class="soon-tag">Soon</div>
+                <div class="subj-ico" style="background:rgba(239,68,68,.10);color:#ef4444;">♡</div>
+                <div class="subj-nm">HPE</div><div class="subj-np">स्वास्थ्य</div>
+                <div class="subj-bar"><div class="subj-fill" style="width:0%;"></div></div>
+                <div class="subj-meta">Coming soon</div>
+              </button>
+            </div>
           </div>
         </div>
+
+        <!-- Step 2: Chapters -->
+        <div class="prac-step" id="prac-chapters">
+          <div class="prac-pad">
+            <div class="prac-crumb"><button class="prac-bk" onclick="practiceStep('prac-subjects')">← Subjects</button><span class="prac-sep">›</span><strong id="pc-subj">Maths</strong></div>
+            <div class="prac-label">PICK A CHAPTER</div>
+            <div id="chap-groups"></div>
+          </div>
+        </div>
+
+        <!-- Step 3: Practice -->
+        <div class="prac-step" id="prac-run">
+          <div class="prac-pad">
+            <div class="prac-crumb"><button class="prac-bk" id="pr-back" onclick="practiceStep('prac-chapters')">← Chapters</button><span class="prac-sep">›</span><span id="pr-subj">Maths</span><span class="prac-sep">›</span><strong id="pr-chap">Sets</strong></div>
+            <div class="prac-wrap">
+              <div class="cp-prog"><div class="cp-pbar"><div class="cp-pfill" id="cp-pfill" style="width:0%"></div></div><div class="cp-ptxt" id="cp-ptxt">0 / 0</div></div>
+
+              <div id="cp-qblock">
+                <div class="cp-qcard">
+                  <div class="cp-qmeta"><span class="cp-qnum" id="cp-qnum">Q1</span><span class="cp-qmarks" id="cp-qmarks">2 marks</span></div>
+                  <div class="cp-qtext" id="cp-qtext"></div>
+                  <textarea class="cp-qans" id="cp-qans" placeholder="Write your answer here…&#10;&#10;Show your working — just like the real SEE exam."></textarea>
+                  <div class="cp-qact"><button class="cp-bskip" onclick="cpSkip()">⤼ Skip</button><button class="cp-bcheck" onclick="cpCheck()">Check answer →</button></div>
+                </div>
+                <div class="cp-model" id="cp-model" style="display:none">
+                  <div class="cp-model-t">✓ Model answer</div>
+                  <div class="cp-model-b" id="cp-model-b"></div>
+                </div>
+                <div class="cp-assess" id="cp-assess" style="display:none">
+                  <p>Did you get it right?</p>
+                  <div class="cp-assess-btns"><button class="cp-bgot" onclick="cpGot()">✓ Yes, I got it!</button><button class="cp-bnext" onclick="cpNext()">Next →</button></div>
+                </div>
+              </div>
+
+              <div id="cp-doneblock" style="display:none"></div>
+
+              <div class="cp-tips" id="cp-tips" style="display:none">
+                <button class="cp-tips-tog" id="cp-tips-tog" onclick="cpToggleTips()">📋 Key Formulas &amp; Common Mistakes <span>▼</span></button>
+                <div class="cp-tips-body" id="cp-tips-body"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- PAPERS VIEW (default) -->
@@ -441,8 +611,44 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
         </div>
       </div>
 
+      <!-- PLUS HUB VIEW (mobile premium hub) -->
+      <div class="vw" id="vw-plus">
+        <div class="vpad">
+          <div class="plus-hero">
+            <div class="plus-hero-badge">⭐ ujyalo Plus</div>
+            <div class="plus-hero-title">Unlock your edge</div>
+            <div class="plus-hero-sub">Smart tools that turn your practice into exam-ready confidence.</div>
+          </div>
+          <div class="plus-cards">
+            <button class="plus-card" onclick="showView('heatmap',document.getElementById('nav-heatmap'))">
+              <div class="plus-card-ico">🔥</div>
+              <div class="plus-card-body"><div class="plus-card-nm">Hot Topics</div><div class="plus-card-ds">The topics examiners repeat most</div></div>
+              <div class="plus-card-star">⭐</div>
+            </button>
+            <button class="plus-card" onclick="showView('predict',document.getElementById('nav-predict'))">
+              <div class="plus-card-ico">🎯</div>
+              <div class="plus-card-body"><div class="plus-card-nm">Predict 2083</div><div class="plus-card-ds">Topics likely to appear next exam</div></div>
+              <div class="plus-card-star">⭐</div>
+            </button>
+            <button class="plus-card" onclick="showView('mypaper',document.getElementById('nav-mypaper'))">
+              <div class="plus-card-ico">⚡</div>
+              <div class="plus-card-body"><div class="plus-card-nm">My Paper</div><div class="plus-card-ds">A paper built from your weak spots</div></div>
+              <div class="plus-card-star">⭐</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /scroll -->
   </div><!-- /mn -->
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="mbtm">
+    <button class="mbtm-i" id="mb-papers" onclick="mobileNav('papers',this)"><span class="mbtm-ic">📄</span><span class="mbtm-tx">Papers</span></button>
+    <button class="mbtm-i" id="mb-practice" onclick="mobileNav('practice',this)"><span class="mbtm-ic">📖</span><span class="mbtm-tx">Practice</span></button>
+    <button class="mbtm-i" id="mb-saved" onclick="mobileNav('saved',this)"><span class="mbtm-ic">🔖</span><span class="mbtm-tx">Saved</span></button>
+    <button class="mbtm-i mbtm-plus" id="mb-plus" onclick="mobileNav('plus',this)"><span class="mbtm-ic">⭐</span><span class="mbtm-tx">Plus</span></button>
+  </nav>
 </div><!-- /app -->
 
 <script>
@@ -520,6 +726,7 @@ const S = {subj:'maths', year:'all', data:null};
   renderTabs();
   renderBookmarks();
   // Papers is the default view, so the subject tabs are visible on load.
+  syncMobileChrome('papers');
   await loadPapers();
 })();
 
@@ -673,11 +880,7 @@ function showView(id,btn){
   document.querySelectorAll('.li').forEach(i=>i.classList.remove('act'));
   if(btn) btn.classList.add('act');
   document.getElementById('scroll').scrollTop=0;
-}
-
-// Practice subject pick — chapter functionality coming later
-function pickSubject(code){
-  // Placeholder for now; chapter practice will be wired up next.
+  syncMobileChrome(id);
 }
 function goView(id){
   document.querySelectorAll('.vw').forEach(v=>v.classList.remove('act'));
@@ -685,6 +888,189 @@ function goView(id){
   // Subject tabs belong only to the Past Papers view
   var stabs=document.getElementById('stabs');
   if(stabs) stabs.style.display = (id==='papers') ? '' : 'none';
+  // When leaving practice, reset to step 1 so it's clean on return
+  if(id!=='practice') practiceStep('prac-subjects', true);
+}
+
+/* ─── MOBILE CHROME (top header + bottom nav sync) ─────────────────────────── */
+function syncMobileChrome(viewId){
+  // bottom nav highlight
+  var map={papers:'mb-papers',practice:'mb-practice',saved:'mb-saved',plus:'mb-plus',
+           heatmap:'mb-plus',predict:'mb-plus',mypaper:'mb-plus'};
+  document.querySelectorAll('.mbtm-i').forEach(b=>b.classList.remove('act'));
+  var mbId=map[viewId]; if(mbId) document.getElementById(mbId)?.classList.add('act');
+  updateMobileHeader(viewId);
+}
+function updateMobileHeader(viewId){
+  var t=document.getElementById('mtop-title');
+  var back=document.getElementById('mtop-back');
+  var titles={papers:'Past Papers',practice:'Practice',saved:'Saved',plus:'ujyalo Plus',
+              heatmap:'Hot Topics',predict:'Predict 2083',mypaper:'My Paper'};
+  if(!t) return;
+  // On practice, header reflects the step
+  if(viewId==='practice'){
+    var step=document.querySelector('.prac-step.show');
+    if(step && step.id==='prac-subjects'){ t.innerHTML='SEE <span class="mtop-slash">/</span> Practice'; back.style.display='none'; }
+    else if(step && step.id==='prac-chapters'){ t.textContent=document.getElementById('pc-subj').textContent; back.style.display='flex'; }
+    else { t.textContent=document.getElementById('pr-chap').textContent; back.style.display='flex'; }
+    return;
+  }
+  t.textContent=titles[viewId]||'SEE';
+  back.style.display='none';
+}
+function mobileNav(id,btn){
+  var navMap={papers:'nav-papers',practice:'nav-practice',saved:'nav-saved',plus:null};
+  if(id==='plus'){ showView('plus'); document.querySelectorAll('.li').forEach(i=>i.classList.remove('act')); }
+  else { showView(id, document.getElementById(navMap[id])); }
+}
+function mobileBack(){
+  var step=document.querySelector('.prac-step.show');
+  if(!step) return;
+  if(step.id==='prac-run') practiceStep('prac-chapters');
+  else if(step.id==='prac-chapters') practiceStep('prac-subjects');
+}
+
+/* ─── PRACTICE 3-STEP FLOW (Stage 1: demo data) ───────────────────────────── */
+var PRAC_STRUCT = {
+  maths:{ label:'Maths', groups:[
+    {name:'Sets', icon:'⊂', chapters:['Sets']},
+    {name:'Arithmetic', icon:'💰', chapters:['Tax and Money Exchange','Compound Interest','Population & Depreciation']},
+    {name:'Mensuration', icon:'📐', chapters:['Plane Surface (Area)','Cylinder and Sphere','Prism and Pyramid']},
+    {name:'Algebra', icon:'🔣', chapters:['Indices','Algebraic Fractions','Equations']},
+    {name:'Geometry', icon:'📏', chapters:['Circle Theorems']},
+    {name:'Trigonometry', icon:'📐', chapters:['Trigonometry']},
+    {name:'Statistics', icon:'📊', chapters:['Statistics']},
+    {name:'Probability', icon:'🎲', chapters:['Probability']},
+  ]},
+  science:{ label:'Science', groups:[
+    {name:'Physics', icon:'⚡', chapters:['Force','Pressure','Energy','Heat','Light']},
+    {name:'Chemistry', icon:'🧪', chapters:['Classification of Elements','Chemical Reaction','Acid, Base and Salt','Metals']},
+    {name:'Biology', icon:'🌿', chapters:['Invertebrates','Blood Circulation','Heredity']},
+    {name:'Astronomy & Geology', icon:'🌍', chapters:['History of the Earth','The Earth in the Universe']},
+  ]},
+};
+// Demo questions + tips (Stage 1 only — real data wired in Stage 2)
+var DEMO_QS = {
+  'Sets':[
+    {q:'In a survey of 80 students, 45 like Maths and 30 like Science. 10 like both. How many like neither?', m:2, a:'n(M∪S) = 45 + 30 − 10 = 65\nNeither = 80 − 65 = 15 students'},
+    {q:'If n(A) = 25, n(B) = 18 and n(A∩B) = 7, find n(A∪B).', m:1, a:'n(A∪B) = 25 + 18 − 7 = 36'},
+    {q:'In a class everyone plays football or cricket. 22 play football, 18 cricket, 12 both. How many students?', m:2, a:'n(F∪C) = 22 + 18 − 12 = 28 students'},
+  ],
+  'Compound Interest':[
+    {q:'Find the compound amount on Rs.10,000 at 10% p.a. for 2 years.', m:2, a:'A = 10000(1.1)² = Rs.12,100'},
+    {q:'What is the compound interest in the above case?', m:1, a:'CI = 12100 − 10000 = Rs.2,100'},
+  ],
+};
+var DEMO_TIPS = {
+  'Sets':{f:['n(A∪B) = n(A) + n(B) − n(A∩B)','Neither = Total − n(A∪B)'],
+    m:['Always subtract the "both" group — students forget and double count','Draw a Venn diagram first']},
+  'Compound Interest':{f:['CA = P(1 + R/100)ᵀ','CI = CA − P'],
+    m:['CI is interest only — CA is the total amount','For half-yearly: divide rate by 2, double the periods']},
+};
+
+var pracState = {subject:'maths', chapter:null, idx:0, got:0, qs:[]};
+
+function practiceStep(id, silent){
+  document.querySelectorAll('.prac-step').forEach(s=>s.classList.remove('show'));
+  var el=document.getElementById(id); if(el) el.classList.add('show');
+  if(!silent){ document.getElementById('scroll').scrollTop=0; window.scrollTo(0,0); updateMobileHeader('practice'); }
+}
+
+function practiceChapters(subjCode){
+  pracState.subject=subjCode;
+  var st=PRAC_STRUCT[subjCode]; if(!st) return;
+  document.getElementById('pc-subj').textContent=st.label;
+  document.getElementById('pr-subj').textContent=st.label;
+  var html='';
+  st.groups.forEach(function(g){
+    html+='<div class="chap-grp"><div class="chap-grp-h"><span>'+g.icon+'</span><span class="chap-grp-nm">'+g.name+'</span><span class="chap-grp-line"></span></div><div class="chap-grid">';
+    g.chapters.forEach(function(ch){
+      var cnt=(DEMO_QS[ch]||[]).length;
+      var ctTxt=cnt>0?cnt+'q':'soon';
+      html+='<button class="chap-card" onclick="practiceRun(\''+ch.replace(/'/g,"\\'")+'\')"><div><div class="chap-nm">'+ch+'</div><div class="chap-prog">Tap to practise</div></div><span class="chap-ct">'+ctTxt+'</span></button>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('chap-groups').innerHTML=html;
+  practiceStep('prac-chapters');
+}
+
+function practiceRun(chapter){
+  pracState.chapter=chapter;
+  pracState.idx=0; pracState.got=0;
+  pracState.qs = DEMO_QS[chapter] || [];
+  document.getElementById('pr-chap').textContent=chapter;
+  // tips
+  var tips=DEMO_TIPS[chapter];
+  var tipsWrap=document.getElementById('cp-tips');
+  if(tips){
+    var b='<div class="cp-tip-h" style="color:var(--blue)">📋 Key Formulas</div>';
+    tips.f.forEach(function(f){b+='<div class="cp-tip-f">'+f+'</div>';});
+    b+='<div class="cp-tip-h" style="color:#c25b2a">⚠️ Common Mistakes</div>';
+    tips.m.forEach(function(m){b+='<div class="cp-tip-m">'+m+'</div>';});
+    document.getElementById('cp-tips-body').innerHTML=b;
+    document.getElementById('cp-tips-tog').classList.remove('open');
+    document.getElementById('cp-tips-body').classList.remove('open');
+    tipsWrap.style.display='block';
+  } else { tipsWrap.style.display='none'; }
+  document.getElementById('cp-qblock').style.display='block';
+  document.getElementById('cp-doneblock').style.display='none';
+  cpLoad();
+  practiceStep('prac-run');
+}
+
+function cpLoad(){
+  var qs=pracState.qs, i=pracState.idx;
+  if(!qs.length){
+    document.getElementById('cp-qblock').innerHTML='<div class="cp-qcard"><div class="cp-qtext">Questions coming soon for this chapter.</div></div>';
+    document.getElementById('cp-tips').style.display='none';
+    return;
+  }
+  var q=qs[i];
+  document.getElementById('cp-qnum').textContent='Q'+(i+1)+' of '+qs.length;
+  document.getElementById('cp-qmarks').textContent=q.m+(q.m>1?' marks':' mark');
+  document.getElementById('cp-qtext').textContent=q.q;
+  document.getElementById('cp-model-b').textContent=q.a;
+  document.getElementById('cp-qans').value='';
+  document.getElementById('cp-qans').disabled=false;
+  document.getElementById('cp-model').style.display='none';
+  document.getElementById('cp-assess').style.display='none';
+  document.getElementById('cp-pfill').style.width=(i/qs.length*100)+'%';
+  document.getElementById('cp-ptxt').textContent=i+' / '+qs.length;
+  window.scrollTo(0,0);
+}
+function cpCheck(){
+  var v=document.getElementById('cp-qans').value.trim();
+  if(!v){ document.getElementById('cp-qans').focus(); return; }
+  document.getElementById('cp-model').style.display='block';
+  document.getElementById('cp-assess').style.display='flex';
+  document.getElementById('cp-qans').disabled=true;
+}
+function cpGot(){ pracState.got++; cpNext(); }
+function cpNext(){ pracState.idx++; if(pracState.idx>=pracState.qs.length) cpComplete(); else cpLoad(); }
+function cpSkip(){ pracState.idx++; if(pracState.idx>=pracState.qs.length) cpComplete(); else cpLoad(); }
+function cpComplete(){
+  document.getElementById('cp-qblock').style.display='none';
+  document.getElementById('cp-tips').style.display='none';
+  document.getElementById('cp-pfill').style.width='100%';
+  var total=pracState.qs.length, got=pracState.got;
+  document.getElementById('cp-ptxt').textContent=total+' / '+total;
+  var pct=total?Math.round(got/total*100):0;
+  var ic=pct>=80?'🎉':pct>=50?'👍':'📖';
+  var t=pct>=80?'Excellent work!':pct>=50?'Good effort!':'Keep practising!';
+  var d=document.getElementById('cp-doneblock');
+  d.style.display='block';
+  d.innerHTML='<div class="cp-done"><div class="cp-done-ic">'+ic+'</div><div class="cp-done-t">'+t+'</div>'+
+    '<div class="cp-done-s">You got '+got+' out of '+total+' correct — '+pct+'%</div>'+
+    '<div class="cp-done-scores"><div class="cp-done-box '+(pct>=50?'good':'')+'"><div class="cp-done-num">'+got+'/'+total+'</div><div class="cp-done-lbl">Got right</div></div>'+
+    '<div class="cp-done-box"><div class="cp-done-num">'+pct+'%</div><div class="cp-done-lbl">Score</div></div></div>'+
+    '<div class="cp-done-acts"><button class="cp-bretry" onclick="practiceRun(pracState.chapter)">↻ Try again</button>'+
+    '<button class="cp-bnextch" onclick="practiceStep(\'prac-chapters\')">Back to chapters →</button></div></div>';
+  window.scrollTo(0,0);
+}
+function cpToggleTips(){
+  document.getElementById('cp-tips-tog').classList.toggle('open');
+  document.getElementById('cp-tips-body').classList.toggle('open');
 }
 
 // ─── HEATMAP ─────────────────────────────────────────────────────────────────
