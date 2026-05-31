@@ -927,7 +927,9 @@ function updateMobileHeader(viewId){
     return;
   }
   t.textContent=titles[viewId]||'SEE';
-  back.style.display='none';
+  // Plus sub-pages get a back arrow (returns to the Plus hub)
+  if(viewId==='heatmap'||viewId==='predict'||viewId==='mypaper'){ back.style.display='flex'; }
+  else { back.style.display='none'; }
 }
 function mobileNav(id,btn){
   var navMap={papers:'nav-papers',practice:'nav-practice',saved:'nav-saved',plus:null};
@@ -935,6 +937,14 @@ function mobileNav(id,btn){
   else { showView(id, document.getElementById(navMap[id])); }
 }
 function mobileBack(){
+  // If on a Plus sub-page, go back to the Plus hub
+  var active=document.querySelector('.vw.act');
+  if(active && (active.id==='vw-heatmap'||active.id==='vw-predict'||active.id==='vw-mypaper')){
+    showView('plus');
+    document.querySelectorAll('.li').forEach(i=>i.classList.remove('act'));
+    return;
+  }
+  // Otherwise handle the practice steps
   var step=document.querySelector('.prac-step.show');
   if(!step) return;
   if(step.id==='prac-run') practiceStep('prac-chapters');
