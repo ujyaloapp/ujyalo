@@ -162,7 +162,7 @@ function buildSidebar() {
       if (conf) row.classList.add('sb-q-' + conf);
 
       row.innerHTML =
-        '<div class="sb-q-num" style="background:' + accent + ';">' + g.num + '</div>' +
+        '<div class="sb-q-num">' + g.num + '</div>' +
         '<div class="sb-q-info">' +
           '<div class="sb-q-text">' + escapeHTML(truncate(firstTxt, 38)) + '</div>' +
           '<div class="sb-q-meta">' + marks + 'm' + (diff ? ' · ' + diff : '') + '</div>' +
@@ -240,14 +240,7 @@ function buildQuestions() {
     numEl.textContent = g.num;
     head.appendChild(numEl);
 
-    // Topic label (uses chapter label e.g. "Sets" / "Sets 2")
-    var qTopic = g._chapterLabel || groupTopic(g) || '';
-    if (qTopic) {
-      var t = document.createElement('span');
-      t.className = 'qtag qtag-topic';
-      t.textContent = qTopic;
-      head.appendChild(t);
-    }
+    // Topic label removed from card — the chapter group header above already shows it.
     var qFreq = (g.parent && g.parent.frequency) ? g.parent.frequency
               : (g.subs.length && g.subs[0].frequency) ? g.subs[0].frequency : '';
     if (qFreq) {

@@ -214,40 +214,41 @@ body {
 .sb-progress { height: 4px; background: var(--line); border-radius: 99px; overflow: hidden; }
 .sb-progress-fill { height: 100%; width: 0%; background: var(--green); border-radius: 99px; transition: width .3s; }
 .sb-count { font-size: 11px; color: var(--muted); margin-top: 6px; }
-.sb-scroll { flex: 1; overflow-y: auto; padding: 6px 0 20px; }
+.sb-scroll { flex: 1; overflow-y: auto; padding: 0 0 20px; }
 
 .sb-chap-head {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 16px 5px;
-  font-size: 11px; font-weight: 700; color: var(--ink);
-  text-transform: uppercase; letter-spacing: .4px;
+  padding: 10px 16px;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-family: 'Fraunces', serif;
+  font-size: 15px; font-weight: 900; color: var(--ink);
 }
-.sb-chap-count { font-size: 10px; font-weight: 700; color: var(--faint); }
+.sb-chap-count { font-size: 11px; font-weight: 700; color: var(--faint); font-family: 'DM Sans', sans-serif; }
 .sb-q {
-  display: flex; align-items: center; gap: 9px;
-  padding: 8px 16px; cursor: pointer;
-  border-left: 2.5px solid transparent;
+  display: flex; align-items: center; gap: 11px;
+  padding: 11px 16px; cursor: pointer;
+  border-bottom: 1px solid var(--line);
   transition: background .12s;
 }
 .sb-q:hover { background: var(--bg); }
 .sb-q-num {
-  width: 22px; height: 22px; border-radius: 6px;
-  color: #fff; display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; flex-shrink: 0;
+  width: 30px; height: 30px; border-radius: 8px;
+  background: rgba(26,111,255,.1);
+  color: var(--blue); display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
   font-family: 'Fraunces', serif;
 }
 .sb-q-info { flex: 1; min-width: 0; }
 .sb-q-text {
-  font-size: 12px; font-weight: 500; color: var(--ink);
+  font-size: 13px; font-weight: 600; color: var(--ink);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.sb-q-meta { font-size: 10px; color: var(--faint); margin-top: 1px; }
-.sb-q-status { width: 8px; height: 8px; border-radius: 50%; background: var(--line); flex-shrink: 0; }
-.sb-q-got    { border-left-color: var(--green); }
+.sb-q-meta { font-size: 11px; color: var(--faint); margin-top: 2px; }
+.sb-q-status { width: 9px; height: 9px; border-radius: 50%; background: var(--line); flex-shrink: 0; }
 .sb-q-got    .sb-q-status { background: var(--green); }
-.sb-q-almost { border-left-color: var(--orange); }
 .sb-q-almost .sb-q-status { background: var(--orange); }
-.sb-q-missed { border-left-color: var(--red); }
 .sb-q-missed .sb-q-status { background: var(--red); }
 
 /* ── QUESTIONS WRAP ── */
