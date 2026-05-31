@@ -57,16 +57,17 @@ function init() {
 
   loadConf();
   computeChapters();
-  if (DATA.meta.isEnglish) {
-    // English papers have no topics — hide the topic chapter-bar and use a plain question list
+  // Data-driven: use topic navigation only if the paper actually has topics.
+  // Topicless papers (English, Nepali, or any future format) get the plain list.
+  if (paperUsesTopics()) {
+    buildChapterBar();
+    buildSidebar();
+  } else {
     var strip = document.getElementById('prog-strip');
     if (strip) strip.style.display = 'none';
     var stripWrap = document.getElementById('chapter-bar');
     if (stripWrap) stripWrap.style.display = 'none';
     buildSidebarPlain();
-  } else {
-    buildChapterBar();
-    buildSidebar();
   }
   buildQuestions();
 }
@@ -98,9 +99,56 @@ function computeChapters() {
 
 // Reads the topic of a question group (parent first, then first sub-part)
 function groupTopic(g) {
-  if (g.parent && g.parent.topic) return g.parent.topic;
-  if (g.subs && g.subs.length && g.subs[0].topic) return g.subs[0].topic;
+  if (!g) return '';
+  if (g.parent && safeStr(g.parent.topic)) return safeStr(g.parent.topic);
+  if (g.subs && g.subs.length && safeStr(g.subs[0].topic)) return safeStr(g.subs[0].topic);
   return '';
+}
+
+// ── FUTURE-PROOF HELPERS ─────────────────────────────────────────────────────
+// These make rendering depend on what the DATA actually contains, not on the
+// subject name — so any future exam/subject/format renders correctly.
+
+// Safe string: never returns null/undefined/"null"/"undefined".
+function safeStr(v) {
+  if (v === null || v === undefined) return '';
+  var s = String(v).trim();
+  if (s === 'null' || s === 'undefined' || s === 'NaN') return '';
+  return s;
+}
+// Safe number for marks etc.
+function safeNum(v) {
+  var n = Number(v);
+  return isFinite(n) && n > 0 ? n : 0;
+}
+// Question text for a row, honouring language with graceful fallback.
+function rowText(s) {
+  if (!s) return '';
+  var en = safeStr(s.en), np = safeStr(s.np);
+  if (LANG === 'np') return np || en;
+  return en || np;
+}
+// Does a row carry a usable answer?
+function hasAnswer(s) {
+  return !!(s && safeStr(s.answer));
+}
+// Total marks for a group, from subs or parent.
+function groupMarks(g) {
+  if (!g) return 0;
+  if (g.subs && g.subs.length) {
+    return g.subs.reduce(function(a, s) { return a + safeNum(s.marks); }, 0);
+  }
+  return g.parent ? safeNum(g.parent.marks) : 0;
+}
+// Data-driven: does THIS paper use topics at all? (Any group with a topic.)
+// If no question has a topic (English, Nepali, or any future topicless paper),
+// we use the plain question list instead of topic navigation — automatically.
+function paperUsesTopics() {
+  if (!DATA || !DATA.groups) return false;
+  for (var i = 0; i < DATA.groups.length; i++) {
+    if (groupTopic(DATA.groups[i])) return true;
+  }
+  return false;
 }
 
 // Short one-word labels for the top chapter bar (full name stays in card + sidebar)
@@ -173,13 +221,11 @@ function buildSidebar() {
 
     chap.groups.forEach(function(g) {
       var firstTxt = '';
-      if (g.parent && (g.parent.en || g.parent.np)) firstTxt = g.parent.en || g.parent.np;
-      else if (g.subs.length) firstTxt = g.subs[0].en || g.subs[0].np || '';
-      var marks = g.subs.length
-        ? g.subs.reduce(function(a, s) { return a + (s.marks || 0); }, 0)
-        : (g.parent ? g.parent.marks || 0 : 0);
+      if (g.parent && rowText(g.parent)) firstTxt = rowText(g.parent);
+      else if (g.subs && g.subs.length) firstTxt = rowText(g.subs[0]);
+      var marks = groupMarks(g);
       var diff = (g.parent && g.parent.difficulty) ? g.parent.difficulty
-               : (g.subs.length && g.subs[0].difficulty) ? g.subs[0].difficulty : '';
+               : (g.subs && g.subs.length && g.subs[0].difficulty) ? g.subs[0].difficulty : '';
 
       var row = document.createElement('div');
       row.className = 'sb-q';
@@ -191,7 +237,7 @@ function buildSidebar() {
         '<div class="sb-q-num">' + g.num + '</div>' +
         '<div class="sb-q-info">' +
           '<div class="sb-q-text">' + escapeHTML(truncate(firstTxt, 38)) + '</div>' +
-          '<div class="sb-q-meta">' + marks + 'm' + (diff ? ' · ' + diff : '') + '</div>' +
+          '<div class="sb-q-meta">' + marks + 'm' + (diff ? ' · ' + escapeHTML(safeStr(diff)) : '') + '</div>' +
         '</div>' +
         '<div class="sb-q-status" id="sbstatus-' + g.num + '"></div>';
 
@@ -222,11 +268,9 @@ function buildSidebarPlain() {
 
   DATA.groups.forEach(function(g) {
     var firstTxt = '';
-    if (g.parent && (g.parent.en || g.parent.np)) firstTxt = g.parent.en || g.parent.np;
-    else if (g.subs.length) firstTxt = g.subs[0].en || g.subs[0].np || '';
-    var marks = g.subs.length
-      ? g.subs.reduce(function(a, s) { return a + (s.marks || 0); }, 0)
-      : (g.parent ? g.parent.marks || 0 : 0);
+    if (g.parent && rowText(g.parent)) firstTxt = rowText(g.parent);
+    else if (g.subs && g.subs.length) firstTxt = rowText(g.subs[0]);
+    var marks = groupMarks(g);
 
     var row = document.createElement('div');
     row.className = 'sb-q';
@@ -272,19 +316,24 @@ function buildQuestions() {
   // Paper cover card — like the real exam paper header
   var cover = document.createElement('div');
   cover.className = 'paper-cover-card';
+  var pYear = safeStr(DATA.paper.year) || '';
+  var pProv = safeStr(DATA.paper.province) || '';
+  var pMarks = safeStr(DATA.paper.marks) || '—';
+  var pDur = safeStr(DATA.paper.duration) || '—';
+  var pQ = safeStr(DATA.meta && DATA.meta.totalQuestions) || String(DATA.groups.length);
   cover.innerHTML =
-    '<div class="pc-exam">Secondary Education Examination ' + DATA.paper.year + '</div>' +
-    '<div class="pc-title">SEE ' + DATA.paper.year + ' BS · ' + DATA.paper.province + ' Province</div>' +
-    '<div class="pc-subject">' + escapeHTML(DATA.subject.name) +
-      (DATA.subject.nameNepali ? ' / <span class="pc-subject-np">' + escapeHTML(DATA.subject.nameNepali) + '</span>' : '') +
+    '<div class="pc-exam">Secondary Education Examination ' + escapeHTML(pYear) + '</div>' +
+    '<div class="pc-title">SEE ' + escapeHTML(pYear) + ' BS' + (pProv ? ' · ' + escapeHTML(pProv) + ' Province' : '') + '</div>' +
+    '<div class="pc-subject">' + escapeHTML(safeStr(DATA.subject.name)) +
+      (safeStr(DATA.subject.nameNepali) ? ' / <span class="pc-subject-np">' + escapeHTML(DATA.subject.nameNepali) + '</span>' : '') +
     '</div>' +
     '<div class="pc-divider"></div>' +
     '<div class="pc-stats">' +
-      '<div class="pc-stat"><div class="pc-stat-n">' + DATA.paper.marks + '</div><div class="pc-stat-l">Full Marks</div></div>' +
-      '<div class="pc-stat"><div class="pc-stat-n">' + DATA.paper.duration + '</div><div class="pc-stat-l">Duration</div></div>' +
-      '<div class="pc-stat"><div class="pc-stat-n">' + DATA.meta.totalQuestions + '</div><div class="pc-stat-l">Questions</div></div>' +
+      '<div class="pc-stat"><div class="pc-stat-n">' + escapeHTML(pMarks) + '</div><div class="pc-stat-l">Full Marks</div></div>' +
+      '<div class="pc-stat"><div class="pc-stat-n">' + escapeHTML(pDur) + '</div><div class="pc-stat-l">Duration</div></div>' +
+      '<div class="pc-stat"><div class="pc-stat-n">' + escapeHTML(pQ) + '</div><div class="pc-stat-l">Questions</div></div>' +
     '</div>' +
-    '<div class="pc-inst">' + escapeHTML(DATA.paper.instruction || 'Answer all the questions in your own creative style.') + '</div>';
+    '<div class="pc-inst">' + escapeHTML(safeStr(DATA.paper.instruction) || 'Answer all the questions in your own creative style.') + '</div>';
   area.appendChild(cover);
 
   // Questions render in their real paper number order (not grouped).
@@ -322,25 +371,26 @@ function buildQuestions() {
       head.appendChild(ftag);
     }
 
-    var totalMarks = g.subs.length
-      ? g.subs.reduce(function(a, s) { return a + (s.marks || 0); }, 0)
-      : (g.parent ? g.parent.marks || 0 : 0);
+    var totalMarks = groupMarks(g);
     var marksEl = document.createElement('span');
     marksEl.className = 'qcard-marks';
-    marksEl.textContent = totalMarks + (totalMarks === 1 ? ' mark' : ' marks');
-    head.appendChild(marksEl);
+    if (totalMarks > 0) {
+      marksEl.textContent = totalMarks + (totalMarks === 1 ? ' mark' : ' marks');
+      head.appendChild(marksEl);
+    }
     card.appendChild(head);
 
     // Body
     var body = document.createElement('div');
     body.className = 'qcard-body';
 
-    if (g.parent && (g.parent.en || g.parent.np)) {
+    var parentTxt = g.parent ? rowText(g.parent) : '';
+    if (parentTxt) {
       var qtxt = document.createElement('div');
       qtxt.className = 'q-text';
-      qtxt.dataset.en = g.parent.en || '';
-      qtxt.dataset.np = g.parent.np || g.parent.en || '';
-      qtxt.textContent = LANG === 'np' && g.parent.np ? g.parent.np : g.parent.en;
+      qtxt.dataset.en = safeStr(g.parent.en);
+      qtxt.dataset.np = safeStr(g.parent.np) || safeStr(g.parent.en);
+      qtxt.textContent = parentTxt;
       body.appendChild(qtxt);
     }
     var diagramSVG = g.parent ? safeDiagram(g.parent.diagram) : '';
@@ -353,19 +403,22 @@ function buildQuestions() {
     if (g.parent && g.parent.student_count) {
       var sp = document.createElement('div');
       sp.className = 'social-proof';
-      var spTxt = '👥 ' + g.parent.student_count.toLocaleString() + ' students';
-      if (g.parent.error_rate) spTxt += ' · <span class="social-warn">' + g.parent.error_rate + '% got it wrong</span>';
+      var spTxt = '👥 ' + Number(g.parent.student_count).toLocaleString() + ' students';
+      if (g.parent.error_rate) spTxt += ' · <span class="social-warn">' + escapeHTML(safeStr(g.parent.error_rate)) + '% got it wrong</span>';
       sp.innerHTML = spTxt;
       body.appendChild(sp);
     }
 
-    // Sub items or parent as single item
-    if (g.subs.length > 0) {
+    // Sub items, or the parent as a single revealable item (no text repeat).
+    if (g.subs && g.subs.length > 0) {
       g.subs.forEach(function(s) {
         body.appendChild(buildSubItem(s, g.num, accent, false));
       });
     } else if (g.parent) {
-      body.appendChild(buildSubItem(g.parent, g.num, accent, true));
+      // Only show the single Answer reveal if there's actually an answer.
+      if (hasAnswer(g.parent)) {
+        body.appendChild(buildSubItem(g.parent, g.num, accent, true));
+      }
     }
 
     card.appendChild(body);
@@ -392,21 +445,31 @@ function buildSubItem(s, qNum, accent, isParent) {
   if (!isParent) {
     var ltr = document.createElement('span');
     ltr.className = 'sub-ltr';
-    ltr.textContent = s.sub;
+    ltr.textContent = safeStr(s.sub);
     subQ.appendChild(ltr);
   }
 
   var stxt = document.createElement('div');
   stxt.className = 'sub-text';
-  stxt.dataset.en = s.en || '';
-  stxt.dataset.np = s.np || s.en || '';
-  stxt.textContent = LANG === 'np' && s.np ? s.np : s.en;
+  if (isParent) {
+    // No-sub-part question: the question text is already shown above.
+    // Don't repeat it — just label the revealable answer.
+    stxt.classList.add('sub-text-answer-label');
+    stxt.textContent = 'Answer';
+  } else {
+    stxt.dataset.en = safeStr(s.en);
+    stxt.dataset.np = safeStr(s.np) || safeStr(s.en);
+    stxt.textContent = rowText(s);
+  }
   subQ.appendChild(stxt);
 
-  var sm = document.createElement('span');
-  sm.className = 'sub-marks';
-  sm.textContent = (s.marks || 0) + 'm';
-  subQ.appendChild(sm);
+  var smVal = safeNum(s.marks);
+  if (smVal > 0) {
+    var sm = document.createElement('span');
+    sm.className = 'sub-marks';
+    sm.textContent = smVal + 'm';
+    subQ.appendChild(sm);
+  }
 
   // MCQ has no chevron — answer shows after picking
   if (!s.opts) {
@@ -484,7 +547,7 @@ function buildAnswerSection(s, qNum) {
   sec.className = 'ans-section';
 
   // Final answer
-  var answer = s.answer || 'Model answer coming soon.';
+  var answer = safeStr(s.answer) || 'Model answer coming soon.';
   var finalRow = document.createElement('div');
   finalRow.className = 'ans-final-row';
   finalRow.innerHTML = '<div class="ans-check-circle">✓</div>'
@@ -709,11 +772,11 @@ function resetPaper() {
   var results = document.getElementById('results-section');
   if (results) results.style.display = 'none';
   computeChapters();
-  if (DATA.meta.isEnglish) {
-    buildSidebarPlain();
-  } else {
+  if (paperUsesTopics()) {
     buildChapterBar();
     buildSidebar();
+  } else {
+    buildSidebarPlain();
   }
   buildQuestions();
   updateProgress();

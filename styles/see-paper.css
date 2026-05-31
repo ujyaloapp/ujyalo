@@ -427,6 +427,14 @@ body {
   font-size: var(--qfont);
   color: var(--ink); line-height: 1.75; flex: 1;
 }
+.sub-text-answer-label {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
 .sub-marks {
   font-size: 11px; color: var(--faint);
   flex-shrink: 0; margin-top: 2px;
