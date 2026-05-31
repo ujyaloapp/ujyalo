@@ -128,6 +128,14 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 
 /* PRACTICE VIEW */
 .prac-pad{padding:30px 34px;}
+.prac-hero{padding:26px 34px;position:relative;overflow:hidden;background:var(--navy);}
+.prac-hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:rgba(26,111,255,.14);}
+.prac-hero::after{content:'';position:absolute;bottom:-40px;left:30%;width:150px;height:150px;border-radius:50%;background:rgba(56,201,176,.10);}
+.prac-hero-in{position:relative;display:flex;align-items:center;gap:16px;}
+.prac-hero-ico{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:rgba(255,255,255,.08);flex-shrink:0;}
+.prac-hero-nm{font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:#fff;}
+.prac-hero-nm em{font-style:italic;color:var(--teal);}
+.prac-hero-sb{font-size:13px;color:#8898b8;margin-top:3px;max-width:520px;}
 .prac-label{font-size:12px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:20px;}
 .subj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;max-width:920px;}
 .subj-card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:24px 24px 22px;cursor:pointer;text-align:left;transition:all .16s;position:relative;display:block;width:100%;}
@@ -256,6 +264,9 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
   .scroll{overflow:visible;height:auto;}
   .mn{padding-bottom:calc(60px + env(safe-area-inset-bottom));}
   .prac-pad{padding:18px 16px;}
+  .prac-hero{padding:18px 16px;}
+  .prac-hero-nm{font-size:21px;}
+  .prac-hero-ico{width:46px;height:46px;font-size:22px;}
   .prac-crumb{display:none;}
   .subj-grid{grid-template-columns:repeat(2,1fr);gap:12px;max-width:100%;}
   .subj-card{padding:16px;}
@@ -397,7 +408,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
     </div>
     <nav class="lsb-nav">
       <button class="li act" onclick="showView('papers',this)" id="nav-papers"><span class="li-icon">📄</span><span class="li-lbl">Past Papers</span></button>
-      <button class="li" onclick="showView('practice',this)" id="nav-practice"><span class="li-icon">📖</span><span class="li-lbl">Practice</span><span class="li-badge badge-daily">Daily</span></button>
+      <button class="li" onclick="showView('practice',this)" id="nav-practice"><span class="li-icon">📖</span><span class="li-lbl">Practice</span></button>
       <button class="li" onclick="showView('saved',this)" id="nav-saved"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
 
       <div class="lsb-plus-label"><span class="plus-star">⭐</span> PLUS</div>
@@ -422,6 +433,15 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 
         <!-- Step 1: Subjects -->
         <div class="prac-step show" id="prac-subjects">
+          <div class="prac-hero">
+            <div class="prac-hero-in">
+              <div class="prac-hero-ico">✍️</div>
+              <div>
+                <div class="prac-hero-nm">Practice <em>· अभ्यास</em></div>
+                <div class="prac-hero-sb">Pick a subject. Solve. Check. Repeat. That's how toppers are made.</div>
+              </div>
+            </div>
+          </div>
           <div class="prac-pad">
             <div class="prac-label">PICK A SUBJECT TO PRACTICE</div>
             <div class="subj-grid" id="subj-grid">
