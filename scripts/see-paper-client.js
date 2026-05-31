@@ -57,8 +57,17 @@ function init() {
 
   loadConf();
   computeChapters();
-  buildChapterBar();
-  buildSidebar();
+  if (DATA.meta.isEnglish) {
+    // English papers have no topics — hide the topic chapter-bar and use a plain question list
+    var strip = document.getElementById('prog-strip');
+    if (strip) strip.style.display = 'none';
+    var stripWrap = document.getElementById('chapter-bar');
+    if (stripWrap) stripWrap.style.display = 'none';
+    buildSidebarPlain();
+  } else {
+    buildChapterBar();
+    buildSidebar();
+  }
   buildQuestions();
 }
 
@@ -196,6 +205,52 @@ function buildSidebar() {
 
       scroll.appendChild(row);
     });
+  });
+}
+
+// ── SIDEBAR (plain question list — used for English, which has no topics) ──
+function buildSidebarPlain() {
+  var scroll = document.getElementById('sb-scroll');
+  if (!scroll) return;
+  scroll.innerHTML = '';
+
+  var head = document.createElement('div');
+  head.className = 'sb-chap-head';
+  head.innerHTML = '<span class="sb-chap-name">Questions</span>'
+    + '<span class="sb-chap-count">' + DATA.groups.length + 'Q</span>';
+  scroll.appendChild(head);
+
+  DATA.groups.forEach(function(g) {
+    var firstTxt = '';
+    if (g.parent && (g.parent.en || g.parent.np)) firstTxt = g.parent.en || g.parent.np;
+    else if (g.subs.length) firstTxt = g.subs[0].en || g.subs[0].np || '';
+    var marks = g.subs.length
+      ? g.subs.reduce(function(a, s) { return a + (s.marks || 0); }, 0)
+      : (g.parent ? g.parent.marks || 0 : 0);
+
+    var row = document.createElement('div');
+    row.className = 'sb-q';
+    row.id = 'sbq-' + g.num;
+    var conf = confMap[g.num];
+    if (conf) row.classList.add('sb-q-' + conf);
+
+    row.innerHTML =
+      '<div class="sb-q-num">' + g.num + '</div>' +
+      '<div class="sb-q-info">' +
+        '<div class="sb-q-text">' + escapeHTML(truncate(firstTxt, 38)) + '</div>' +
+        '<div class="sb-q-meta">' + marks + 'm</div>' +
+      '</div>' +
+      '<div class="sb-q-status" id="sbstatus-' + g.num + '"></div>';
+
+    row.onclick = (function(num) {
+      return function() {
+        var card = document.getElementById('qcard-' + num);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        closeSidebarMobile();
+      };
+    })(g.num);
+
+    scroll.appendChild(row);
   });
 }
 
@@ -654,8 +709,12 @@ function resetPaper() {
   var results = document.getElementById('results-section');
   if (results) results.style.display = 'none';
   computeChapters();
-  buildChapterBar();
-  buildSidebar();
+  if (DATA.meta.isEnglish) {
+    buildSidebarPlain();
+  } else {
+    buildChapterBar();
+    buildSidebar();
+  }
   buildQuestions();
   updateProgress();
   window.scrollTo({ top: 0, behavior: 'smooth' });
