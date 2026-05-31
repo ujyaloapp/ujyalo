@@ -139,6 +139,7 @@ function buildQuestions() {
   area.appendChild(cover);
 
   DATA.groups.forEach(function(g) {
+   try {
     var card = document.createElement('div');
     card.className = 'qcard';
     card.id = 'qcard-' + g.num;
@@ -192,10 +193,11 @@ function buildQuestions() {
       qtxt.textContent = LANG === 'np' && g.parent.np ? g.parent.np : g.parent.en;
       body.appendChild(qtxt);
     }
-    if (g.parent && g.parent.diagram) {
+    var diagramSVG = g.parent ? safeDiagram(g.parent.diagram) : '';
+    if (diagramSVG) {
       var diag = document.createElement('div');
       diag.className = 'q-diagram';
-      diag.innerHTML = g.parent.diagram;
+      diag.innerHTML = diagramSVG;
       body.appendChild(diag);
     }
     if (g.parent && g.parent.student_count) {
@@ -218,6 +220,9 @@ function buildQuestions() {
 
     card.appendChild(body);
     area.appendChild(card);
+   } catch (err) {
+     console.error('Skipped rendering issue on Q' + (g && g.num), err);
+   }
   });
 }
 
@@ -264,8 +269,14 @@ function buildSubItem(s, qNum, accent, isParent) {
   item.appendChild(subQ);
 
   // MCQ options
+  var opts = null;
   if (s.opts) {
-    var opts = Array.isArray(s.opts) ? s.opts : JSON.parse(s.opts);
+    try {
+      opts = Array.isArray(s.opts) ? s.opts : JSON.parse(s.opts);
+      if (!Array.isArray(opts)) opts = null;
+    } catch (e) { opts = null; }
+  }
+  if (opts && opts.length) {
     var grid = document.createElement('div');
     grid.className = 'mcq-grid';
     opts.forEach(function(o, oi) {
@@ -282,7 +293,7 @@ function buildSubItem(s, qNum, accent, isParent) {
   }
 
   // Click to open answer (non-MCQ)
-  if (!s.opts) {
+  if (!opts || !opts.length) {
     item.onclick = function() { toggleAnswer(subId, s, qNum, item); };
   }
 
@@ -605,3 +616,21 @@ function escapeHTML(str) {
   d.textContent = String(str || '');
   return d.innerHTML;
 }
+
+// Returns clean SVG markup only if the value is genuinely an <svg> element.
+// Anything else (null, plain text, broken markup) returns empty so it's skipped.
+function safeDiagram(val) {
+  if (!val || typeof val !== 'string') return '';
+  var s = val.trim();
+  if (s.slice(0, 4).toLowerCase() !== '<svg') return '';
+  if (s.toLowerCase().indexOf('</svg>') === -1) return '';
+  // Parse to confirm it's well-formed; reject if the parser reports an error.
+  try {
+    var doc = new DOMParser().parseFromString(s, 'image/svg+xml');
+    if (doc.getElementsByTagName('parsererror').length) return '';
+    return s;
+  } catch (e) {
+    return '';
+  }
+}
+
