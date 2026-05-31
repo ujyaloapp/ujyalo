@@ -153,16 +153,21 @@ function buildQuestions() {
     numEl.textContent = g.num;
     head.appendChild(numEl);
 
-    if (g.parent && g.parent.topic) {
+    // Topic: read from parent, or fall back to first sub-part (some Qs have no parent row)
+    var qTopic = (g.parent && g.parent.topic) ? g.parent.topic
+               : (g.subs.length && g.subs[0].topic) ? g.subs[0].topic : '';
+    if (qTopic) {
       var t = document.createElement('span');
       t.className = 'qtag qtag-topic';
-      t.textContent = g.parent.topic;
+      t.textContent = qTopic;
       head.appendChild(t);
     }
-    if (g.parent && g.parent.frequency) {
+    var qFreq = (g.parent && g.parent.frequency) ? g.parent.frequency
+              : (g.subs.length && g.subs[0].frequency) ? g.subs[0].frequency : '';
+    if (qFreq) {
       var ftag = document.createElement('span');
       ftag.className = 'qtag qtag-freq';
-      ftag.textContent = '🔥 ' + g.parent.frequency;
+      ftag.textContent = '🔥 ' + qFreq;
       head.appendChild(ftag);
     }
 
@@ -492,7 +497,8 @@ function finishPaper() {
   // Topic breakdown
   var topicMap = {};
   DATA.groups.forEach(function(g) {
-    var topic = (g.parent && g.parent.topic) ? g.parent.topic : 'General';
+    var topic = (g.parent && g.parent.topic) ? g.parent.topic
+              : (g.subs.length && g.subs[0].topic) ? g.subs[0].topic : 'General';
     var conf  = confMap[g.num];
     if (!topicMap[topic]) topicMap[topic] = { got: 0, almost: 0, missed: 0, total: 0 };
     topicMap[topic].total++;
