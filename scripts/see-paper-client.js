@@ -94,6 +94,20 @@ function groupTopic(g) {
   return '';
 }
 
+// Short one-word labels for the top chapter bar (full name stays in card + sidebar)
+var SHORT_TOPIC = {
+  'Compound Interest': 'Interest',
+  'Population Growth': 'Population',
+  'Foreign Exchange': 'Exchange',
+  'Sequence & Series': 'Sequence',
+  'Quadratic Equations': 'Quadratic'
+};
+function shortTopic(topic) {
+  if (SHORT_TOPIC[topic]) return SHORT_TOPIC[topic];
+  // Fallback: first word (drops "& Series", "Equations", etc.)
+  return String(topic || '').split(/[\s&]/)[0] || topic;
+}
+
 // ── CHAPTER BAR (top pills) ──
 function buildChapterBar() {
   var strip = document.getElementById('prog-strip');
@@ -104,14 +118,17 @@ function buildChapterBar() {
     var pill = document.createElement('button');
     pill.className = 'chap-pill' + (i === 0 ? ' active' : '');
     pill.id = 'chappill-' + i;
-    pill.innerHTML = '<span class="chap-pill-name">' + escapeHTML(chap.topic) + '</span>'
+    pill.innerHTML = '<span class="chap-pill-name">' + escapeHTML(shortTopic(chap.topic)) + '</span>'
       + '<span class="chap-pill-count">' + chap.groups.length + '</span>';
-    pill.onclick = (function(idx, topic) {
+    pill.onclick = (function(chap) {
       return function() {
-        var target = document.getElementById('chapgroup-' + idx);
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (chap.groups.length) {
+          var firstNum = chap.groups[0].num;
+          var card = document.getElementById('qcard-' + firstNum);
+          if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       };
-    })(i, chap.topic);
+    })(chap);
     strip.appendChild(pill);
   });
 }
@@ -215,16 +232,9 @@ function buildQuestions() {
     '<div class="pc-inst">' + escapeHTML(DATA.paper.instruction || 'Answer all the questions in your own creative style.') + '</div>';
   area.appendChild(cover);
 
-  CHAPTERS.forEach(function(chap, ci) {
-   // Chapter group header (scroll target for the top chapter bar)
-   var grpHead = document.createElement('div');
-   grpHead.className = 'chap-group-head';
-   grpHead.id = 'chapgroup-' + ci;
-   grpHead.innerHTML = '<span class="cgh-name">' + escapeHTML(chap.topic) + '</span>'
-     + '<span class="cgh-count">' + chap.groups.length + (chap.groups.length === 1 ? ' question' : ' questions') + '</span>';
-   area.appendChild(grpHead);
-
-   chap.groups.forEach(function(g) {
+  // Questions render in their real paper number order (not grouped).
+  // Each card shows its own topic inside the header.
+  DATA.groups.forEach(function(g) {
    try {
     var card = document.createElement('div');
     card.className = 'qcard';
@@ -240,7 +250,14 @@ function buildQuestions() {
     numEl.textContent = g.num;
     head.appendChild(numEl);
 
-    // Topic label removed from card — the chapter group header above already shows it.
+    // Topic label inside card header (after the number)
+    var qTopic = groupTopic(g) || '';
+    if (qTopic) {
+      var t = document.createElement('span');
+      t.className = 'qtag qtag-topic';
+      t.textContent = qTopic;
+      head.appendChild(t);
+    }
     var qFreq = (g.parent && g.parent.frequency) ? g.parent.frequency
               : (g.subs.length && g.subs[0].frequency) ? g.subs[0].frequency : '';
     if (qFreq) {
@@ -255,7 +272,7 @@ function buildQuestions() {
       : (g.parent ? g.parent.marks || 0 : 0);
     var marksEl = document.createElement('span');
     marksEl.className = 'qcard-marks';
-    marksEl.textContent = totalMarks + ' marks';
+    marksEl.textContent = totalMarks + (totalMarks === 1 ? ' mark' : ' marks');
     head.appendChild(marksEl);
     card.appendChild(head);
 
@@ -301,7 +318,6 @@ function buildQuestions() {
    } catch (err) {
      console.error('Skipped rendering issue on Q' + (g && g.num), err);
    }
-   });
   });
 }
 
