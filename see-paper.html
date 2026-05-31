@@ -50,12 +50,23 @@
     </div>
   </div>
 
-  <!-- PROGRESS STRIP -->
-  <div class="prog-strip" id="prog-strip"></div>
+  <!-- CHAPTER BAR (top pills) -->
+  <div class="chap-bar" id="prog-strip"></div>
 
-  <!-- QUESTIONS AREA -->
-  <div class="questions-wrap">
-    <div class="questions-area" id="questions-area"></div>
+  <!-- MAIN LAYOUT: sidebar + questions -->
+  <div class="paper-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-head">
+        <div class="sb-label">Questions</div>
+        <div class="sb-progress"><div class="sb-progress-fill" id="sb-progress-fill"></div></div>
+        <div class="sb-count" id="sb-count">0 / 0 answered</div>
+      </div>
+      <div class="sb-scroll" id="sb-scroll"></div>
+    </aside>
+
+    <div class="questions-wrap">
+      <div class="questions-area" id="questions-area"></div>
+    </div>
   </div>
 
   <!-- RESULTS -->
@@ -107,6 +118,9 @@
   </div>
   <div class="drawer-body" id="drawer-body"></div>
 </div>
+
+<!-- Celebration toast -->
+<div id="celeb-toast" class="celeb-toast"></div>
 
 <script src="/scripts/components.js"></script>
 <script src="/scripts/see-paper-client.js"></script>

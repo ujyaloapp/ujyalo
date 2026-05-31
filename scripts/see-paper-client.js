@@ -56,62 +56,139 @@ function init() {
   }
 
   loadConf();
-  buildProgressStrip();
+  computeChapters();
+  buildChapterBar();
+  buildSidebar();
   buildQuestions();
 }
 
-// ── PROGRESS STRIP ──
-function buildProgressStrip() {
-  var strip = document.getElementById('prog-strip');
-  strip.innerHTML = '';
-  DATA.groups.forEach(function(g) {
-    var dot = document.createElement('div');
-    dot.className = 'prog-dot';
-    dot.id = 'pdot-' + g.num;
-    dot.textContent = g.num;
-    var conf = confMap[g.num];
-    if (conf === 'got')    dot.classList.add('done');
-    else if (conf === 'almost') dot.classList.add('almost');
-    else if (conf === 'missed') dot.classList.add('missed');
-    dot.onclick = (function(num) {
-      return function() {
-        var card = document.getElementById('qcard-' + num);
-        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      };
-    })(g.num);
-    strip.appendChild(dot);
-  });
+// ── CHAPTER GROUPING ──
+// Builds CHAPTERS: ordered list of { topic, label, groups:[...] }
+// and stamps each group with g._chapterLabel (e.g. "Sets", "Sets 2").
+var CHAPTERS = [];
+function computeChapters() {
+  CHAPTERS = [];
+  var byTopic = {};      // topic -> chapter object
+  var topicCount = {};   // topic -> running count for numbering
 
-  var right = document.createElement('div');
-  right.className = 'prog-right';
-  right.innerHTML = '<span class="prog-count" id="prog-count">0 / ' + DATA.meta.totalQuestions + '</span>'
-    + '<span class="prog-score" id="prog-score"></span>';
-  strip.appendChild(right);
-  updateProgress();
+  DATA.groups.forEach(function(g) {
+    var topic = groupTopic(g) || 'Other';
+    if (!byTopic[topic]) {
+      var chap = { topic: topic, groups: [] };
+      byTopic[topic] = chap;
+      CHAPTERS.push(chap);
+    }
+    byTopic[topic].groups.push(g);
+
+    // Per-question label: "Sets", then "Sets 2", "Sets 3"...
+    topicCount[topic] = (topicCount[topic] || 0) + 1;
+    g._chapterLabel = topicCount[topic] === 1 ? topic : (topic + ' ' + topicCount[topic]);
+    g._chapterTopic = topic;
+  });
+}
+
+// Reads the topic of a question group (parent first, then first sub-part)
+function groupTopic(g) {
+  if (g.parent && g.parent.topic) return g.parent.topic;
+  if (g.subs && g.subs.length && g.subs[0].topic) return g.subs[0].topic;
+  return '';
+}
+
+// ── CHAPTER BAR (top pills) ──
+function buildChapterBar() {
+  var strip = document.getElementById('prog-strip');
+  if (!strip) return;
+  strip.innerHTML = '';
+
+  CHAPTERS.forEach(function(chap, i) {
+    var pill = document.createElement('button');
+    pill.className = 'chap-pill' + (i === 0 ? ' active' : '');
+    pill.id = 'chappill-' + i;
+    pill.innerHTML = '<span class="chap-pill-name">' + escapeHTML(chap.topic) + '</span>'
+      + '<span class="chap-pill-count">' + chap.groups.length + '</span>';
+    pill.onclick = (function(idx, topic) {
+      return function() {
+        var target = document.getElementById('chapgroup-' + idx);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
+    })(i, chap.topic);
+    strip.appendChild(pill);
+  });
 }
 
 function updateProgress() {
   var done = Object.keys(confMap).length;
   var total = DATA.meta.totalQuestions;
-  var countEl = document.getElementById('prog-count');
-  if (countEl) countEl.textContent = done + ' / ' + total;
+
+  // Sidebar progress count
+  var sc = document.getElementById('sb-count');
+  if (sc) sc.textContent = done + ' / ' + total + ' answered';
+  var sf = document.getElementById('sb-progress-fill');
+  if (sf) sf.style.width = total ? Math.round((done / total) * 100) + '%' : '0%';
 
   // Show finish button once student has marked at least one
   var fb = document.getElementById('finish-btn');
   if (fb) fb.style.display = done > 0 ? '' : 'none';
+}
 
-  // Live score estimate
-  var score = 0;
-  DATA.groups.forEach(function(g) {
-    var conf = confMap[g.num];
-    var marks = g.subs.length
-      ? g.subs.reduce(function(a, s) { return a + (s.marks || 0); }, 0)
-      : (g.parent ? g.parent.marks || 0 : 0);
-    if (conf === 'got')    score += marks;
-    else if (conf === 'almost') score += Math.round(marks * 0.5);
+// ── SIDEBAR (chapter-grouped question list) ──
+function buildSidebar() {
+  var scroll = document.getElementById('sb-scroll');
+  if (!scroll) return;
+  scroll.innerHTML = '';
+  var accent = DATA.subject.accent || '#1a6fff';
+
+  CHAPTERS.forEach(function(chap) {
+    var head = document.createElement('div');
+    head.className = 'sb-chap-head';
+    head.innerHTML = '<span class="sb-chap-name">' + escapeHTML(chap.topic) + '</span>'
+      + '<span class="sb-chap-count">' + chap.groups.length + 'Q</span>';
+    scroll.appendChild(head);
+
+    chap.groups.forEach(function(g) {
+      var firstTxt = '';
+      if (g.parent && (g.parent.en || g.parent.np)) firstTxt = g.parent.en || g.parent.np;
+      else if (g.subs.length) firstTxt = g.subs[0].en || g.subs[0].np || '';
+      var marks = g.subs.length
+        ? g.subs.reduce(function(a, s) { return a + (s.marks || 0); }, 0)
+        : (g.parent ? g.parent.marks || 0 : 0);
+      var diff = (g.parent && g.parent.difficulty) ? g.parent.difficulty
+               : (g.subs.length && g.subs[0].difficulty) ? g.subs[0].difficulty : '';
+
+      var row = document.createElement('div');
+      row.className = 'sb-q';
+      row.id = 'sbq-' + g.num;
+      var conf = confMap[g.num];
+      if (conf) row.classList.add('sb-q-' + conf);
+
+      row.innerHTML =
+        '<div class="sb-q-num" style="background:' + accent + ';">' + g.num + '</div>' +
+        '<div class="sb-q-info">' +
+          '<div class="sb-q-text">' + escapeHTML(truncate(firstTxt, 38)) + '</div>' +
+          '<div class="sb-q-meta">' + marks + 'm' + (diff ? ' · ' + diff : '') + '</div>' +
+        '</div>' +
+        '<div class="sb-q-status" id="sbstatus-' + g.num + '"></div>';
+
+      row.onclick = (function(num) {
+        return function() {
+          var card = document.getElementById('qcard-' + num);
+          if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          closeSidebarMobile();
+        };
+      })(g.num);
+
+      scroll.appendChild(row);
+    });
   });
-  var scoreEl = document.getElementById('prog-score');
-  if (scoreEl && done > 0) scoreEl.textContent = '~' + score + '/' + DATA.paper.marks;
+}
+
+function truncate(s, n) {
+  s = String(s || '');
+  return s.length > n ? s.slice(0, n).trim() + '…' : s;
+}
+
+function closeSidebarMobile() {
+  // no-op on desktop; mobile uses the top bar instead of sidebar
 }
 
 // ── BUILD QUESTIONS ──
@@ -138,7 +215,16 @@ function buildQuestions() {
     '<div class="pc-inst">' + escapeHTML(DATA.paper.instruction || 'Answer all the questions in your own creative style.') + '</div>';
   area.appendChild(cover);
 
-  DATA.groups.forEach(function(g) {
+  CHAPTERS.forEach(function(chap, ci) {
+   // Chapter group header (scroll target for the top chapter bar)
+   var grpHead = document.createElement('div');
+   grpHead.className = 'chap-group-head';
+   grpHead.id = 'chapgroup-' + ci;
+   grpHead.innerHTML = '<span class="cgh-name">' + escapeHTML(chap.topic) + '</span>'
+     + '<span class="cgh-count">' + chap.groups.length + (chap.groups.length === 1 ? ' question' : ' questions') + '</span>';
+   area.appendChild(grpHead);
+
+   chap.groups.forEach(function(g) {
    try {
     var card = document.createElement('div');
     card.className = 'qcard';
@@ -154,9 +240,8 @@ function buildQuestions() {
     numEl.textContent = g.num;
     head.appendChild(numEl);
 
-    // Topic: read from parent, or fall back to first sub-part (some Qs have no parent row)
-    var qTopic = (g.parent && g.parent.topic) ? g.parent.topic
-               : (g.subs.length && g.subs[0].topic) ? g.subs[0].topic : '';
+    // Topic label (uses chapter label e.g. "Sets" / "Sets 2")
+    var qTopic = g._chapterLabel || groupTopic(g) || '';
     if (qTopic) {
       var t = document.createElement('span');
       t.className = 'qtag qtag-topic';
@@ -223,6 +308,7 @@ function buildQuestions() {
    } catch (err) {
      console.error('Skipped rendering issue on Q' + (g && g.num), err);
    }
+   });
   });
 }
 
@@ -432,19 +518,16 @@ function setConf(qNum, val, btnsEl) {
     if (active) active.classList.add('selected');
   }
 
-  // Update progress dot
-  var dot = document.getElementById('pdot-' + qNum);
-  if (dot) {
-    dot.classList.remove('done', 'almost', 'missed');
-    if (val === 'got') dot.classList.add('done');
-    else if (val === 'almost') dot.classList.add('almost');
-    else if (val === 'missed') dot.classList.add('missed');
+  // Update sidebar row status
+  var sbRow = document.getElementById('sbq-' + qNum);
+  if (sbRow) {
+    sbRow.classList.remove('sb-q-got', 'sb-q-almost', 'sb-q-missed');
+    sbRow.classList.add('sb-q-' + val);
   }
 
   // Update sub-item border
   var subItem = document.getElementById('q-' + qNum + '-main');
   if (!subItem) {
-    // Find first sub
     var g = DATA.groups.find(function(x) { return x.num === qNum; });
     if (g && g.subs.length > 0) subItem = document.getElementById('q-' + qNum + '-' + g.subs[0].sub);
   }
@@ -453,7 +536,25 @@ function setConf(qNum, val, btnsEl) {
     subItem.classList.add('conf-' + val);
   }
 
+  celebrate(val);
   updateProgress();
+}
+
+// ── CELEBRATION TOAST ──
+var celebTimer = null;
+function celebrate(val) {
+  var toast = document.getElementById('celeb-toast');
+  if (!toast) return;
+  var msg = {
+    got:    ['🎉', "Nice! You got it!"],
+    almost: ['💪', "Almost there — review the steps"],
+    missed: ['🌱', "No worries — that's how you learn"]
+  }[val];
+  if (!msg) return;
+  toast.className = 'celeb-toast show celeb-' + val;
+  toast.innerHTML = '<span class="celeb-emoji">' + msg[0] + '</span><span class="celeb-msg">' + msg[1] + '</span>';
+  if (celebTimer) clearTimeout(celebTimer);
+  celebTimer = setTimeout(function() { toast.className = 'celeb-toast'; }, 2200);
 }
 
 function saveConf() {
@@ -543,8 +644,11 @@ function resetPaper() {
   saveConf();
   var results = document.getElementById('results-section');
   if (results) results.style.display = 'none';
-  buildProgressStrip();
+  computeChapters();
+  buildChapterBar();
+  buildSidebar();
   buildQuestions();
+  updateProgress();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
