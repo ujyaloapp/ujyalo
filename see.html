@@ -64,10 +64,10 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .mn{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 
 /* SUBJECT TABS */
-.stabs{background:var(--card);border-bottom:1px solid var(--line);display:flex;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
+.stabs{background:var(--navy);border-bottom:1px solid rgba(255,255,255,.08);display:flex;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
 .stabs::-webkit-scrollbar{display:none;}
-.stab{padding:13px 20px;border:none;background:transparent;border-bottom:3px solid transparent;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .15s;}
-.stab:hover{color:var(--ink);}
+.stab{padding:13px 20px;border:none;background:transparent;border-bottom:3px solid transparent;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .15s;}
+.stab:hover{color:#fff;}
 
 /* SCROLL */
 .scroll{flex:1;overflow-y:auto;}
@@ -265,7 +265,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
       <div class="lsb-brand">SEE <span class="lsb-slash">/</span> <span class="lsb-grade">कक्षा १०</span></div>
     </div>
     <nav class="lsb-nav">
-      <button class="li act" onclick="showView('papers',this)" id="nav-papers"><span class="li-icon">📄</span><span class="li-lbl">Past Papers</span><span class="li-badge badge-year">2082</span></button>
+      <button class="li act" onclick="showView('papers',this)" id="nav-papers"><span class="li-icon">📄</span><span class="li-lbl">Past Papers</span></button>
       <button class="li" onclick="showView('practice',this)" id="nav-practice"><span class="li-icon">📖</span><span class="li-lbl">Practice</span><span class="li-badge badge-daily">Daily</span></button>
       <button class="li" onclick="showView('saved',this)" id="nav-saved"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
 
