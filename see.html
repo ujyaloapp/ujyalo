@@ -38,6 +38,15 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .lsb-slash{color:var(--teal);font-style:italic;font-weight:700;margin:0 2px;}
 .lsb-grade{color:var(--teal);font-size:20px;}
 .lsb-section{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1px;padding:14px 18px 6px;}
+.lsb-plus-label{position:relative;display:inline-flex;align-items:center;gap:5px;margin:18px 18px 8px;padding:4px 12px;border-radius:99px;font-size:11px;font-weight:800;letter-spacing:1px;color:#3a2a05;background:linear-gradient(135deg,#ffd86b,#f5a623);box-shadow:0 2px 10px rgba(245,166,35,.35);}
+.lsb-plus-label .plus-star{font-size:11px;}
+.lsb-nav{position:relative;}
+.lsb-plus-label::before{content:'';position:absolute;left:0;right:-18px;top:-9px;height:1px;background:rgba(255,255,255,.08);}
+.li-plus .li-lbl{color:rgba(255,236,190,.75);}
+.li-plus:hover{background:rgba(245,166,35,.10);}
+.li-plus.act{background:rgba(245,166,35,.14);border-left-color:var(--orange);}
+.li-plus.act .li-lbl{color:#ffe7a8;}
+.li-lock{margin-left:auto;font-size:11px;opacity:.7;}
 .li-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;}
 .badge-daily{background:var(--green);color:#062b14;}
 .badge-year{background:rgba(245,156,26,.2);color:var(--orange);}
@@ -256,14 +265,14 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
       <div class="lsb-brand">SEE <span class="lsb-slash">/</span> <span class="lsb-grade">कक्षा १०</span></div>
     </div>
     <nav class="lsb-nav">
-      <button class="li act" onclick="showView('practice',this)" id="nav-practice"><span class="li-icon">📖</span><span class="li-lbl">Practice</span><span class="li-badge badge-daily">Daily</span></button>
-      <button class="li" onclick="showView('papers',this)" id="nav-papers"><span class="li-icon">📄</span><span class="li-lbl">Past Papers</span><span class="li-badge badge-year">2082</span></button>
-
-      <div class="lsb-section">TOOLS</div>
-      <button class="li" onclick="showView('heatmap',this)" id="nav-heatmap"><span class="li-icon">🔥</span><span class="li-lbl">Hot Topics</span></button>
-      <button class="li" onclick="showView('predict',this)" id="nav-predict"><span class="li-icon">🎯</span><span class="li-lbl">Predict 2083</span></button>
+      <button class="li act" onclick="showView('papers',this)" id="nav-papers"><span class="li-icon">📄</span><span class="li-lbl">Past Papers</span><span class="li-badge badge-year">2082</span></button>
+      <button class="li" onclick="showView('practice',this)" id="nav-practice"><span class="li-icon">📖</span><span class="li-lbl">Practice</span><span class="li-badge badge-daily">Daily</span></button>
       <button class="li" onclick="showView('saved',this)" id="nav-saved"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
-      <button class="li" onclick="showView('mypaper',this)" id="nav-mypaper"><span class="li-icon">⚡</span><span class="li-lbl">My Paper</span></button>
+
+      <div class="lsb-plus-label"><span class="plus-star">⭐</span> PLUS</div>
+      <button class="li li-plus" onclick="showView('heatmap',this)" id="nav-heatmap"><span class="li-icon">🔥</span><span class="li-lbl">Hot Topics</span><span class="li-lock">⭐</span></button>
+      <button class="li li-plus" onclick="showView('predict',this)" id="nav-predict"><span class="li-icon">🎯</span><span class="li-lbl">Predict 2083</span><span class="li-lock">⭐</span></button>
+      <button class="li li-plus" onclick="showView('mypaper',this)" id="nav-mypaper"><span class="li-icon">⚡</span><span class="li-lbl">My Paper</span><span class="li-lock">⭐</span></button>
     </nav>
     <div class="lsb-foot"><p>SEE 2082 live · 7 provinces<br/>6 subjects · Free forever</p></div>
   </aside>
@@ -273,8 +282,8 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 
     <div class="scroll" id="scroll">
 
-      <!-- PRACTICE VIEW (default) -->
-      <div class="vw act" id="vw-practice">
+      <!-- PRACTICE VIEW -->
+      <div class="vw" id="vw-practice">
         <div class="prac-pad">
           <div class="prac-label">PICK A SUBJECT TO PRACTICE</div>
           <div class="subj-grid" id="subj-grid">
@@ -324,8 +333,8 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
         </div>
       </div>
 
-      <!-- PAPERS VIEW -->
-      <div class="vw" id="vw-papers">
+      <!-- PAPERS VIEW (default) -->
+      <div class="vw act" id="vw-papers">
         <div class="hero" id="hero">
           <div class="hero-in">
             <div class="hero-l">
@@ -510,8 +519,7 @@ const S = {subj:'maths', year:'all', data:null};
 (async function init(){
   renderTabs();
   renderBookmarks();
-  var stabs=document.getElementById('stabs');
-  if(stabs) stabs.style.display='none';   // Practice is default; tabs belong to Papers
+  // Papers is the default view, so the subject tabs are visible on load.
   await loadPapers();
 })();
 
