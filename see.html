@@ -34,6 +34,13 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .lsb-head{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.08);}
 .lsb-title{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;}
 .lsb-sub{font-size:11px;color:#8898b8;margin-top:3px;}
+.lsb-brand{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:#fff;margin-top:4px;}
+.lsb-slash{color:var(--teal);font-style:italic;font-weight:700;margin:0 2px;}
+.lsb-grade{color:var(--teal);font-size:20px;}
+.lsb-section{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1px;padding:14px 18px 6px;}
+.li-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;}
+.badge-daily{background:var(--green);color:#062b14;}
+.badge-year{background:rgba(245,156,26,.2);color:var(--orange);}
 .lsb-nav{flex:1;padding:8px 0;overflow-y:auto;}
 .li{display:flex;align-items:center;gap:11px;padding:11px 18px;cursor:pointer;border-left:3px solid transparent;background:none;border-top:none;border-right:none;border-bottom:none;width:100%;text-align:left;transition:all .14s;}
 .li:hover{background:rgba(255,255,255,.05);}
@@ -108,6 +115,19 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 
 /* PROVINCE GRID */
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;}
+
+/* PRACTICE VIEW */
+.prac-pad{padding:30px 34px;}
+.prac-label{font-size:12px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:20px;}
+.subj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;max-width:920px;}
+.subj-card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:24px 24px 22px;cursor:pointer;text-align:left;transition:all .16s;position:relative;display:block;width:100%;}
+.subj-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(13,27,62,.10);border-color:rgba(26,111,255,.3);}
+.subj-ico{width:56px;height:56px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:16px;}
+.subj-nm{font-size:20px;font-weight:700;color:var(--ink);}
+.subj-np{font-size:14px;color:var(--faint);margin-top:1px;}
+.subj-bar{height:5px;background:var(--line);border-radius:99px;margin-top:18px;overflow:hidden;}
+.subj-fill{height:100%;border-radius:99px;transition:width .4s;}
+.subj-meta{font-size:13px;color:var(--faint);font-weight:600;margin-top:9px;}
 
 /* PROVINCE CARD */
 .pc{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;}
@@ -232,15 +252,17 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 
   <aside class="lsb">
     <div class="lsb-head">
-      <div class="lsb-title">SEE Past Papers</div>
-      <div class="lsb-sub">All subjects · All provinces</div>
+      <div class="lsb-title">EXAMINATION</div>
+      <div class="lsb-brand">SEE <span class="lsb-slash">/</span> <span class="lsb-grade">कक्षा १०</span></div>
     </div>
     <nav class="lsb-nav">
-      <button class="li act" onclick="showView('papers',this)" id="nav-papers"><span class="li-icon">📄</span><span class="li-lbl">Papers</span></button>
-      <button class="li" onclick="showView('saved',this)" id="nav-saved"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
+      <button class="li act" onclick="showView('practice',this)" id="nav-practice"><span class="li-icon">📖</span><span class="li-lbl">Practice</span><span class="li-badge badge-daily">Daily</span></button>
+      <button class="li" onclick="showView('papers',this)" id="nav-papers"><span class="li-icon">📄</span><span class="li-lbl">Past Papers</span><span class="li-badge badge-year">2082</span></button>
+
+      <div class="lsb-section">TOOLS</div>
       <button class="li" onclick="showView('heatmap',this)" id="nav-heatmap"><span class="li-icon">🔥</span><span class="li-lbl">Hot Topics</span></button>
-      <button class="li" onclick="showView('compare',this)" id="nav-compare"><span class="li-icon">↔</span><span class="li-lbl">Compare</span></button>
-      <button class="li" onclick="showView('predict',this)" id="nav-predict"><span class="li-icon">🎯</span><span class="li-lbl">Predict</span></button>
+      <button class="li" onclick="showView('predict',this)" id="nav-predict"><span class="li-icon">🎯</span><span class="li-lbl">Predict 2083</span></button>
+      <button class="li" onclick="showView('saved',this)" id="nav-saved"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
       <button class="li" onclick="showView('mypaper',this)" id="nav-mypaper"><span class="li-icon">⚡</span><span class="li-lbl">My Paper</span></button>
     </nav>
     <div class="lsb-foot"><p>SEE 2082 live · 7 provinces<br/>6 subjects · Free forever</p></div>
@@ -251,8 +273,59 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 
     <div class="scroll" id="scroll">
 
+      <!-- PRACTICE VIEW (default) -->
+      <div class="vw act" id="vw-practice">
+        <div class="prac-pad">
+          <div class="prac-label">PICK A SUBJECT TO PRACTICE</div>
+          <div class="subj-grid" id="subj-grid">
+            <button class="subj-card" data-accent="#1a6fff" onclick="pickSubject('maths')">
+              <div class="subj-ico" style="background:rgba(26,111,255,.12);color:#1a6fff;">∫</div>
+              <div class="subj-nm">Maths</div>
+              <div class="subj-np">गणित</div>
+              <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#1a6fff;"></div></div>
+              <div class="subj-meta">Not started</div>
+            </button>
+            <button class="subj-card" data-accent="#38c9b0" onclick="pickSubject('science')">
+              <div class="subj-ico" style="background:rgba(56,201,176,.14);color:#1aa890;">🔬</div>
+              <div class="subj-nm">Science</div>
+              <div class="subj-np">विज्ञान</div>
+              <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#38c9b0;"></div></div>
+              <div class="subj-meta">Not started</div>
+            </button>
+            <button class="subj-card" data-accent="#f59c1a" onclick="pickSubject('english')">
+              <div class="subj-ico" style="background:rgba(245,156,26,.14);color:#e08a0a;">Aa</div>
+              <div class="subj-nm">English</div>
+              <div class="subj-np">अङ्ग्रेजी</div>
+              <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#f59c1a;"></div></div>
+              <div class="subj-meta">Not started</div>
+            </button>
+            <button class="subj-card" data-accent="#e84393" onclick="pickSubject('nepali')">
+              <div class="subj-ico" style="background:rgba(232,67,147,.12);color:#e84393;">क</div>
+              <div class="subj-nm">Nepali</div>
+              <div class="subj-np">नेपाली</div>
+              <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#e84393;"></div></div>
+              <div class="subj-meta">Not started</div>
+            </button>
+            <button class="subj-card" data-accent="#7c3aed" onclick="pickSubject('social')">
+              <div class="subj-ico" style="background:rgba(124,58,237,.12);color:#7c3aed;">◉</div>
+              <div class="subj-nm">Social</div>
+              <div class="subj-np">सामाजिक</div>
+              <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#7c3aed;"></div></div>
+              <div class="subj-meta">Not started</div>
+            </button>
+            <button class="subj-card" data-accent="#ef4444" onclick="pickSubject('hpe')">
+              <div class="subj-ico" style="background:rgba(239,68,68,.10);color:#ef4444;">♡</div>
+              <div class="subj-nm">HPE</div>
+              <div class="subj-np">स्वास्थ्य</div>
+              <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#ef4444;"></div></div>
+              <div class="subj-meta">Not started</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
       <!-- PAPERS VIEW -->
-      <div class="vw act" id="vw-papers">
+      <div class="vw" id="vw-papers">
         <div class="hero" id="hero">
           <div class="hero-in">
             <div class="hero-l">
@@ -437,6 +510,8 @@ const S = {subj:'maths', year:'all', data:null};
 (async function init(){
   renderTabs();
   renderBookmarks();
+  var stabs=document.getElementById('stabs');
+  if(stabs) stabs.style.display='none';   // Practice is default; tabs belong to Papers
   await loadPapers();
 })();
 
@@ -591,9 +666,17 @@ function showView(id,btn){
   if(btn) btn.classList.add('act');
   document.getElementById('scroll').scrollTop=0;
 }
+
+// Practice subject pick — chapter functionality coming later
+function pickSubject(code){
+  // Placeholder for now; chapter practice will be wired up next.
+}
 function goView(id){
   document.querySelectorAll('.vw').forEach(v=>v.classList.remove('act'));
   document.getElementById('vw-'+id).classList.add('act');
+  // Subject tabs belong only to the Past Papers view
+  var stabs=document.getElementById('stabs');
+  if(stabs) stabs.style.display = (id==='papers') ? '' : 'none';
 }
 
 // ─── HEATMAP ─────────────────────────────────────────────────────────────────
