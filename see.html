@@ -975,39 +975,86 @@ function mobileBack(){
 var PRAC_STRUCT = {
   maths:{ label:'Maths', groups:[
     {name:'Sets', icon:'⊂', chapters:['Sets']},
-    {name:'Arithmetic', icon:'💰', chapters:['Tax and Money Exchange','Compound Interest','Population & Depreciation']},
+    {name:'Arithmetic', icon:'💰', chapters:['Tax and Money Exchange','Compound Interest','Population Growth & Depreciation']},
     {name:'Mensuration', icon:'📐', chapters:['Plane Surface (Area)','Cylinder and Sphere','Prism and Pyramid']},
-    {name:'Algebra', icon:'🔣', chapters:['Indices','Algebraic Fractions','Equations']},
-    {name:'Geometry', icon:'📏', chapters:['Circle Theorems']},
+    {name:'Algebra', icon:'🔣', chapters:['HCF and LCM','Radical and Surd','Indices','Algebraic Fractions','Equations']},
+    {name:'Geometry', icon:'📏', chapters:['Area of Triangles & Quadrilaterals','Circle Theorems']},
     {name:'Trigonometry', icon:'📐', chapters:['Trigonometry']},
     {name:'Statistics', icon:'📊', chapters:['Statistics']},
     {name:'Probability', icon:'🎲', chapters:['Probability']},
   ]},
   science:{ label:'Science', groups:[
-    {name:'Physics', icon:'⚡', chapters:['Force','Pressure','Energy','Heat','Light']},
-    {name:'Chemistry', icon:'🧪', chapters:['Classification of Elements','Chemical Reaction','Acid, Base and Salt','Metals']},
-    {name:'Biology', icon:'🌿', chapters:['Invertebrates','Blood Circulation','Heredity']},
-    {name:'Astronomy & Geology', icon:'🌍', chapters:['History of the Earth','The Earth in the Universe']},
+    {name:'Physics', icon:'⚡', chapters:['Force','Pressure','Energy','Heat','Light','Current Electricity and Magnetism']},
+    {name:'Chemistry', icon:'🧪', chapters:['Classification of Elements','Chemical Reaction','Acid, Base and Salt','Some Gases','Metals','Hydrocarbon and its Compounds','Materials Used in Daily Life']},
+    {name:'Biology', icon:'🌿', chapters:['Invertebrates','Human Nervous and Glandular Systems','Blood Circulation in Human Body','Chromosome and Sex Determination','Asexual and Sexual Reproduction','Artificial Vegetative Propagation','Heredity','Environmental Pollution and Management']},
+    {name:'Astronomy & Geology', icon:'🌍', chapters:['History of the Earth','Climate Change and Atmosphere','The Earth in the Universe']},
   ]},
 };
-// Demo questions + tips (Stage 1 only — real data wired in Stage 2)
-var DEMO_QS = {
-  'Sets':[
-    {q:'In a survey of 80 students, 45 like Maths and 30 like Science. 10 like both. How many like neither?', m:2, a:'n(M∪S) = 45 + 30 − 10 = 65\nNeither = 80 − 65 = 15 students'},
-    {q:'If n(A) = 25, n(B) = 18 and n(A∩B) = 7, find n(A∪B).', m:1, a:'n(A∪B) = 25 + 18 − 7 = 36'},
-    {q:'In a class everyone plays football or cricket. 22 play football, 18 cricket, 12 both. How many students?', m:2, a:'n(F∪C) = 22 + 18 − 12 = 28 students'},
-  ],
-  'Compound Interest':[
-    {q:'Find the compound amount on Rs.10,000 at 10% p.a. for 2 years.', m:2, a:'A = 10000(1.1)² = Rs.12,100'},
-    {q:'What is the compound interest in the above case?', m:1, a:'CI = 12100 − 10000 = Rs.2,100'},
-  ],
+// Real formulas & common mistakes per chapter (from the live chapter-practice page)
+var CHAPTER_META = {
+  'Sets':{f:['n(A∪B) = n(A) + n(B) − n(A∩B)','n(A∪B∪C) = n(A)+n(B)+n(C)−n(A∩B)−n(B∩C)−n(A∩C)+n(A∩B∩C)','Neither = Total − n(A∪B)'],
+    m:['Always subtract the "both" group — students forget this and double count','Draw a Venn diagram first — it makes the problem much clearer','For percentage problems, treat the total as 100 not the actual number']},
+  'Tax and Money Exchange':{f:['Discount = Marked Price × Discount% / 100','Selling Price = Marked Price − Discount','VAT = Selling Price × VAT% / 100','Total Price = Selling Price + VAT'],
+    m:['VAT is always calculated on the price AFTER discount, not on the marked price','When finding the marked price, work backwards']},
+  'Compound Interest':{f:['CA = P(1 + R/100)ᵀ','CI = CA − P','SI = (P × R × T) / 100','Half-yearly: Rate = R/2, Time = 2T'],
+    m:['CI is the interest only — CA is the total amount. Do not confuse them','For half-yearly compounding, divide rate by 2 AND multiply periods by 2']},
+  'Population Growth & Depreciation':{f:['Growth: PT = P₀(1 + R/100)ᵀ','Past population: P₀ = PT / (1 + R/100)ᵀ','Depreciation: VT = V₀(1 − R/100)ᵀ'],
+    m:['Population growth uses (1 + R/100) — depreciation uses (1 − R/100)','To find past population, divide by the growth factor instead of multiplying']},
+  'Plane Surface (Area)':{f:['Equilateral triangle: Area = (√3/4) × side²','Heron: Area = √[s(s−a)(s−b)(s−c)], s = (a+b+c)/2','Trapezium: Area = ½ × (sum of parallel sides) × height','Rhombus: Area = ½ × d₁ × d₂'],
+    m:['For equilateral triangle, use the special formula','Rhombus area uses DIAGONALS not sides','Trapezium: add BOTH parallel sides']},
+  'Cylinder and Sphere':{f:['Cylinder CSA = 2πrh','Cylinder TSA = 2πr(r+h)','Cylinder Volume = πr²h','Sphere SA = 4πr²','Sphere Volume = (4/3)πr³','Hemisphere TSA = 3πr²'],
+    m:['TSA of cylinder includes TWO circular ends — CSA does not','Always use radius not diameter in formulas']},
+  'Prism and Pyramid':{f:['Prism LSA = Perimeter of base × height','Prism Volume = Base Area × height','Pyramid LSA = ½ × Perimeter × slant height','Pyramid Volume = ⅓ × Base Area × vertical height'],
+    m:['Pyramid uses SLANT height for surface area but VERTICAL height for volume','Always find the base area first']},
+  'HCF and LCM':{f:['HCF × LCM = Product of the two expressions','HCF: take COMMON factors with LOWEST power','LCM: take ALL factors with HIGHEST power'],
+    m:['Always factorise completely before finding HCF or LCM','HCF takes the LOWEST power — LCM takes the HIGHEST']},
+  'Radical and Surd':{f:['√(a×b) = √a × √b','Conjugate of (a+√b) is (a−√b)','(a+√b)(a−√b) = a² − b','Rationalise: multiply by the conjugate'],
+    m:['Only surds with the same number under the root can be added or subtracted','√4 + √9 ≠ √13']},
+  'Indices':{f:['aᵐ × aⁿ = aᵐ⁺ⁿ','aᵐ ÷ aⁿ = aᵐ⁻ⁿ','(aᵐ)ⁿ = aᵐⁿ','a⁰ = 1','a⁻ⁿ = 1/aⁿ','a^(m/n) = ⁿ√(aᵐ)'],
+    m:['aᵐ × aⁿ = aᵐ⁺ⁿ NOT aᵐⁿ — add the powers','a⁰ = 1 for any value of a (except 0)']},
+  'Algebraic Fractions':{f:['To simplify: factorise top and bottom, then cancel','To add/subtract: find common denominator first','To divide: flip the second fraction, then multiply'],
+    m:['Always factorise before cancelling','x/(x+1) cannot be simplified to 1/1']},
+  'Equations':{f:['Substitution: express one variable in terms of the other','Elimination: match coefficients, then add/subtract'],
+    m:['Always check your answer by substituting back into BOTH equations','When multiplying an equation, multiply EVERY term']},
+  'Area of Triangles & Quadrilaterals':{f:['Triangle = ½ × base × height','Parallelogram = base × height','Triangles on same base and between same parallels are equal in area'],
+    m:['Height must be PERPENDICULAR to the base','Equal area does not mean congruent']},
+  'Circle Theorems':{f:['Central angle = 2 × Inscribed angle (same arc)','Inscribed angles on same arc are equal','Angle in semicircle = 90°','Opposite angles of cyclic quadrilateral = 180°'],
+    m:['Central angle is at the CENTRE — inscribed at the CIRCUMFERENCE','Only applies when both angles stand on the SAME arc']},
+  'Trigonometry':{f:['sin θ = Opp/Hyp','cos θ = Adj/Hyp','tan θ = Opp/Adj','sin²θ + cos²θ = 1','sin30°=½, cos30°=√3/2, tan30°=1/√3','sin45°=cos45°=1/√2','sin60°=√3/2, cos60°=½'],
+    m:['Draw the triangle first','sin²θ means (sin θ)² not sin(θ²)']},
+  'Statistics':{f:['Mean = Σfx / Σf','Median = middle value (after sorting)','Mode = most frequent value'],
+    m:['Always SORT data before finding median','Mean uses ALL values — outliers affect it greatly']},
+  'Probability':{f:['P(Event) = Favourable / Total','P(A) + P(not A) = 1','P(A and B) = P(A) × P(B) for independent events','2 dice = 36 outcomes','2 coins = 4 outcomes'],
+    m:['List ALL outcomes before counting favourable ones','Probability is always between 0 and 1']},
+  // Science
+  'Force':{f:['F = ma','W = mg','p = mv','g = 10 m/s²'],m:['Mass is in kg, weight in Newtons','Find acceleration first']},
+  'Pressure':{f:['P = F/A','P = hρg','1 atm = 101,325 Pa'],m:['Smaller area = greater pressure','Liquid pressure depends on DEPTH','Atmospheric pressure DECREASES with altitude']},
+  'Energy':{f:['KE = ½mv²','PE = mgh','P = W/t','W = F × d'],m:['KE depends on v² — doubling speed quadruples KE','Power is in Watts = Joules per second']},
+  'Heat':{f:['Q = mcΔT','Specific heat of water = 4200 J/kg°C','K = °C + 273'],m:['Heat and temperature are different','Temperature stays CONSTANT during change of state']},
+  'Light':{f:['∠i = ∠r','n = sin i / sin r','Speed of light = 3 × 10⁸ m/s'],m:['Angles measured from the NORMAL','Real image can be projected — virtual cannot']},
+  'Current Electricity and Magnetism':{f:['V = IR','P = VI = I²R = V²/R','Series: R = R₁+R₂+R₃','Parallel: 1/R = 1/R₁+1/R₂+1/R₃'],m:['In parallel, total R is LESS than smallest resistor','In series current is same throughout']},
+  'Classification of Elements':{f:['Atomic number = protons','Mass number = protons + neutrons','Outer shell electrons = group number'],m:['Same GROUP = similar properties','Metals are on the LEFT']},
+  'Chemical Reaction':{f:['OIL RIG: Oxidation Is Loss, Reduction Is Gain','Exothermic releases heat; Endothermic absorbs heat'],m:['Oxidation and reduction happen TOGETHER','A catalyst is NOT used up']},
+  'Acid, Base and Salt':{f:['Acid + Base → Salt + Water','Acid + Metal → Salt + Hydrogen','pH<7 acidic, =7 neutral, >7 alkaline'],m:['Lower pH = stronger acid','Neutralisation makes SALT and WATER']},
+  'Some Gases':{f:['Oxygen: relights a glowing splint','Hydrogen: squeaky pop','CO₂: turns lime water milky','Ammonia: damp red litmus → blue'],m:['Each gas has ONE specific test','CO₂ does NOT support combustion']},
+  'Metals':{f:['Reactivity: K>Na>Ca>Mg>Al>Zn>Fe>Cu>Au','Rusting: Fe + O₂ + H₂O → Fe₂O₃'],m:['Rusting needs BOTH oxygen AND water','Reactive metals displace less reactive ones']},
+  'Hydrocarbon and its Compounds':{f:['Alkanes: CₙH₂ₙ₊₂ (single bonds)','Alkenes: CₙH₂ₙ (double bond)','Methane CH₄, Ethane C₂H₆'],m:['Alkanes saturated, alkenes unsaturated','Alkene decolourises bromine water']},
+  'Materials Used in Daily Life':{f:['Saponification: Fat + NaOH → Soap + Glycerol','Concrete = Cement + Sand + Gravel + Water'],m:['Thermoplastics can be remelted','Soap forms scum in hard water']},
+  'Invertebrates':{f:['Complete metamorphosis: Egg→Larva→Pupa→Adult','Incomplete: Egg→Nymph→Adult','Insects: 3 parts 6 legs; Spiders: 2 parts 8 legs'],m:['Earthworms are Annelida not Arthropoda','Complete = 4 stages, incomplete = 3']},
+  'Human Nervous and Glandular Systems':{f:['Reflex arc: Stimulus→Receptor→Sensory→Spinal cord→Motor→Effector','CNS = Brain + Spinal cord'],m:['Reflex actions processed in spinal cord, not brain','Endocrine glands are DUCTLESS']},
+  'Blood Circulation in Human Body':{f:['BP = 120/80 mmHg','Body→RA→RV→Lungs→LA→LV→Body'],m:['Left ventricle has thickest walls','Arteries carry blood AWAY; veins TOWARDS the heart']},
+  'Chromosome and Sex Determination':{f:['Body cells: 46 (23 pairs)','Gametes: 23','Female XX, Male XY'],m:['Sex determined by the FATHER','Gametes have HALF the chromosomes']},
+  'Asexual and Sexual Reproduction':{f:['Asexual: 1 parent, identical','Sexual: 2 parents, varied','Binary fission: 1 cell→2'],m:['Asexual = identical offspring','Variation matters for evolution']},
+  'Artificial Vegetative Propagation':{f:['Cutting, Grafting, Layering, Budding','Grafting: Scion + Rootstock'],m:['Grafting combines TWO plants','No seeds used']},
+  'Heredity':{f:['Dominant over recessive','Homozygous AA/aa; Heterozygous Aa','Tt × Tt → 3:1'],m:['Dominant ≠ more common','Aa × Aa gives 3:1']},
+  'Environmental Pollution and Management':{f:['Greenhouse gases: CO₂, CH₄, N₂O, CFCs','Acid rain pH < 5.6'],m:['Enhanced greenhouse effect causes climate change','CFCs destroy ozone, not CO₂']},
+  'History of the Earth':{f:['Earth ≈ 4.6 billion years','Igneous, Sedimentary, Metamorphic'],m:['Sedimentary rocks contain fossils','Metamorphic = changed existing rocks']},
+  'Climate Change and Atmosphere':{f:['Troposphere→Stratosphere→Mesosphere→Thermosphere→Exosphere','Ozone in Stratosphere'],m:['Weather in TROPOSPHERE','Ozone depletion ≠ greenhouse effect']},
+  'The Earth in the Universe':{f:['8 planets Mercury→Neptune','Rotation = 24h (day/night)','Revolution = 365.25 days'],m:['Seasons from AXIAL TILT','Day/night from ROTATION']},
 };
-var DEMO_TIPS = {
-  'Sets':{f:['n(A∪B) = n(A) + n(B) − n(A∩B)','Neither = Total − n(A∪B)'],
-    m:['Always subtract the "both" group — students forget and double count','Draw a Venn diagram first']},
-  'Compound Interest':{f:['CA = P(1 + R/100)ᵀ','CI = CA − P'],
-    m:['CI is interest only — CA is the total amount','For half-yearly: divide rate by 2, double the periods']},
-};
+
+// Per-session cache of fetched questions, keyed by subject
+var QCACHE = {};
 
 var pracState = {subject:'maths', chapter:null, idx:0, got:0, qs:[]};
 
@@ -1022,33 +1069,66 @@ function practiceChapters(subjCode){
   var st=PRAC_STRUCT[subjCode]; if(!st) return;
   document.getElementById('pc-subj').textContent=st.label;
   document.getElementById('pr-subj').textContent=st.label;
+  // Render chapter cards (counts filled once questions are fetched)
   var html='';
   st.groups.forEach(function(g){
     html+='<div class="chap-grp"><div class="chap-grp-h"><span>'+g.icon+'</span><span class="chap-grp-nm">'+g.name+'</span><span class="chap-grp-line"></span></div><div class="chap-grid">';
     g.chapters.forEach(function(ch){
-      var cnt=(DEMO_QS[ch]||[]).length;
-      var ctTxt=cnt>0?cnt+'q':'soon';
-      html+='<button class="chap-card" onclick="practiceRun(\''+ch.replace(/'/g,"\\'")+'\')"><div><div class="chap-nm">'+ch+'</div><div class="chap-prog">Tap to practise</div></div><span class="chap-ct">'+ctTxt+'</span></button>';
+      var safe=ch.replace(/'/g,"\\'");
+      var idAttr='chapct-'+subjCode+'-'+ch.replace(/[^a-zA-Z0-9]/g,'_');
+      html+='<button class="chap-card" id="card-'+ch.replace(/[^a-zA-Z0-9]/g,'_')+'" onclick="practiceRun(\''+safe+'\')"><div><div class="chap-nm">'+ch+'</div><div class="chap-prog">Tap to practise</div></div><span class="chap-ct" id="'+idAttr+'">…</span></button>';
     });
     html+='</div></div>';
   });
   document.getElementById('chap-groups').innerHTML=html;
   practiceStep('prac-chapters');
+  // Step 2: fetch real question counts (cached per subject)
+  if(QCACHE[subjCode]) applyCounts(subjCode);
+  else fetchCounts(subjCode);
+}
+
+// Step 2: fetch all questions for a subject, group by chapter, show real counts
+function fetchCounts(subjCode){
+  fetch('/api/practice?action=get-all-questions&subject='+encodeURIComponent(subjCode))
+    .then(function(r){return r.json();})
+    .then(function(all){
+      if(!Array.isArray(all)) return;
+      var byChapter={};
+      all.forEach(function(q){
+        var ch=q.chapter_name; if(!ch) return;
+        if(!byChapter[ch]) byChapter[ch]=[];
+        byChapter[ch].push({q:q.question_text, a:q.answer_text, m:q.marks});
+      });
+      QCACHE[subjCode]=byChapter;
+      if(pracState.subject===subjCode) applyCounts(subjCode);
+    })
+    .catch(function(e){ console.error('count fetch failed', e); });
+}
+function applyCounts(subjCode){
+  var byChapter=QCACHE[subjCode]||{};
+  var st=PRAC_STRUCT[subjCode]; if(!st) return;
+  st.groups.forEach(function(g){
+    g.chapters.forEach(function(ch){
+      var el=document.getElementById('chapct-'+subjCode+'-'+ch.replace(/[^a-zA-Z0-9]/g,'_'));
+      if(!el) return;
+      var n=(byChapter[ch]||[]).length;
+      el.textContent = n>0 ? n+'q' : 'soon';
+      if(n===0){ el.style.opacity='.6'; }
+    });
+  });
 }
 
 function practiceRun(chapter){
   pracState.chapter=chapter;
   pracState.idx=0; pracState.got=0;
-  pracState.qs = DEMO_QS[chapter] || [];
   document.getElementById('pr-chap').textContent=chapter;
-  // tips
-  var tips=DEMO_TIPS[chapter];
+  // Step 4: real tips from CHAPTER_META
+  var tips=CHAPTER_META[chapter];
   var tipsWrap=document.getElementById('cp-tips');
-  if(tips){
-    var b='<div class="cp-tip-h" style="color:var(--blue)">📋 Key Formulas</div>';
-    tips.f.forEach(function(f){b+='<div class="cp-tip-f">'+f+'</div>';});
-    b+='<div class="cp-tip-h" style="color:#c25b2a">⚠️ Common Mistakes</div>';
-    tips.m.forEach(function(m){b+='<div class="cp-tip-m">'+m+'</div>';});
+  if(tips && ((tips.f&&tips.f.length)||(tips.m&&tips.m.length))){
+    var b='';
+    if(tips.f&&tips.f.length){ b+='<div class="cp-tip-h" style="color:var(--blue)">📋 Key Formulas</div>'; tips.f.forEach(function(f){b+='<div class="cp-tip-f">'+f+'</div>';}); }
+    if(tips.m&&tips.m.length){ b+='<div class="cp-tip-h" style="color:#c25b2a">⚠️ Common Mistakes</div>'; tips.m.forEach(function(m){b+='<div class="cp-tip-m">'+m+'</div>';}); }
     document.getElementById('cp-tips-body').innerHTML=b;
     document.getElementById('cp-tips-tog').classList.remove('open');
     document.getElementById('cp-tips-body').classList.remove('open');
@@ -1056,26 +1136,59 @@ function practiceRun(chapter){
   } else { tipsWrap.style.display='none'; }
   document.getElementById('cp-qblock').style.display='block';
   document.getElementById('cp-doneblock').style.display='none';
-  cpLoad();
   practiceStep('prac-run');
+
+  // Step 3: load real questions (from cache if present, else fetch this chapter)
+  var cached = QCACHE[pracState.subject] && QCACHE[pracState.subject][chapter];
+  if(cached && cached.length){ pracState.qs=cached; cpLoad(); return; }
+  // show loading
+  cpShowLoading();
+  fetch('/api/practice?action=get-questions&subject='+encodeURIComponent(pracState.subject)+'&chapter='+encodeURIComponent(chapter))
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(Array.isArray(data) && data.length){
+        pracState.qs=data.map(function(q){return {q:q.question_text, a:q.answer_text, m:q.marks};});
+        cpLoad();
+      } else {
+        cpShowEmpty();
+      }
+    })
+    .catch(function(){ cpShowError(); });
+}
+
+function cpShowLoading(){
+  document.getElementById('cp-qblock').innerHTML='<div class="cp-qcard"><div class="cp-qtext" style="color:var(--faint)">Loading questions…</div></div>';
+}
+function cpShowEmpty(){
+  document.getElementById('cp-qblock').innerHTML='<div class="cp-qcard"><div class="cp-qtext">📝 Questions coming soon for this chapter.</div><div style="color:var(--faint);font-size:14px;margin-top:8px">We\u2019re adding questions here. Check back soon.</div></div>';
+  document.getElementById('cp-tips').style.display='none';
+}
+function cpShowError(){
+  document.getElementById('cp-qblock').innerHTML='<div class="cp-qcard"><div class="cp-qtext">⚠️ Could not load questions.</div><div style="color:var(--faint);font-size:14px;margin-top:8px">Please check your connection and try again.</div></div>';
+  document.getElementById('cp-tips').style.display='none';
 }
 
 function cpLoad(){
+  // Rebuild the question card shell (it may have been replaced by loading/empty state)
+  var block=document.getElementById('cp-qblock');
+  block.innerHTML =
+    '<div class="cp-qcard">'+
+      '<div class="cp-qmeta"><span class="cp-qnum" id="cp-qnum">Q1</span><span class="cp-qmarks" id="cp-qmarks">2 marks</span></div>'+
+      '<div class="cp-qtext" id="cp-qtext"></div>'+
+      '<textarea class="cp-qans" id="cp-qans" placeholder="Write your answer here…&#10;&#10;Show your working — just like the real SEE exam."></textarea>'+
+      '<div class="cp-qact"><button class="cp-bskip" onclick="cpSkip()">⤼ Skip</button><button class="cp-bcheck" onclick="cpCheck()">Check answer →</button></div>'+
+    '</div>'+
+    '<div class="cp-model" id="cp-model" style="display:none"><div class="cp-model-t">✓ Model answer</div><div class="cp-model-b" id="cp-model-b"></div></div>'+
+    '<div class="cp-assess" id="cp-assess" style="display:none"><p>Did you get it right?</p><div class="cp-assess-btns"><button class="cp-bgot" onclick="cpGot()">✓ Yes, I got it!</button><button class="cp-bnext" onclick="cpNext()">Next →</button></div></div>';
+
   var qs=pracState.qs, i=pracState.idx;
-  if(!qs.length){
-    document.getElementById('cp-qblock').innerHTML='<div class="cp-qcard"><div class="cp-qtext">Questions coming soon for this chapter.</div></div>';
-    document.getElementById('cp-tips').style.display='none';
-    return;
-  }
+  if(!qs.length){ cpShowEmpty(); return; }
   var q=qs[i];
+  var marks=Number(q.m)||0;
   document.getElementById('cp-qnum').textContent='Q'+(i+1)+' of '+qs.length;
-  document.getElementById('cp-qmarks').textContent=q.m+(q.m>1?' marks':' mark');
-  document.getElementById('cp-qtext').textContent=q.q;
-  document.getElementById('cp-model-b').textContent=q.a;
-  document.getElementById('cp-qans').value='';
-  document.getElementById('cp-qans').disabled=false;
-  document.getElementById('cp-model').style.display='none';
-  document.getElementById('cp-assess').style.display='none';
+  document.getElementById('cp-qmarks').textContent=marks+(marks===1?' mark':' marks');
+  document.getElementById('cp-qtext').textContent=q.q||'';
+  document.getElementById('cp-model-b').textContent=q.a||'Model answer coming soon.';
   document.getElementById('cp-pfill').style.width=(i/qs.length*100)+'%';
   document.getElementById('cp-ptxt').textContent=i+' / '+qs.length;
   window.scrollTo(0,0);
@@ -1108,6 +1221,27 @@ function cpComplete(){
     '<div class="cp-done-acts"><button class="cp-bretry" onclick="practiceRun(pracState.chapter)">↻ Try again</button>'+
     '<button class="cp-bnextch" onclick="practiceStep(\'prac-chapters\')">Back to chapters →</button></div></div>';
   window.scrollTo(0,0);
+  // Step 5: save progress if logged in (same contract as live chapter-practice page)
+  saveProgress(pracState.subject, pracState.chapter, got, total);
+}
+
+// Step 5: save chapter progress (logged-in users only); silent on failure
+function saveProgress(subject, chapter, score, total){
+  var token = localStorage.getItem('ujyalo_token');
+  if(!token) return;
+  var group = findGroupForChapter(subject, chapter);
+  fetch('/api/practice?action=save-progress', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body:JSON.stringify({subject:subject, group_name:group, chapter_name:chapter, score:score, total:total})
+  }).catch(function(e){ console.error('progress save failed', e); });
+}
+function findGroupForChapter(subject, chapter){
+  var st=PRAC_STRUCT[subject]; if(!st) return '';
+  for(var i=0;i<st.groups.length;i++){
+    if(st.groups[i].chapters.indexOf(chapter)>=0) return st.groups[i].name;
+  }
+  return '';
 }
 function cpToggleTips(){
   document.getElementById('cp-tips-tog').classList.toggle('open');
