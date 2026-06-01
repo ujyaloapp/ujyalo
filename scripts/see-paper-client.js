@@ -13,18 +13,42 @@ var openSubId  = null;
 const isMobile = () => window.innerWidth < 768;
 
 // ── INIT ──
+// Reads paper params from the clean URL path first:
+//   /see/past-papers/<year>/<province>/<subject>
+// then falls back to the legacy query string:
+//   /see-paper.html?year=&province=&subject=
+function readPaperParams() {
+  var year, province, subject;
+  // Try clean path: /see/past-papers/:year/:province/:subject
+  var parts = window.location.pathname.split('/').filter(Boolean); // drop empty segments
+  var idx = parts.indexOf('past-papers');
+  if (idx >= 0 && parts.length >= idx + 4) {
+    year     = decodeURIComponent(parts[idx + 1]);
+    province = decodeURIComponent(parts[idx + 2]);
+    subject  = decodeURIComponent(parts[idx + 3]);
+  }
+  // Fallback: query string
+  if (!year || !province || !subject) {
+    var p = new URLSearchParams(window.location.search);
+    year     = year     || p.get('year');
+    province = province || p.get('province');
+    subject  = subject  || p.get('subject');
+  }
+  return { year: year, province: province, subject: subject };
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-  var p        = new URLSearchParams(window.location.search);
-  var year     = p.get('year');
-  var province = p.get('province');
-  var subject  = p.get('subject');
+  var params   = readPaperParams();
+  var year     = params.year;
+  var province = params.province;
+  var subject  = params.subject;
 
   if (!year || !province || !subject) {
     showError('Missing paper parameters. Please go back and select a paper.');
     return;
   }
 
-  fetch('/api/see-paper?year=' + year + '&province=' + province + '&subject=' + subject)
+  fetch('/api/see-paper?year=' + encodeURIComponent(year) + '&province=' + encodeURIComponent(province) + '&subject=' + encodeURIComponent(subject))
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.error) { showError(data.error); return; }

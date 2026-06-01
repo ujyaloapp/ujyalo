@@ -885,7 +885,11 @@ function provCards(avail, year, s){
 }
 
 function openPaper(code,year,province){
-  window.location.href = '/see-paper.html?year='+year+'&province='+province+'&subject='+code;
+  // Clean URL: /see/past-papers/<year>/<province>/<subject>
+  // Province lowercased to match the sitemap + canonical convention.
+  var prov = String(province||'').toLowerCase();
+  var subj = String(code||'').toLowerCase();
+  window.location.href = '/see/past-papers/'+encodeURIComponent(year)+'/'+encodeURIComponent(prov)+'/'+encodeURIComponent(subj);
 }
 
 function setYear(y,el){
