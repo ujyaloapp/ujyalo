@@ -12,159 +12,128 @@
   <link rel="canonical" href="https://ujyalo.app/contact.html" />
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,400;9..144,1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles/main.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    .page-dark-hero{position:relative;padding:100px 0 80px;background:#0a0f1e;overflow:hidden;text-align:center;}
-    .page-dark-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 40% 0%,rgba(29,158,117,.2) 0%,transparent 55%),radial-gradient(ellipse at 60% 100%,rgba(37,99,235,.15) 0%,transparent 55%);pointer-events:none;}
-    .page-dark-hero-inner{position:relative;z-index:2;max-width:680px;margin:0 auto;padding:0 24px;}
-    .page-dark-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(29,158,117,.15);border:1px solid rgba(29,158,117,.3);color:#6ee7b7;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:24px;}
-    .page-dark-title{font-family:'Fraunces',serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:700;line-height:1.1;color:white;letter-spacing:-.03em;margin-bottom:20px;}
-    .page-dark-title em{font-style:italic;background:linear-gradient(135deg,#34d399,#6ee7b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-    .page-dark-sub{font-size:17px;color:rgba(255,255,255,.5);line-height:1.7;max-width:480px;margin:0 auto;}
+    /* ===== Editorial Scholar — Contact (content only; nav/footer via components.js) ===== */
+    :root{--forest:#11302a;--forest2:#1c4a40;--moss:#3f7d6e;--brass:#c0913f;--brass-soft:#e7c986;--paper:#f4f0e6;--paper2:#ece6d6;--card:#fbf9f3;--ink:#1a2420;--muted:#5f6b64;--faint:#9aa49d;--line:#e0d9c8;--green:#15803d;}
+    .es *{margin:0;padding:0;box-sizing:border-box;}
+    .es{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--card);line-height:1.6;}
+    .es em{font-style:italic;} .es a{text-decoration:none;color:inherit;}
+    .wrap{max-width:1000px;margin:0 auto;padding:0 28px;}
 
-    /* Contact section */
-    .contact-section{padding:80px 0;background:white;}
-    .contact-inner{max-width:1000px;margin:0 auto;padding:0 24px;}
-    .contact-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:40px;align-items:start;}
+    .phero{position:relative;overflow:hidden;padding:66px 0 40px;text-align:center;background:radial-gradient(at 50% 0%,rgba(192,145,63,.1) 0,transparent 55%),var(--card);}
+    .phero::before{content:'✦';position:absolute;right:8%;top:46%;transform:translateY(-50%);font-family:'Fraunces';font-size:240px;color:rgba(17,48,42,.03);line-height:1;pointer-events:none;}
+    .phero .wrap{position:relative;}
+    .phero-label{display:inline-block;background:rgba(63,125,110,.1);color:var(--moss);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:16px;}
+    .phero h1{font-family:'Fraunces';font-weight:900;font-size:clamp(34px,5.5vw,54px);line-height:1.05;letter-spacing:-1.5px;color:var(--forest);margin-bottom:14px;}
+    .phero h1 em{color:var(--brass);}
+    .phero p{font-size:18px;color:var(--muted);max-width:480px;margin:0 auto;}
 
-    /* Info cards */
-    .contact-info{display:flex;flex-direction:column;gap:16px;}
-    .cic{background:white;border:1px solid #e2e8f0;border-radius:20px;padding:24px;display:flex;gap:16px;align-items:flex-start;transition:all .2s;}
-    .cic:hover{box-shadow:0 8px 24px rgba(0,0,0,.07);transform:translateY(-2px);}
-    .cic-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-    .cic-title{font-size:15px;font-weight:700;color:#0f172a;margin-bottom:4px;}
-    .cic-link{font-size:14px;color:#2563EB;font-weight:600;text-decoration:none;display:block;}
+    .contact-section{padding:50px 0 70px;}
+    .contact-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:32px;align-items:start;}
+    .contact-info{display:flex;flex-direction:column;gap:14px;}
+    .cic{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;gap:15px;align-items:flex-start;transition:all .2s;}
+    .cic:hover{box-shadow:0 10px 28px -14px rgba(17,48,42,.2);transform:translateY(-2px);border-color:var(--moss);}
+    .cic-icon{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--forest),var(--forest2));display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;}
+    .cic-title{font-family:'Fraunces';font-size:16px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+    .cic-link{font-size:14px;color:var(--moss);font-weight:600;display:block;}
     .cic-link:hover{text-decoration:underline;}
-    .cic-sub{font-size:12px;color:#94a3b8;margin-top:4px;}
+    .cic-sub{font-size:12px;color:var(--faint);margin-top:3px;}
+    .promise-card{background:linear-gradient(140deg,var(--forest),var(--forest2));border-radius:18px;padding:26px;margin-top:2px;position:relative;overflow:hidden;}
+    .promise-card::before{content:'';position:absolute;top:-50px;right:-50px;width:160px;height:160px;border-radius:50%;background:rgba(192,145,63,.12);}
+    .promise-title{font-family:'Fraunces';font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:16px;position:relative;}
+    .promise-list{display:flex;flex-direction:column;gap:10px;position:relative;}
+    .pl-item{font-size:13px;color:#cbd8d1;display:flex;gap:10px;align-items:flex-start;line-height:1.5;}
+    .pl-item::before{content:'✓';color:var(--brass-soft);font-weight:800;flex-shrink:0;}
 
-    .promise-card{background:#0a0f1e;border-radius:20px;padding:28px;margin-top:4px;}
-    .promise-title{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;color:white;margin-bottom:16px;}
-    .promise-list{display:flex;flex-direction:column;gap:10px;}
-    .pl-item{font-size:13px;color:rgba(255,255,255,.6);display:flex;gap:10px;align-items:flex-start;line-height:1.5;}
-    .pl-item::before{content:'✓';color:#34d399;font-weight:700;flex-shrink:0;}
-
-    /* Form card */
-    .contact-form-card{background:white;border:1px solid #e2e8f0;border-radius:24px;padding:36px;}
-    .cf-title{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:#0f172a;margin-bottom:6px;}
-    .cf-sub{font-size:14px;color:#64748b;margin-bottom:28px;}
-    .cf-field{margin-bottom:20px;}
-    .cf-label{display:block;font-size:13px;font-weight:700;color:#334155;margin-bottom:6px;}
-    .cf-required{color:#dc2626;margin-left:2px;}
-    .cf-input,.cf-select,.cf-textarea{width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;color:#0f172a;background:white;transition:border-color .2s;outline:none;}
-    .cf-input:focus,.cf-select:focus,.cf-textarea:focus{border-color:#2563EB;}
+    .contact-form-card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:36px;}
+    .cf-title{font-family:'Fraunces';font-size:1.5rem;font-weight:600;color:var(--forest);margin-bottom:6px;}
+    .cf-sub{font-size:14px;color:var(--muted);margin-bottom:26px;}
+    .cf-field{margin-bottom:18px;}
+    .cf-label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+    .cf-required{color:#b91c1c;margin-left:2px;}
+    .cf-input,.cf-select,.cf-textarea{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--ink);background:#fff;transition:border-color .2s;outline:none;}
+    .cf-input:focus,.cf-select:focus,.cf-textarea:focus{border-color:var(--moss);}
     .cf-textarea{min-height:120px;resize:vertical;}
-    .cf-note{font-size:11px;color:#94a3b8;margin-bottom:20px;}
+    .cf-note{font-size:11px;color:var(--faint);margin-bottom:18px;}
+    .cf-btn{display:block;width:100%;text-align:center;background:var(--forest);color:#fff;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;padding:15px;border-radius:12px;transition:opacity .15s;}
+    .cf-btn:hover{opacity:.9;}
     .cf-error{background:#fee2e2;border:1px solid #fecaca;border-radius:10px;padding:10px 14px;font-size:13px;color:#b91c1c;margin-bottom:16px;display:none;}
-    .cf-success{background:linear-gradient(135deg,#d1fae5,#a7f3d0);border:1px solid #6ee7b7;border-radius:16px;padding:32px;text-align:center;display:none;}
+    .cf-success{background:linear-gradient(135deg,rgba(63,125,110,.14),rgba(63,125,110,.06));border:1px solid var(--moss);border-radius:16px;padding:32px;text-align:center;display:none;}
     .cf-success-icon{font-size:48px;margin-bottom:12px;}
-    .cf-success-title{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:700;color:#065f46;margin-bottom:6px;}
-    .cf-success-sub{font-size:14px;color:#047857;line-height:1.6;}
+    .cf-success-title{font-family:'Fraunces';font-size:1.3rem;font-weight:600;color:var(--forest);margin-bottom:6px;}
+    .cf-success-sub{font-size:14px;color:var(--muted);line-height:1.6;}
 
-    @media(max-width:768px){.contact-grid{grid-template-columns:1fr;}.page-dark-hero{padding:72px 0 56px;}}
+    @media (max-width:760px){
+      .phero{padding:52px 0 30px;}
+      .contact-grid{grid-template-columns:1fr;}
+      .wrap{padding:0 18px;}
+      .contact-form-card{padding:28px;}
+    }
   </style>
 </head>
 <body>
 <div id="site-nav"></div>
 
-<!-- HERO -->
-<div class="page-dark-hero">
-  <div class="page-dark-hero-inner">
-    <div class="page-dark-badge">✉️ Contact</div>
-    <h1 class="page-dark-title">We would love to<br><em>hear from you.</em></h1>
-    <p class="page-dark-sub">Questions, feedback, school partnerships, or just saying hello — we are here.</p>
-  </div>
-</div>
+<div class="es">
 
-<!-- CONTACT -->
-<section class="contact-section">
-  <div class="contact-inner">
-    <div class="contact-grid">
+  <!-- HERO -->
+  <section class="phero"><div class="wrap">
+    <div class="phero-label">Contact</div>
+    <h1>We'd love to <em>hear from you.</em></h1>
+    <p>Questions, feedback, school partnerships, or just saying hello — we're here.</p>
+  </div></section>
 
-      <!-- Left: info -->
-      <div class="contact-info">
-        <div class="cic">
-          <div class="cic-icon" style="background:#EFF6FF">📧</div>
-          <div>
-            <div class="cic-title">Email us</div>
-            <a href="mailto:hello@ujyalo.app" class="cic-link">hello@ujyalo.app</a>
-            <div class="cic-sub">We reply within 24 hours</div>
-          </div>
-        </div>
-        <div class="cic">
-          <div class="cic-icon" style="background:#FEF3C7">🏫</div>
-          <div>
-            <div class="cic-title">School partnerships</div>
-            <a href="mailto:hello@ujyalo.app" class="cic-link">hello@ujyalo.app</a>
-            <div class="cic-sub">Demos, pilots, custom pricing</div>
-          </div>
-        </div>
-        <div class="cic">
-          <div class="cic-icon" style="background:#F0FDF4">🐛</div>
-          <div>
-            <div class="cic-title">Found a mistake?</div>
-            <a href="mailto:hello@ujyalo.app" class="cic-link">hello@ujyalo.app</a>
-            <div class="cic-sub">Wrong answer or question error</div>
-          </div>
-        </div>
+  <!-- CONTACT -->
+  <section class="contact-section"><div class="wrap"><div class="contact-grid">
 
-        <div class="promise-card">
-          <div class="promise-title">Our promise to you</div>
-          <div class="promise-list">
-            <div class="pl-item">We read every single message</div>
-            <div class="pl-item">A real person replies — not a bot</div>
-            <div class="pl-item">We reply within 24 hours</div>
-            <div class="pl-item">No question is too small</div>
-            <div class="pl-item">We act on feedback — fast</div>
-          </div>
+    <div class="contact-info">
+      <div class="cic"><div class="cic-icon">📧</div><div><div class="cic-title">Email us</div><a href="mailto:hello@ujyalo.app" class="cic-link">hello@ujyalo.app</a><div class="cic-sub">We reply within 24 hours</div></div></div>
+      <div class="cic"><div class="cic-icon">🏫</div><div><div class="cic-title">School partnerships</div><a href="mailto:hello@ujyalo.app" class="cic-link">hello@ujyalo.app</a><div class="cic-sub">Demos, pilots, getting set up</div></div></div>
+      <div class="cic"><div class="cic-icon">🐛</div><div><div class="cic-title">Found a mistake?</div><a href="mailto:hello@ujyalo.app" class="cic-link">hello@ujyalo.app</a><div class="cic-sub">Wrong answer or question error</div></div></div>
+      <div class="promise-card">
+        <div class="promise-title">Our promise to you</div>
+        <div class="promise-list">
+          <div class="pl-item">We read every single message</div>
+          <div class="pl-item">A real person replies — not a bot</div>
+          <div class="pl-item">We reply within 24 hours</div>
+          <div class="pl-item">No question is too small</div>
+          <div class="pl-item">We act on feedback — fast</div>
         </div>
       </div>
-
-      <!-- Right: form -->
-      <div class="contact-form-card">
-        <div id="cf-success" class="cf-success">
-          <div class="cf-success-icon">🙏</div>
-          <div class="cf-success-title">Thank you for reaching out!</div>
-          <div class="cf-success-sub">We will get back to you within 24 hours. The Ujyalo team reads every message personally.</div>
-        </div>
-
-        <div id="cf-form">
-          <div class="cf-title">Send us a message</div>
-          <div class="cf-sub">We will get back to you within 24 hours.</div>
-
-          <div id="cf-error" class="cf-error"></div>
-
-          <div class="cf-field">
-            <label class="cf-label">Your name <span class="cf-required">*</span></label>
-            <input type="text" class="cf-input" id="inp-name" placeholder="Rajan Thapa" />
-          </div>
-          <div class="cf-field">
-            <label class="cf-label">Email <span class="cf-required">*</span></label>
-            <input type="email" class="cf-input" id="inp-email" placeholder="rajan@email.com" />
-          </div>
-          <div class="cf-field">
-            <label class="cf-label">I am a... <span class="cf-required">*</span></label>
-            <select class="cf-select" id="inp-role">
-              <option value="Student">Student</option>
-              <option value="Parent">Parent</option>
-              <option value="Teacher">Teacher</option>
-              <option value="School representative">School representative</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div class="cf-field">
-            <label class="cf-label">Message <span class="cf-required">*</span></label>
-            <textarea class="cf-textarea" id="inp-msg" placeholder="Your message here..."></textarea>
-          </div>
-          <p class="cf-note"><span class="cf-required">*</span> Required fields</p>
-          <button class="btn btn-primary btn-block" id="cf-btn" onclick="submitForm()">Send message →</button>
-        </div>
-      </div>
-
     </div>
-  </div>
-</section>
+
+    <div class="contact-form-card">
+      <div id="cf-success" class="cf-success">
+        <div class="cf-success-icon">🙏</div>
+        <div class="cf-success-title">Thank you for reaching out!</div>
+        <div class="cf-success-sub">We will get back to you within 24 hours. The ujyalo team reads every message personally.</div>
+      </div>
+      <div id="cf-form">
+        <div class="cf-title">Send us a message</div>
+        <div class="cf-sub">We will get back to you within 24 hours.</div>
+        <div id="cf-error" class="cf-error"></div>
+        <div class="cf-field"><label class="cf-label">Your name <span class="cf-required">*</span></label><input type="text" class="cf-input" id="inp-name" placeholder="Rajan Thapa" /></div>
+        <div class="cf-field"><label class="cf-label">Email <span class="cf-required">*</span></label><input type="email" class="cf-input" id="inp-email" placeholder="rajan@email.com" /></div>
+        <div class="cf-field"><label class="cf-label">I am a... <span class="cf-required">*</span></label>
+          <select class="cf-select" id="inp-role">
+            <option value="Student">Student</option>
+            <option value="Parent">Parent</option>
+            <option value="Teacher">Teacher</option>
+            <option value="School representative">School representative</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="cf-field"><label class="cf-label">Message <span class="cf-required">*</span></label><textarea class="cf-textarea" id="inp-msg" placeholder="Your message here..."></textarea></div>
+        <p class="cf-note"><span class="cf-required">*</span> Required fields</p>
+        <button class="cf-btn" id="cf-btn" onclick="submitForm()">Send message →</button>
+      </div>
+    </div>
+
+  </div></div></section>
+
+</div>
 
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>

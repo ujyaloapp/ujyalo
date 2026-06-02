@@ -5,41 +5,60 @@
 <title>Log in — Ujyalo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  .required { color: #B91C1C; margin-left: 2px; }
+  /* ===== Editorial Scholar — Login (auth form + scripts unchanged) ===== */
+  :root{--forest:#11302a;--forest2:#1c4a40;--moss:#3f7d6e;--brass:#c0913f;--brass-soft:#e7c986;--paper:#f4f0e6;--card:#fbf9f3;--ink:#1a2420;--muted:#5f6b64;--faint:#9aa49d;--line:#e0d9c8;}
+  .es *{margin:0;padding:0;box-sizing:border-box;}
+  .es{font-family:'Outfit',sans-serif;color:var(--ink);}
+  .es em{font-style:italic;} .es a{text-decoration:none;}
+  .auth-bg{position:relative;overflow:hidden;padding:70px 20px 90px;min-height:70vh;display:flex;align-items:flex-start;justify-content:center;
+    background:radial-gradient(at 25% 0%,rgba(192,145,63,.12) 0,transparent 50%),radial-gradient(at 80% 20%,rgba(63,125,110,.10) 0,transparent 55%),var(--paper);}
+  .auth-bg::before{content:'उ';position:absolute;right:-2%;bottom:-60px;font-family:'Fraunces';font-weight:900;font-size:300px;color:rgba(17,48,42,.04);line-height:1;pointer-events:none;}
+  .auth-card{position:relative;width:100%;max-width:430px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:38px 34px;box-shadow:0 24px 60px -28px rgba(17,48,42,.3);overflow:hidden;}
+  .auth-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--forest),var(--brass));}
+  .auth-h{font-family:'Fraunces';font-weight:600;font-size:24px;color:var(--forest);margin-bottom:6px;}
+  .auth-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
+  .auth-err{background:#fee2e2;border:1px solid #fecaca;border-radius:10px;padding:11px 14px;margin-bottom:16px;font-size:14px;color:#b91c1c;}
+  .auth-field{margin-bottom:16px;}
+  .auth-label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+  .required{color:#b91c1c;margin-left:2px;}
+  .auth-input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:11px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--ink);background:#fff;outline:none;transition:border-color .2s;}
+  .auth-input:focus{border-color:var(--moss);}
+  .auth-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+  .auth-link{font-size:12px;color:var(--moss);font-weight:600;}
+  .auth-btn{display:block;width:100%;text-align:center;background:var(--forest);color:#fff;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;padding:14px;border-radius:11px;margin-top:6px;transition:opacity .15s;}
+  .auth-btn:hover{opacity:.9;}
+  .auth-foot{text-align:center;font-size:13px;color:var(--muted);margin-top:22px;}
+  .auth-foot a{color:var(--moss);font-weight:600;}
+  .hidden{display:none !important;}
 </style>
 </head>
 <body>
 <div id="site-nav"></div>
-<div style="padding:60px 0 80px;background:var(--ink-50);">
-  <div class="container-tiny animate-up">
-    <div class="card" style="padding:32px;">
-      <h3 class="font-display" style="font-size:22px;font-weight:600;margin-bottom:6px;">Welcome back 👋</h3>
-      <p class="text-muted mb-6" style="font-size:14px;">Log in to continue your practice.</p>
-      <!-- Error message -->
-      <div id="error-msg" class="hidden" style="background:#FEE2E2;border:1px solid #FECACA;border-radius:var(--radius-md);padding:12px 16px;margin-bottom:16px;font-size:14px;color:#B91C1C;"></div>
-      <div class="field">
-        <label>Email <span class="required">*</span></label>
-        <input type="email" class="input" id="input-email" placeholder="rajan@example.com">
-      </div>
-      <div class="field">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <label style="margin-bottom:0;">Password <span class="required">*</span></label>
-          <a href="/forgot-password.html" style="font-size:12px;color:var(--brand);font-weight:500;">Forgot password?</a>
-        </div>
-        <input type="password" class="input" id="input-password" placeholder="Your password">
-      </div>
-      <button class="btn btn-blue btn-block" id="submit-btn" onclick="submitLogin()">
-        Log in →
-      </button>
-      <p class="text-muted text-center mt-6" style="font-size:13px;">
-        Don't have an account? <a href="/signup.html" style="color:var(--brand);font-weight:600;">Sign up free →</a>
-      </p>
+
+<div class="es"><div class="auth-bg">
+  <div class="auth-card">
+    <h1 class="auth-h">Welcome back 👋</h1>
+    <p class="auth-sub">Log in to continue your practice.</p>
+    <div id="error-msg" class="auth-err hidden"></div>
+    <div class="auth-field">
+      <label class="auth-label">Email <span class="required">*</span></label>
+      <input type="email" class="auth-input" id="input-email" placeholder="rajan@example.com">
     </div>
+    <div class="auth-field">
+      <div class="auth-row">
+        <label class="auth-label" style="margin-bottom:0;">Password <span class="required">*</span></label>
+        <a href="/forgot-password.html" class="auth-link">Forgot password?</a>
+      </div>
+      <input type="password" class="auth-input" id="input-password" placeholder="Your password">
+    </div>
+    <button class="auth-btn" id="submit-btn" onclick="submitLogin()">Log in →</button>
+    <p class="auth-foot">Don't have an account? <a href="/signup.html">Sign up free →</a></p>
   </div>
-</div>
+</div></div>
+
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
 <script>
