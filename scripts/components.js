@@ -1,7 +1,8 @@
 /* ============================================================
    UJYALO — components.js
    Global nav + footer injected on every page.
-   Design system: Fraunces + DM Sans, --navy #0d1b3e, --blue #1a6fff
+   Design system: Fraunces + Outfit, Editorial Scholar palette
+   (forest --navy #11302a, brass --orange #c0913f)
    ============================================================ */
 
 const ANNOUNCEMENT = `
@@ -117,30 +118,34 @@ const FOOTER = `
 const GLOBAL_STYLES = `
 <style>
 :root {
-  --navy:  #0d1b3e;
-  --navy2: #162550;
-  --blue:  #1a6fff;
-  --teal:  #38c9b0;
-  --orange:#f59c1a;
-  --green: #22c55e;
-  --ink:   #0f1923;
-  --muted: #5c6a80;
-  --faint: #94a3b8;
-  --line:  #e8edf5;
-  --bg:    #f3f5fb;
-  --card:  #ffffff;
+  --navy:  #11302A;   /* forest green (was #0d1b3e) */
+  --navy2: #1C4A40;   /* lighter forest */
+  --blue:  #1A6FC4;   /* subject-blue, kept for Maths accent */
+  --teal:  #3F7D6E;   /* moss */
+  --orange:#C0913F;   /* brass */
+  --green: #15803D;
+  --ink:   #1A2420;
+  --muted: #5F6B64;
+  --faint: #9AA49D;
+  --line:  #E0D9C8;
+  --bg:    #F4F0E6;   /* parchment */
+  --card:  #FBF9F3;   /* warm card */
   /* Legacy aliases so existing index/main.css still works */
-  --brand: #1a6fff;
-  --brand-light: #e8f0ff;
-  --ink-900: #0f1923;
-  --ink-700: #2d3a4a;
-  --ink-500: #5c6a80;
-  --ink-400: #94a3b8;
-  --ink-100: #e8edf5;
-  --ink-50:  #f3f5fb;
+  --brand: #11302A;
+  --brand-light: #DCE6E1;
+  --ink-900: #1A2420;
+  --ink-700: #2B3A33;
+  --ink-500: #5F6B64;
+  --ink-400: #9AA49D;
+  --ink-100: #ECE6D6;
+  --ink-50:  #F4F0E6;
+  /* extra brand tokens */
+  --brass: #C0913F;
+  --brass-soft: #E7C986;
+  --forest: #11302A;
 }
 
-/* DM Sans applied only to ujyalo nav/footer components, not globally */
+/* Outfit applied to ujyalo nav/footer components */
 
 /* ── ANNOUNCEMENT BAR ── */
 .ujyalo-announce {
@@ -149,11 +154,11 @@ const GLOBAL_STYLES = `
   text-align: center;
   font-size: 13px;
   font-weight: 600;
-  color: #fff;
+  color: #2A2110;
   letter-spacing: .15px;
 }
 .ujyalo-announce a {
-  color: #fff;
+  color: #2A2110;
   text-decoration: underline;
   margin-left: 4px;
 }
@@ -168,9 +173,9 @@ const GLOBAL_STYLES = `
   letter-spacing: -.5px;
   flex-shrink: 0;
 }
-.ujyalo-logo span { color: var(--blue); }
+.ujyalo-logo span { color: var(--orange); }
 .ujyalo-logo-white { color: #fff; }
-.ujyalo-logo-white span { color: var(--teal); }
+.ujyalo-logo-white span { color: var(--brass-soft); }
 
 /* ── NAV ── */
 .ujyalo-nav {
@@ -205,9 +210,9 @@ const GLOBAL_STYLES = `
 }
 .ujyalo-nav-links a:hover { color: var(--ink); }
 .ujyalo-nav-links a.active {
-  color: var(--blue);
+  color: var(--navy);
   font-weight: 700;
-  border-bottom: 2px solid var(--blue);
+  border-bottom: 2px solid var(--orange);
 }
 .ujyalo-nav-actions {
   display: flex;
@@ -240,8 +245,8 @@ const GLOBAL_STYLES = `
 .ujyalo-streak {
   font-size: 13px;
   font-weight: 700;
-  color: var(--orange);
-  background: rgba(245,156,26,.1);
+  color: #7A5A1A;
+  background: rgba(192,145,63,.12);
   padding: 5px 10px;
   border-radius: 99px;
 }
@@ -249,7 +254,7 @@ const GLOBAL_STYLES = `
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--blue);
+  background: var(--navy);
   color: #fff;
   display: flex;
   align-items: center;
@@ -298,7 +303,7 @@ const GLOBAL_STYLES = `
   background: var(--card);
   border-top: 1px solid var(--line);
   padding: 10px 20px 18px;
-  box-shadow: 0 8px 24px rgba(10,22,40,.08);
+  box-shadow: 0 8px 24px rgba(17,48,42,.08);
 }
 .ujyalo-mobile-menu.open { display: flex; }
 .ujyalo-mobile-menu a {
@@ -310,8 +315,8 @@ const GLOBAL_STYLES = `
   text-decoration: none;
   border-radius: 8px;
 }
-.ujyalo-mobile-menu a:hover { background: var(--bg); color: var(--blue); }
-.ujyalo-mobile-menu a.active { color: var(--blue); font-weight: 700; }
+.ujyalo-mobile-menu a:hover { background: var(--bg); color: var(--navy); }
+.ujyalo-mobile-menu a.active { color: var(--navy); font-weight: 700; }
 .ujyalo-mobile-divider { height: 1px; background: var(--line); margin: 6px 0; }
 .ujyalo-mobile-login { color: var(--muted) !important; }
 .ujyalo-mobile-signup {
@@ -326,7 +331,7 @@ const GLOBAL_STYLES = `
   display: block;
   text-decoration: none;
 }
-.ujyalo-mobile-signup:hover { background: var(--blue) !important; }
+.ujyalo-mobile-signup:hover { background: var(--navy2) !important; }
 
 @media (max-width: 768px) {
   .ujyalo-hamburger { display: flex; }
@@ -360,7 +365,7 @@ const GLOBAL_STYLES = `
 .ujyalo-footer-col h4 {
   font-size: 12px;
   font-weight: 700;
-  color: rgba(255,255,255,.35);
+  color: var(--brass-soft);
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 14px;
@@ -403,7 +408,7 @@ const GLOBAL_STYLES = `
   padding: 10px 16px;
   border-radius: 99px;
   text-decoration: none;
-  box-shadow: 0 4px 16px rgba(13,27,62,.3);
+  box-shadow: 0 4px 16px rgba(17,48,42,.3);
   z-index: 200;
   transition: opacity .15s;
 }
