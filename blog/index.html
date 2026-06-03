@@ -42,7 +42,7 @@
     .blog-feat-art{background:rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-weight:900;font-size:130px;color:rgba(231,201,134,.16);}
 
     /* Grid of posts */
-    .blog-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+    .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
     .blog-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px;transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;flex-direction:column;}
     .blog-card:hover{transform:translateY(-3px);box-shadow:0 18px 40px -18px rgba(17,48,42,.24);border-color:var(--moss);}
     .blog-tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--moss);background:rgba(63,125,110,.12);padding:4px 11px;border-radius:99px;margin-bottom:14px;align-self:flex-start;}
@@ -51,6 +51,7 @@
     .blog-meta{font-size:12px;color:var(--faint);}
     .blog-meta .read-more{color:var(--moss);font-weight:600;margin-left:8px;}
 
+    @media (max-width:900px){ .blog-grid{grid-template-columns:repeat(2,1fr);} }
     @media (max-width:760px){
       .blog-hero{padding:52px 0 24px;}
       .blog-feat{grid-template-columns:1fr;}
@@ -85,23 +86,70 @@
       <div class="blog-feat-art">✦</div>
     </a>
 
-    <!-- GRID OF OLDER POSTS -->
+    <!-- GRID OF POSTS  (placeholders — all link to the sample post for now) -->
     <div class="blog-grid">
-
-      <!-- ===== COPY THIS CARD FOR EACH NEW POST =====
-      <a class="blog-card" href="/blog/YOUR-POST-SLUG.html">
-        <span class="blog-tag">Category</span>
-        <h3>Your post title goes here</h3>
-        <p>A one or two sentence summary that makes someone want to read it.</p>
-        <div class="blog-meta">4 min read <span class="read-more">Read →</span></div>
-      </a>
-      ============================================ -->
 
       <a class="blog-card" href="/blog/how-to-use-see-past-papers.html">
         <span class="blog-tag">Study tips</span>
-        <h3>How to use SEE past papers to actually improve</h3>
-        <p>Reading past papers isn't studying. Here's how to turn them into real marks.</p>
+        <h3>5 study habits that actually work for SEE</h3>
+        <p>Forget pulling all-nighters. These five small habits beat last-minute cramming every time.</p>
+        <div class="blog-meta">4 min read <span class="read-more">Read →</span></div>
+      </a>
+
+      <a class="blog-card" href="/blog/how-to-use-see-past-papers.html">
+        <span class="blog-tag">Maths</span>
+        <h3>SEE Maths: the chapters that come up every year</h3>
+        <p>Where to spend your time when it's running out — the topics examiners love to repeat.</p>
+        <div class="blog-meta">6 min read <span class="read-more">Read →</span></div>
+      </a>
+
+      <a class="blog-card" href="/blog/how-to-use-see-past-papers.html">
+        <span class="blog-tag">Science</span>
+        <h3>How to revise Science when you're short on time</h3>
+        <p>A focused plan for the chapters that matter most, even with only a few weeks to go.</p>
         <div class="blog-meta">5 min read <span class="read-more">Read →</span></div>
+      </a>
+
+      <a class="blog-card" href="/blog/how-to-use-see-past-papers.html">
+        <span class="blog-tag">Wellbeing</span>
+        <h3>Beating exam-day nerves: a simple plan</h3>
+        <p>Calm hands, clear head. Practical ways to settle your nerves before and during the exam.</p>
+        <div class="blog-meta">4 min read <span class="read-more">Read →</span></div>
+      </a>
+
+      <a class="blog-card" href="/blog/how-to-use-see-past-papers.html">
+        <span class="blog-tag">Planning</span>
+        <h3>A 30-day SEE revision timetable you'll actually follow</h3>
+        <p>A realistic day-by-day plan for the final month — built around real life, not a fantasy schedule.</p>
+        <div class="blog-meta">7 min read <span class="read-more">Read →</span></div>
+      </a>
+
+      <a class="blog-card" href="/blog/how-to-use-see-past-papers.html">
+        <span class="blog-tag">Bilingual</span>
+        <h3>Study in Nepali or English? Why not both</h3>
+        <p>How switching between both languages can actually deepen your understanding for the exam.</p>
+        <div class="blog-meta">3 min read <span class="read-more">Read →</span></div>
+      </a>
+
+      <a class="blog-card" href="/blog/how-to-use-see-past-papers.html">
+        <span class="blog-tag">For parents</span>
+        <h3>How to support your child through SEE</h3>
+        <p>What actually helps — and what to avoid — when your child is preparing for the big exam.</p>
+        <div class="blog-meta">5 min read <span class="read-more">Read →</span></div>
+      </a>
+
+      <a class="blog-card" href="/blog/how-to-use-see-past-papers.html">
+        <span class="blog-tag">Maths</span>
+        <h3>Common mistakes that cost easy marks in SEE Maths</h3>
+        <p>Small slips — missing units, skipped steps — quietly lose marks. Here's how to stop them.</p>
+        <div class="blog-meta">5 min read <span class="read-more">Read →</span></div>
+      </a>
+
+      <a class="blog-card" href="/blog/how-to-use-see-past-papers.html">
+        <span class="blog-tag">Study tips</span>
+        <h3>Why model answers help you learn faster</h3>
+        <p>Seeing how a top answer is built teaches method — not just the final number. Here's how to use them.</p>
+        <div class="blog-meta">4 min read <span class="read-more">Read →</span></div>
       </a>
 
     </div>
