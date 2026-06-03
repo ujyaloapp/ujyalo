@@ -95,6 +95,7 @@ const FOOTER = `
       <h4>Company</h4>
       <ul>
         <li><a href="/about.html">About us</a></li>
+        <li><a href="/blog">Blog</a></li>
         <li><a href="/contact.html">Contact</a></li>
         <li><a href="/faq.html">FAQ</a></li>
       </ul>
