@@ -858,7 +858,12 @@ function renderPapers(){
 function provCards(avail, year, s){
   const map={};
   avail.forEach(p=>{map[p.province]=p;});
-  return PROVINCES.map(p=>{
+  const ordered = PROVINCES.slice().sort((a,b)=>{
+    const av = map[a.name]?1:0, bv = map[b.name]?1:0;
+    if (av !== bv) return bv - av;   // provinces with a paper come first
+    return a.num - b.num;            // otherwise keep fixed Koshi -> Sudurpashchim order
+  });
+  return ordered.map(p=>{
     const paper = map[p.name];
     const live = !!paper;
     const prog = getProgress(`${s.code}-${year}-${p.name.toLowerCase()}`);
