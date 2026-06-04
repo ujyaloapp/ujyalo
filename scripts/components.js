@@ -166,9 +166,9 @@ const GLOBAL_STYLES = `
 
 /* ── LOGO ── */
 .ujyalo-logo {
-  font-family: 'Fraunces', serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 26px;
-  font-weight: 900;
+  font-weight: 700;
   color: var(--navy);
   text-decoration: none;
   letter-spacing: -.5px;
