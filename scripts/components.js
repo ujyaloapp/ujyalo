@@ -12,7 +12,7 @@ const ANNOUNCEMENT = `
 </div>`;
 
 /* ── Text logo — sharp, scalable, consistent ── */
-const LOGO_HTML = `<a href="/index.html" class="ujyalo-logo">ujy<span>a</span>lo</a>`;
+const LOGO_HTML = `<a href="/index.html" class="ujyalo-logo"><img src="/mark-dark.png" class="ujyalo-logo-mark" alt=""/>ujy<span>a</span>lo</a>`;
 
 /* ── Public nav ── */
 const NAV_PUBLIC = `
@@ -79,7 +79,7 @@ const FOOTER = `
 <footer class="ujyalo-footer">
   <div class="ujyalo-footer-inner">
     <div class="ujyalo-footer-brand">
-      <a href="/index.html" class="ujyalo-logo ujyalo-logo-white">ujy<span>a</span>lo</a>
+      <a href="/index.html" class="ujyalo-logo ujyalo-logo-white"><img src="/mark.png" class="ujyalo-logo-mark" alt=""/>ujy<span>a</span>lo</a>
       <p>AI-powered exam preparation made with care, in Nepal. Helping students brighten their future, one question at a time.</p>
     </div>
     <div class="ujyalo-footer-col">
@@ -173,7 +173,11 @@ const GLOBAL_STYLES = `
   text-decoration: none;
   letter-spacing: -.5px;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
+.ujyalo-logo-mark { height: 34px; width: auto; display: block; }
 .ujyalo-logo span { color: var(--orange); }
 .ujyalo-logo-white { color: #fff; }
 .ujyalo-logo-white span { color: var(--brass-soft); }
