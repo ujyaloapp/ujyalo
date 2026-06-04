@@ -119,6 +119,17 @@ function computeChapters() {
     g._chapterLabel = topicCount[topic] === 1 ? topic : (topic + ' ' + topicCount[topic]);
     g._chapterTopic = topic;
   });
+
+  // Always show the "Other" (no-topic) group LAST. Both the top chapter bar and
+  // the sidebar read this same CHAPTERS order, so this one move fixes both.
+  // All real topics keep their existing paper order; only "Other" is pushed down.
+  var otherIdx = -1;
+  for (var k = 0; k < CHAPTERS.length; k++) {
+    if (CHAPTERS[k].topic === 'Other') { otherIdx = k; break; }
+  }
+  if (otherIdx > -1) {
+    CHAPTERS.push(CHAPTERS.splice(otherIdx, 1)[0]);
+  }
 }
 
 // Reads the topic of a question group (parent first, then first sub-part)
