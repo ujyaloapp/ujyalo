@@ -12,7 +12,7 @@ const ANNOUNCEMENT = `
 </div>`;
 
 /* ── Text logo — sharp, scalable, consistent ── */
-const LOGO_HTML = `<a href="/index.html" class="ujyalo-logo"><img src="/mark-dark.png" class="ujyalo-logo-mark" alt=""/>ujy<span>a</span>lo</a>`;
+const LOGO_HTML = `<a href="/index.html" class="ujyalo-logo"><img src="/mark-dark.png" class="ujyalo-logo-mark" alt=""/><span class="ujyalo-logo-text">ujy<span class="ujyalo-logo-a">a</span>lo</span></a>`;
 
 /* ── Public nav ── */
 const NAV_PUBLIC = `
@@ -79,7 +79,7 @@ const FOOTER = `
 <footer class="ujyalo-footer">
   <div class="ujyalo-footer-inner">
     <div class="ujyalo-footer-brand">
-      <a href="/index.html" class="ujyalo-logo ujyalo-logo-white"><img src="/mark.png" class="ujyalo-logo-mark" alt=""/>ujy<span>a</span>lo</a>
+      <a href="/index.html" class="ujyalo-logo ujyalo-logo-white"><img src="/mark.png" class="ujyalo-logo-mark" alt=""/><span class="ujyalo-logo-text">ujy<span class="ujyalo-logo-a">a</span>lo</span></a>
       <p>AI-powered exam preparation made with care, in Nepal. Helping students brighten their future, one question at a time.</p>
     </div>
     <div class="ujyalo-footer-col">
@@ -178,9 +178,9 @@ const GLOBAL_STYLES = `
   gap: 8px;
 }
 .ujyalo-logo-mark { height: 34px; width: auto; display: block; }
-.ujyalo-logo span { color: var(--orange); }
+.ujyalo-logo-a { color: var(--orange); }
 .ujyalo-logo-white { color: #fff; }
-.ujyalo-logo-white span { color: var(--brass-soft); }
+.ujyalo-logo-white .ujyalo-logo-a { color: var(--brass-soft); }
 
 /* ── NAV ── */
 .ujyalo-nav {
@@ -473,6 +473,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Inject global styles + fonts
   document.head.insertAdjacentHTML('beforeend', GLOBAL_STYLES);
+
+  // Fonts: load once so the wordmark + headings look the same on every page
+  if (!document.querySelector('link[href*="Fraunces"]')) {
+    const font = document.createElement('link');
+    font.rel = 'stylesheet';
+    font.href = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,700&family=Outfit:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap';
+    document.head.appendChild(font);
+  }
 
   // Favicon
   if (!document.querySelector('link[rel="icon"]')) {
