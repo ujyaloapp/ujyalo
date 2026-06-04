@@ -474,9 +474,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // Inject global styles + fonts
   document.head.insertAdjacentHTML('beforeend', GLOBAL_STYLES);
 
-  // Fonts: load once so the wordmark + headings look the same on every page
-  if (!document.querySelector('link[href*="Fraunces"]')) {
+  // Fonts: ALWAYS load the canonical Fraunces (+Outfit/DM Sans) so the wordmark and
+  // headings render identically on every page. Pages ship their own *partial* Fraunces
+  // links (different weights — some miss 900), so we load the full set here to override
+  // them, rather than skipping when any Fraunces link exists.
+  if (!document.getElementById('ujyalo-fonts')) {
     const font = document.createElement('link');
+    font.id = 'ujyalo-fonts';
     font.rel = 'stylesheet';
     font.href = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,700&family=Outfit:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap';
     document.head.appendChild(font);
