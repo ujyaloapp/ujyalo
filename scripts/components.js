@@ -486,11 +486,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.head.appendChild(font);
   }
 
-  // Favicon
+  // Favicon + app icons (full set). The .ico is also auto-fetched from the site root
+  // by every browser, so the tab icon shows even before this script runs.
   if (!document.querySelector('link[rel="icon"]')) {
-    const fav = document.createElement('link');
-    fav.rel = 'icon'; fav.type = 'image/svg+xml'; fav.href = '/favicon.svg';
-    document.head.appendChild(fav);
+    document.head.insertAdjacentHTML('beforeend',
+      '<link rel="icon" href="/favicon.ico" sizes="any">' +
+      '<link rel="icon" type="image/svg+xml" href="/favicon.svg">' +
+      '<link rel="apple-touch-icon" href="/apple-touch-icon.png">' +
+      '<link rel="manifest" href="/site.webmanifest">');
   }
 
   // Nav
