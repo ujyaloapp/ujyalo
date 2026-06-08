@@ -45,7 +45,7 @@ const NAV_PUBLIC = `
 </nav>`;
 
 /* ── App nav (logged in) ── */
-function buildAppNav(firstName, initials) {
+function buildAppNav(firstName, initials, fullName, email) {
   return `
 <nav class="ujyalo-nav">
   <div class="ujyalo-nav-inner">
@@ -53,12 +53,20 @@ function buildAppNav(firstName, initials) {
     <div class="ujyalo-nav-links" id="nav-links">
       <a href="/dashboard.html">Dashboard</a>
       <a href="/see.html">SEE</a>
-      <a href="/progress.html">Progress</a>
     </div>
     <div class="ujyalo-nav-actions" id="nav-actions">
       <span class="ujyalo-streak">🔥 <span id="nav-streak">0</span></span>
-      <div class="ujyalo-avatar">${initials}</div>
-      <button onclick="ujyaloLogout()" class="ujyalo-logout-btn">Log out</button>
+      <div class="ujyalo-avwrap">
+        <button class="ujyalo-avatar" id="ujyalo-avatar-btn" onclick="ujyaloToggleMenu(event)" aria-label="Account menu">${initials}</button>
+        <div class="ujyalo-avmenu" id="ujyalo-avmenu">
+          <div class="ujyalo-avmenu-head">
+            <div class="ujyalo-avmenu-name">${fullName}</div>
+            <div class="ujyalo-avmenu-email">${email}</div>
+          </div>
+          <a href="/profile.html" class="ujyalo-avmenu-item">✎&nbsp; Edit profile</a>
+          <button onclick="ujyaloLogout()" class="ujyalo-avmenu-item danger">⇥&nbsp; Log out</button>
+        </div>
+      </div>
     </div>
     <button class="ujyalo-hamburger" id="nav-hamburger" aria-label="Open menu" onclick="toggleMobileNav()">
       <span></span><span></span><span></span>
@@ -67,8 +75,8 @@ function buildAppNav(firstName, initials) {
   <div class="ujyalo-mobile-menu" id="nav-mobile-menu">
     <a href="/dashboard.html">Dashboard</a>
     <a href="/see.html">SEE</a>
-    <a href="/progress.html">Progress</a>
     <div class="ujyalo-mobile-divider"></div>
+    <a href="/profile.html">Edit profile</a>
     <button onclick="ujyaloLogout()" class="ujyalo-mobile-signup" style="border:none;cursor:pointer;font-family:inherit;">Log out</button>
   </div>
 </nav>`;
@@ -275,6 +283,17 @@ const GLOBAL_STYLES = `
   cursor: pointer;
   font-weight: 500;
 }
+.ujyalo-avatar { cursor: pointer; border: 1px solid transparent; }
+.ujyalo-avatar:hover { border-color: var(--brass-soft); }
+.ujyalo-avwrap { position: relative; }
+.ujyalo-avmenu { position:absolute; top:42px; right:0; background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:0 10px 30px rgba(26,36,32,.16); padding:7px; min-width:212px; display:none; z-index:120; }
+.ujyalo-avmenu.open { display:block; }
+.ujyalo-avmenu-head { padding:10px 12px 11px; border-bottom:1px solid var(--line); margin-bottom:5px; }
+.ujyalo-avmenu-name { font-weight:700; font-size:14px; color:var(--ink); }
+.ujyalo-avmenu-email { font-size:12px; color:var(--muted); margin-top:1px; word-break:break-all; }
+.ujyalo-avmenu-item { display:flex; align-items:center; gap:8px; padding:11px 12px; border-radius:10px; font-size:14px; font-weight:500; color:var(--ink); cursor:pointer; width:100%; text-align:left; background:none; border:none; font-family:inherit; text-decoration:none; }
+.ujyalo-avmenu-item:hover { background:var(--bg); }
+.ujyalo-avmenu-item.danger { color:#B5532E; }
 
 /* ── HAMBURGER ── */
 .ujyalo-hamburger {
@@ -433,6 +452,9 @@ function toggleMobileNav() {
 }
 
 document.addEventListener('click', function(e) {
+  const avm = document.getElementById('ujyalo-avmenu');
+  const avb = document.getElementById('ujyalo-avatar-btn');
+  if (avm && avm.classList.contains('open') && !avm.contains(e.target) && (!avb || !avb.contains(e.target))) avm.classList.remove('open');
   const menu = document.getElementById('nav-mobile-menu');
   const btn  = document.getElementById('nav-hamburger');
   if (!menu || !btn) return;
@@ -441,6 +463,12 @@ document.addEventListener('click', function(e) {
     btn.classList.remove('open');
   }
 });
+
+function ujyaloToggleMenu(e){
+  if(e) e.stopPropagation();
+  const m = document.getElementById('ujyalo-avmenu');
+  if(m) m.classList.toggle('open');
+}
 
 function ujyaloLogout() {
   localStorage.removeItem('ujyalo_token');
@@ -504,7 +532,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (user && token) {
       const firstName = user.full_name ? user.full_name.split(' ')[0] : user.email.split('@')[0];
       const initials  = firstName.charAt(0).toUpperCase();
-      navEl.innerHTML = buildAppNav(firstName, initials);
+      navEl.innerHTML = buildAppNav(firstName, initials, user.full_name || firstName, user.email || '');
     } else {
       navEl.innerHTML = ANNOUNCEMENT + NAV_PUBLIC;
     }
