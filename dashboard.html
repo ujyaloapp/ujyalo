@@ -3,21 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
 <title>Dashboard — Ujyalo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.css">
 <style>
 .db-page { background: var(--ink-50); min-height: 100vh; padding: 40px 0 60px; }
-.db-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: clamp(1.6rem, 3vw, 2rem); font-weight: 800; letter-spacing: -1.5px; color: var(--ink-900); margin-bottom: 4px; }
+.db-title { font-family: 'Outfit', sans-serif; font-size: clamp(1.6rem, 3vw, 2rem); font-weight: 800; letter-spacing: -1.5px; color: var(--ink-900); margin-bottom: 4px; }
 .db-title em { font-style: italic; color: var(--brand); }
 .db-readiness { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); border-radius: 18px; padding: 24px 28px; display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
-.db-readiness-score { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 3rem; font-weight: 800; color: white; line-height: 1; letter-spacing: -2px; }
+.db-readiness-score { font-family: 'Outfit', sans-serif; font-size: 3rem; font-weight: 800; color: white; line-height: 1; letter-spacing: -2px; }
 .db-readiness-score span { font-size: 1.4rem; font-weight: 400; opacity: 0.7; }
 .db-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
 .db-stat { background: white; border: 1px solid var(--ink-100); border-radius: 14px; padding: 18px; }
-.db-stat-num { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; color: var(--ink-900); line-height: 1; margin-bottom: 4px; }
+.db-stat-num { font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; color: var(--ink-900); line-height: 1; margin-bottom: 4px; }
 .db-stat-num.blue { color: var(--brand); }
 .db-stat-num.green { color: var(--green); }
 .db-stat-num.amber { color: #854F0B; }
@@ -98,7 +99,7 @@
         <div class="db-mission-label">Today's mission</div>
         <div class="db-mission-title" id="mission-title">Loading…</div>
         <div class="db-mission-sub" id="mission-sub"></div>
-        <a href="/chapter-practice.html" class="db-mission-btn" id="mission-btn">Start now →</a>
+        <a href="/see.html#practice" class="db-mission-btn" id="mission-btn">Start now →</a>
       </div>
       <div class="db-heatmap">
         <div class="db-heatmap-label">This week</div>
@@ -116,14 +117,14 @@
     <!-- Practice modes -->
     <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-400);margin-bottom:12px;">What's available</div>
     <div class="db-modes">
-      <a href="/chapter-practice.html" class="db-mode live">
+      <a href="/see.html#practice" class="db-mode live">
         <div class="db-mode-icon" style="background:var(--green-light);">📚</div>
-        <div><div class="db-mode-title">Chapter practice <span class="db-badge-live">✓ Live</span></div><div class="db-mode-sub">Maths (17 chapters) and Science (23 chapters) available now.</div></div>
+        <div><div class="db-mode-title">Chapter practice <span class="db-badge-live">✓ Live</span></div><div class="db-mode-sub" id="practice-mode-sub">Loading chapters…</div></div>
       </a>
-      <div class="db-mode" style="opacity:0.6;cursor:default;">
+      <a href="/see.html" class="db-mode live">
         <div class="db-mode-icon" style="background:var(--sun-light);">📜</div>
-        <div><div class="db-mode-title">Past papers <span class="db-badge-soon">Coming soon</span></div><div class="db-mode-sub">Real SEE past papers from previous years. Being prepared now.</div></div>
-      </div>
+        <div><div class="db-mode-title">Past papers <span class="db-badge-live">✓ Live</span></div><div class="db-mode-sub">Real SEE past papers with model answers — browse by subject, year and province.</div></div>
+      </a>
       <div class="db-mode" style="opacity:0.6;cursor:default;">
         <div class="db-mode-icon" style="background:var(--brand-light);">⏱️</div>
         <div><div class="db-mode-title">Mock tests <span class="db-badge-soon">Coming soon</span></div><div class="db-mode-sub">Full timed exam experience under real conditions.</div></div>
@@ -162,9 +163,12 @@ const $ = id => document.getElementById(id);
 const MATHS_CHAPTERS   = ['Sets','Tax and Money Exchange','Compound Interest','Population Growth & Depreciation','Plane Surface (Area)','Cylinder and Sphere','Prism and Pyramid','HCF and LCM','Radical and Surd','Indices','Algebraic Fractions','Equations','Area of Triangles & Quadrilaterals','Circle Theorems','Trigonometry','Statistics','Probability'];
 const SCIENCE_CHAPTERS = ['Force','Pressure','Energy','Heat','Light','Current Electricity and Magnetism','Classification of Elements','Chemical Reaction','Acid, Base and Salt','Some Gases','Metals','Hydrocarbon and its Compounds','Materials Used in Daily Life','Invertebrates','Human Nervous and Glandular Systems','Blood Circulation in Human Body','Chromosome and Sex Determination','Asexual and Sexual Reproduction','Artificial Vegetative Propagation','Heredity','Environmental Pollution and Management','History of the Earth','Climate Change and Atmosphere','The Earth in the Universe'];
 const TOTAL_CHAPTERS   = MATHS_CHAPTERS.length + SCIENCE_CHAPTERS.length;
+const _pms = $('practice-mode-sub');
+if (_pms) _pms.textContent = 'Maths (' + MATHS_CHAPTERS.length + ' chapters) and Science (' + SCIENCE_CHAPTERS.length + ' chapters) available now.';
 
 if (user) {
-  const firstName = user.full_name ? user.full_name.split(' ')[0] : user.email.split('@')[0];
+  let firstName = user.full_name ? user.full_name.split(' ')[0] : user.email.split('@')[0];
+  firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
   const hour = new Date().getHours();
   $('greeting').textContent = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   $('user-name').textContent = firstName + '.';
@@ -270,17 +274,17 @@ function renderMission(bestList) {
   if (weak) {
     $('mission-title').textContent = 'Improve ' + weak.chapter_name;
     $('mission-sub').textContent = 'You scored ' + weak.pct + '% last time. A little more practice here will lift your overall score.';
-    $('mission-btn').href = '/chapter-practice.html?subject=' + weak.subject;
+    $('mission-btn').href = '/see.html#practice';
     $('mission-btn').textContent = 'Practice ' + weak.chapter_name + ' →';
   } else if (notStarted) {
     $('mission-title').textContent = 'Start ' + notStarted.chapter;
     $('mission-sub').textContent = 'You haven\'t tried this chapter yet. Add it to your completed chapters today.';
-    $('mission-btn').href = '/chapter-practice.html?subject=' + notStarted.subject;
+    $('mission-btn').href = '/see.html#practice';
     $('mission-btn').textContent = 'Start ' + notStarted.chapter + ' →';
   } else {
     $('mission-title').textContent = 'Keep the streak going!';
     $('mission-sub').textContent = 'You\'ve covered every chapter. Go back and improve your weakest scores.';
-    $('mission-btn').href = '/chapter-practice.html';
+    $('mission-btn').href = '/see.html#practice';
     $('mission-btn').textContent = 'Keep practising →';
   }
 }

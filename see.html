@@ -769,6 +769,10 @@ const S = {subj:'maths', year:'all', data:null};
   // Papers is the default view, so the subject tabs are visible on load.
   syncMobileChrome('papers');
   await loadPapers();
+  // Deep-link support: /see.html#practice (also #saved, #papers) opens that view on load
+  var _deep=(location.hash||'').replace('#','');
+  var _navMap={papers:'nav-papers',practice:'nav-practice',saved:'nav-saved'};
+  if(_deep && _navMap[_deep]){ showView(_deep, document.getElementById(_navMap[_deep])); }
 })();
 
 // ─── PAPERS API ──────────────────────────────────────────────────────────────
