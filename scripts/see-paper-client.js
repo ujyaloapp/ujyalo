@@ -700,6 +700,30 @@ function setConf(qNum, val, btnsEl) {
 
   celebrate(val);
   updateProgress();
+  logPaperAttempt(qNum, val);
+}
+
+// ── LOG PAPER ATTEMPT (logged-in only; writes to the shared attempt_events log) ──
+function logPaperAttempt(qNum, val) {
+  var token = localStorage.getItem('ujyalo_token');
+  if (!token || !DATA) return;
+  var g = DATA.groups.find(function(x) { return x.num === qNum; });
+  if (!g) return;
+  var qid = (g.parent && g.parent.id) ? g.parent.id : (g.subs && g.subs[0] ? g.subs[0].id : null);
+  var resultMap = { got: 'got_it', almost: 'almost', missed: 'missed' };
+  fetch('/api/practice?action=log-event', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body: JSON.stringify({
+      mode:            'past_paper',
+      question_id:     qid || null,
+      paper_id:        (DATA.paper && DATA.paper.id) ? DATA.paper.id : null,
+      subject:         DATA.subject ? DATA.subject.code : null,
+      topic:           groupTopic(g) || null,
+      result:          resultMap[val] || val,
+      revealed_answer: true
+    })
+  }).catch(function(e) { console.error('paper event log failed', e); });
 }
 
 // ── CELEBRATION TOAST ──

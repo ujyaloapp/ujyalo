@@ -78,6 +78,7 @@ export default async function handler(req, res) {
       .map(([num, g]) => ({
         num: parseInt(num),
         parent: g.parent ? {
+          id:                   g.parent.id,
           en:                   g.parent.question_text_english || '',
           np:                   g.parent.question_text_nepali  || '',
           answer:               g.parent.answer_text           || '',
@@ -99,6 +100,7 @@ export default async function handler(req, res) {
           error_rate:           g.parent.error_rate            || null,
         } : null,
         subs: g.subs.map(s => ({
+          id:                   s.id,
           sub:                  s.sub_part,
           en:                   s.question_text_english || '',
           np:                   s.question_text_nepali  || '',
@@ -123,6 +125,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       paper: {
+        id:     papers[0].id,
         year:   papers[0].year,
         province: papers[0].province,
         marks:  papers[0].total_marks || 75,
