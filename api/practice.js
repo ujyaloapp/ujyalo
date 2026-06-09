@@ -106,6 +106,47 @@ export default async function handler(req, res) {
     }
   }
 
+  // ── Get a user's attempt events for the dashboard (GET) ──
+  if (req.method === 'GET' && action === 'get-events') {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const token = authHeader.replace('Bearer ', '');
+
+    try {
+      const userRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'apikey': process.env.SUPABASE_ANON_KEY,
+        }
+      });
+
+      if (!userRes.ok) return res.status(401).json({ error: 'Invalid token.' });
+
+      const userData = await userRes.json();
+
+      const dbRes = await fetch(
+        `${process.env.SUPABASE_URL}/rest/v1/attempt_events?user_id=eq.${userData.id}&select=mode,subject,chapter_name,topic,question_id,paper_id,result,created_at&order=created_at.desc&limit=5000`,
+        {
+          headers: {
+            'apikey': process.env.SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${token}`,
+          }
+        }
+      );
+
+      if (!dbRes.ok) throw new Error(await dbRes.text());
+
+      const events = await dbRes.json();
+      return res.status(200).json(events);
+
+    } catch (error) {
+      console.error('Get events error:', error);
+      return res.status(500).json({ error: 'Failed to load events.' });
+    }
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
