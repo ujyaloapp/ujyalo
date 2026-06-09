@@ -125,6 +125,10 @@
   .db .hero-stats{gap:22px}
   .db .map{grid-template-columns:repeat(auto-fill,minmax(46%,1fr))}
 }
+.db .rev{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;border:1px solid var(--ink-200);border-radius:12px;background:var(--card);margin-bottom:9px;transition:.15s}
+.db .rev:hover{border-color:var(--brand);transform:translateY(-1px);box-shadow:var(--sh)}
+.db .revn{font-weight:600;font-size:14px;color:var(--ink-900)}
+.db .revc{font-size:12.5px;color:var(--red);font-weight:600;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -145,14 +149,14 @@
           <circle id="ring-fill" cx="66" cy="66" r="58" fill="none" stroke="#C0913F" stroke-width="11" stroke-linecap="round"
                   stroke-dasharray="364.4" stroke-dashoffset="364.4" style="transition:stroke-dashoffset 1s cubic-bezier(.16,1,.3,1)"/>
         </svg>
-        <div class="mid"><div class="pct" id="ring-pct">—</div><div class="cap">of syllabus</div></div>
+        <div class="mid"><div class="pct" id="ring-pct">—</div><div class="cap">got it</div></div>
       </div>
     </div>
     <div class="hero-stats">
-      <div class="hstat"><div class="n" id="st-acc">—</div><div class="l">Accuracy</div></div>
-      <div class="hstat"><div class="n" id="st-qweek">—</div><div class="l">Questions this week</div></div>
+      <div class="hstat"><div class="n" id="st-acc">—</div><div class="l">Questions practised</div></div>
+      <div class="hstat"><div class="n" id="st-qweek">—</div><div class="l">This week</div></div>
       <div class="hstat"><div class="n" id="st-streak">—</div><div class="l">Day streak</div></div>
-      <div class="hstat"><div class="n" id="st-chap">—</div><div class="l">Chapters done</div></div>
+      <div class="hstat"><div class="n" id="st-chap">—</div><div class="l">Topics touched</div></div>
     </div>
   </section>
 
@@ -169,7 +173,7 @@
       <div class="entries">
         <a class="entry" href="/see.html#practice">
           <span class="ic" style="background:var(--brand-50)">📖</span>
-          <span><span class="et">Chapter practice <span class="live">Live</span></span><span class="es" id="entry-prac">Maths and Science chapters</span></span>
+          <span><span class="et">Chapter practice <span class="live">Live</span></span><span class="es" id="entry-prac">Practise by chapter and topic</span></span>
         </a>
         <a class="entry" href="/see.html">
           <span class="ic" style="background:var(--sun-50)">📄</span>
@@ -198,7 +202,7 @@
   <!-- STRONG / WEAK -->
   <section class="sw fade s4">
     <div class="card">
-      <h3>✓ Strong chapters</h3>
+      <h3>✓ Strong topics</h3>
       <div id="strong"></div>
     </div>
     <div class="card">
@@ -207,20 +211,11 @@
     </div>
   </section>
 
-  <!-- CHAPTER MAP -->
-  <div class="eyebrow fade s5">Every chapter</div>
+  <!-- REVIEW THESE -->
+  <div class="eyebrow fade s5">Review these</div>
   <section class="card fade s5" style="margin-bottom:30px">
-    <div class="maphead">
-      <div class="legend">
-        <span><i class="dot" style="background:var(--brand)"></i> Strong (75%+)</span>
-        <span><i class="dot" style="background:var(--sun-soft)"></i> Needs work</span>
-        <span><i class="dot" style="background:var(--ink-200);border:1px dashed var(--ink-300)"></i> Not started</span>
-      </div>
-    </div>
-    <div class="subhead">Compulsory Maths <span class="ct" id="m-ct"></span></div>
-    <div class="map" id="map-maths"></div>
-    <div class="subhead">Compulsory Science <span class="ct" id="s-ct"></span></div>
-    <div class="map" id="map-science"></div>
+    <div class="csub" style="margin-bottom:14px">Questions you marked “Almost” or “Missed it” — worth another look.</div>
+    <div id="review"></div>
   </section>
 
   <!-- RECENT -->
@@ -241,10 +236,16 @@ if (!user || !token) window.location.href = '/login.html';
 const $ = id => document.getElementById(id);
 const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 
-const MATHS   = ['Sets','Tax and Money Exchange','Compound Interest','Population Growth & Depreciation','Plane Surface (Area)','Cylinder and Sphere','Prism and Pyramid','HCF and LCM','Radical and Surd','Indices','Algebraic Fractions','Equations','Area of Triangles & Quadrilaterals','Circle Theorems','Trigonometry','Statistics','Probability'];
-const SCIENCE = ['Force','Pressure','Energy','Heat','Light','Current Electricity and Magnetism','Classification of Elements','Chemical Reaction','Acid, Base and Salt','Some Gases','Metals','Hydrocarbon and its Compounds','Materials Used in Daily Life','Invertebrates','Human Nervous and Glandular Systems','Blood Circulation in Human Body','Chromosome and Sex Determination','Asexual and Sexual Reproduction','Artificial Vegetative Propagation','Heredity','Environmental Pollution and Management','History of the Earth','Climate Change and Atmosphere','The Earth in the Universe'];
-const TOTAL = MATHS.length + SCIENCE.length;
+const SUBJECTS = {
+  maths:   '🧮 Compulsory Maths',
+  science: '🔬 Compulsory Science',
+  english: '📕 Compulsory English',
+  nepali:  '📗 Nepali',
+  social:  '🌏 Social Studies',
+  hpe:     '❤️ Health & Physical Ed'
+};
 const RING_C = 2 * Math.PI * 58;
+const GOT = 'got_it';
 
 if (user) {
   const firstName = cap(user.full_name ? user.full_name.split(' ')[0] : user.email.split('@')[0]);
@@ -252,17 +253,7 @@ if (user) {
   $('greeting').textContent = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   $('uname').textContent = firstName + '.';
 }
-$('entry-prac').textContent = 'Maths (' + MATHS.length + ') and Science (' + SCIENCE.length + ') chapters';
 
-function pctOf(a){ return (a.pct != null) ? a.pct : (a.total ? Math.round(a.score / a.total * 100) : 0); }
-
-function calcStreak(attempts){
-  if(!attempts.length) return 0;
-  const days = new Set(attempts.map(a => new Date(a.completed_at).toDateString()));
-  let streak = 0; const d = new Date();
-  while(days.has(d.toDateString())){ streak++; d.setDate(d.getDate()-1); }
-  return streak;
-}
 function relTime(ts){
   const diff = (Date.now() - new Date(ts).getTime());
   const m = Math.round(diff/60000), h = Math.round(diff/3600000), dd = Math.floor(diff/86400000);
@@ -273,27 +264,12 @@ function relTime(ts){
   return dd + ' days ago';
 }
 
-async function load(){
-  try{
-    const res = await fetch('/api/practice?action=get-progress', { headers:{ 'Authorization':'Bearer ' + token } });
-    if(!res.ok) throw new Error();
-    const attempts = await res.json();
-    if(!attempts || !attempts.length) return renderEmpty();
-    render(attempts);
-  }catch(e){ renderEmpty(); }
+function calcStreak(days){
+  let streak = 0; const d = new Date();
+  while(days.has(d.toDateString())){ streak++; d.setDate(d.getDate()-1); }
+  return streak;
 }
 
-function tile(name, scores){
-  const s = scores[name];
-  let cls='todo', mk='Not started';
-  if(s != null){ cls = s>=75?'strong':'weak'; mk = s + '%'; }
-  return '<div class="tile '+cls+'"><div class="nm">'+name+'</div><div class="mk">'+mk+'</div></div>';
-}
-function renderMap(arr, mapId, ctId, scores){
-  $(mapId).innerHTML = arr.map(n => tile(n, scores)).join('');
-  const done = arr.filter(n => scores[n] != null).length;
-  $(ctId).textContent = done + ' of ' + arr.length + ' started';
-}
 function renderWeek(practiced){
   const names=['M','T','W','T','F','S','S'];
   const now=new Date(); const todayIdx=(now.getDay()+6)%7; let count=0; let html='';
@@ -306,83 +282,126 @@ function renderWeek(practiced){
   $('week-note').textContent = count===7 ? 'Perfect week — all 7 days! 🔥' : count===0 ? 'No practice yet this week — start today.' : count + ' of 7 days practised this week.';
 }
 
-function render(attempts){
-  const best = {};
-  attempts.forEach(a => { const p = pctOf(a); if(!best[a.chapter_name] || p > best[a.chapter_name].pct) best[a.chapter_name] = {...a, pct:p}; });
-  const bestList = Object.values(best);
-  const scores = {}; bestList.forEach(a => scores[a.chapter_name] = a.pct);
+// Keep only the latest rating per question (events arrive newest-first).
+// Rows with no question_id (rare, old test rows) are counted individually.
+function latestPerQuestion(events){
+  const seen = {}; const out = [];
+  events.forEach((e,i) => {
+    const key = e.question_id || ('_' + i);
+    if (seen[key]) return;
+    seen[key] = true;
+    out.push(e);
+  });
+  return out;
+}
 
-  const totalChapters = bestList.length;
-  const totalScore = bestList.reduce((s,a)=>s+a.score,0);
-  const totalQs    = bestList.reduce((s,a)=>s+a.total,0);
-  const accuracy   = totalQs ? Math.round(totalScore/totalQs*100) : 0;
+function nameOf(e){
+  return e.topic || e.chapter_name || (SUBJECTS[e.subject] ? SUBJECTS[e.subject].replace(/^\S+\s/, '') : (e.subject ? cap(e.subject) : 'Question'));
+}
+
+async function load(){
+  try{
+    const res = await fetch('/api/practice?action=get-events', { headers:{ 'Authorization':'Bearer ' + token } });
+    if(!res.ok) throw new Error();
+    const events = await res.json();
+    if(!events || !events.length) return renderEmpty();
+    render(events);
+  }catch(e){ renderEmpty(); }
+}
+
+function render(events){
+  const latest  = latestPerQuestion(events);
+  const totalQs = latest.length;
+  const gotCount = latest.filter(e=>e.result===GOT).length;
+  const gotPct = totalQs ? Math.round(gotCount/totalQs*100) : 0;
+
+  const topicSet = new Set(latest.map(e=>e.topic).filter(Boolean));
+  const days = new Set(events.map(e=>new Date(e.created_at).toDateString()));
+  const streak = calcStreak(days);
   const weekAgo = Date.now() - 7*864e5;
-  const qsWeek = attempts.filter(a=>new Date(a.completed_at).getTime()>=weekAgo).reduce((s,a)=>s+a.total,0);
-  const streak = calcStreak(attempts);
-  const syllabus = Math.round(totalChapters/TOTAL*100);
+  const qWeek = latest.filter(e=>new Date(e.created_at).getTime()>=weekAgo).length;
 
   // hero
-  $('hero-sub').innerHTML = "You've covered <b>"+totalChapters+" of "+TOTAL+" chapters</b>. Keep a steady pace and you'll have the whole syllabus practised well before exams.";
-  $('ring-pct').textContent = syllabus + '%';
-  $('ring-fill').setAttribute('stroke-dashoffset', (RING_C*(1-syllabus/100)).toFixed(1));
-  $('st-acc').innerHTML = accuracy + '<span class="u">%</span>';
-  $('st-qweek').textContent = qsWeek;
+  $('hero-sub').innerHTML = "You've practised <b>"+totalQs+" question"+(totalQs!==1?'s':'')+"</b> so far and got <b>"+gotPct+"%</b> of them right by your own marking. Every question you rate sharpens this picture.";
+  $('ring-pct').textContent = gotPct + '%';
+  $('ring-fill').setAttribute('stroke-dashoffset', (RING_C*(1-gotPct/100)).toFixed(1));
+  $('st-acc').textContent = totalQs;
+  $('st-qweek').textContent = qWeek;
   $('st-streak').innerHTML = streak + '<span class="u"> 🔥</span>';
-  $('st-chap').innerHTML = totalChapters + '<span class="u">/'+TOTAL+'</span>';
+  $('st-chap').textContent = topicSet.size;
+
+  // per-topic stats
+  const topicStats = {};
+  latest.forEach(e=>{
+    const t = e.topic; if(!t) return;
+    if(!topicStats[t]) topicStats[t] = {topic:t, subject:e.subject, total:0, got:0};
+    topicStats[t].total++; if(e.result===GOT) topicStats[t].got++;
+  });
+  const topicList = Object.values(topicStats).map(t=>({topic:t.topic, subject:t.subject, total:t.total, pct:Math.round(t.got/t.total*100)}));
 
   // mission
-  const weakest = bestList.filter(a=>a.pct<70).sort((a,b)=>a.pct-b.pct)[0];
-  const done = new Set(bestList.map(a=>a.chapter_name));
-  let next=null;
-  for(const c of MATHS){ if(!done.has(c)){ next={c,subj:'maths'}; break; } }
-  if(!next) for(const c of SCIENCE){ if(!done.has(c)){ next={c,subj:'science'}; break; } }
+  const weakest = topicList.filter(t=>t.pct<70).sort((a,b)=>a.pct-b.pct)[0];
   if(weakest){
-    $('mission-title').textContent = 'Improve ' + weakest.chapter_name;
-    $('mission-sub').textContent = 'You scored ' + weakest.pct + '% here last time — your lowest. A short session now lifts your overall score the fastest.';
-    $('mission-btn').textContent = 'Practice ' + weakest.chapter_name + ' →';
-  } else if(next){
-    $('mission-title').textContent = 'Start ' + next.c;
-    $('mission-sub').textContent = "You haven't tried this chapter yet. Add it to your covered chapters today.";
-    $('mission-btn').textContent = 'Start ' + next.c + ' →';
+    $('mission-title').textContent = 'Revisit ' + weakest.topic;
+    $('mission-sub').textContent = "You're getting "+weakest.pct+"% here — your lowest so far. A short session lifts your overall the fastest.";
+    $('mission-btn').textContent = 'Practise ' + weakest.topic + ' →';
+  } else if(topicList.length){
+    $('mission-title').textContent = 'Strong across the board';
+    $('mission-sub').textContent = "You're at 70%+ on everything you've practised. Add a new topic, or test yourself on a past paper.";
+    $('mission-btn').textContent = 'Practise more →';
   } else {
-    $('mission-title').textContent = 'Keep the streak going!';
-    $('mission-sub').textContent = "You've covered every chapter — go back and lift your weakest scores.";
-    $('mission-btn').textContent = 'Keep practising →';
+    $('mission-title').textContent = 'Practise your first question';
+    $('mission-sub').textContent = 'Pick a chapter and answer one question — your progress starts filling in here.';
+    $('mission-btn').textContent = 'Start practising →';
   }
 
-  // subjects
-  const subjCfg = [['maths','🧮 Compulsory Maths',MATHS.length],['science','🔬 Compulsory Science',SCIENCE.length]];
-  $('subjects').innerHTML = subjCfg.map(([code,label,tot])=>{
-    const rows = bestList.filter(a=>a.subject===code);
-    const ch = rows.length;
-    const sScore = rows.reduce((s,a)=>s+a.score,0), sTot = rows.reduce((s,a)=>s+a.total,0);
-    const acc = sTot ? Math.round(sScore/sTot*100) : 0;
-    const comp = Math.round(ch/tot*100);
-    const right = ch>0 ? (ch+'/'+tot+' chapters · '+acc+'% accuracy') : 'Not started yet';
-    return '<div class="subj"><div class="subj-top"><span class="nm">'+label+'</span><span class="vs">'+right+'</span></div><div class="bar"><div class="fill" style="width:'+comp+'%"></div></div></div>';
-  }).join('');
+  // subjects (only practised)
+  const subjStats = {};
+  latest.forEach(e=>{
+    const c = e.subject; if(!c) return;
+    if(!subjStats[c]) subjStats[c] = {code:c, total:0, got:0};
+    subjStats[c].total++; if(e.result===GOT) subjStats[c].got++;
+  });
+  const subjList = Object.values(subjStats).sort((a,b)=>b.total-a.total);
+  $('subjects').innerHTML = subjList.length ? subjList.map(s=>{
+    const pct = Math.round(s.got/s.total*100);
+    const lbl = SUBJECTS[s.code] || cap(s.code);
+    const right = s.total + ' question' + (s.total!==1?'s':'') + ' · ' + pct + '% got it';
+    return '<div class="subj"><div class="subj-top"><span class="nm">'+lbl+'</span><span class="vs">'+right+'</span></div><div class="bar"><div class="fill" style="width:'+pct+'%"></div></div></div>';
+  }).join('') : '<div class="empty-mini">Practise a few questions to see your subjects here.</div>';
 
-  // strong / weak
-  const strong = bestList.filter(a=>a.pct>=75).sort((a,b)=>b.pct-a.pct).slice(0,3);
-  const weak   = bestList.filter(a=>a.pct<75).sort((a,b)=>a.pct-b.pct).slice(0,3);
+  // strong / weak topics
+  const strong = topicList.filter(t=>t.pct>=75).sort((a,b)=>b.pct-a.pct).slice(0,4);
+  const weak   = topicList.filter(t=>t.pct<75).sort((a,b)=>a.pct-b.pct).slice(0,4);
   $('strong').innerHTML = strong.length
-    ? '<div class="chiprow">'+strong.map(a=>'<div class="chip good"><span>'+a.chapter_name+'</span><span class="sc">'+a.pct+'%</span></div>').join('')+'</div>'
-    : '<div class="empty-mini">Score 75%+ on a chapter and it shows up here.</div>';
+    ? '<div class="chiprow">'+strong.map(t=>'<div class="chip good"><span>'+t.topic+'</span><span class="sc">'+t.pct+'%</span></div>').join('')+'</div>'
+    : '<div class="empty-mini">Get 75%+ on a topic and it shows up here.</div>';
   $('weak').innerHTML = weak.length
-    ? '<div class="chiprow">'+weak.map(a=>'<div class="chip bad"><span>'+a.chapter_name+'</span><span class="sc">'+a.pct+'%</span></div>').join('')+'</div>'
+    ? '<div class="chiprow">'+weak.map(t=>'<div class="chip bad"><span>'+t.topic+'</span><span class="sc">'+t.pct+'%</span></div>').join('')+'</div>'
     : '<div class="empty-mini">Nothing below 75% — nice work!</div>';
 
-  // chapter map
-  renderMap(MATHS,'map-maths','m-ct',scores);
-  renderMap(SCIENCE,'map-science','s-ct',scores);
+  // review these (missed/skipped), grouped by topic/chapter
+  const reviewMap = {};
+  latest.forEach(e=>{
+    if(e.result!=='missed' && e.result!=='skipped') return;
+    const key = nameOf(e);
+    if(!reviewMap[key]) reviewMap[key] = {name:key, count:0};
+    reviewMap[key].count++;
+  });
+  const review = Object.values(reviewMap).sort((a,b)=>b.count-a.count);
+  $('review').innerHTML = review.length
+    ? review.map(r=>'<a class="rev" href="/see.html#practice"><span class="revn">'+r.name+'</span><span class="revc">'+r.count+' to review →</span></a>').join('')
+    : '<div class="empty-mini">Nothing flagged. Mark a question “Almost” or “Missed it” and it lands here for another look.</div>';
 
   // week + recent
-  renderWeek(new Set(attempts.map(a=>new Date(a.completed_at).toDateString())));
-  const recent = attempts.slice().sort((a,b)=>new Date(b.completed_at)-new Date(a.completed_at)).slice(0,6);
-  $('recent').innerHTML = recent.map(a=>{
-    const p = pctOf(a);
-    const c = p>=75?'var(--green)':p>=60?'var(--sun)':'var(--red)';
-    return '<div class="rec"><div class="rl"><span class="rd" style="background:'+c+'"></span><span class="rn">'+a.chapter_name+'</span></div><div style="display:flex;gap:14px;align-items:center"><span class="rt">'+relTime(a.completed_at)+'</span><span class="rs" style="color:'+c+'">'+p+'%</span></div></div>';
+  renderWeek(days);
+  const recent = events.slice(0,6);
+  $('recent').innerHTML = recent.map(e=>{
+    const r = e.result;
+    const c = r===GOT?'var(--green)':r==='almost'?'var(--sun)':'var(--red)';
+    const verb = r===GOT?'Got it':r==='almost'?'Almost':r==='skipped'?'Skipped':'Missed it';
+    const mode = e.mode==='past_paper'?'Past paper':'Practice';
+    return '<div class="rec"><div class="rl"><span class="rd" style="background:'+c+'"></span><span class="rn">'+nameOf(e)+' <span style="color:var(--ink-300);font-weight:400">· '+mode+'</span></span></div><div style="display:flex;gap:14px;align-items:center"><span class="rt">'+relTime(e.created_at)+'</span><span class="rs" style="color:'+c+'">'+verb+'</span></div></div>';
   }).join('');
 }
 
@@ -390,19 +409,17 @@ function renderEmpty(){
   $('hero-sub').innerHTML = "You're just getting started. Pick a chapter, answer your first question, and your progress will start filling in here.";
   $('ring-pct').textContent = '0%';
   $('ring-fill').setAttribute('stroke-dashoffset', RING_C.toFixed(1));
-  $('st-acc').innerHTML = '—'; $('st-qweek').textContent = '0';
-  $('st-streak').innerHTML = '0<span class="u"> 🔥</span>'; $('st-chap').innerHTML = '0<span class="u">/'+TOTAL+'</span>';
-  $('mission-title').textContent = 'Start with Sets';
+  $('st-acc').textContent = '0'; $('st-qweek').textContent = '0';
+  $('st-streak').innerHTML = '0<span class="u"> 🔥</span>'; $('st-chap').textContent = '0';
+  $('mission-title').textContent = 'Practise your first question';
   $('mission-sub').textContent = 'Pick any chapter and answer your first question. Your journey starts now.';
   $('mission-btn').textContent = 'Start practising →';
-  $('subjects').innerHTML = [['🧮 Compulsory Maths'],['🔬 Compulsory Science']].map(([label])=>
-    '<div class="subj"><div class="subj-top"><span class="nm">'+label+'</span><span class="vs">Not started yet</span></div><div class="bar"><div class="fill" style="width:0%"></div></div></div>').join('');
-  $('strong').innerHTML = '<div class="empty-mini">Score 75%+ on a chapter and it shows up here.</div>';
-  $('weak').innerHTML = '<div class="empty-mini">Practise a few chapters to see where to focus.</div>';
-  renderMap(MATHS,'map-maths','m-ct',{});
-  renderMap(SCIENCE,'map-science','s-ct',{});
+  $('subjects').innerHTML = '<div class="empty-mini">Practise a few questions to see your subjects here.</div>';
+  $('strong').innerHTML = '<div class="empty-mini">Get 75%+ on a topic and it shows up here.</div>';
+  $('weak').innerHTML = '<div class="empty-mini">Practise a few topics to see where to focus.</div>';
+  $('review').innerHTML = '<div class="empty-mini">Nothing to review yet — questions you find tricky will collect here.</div>';
   renderWeek(new Set());
-  $('recent').innerHTML = '<div class="empty-mini">No practice yet — your completed chapters will appear here.</div>';
+  $('recent').innerHTML = '<div class="empty-mini">No activity yet — your practice and papers will appear here.</div>';
 }
 
 load();
