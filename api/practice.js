@@ -167,6 +167,67 @@ export default async function handler(req, res) {
     }
   }
 
+  // ── Log a single question attempt event (POST) ───────────
+  if (action === 'log-event') {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const token = authHeader.replace('Bearer ', '');
+    const {
+      mode = 'practice', question_id = null, paper_id = null,
+      subject = null, chapter_name = null, topic = null,
+      result, revealed_answer = false, time_spent_seconds = null
+    } = req.body;
+
+    if (!result) {
+      return res.status(400).json({ error: 'Missing result.' });
+    }
+
+    try {
+      const userRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'apikey': process.env.SUPABASE_ANON_KEY,
+        }
+      });
+
+      if (!userRes.ok) return res.status(401).json({ error: 'Invalid token.' });
+
+      const userData = await userRes.json();
+
+      const dbRes = await fetch(`${process.env.SUPABASE_URL}/rest/v1/attempt_events`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': process.env.SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${token}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          user_id:            userData.id,
+          mode:               mode || 'practice',
+          question_id:        question_id || null,
+          paper_id:           paper_id || null,
+          subject:            subject ? String(subject).trim() : null,
+          chapter_name:       chapter_name ? String(chapter_name).trim() : null,
+          topic:              topic ? String(topic).trim() : null,
+          result:             result,
+          revealed_answer:    !!revealed_answer,
+          time_spent_seconds: time_spent_seconds
+        })
+      });
+
+      if (!dbRes.ok) throw new Error(await dbRes.text());
+
+      return res.status(200).json({ success: true });
+
+    } catch (error) {
+      console.error('Log event error:', error);
+      return res.status(500).json({ error: 'Failed to log event.' });
+    }
+  }
+
   // ── AI generate / evaluate (POST) ────────────────────────
   if (action === 'generate' || action === 'evaluate') {
     const { subject, question, studentAnswer } = req.body;
