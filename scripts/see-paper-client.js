@@ -456,6 +456,11 @@ function buildQuestions() {
       }
     }
 
+    // One self-assessment per question (Option A), shown once at the bottom.
+    if ((g.subs && g.subs.length > 0) || (g.parent && hasAnswer(g.parent))) {
+      body.appendChild(buildConfBlock(g.num));
+    }
+
     card.appendChild(body);
     area.appendChild(card);
    } catch (err) {
@@ -621,7 +626,11 @@ function buildAnswerSection(s, qNum) {
     });
   }
 
-  // Confidence
+  return sec;
+}
+
+// One self-assessment block per question (shown once at the bottom of the card).
+function buildConfBlock(qNum) {
   var confWrap = document.createElement('div');
   confWrap.className = 'conf-section';
   var confLbl = document.createElement('div');
@@ -638,8 +647,7 @@ function buildAnswerSection(s, qNum) {
     var btn = document.createElement('button');
     btn.className = 'conf-btn ' + c.cls;
     btn.innerHTML = '<div class="cb-ico">' + c.ico + '</div><div class="cb-lbl">' + c.lbl + '</div>';
-    var saved = confMap[qNum];
-    if (saved === c.val) btn.classList.add('selected');
+    if (confMap[qNum] === c.val) btn.classList.add('selected');
     btn.onclick = function(e) {
       e.stopPropagation();
       setConf(qNum, c.val, btns);
@@ -647,9 +655,7 @@ function buildAnswerSection(s, qNum) {
     btns.appendChild(btn);
   });
   confWrap.appendChild(btns);
-  sec.appendChild(confWrap);
-
-  return sec;
+  return confWrap;
 }
 
 // ── MCQ PICK ──
