@@ -1122,7 +1122,7 @@ function fetchCounts(subjCode){
       all.forEach(function(q){
         var ch=q.chapter_name; if(!ch) return;
         if(!byChapter[ch]) byChapter[ch]=[];
-        byChapter[ch].push({q:q.question_text, a:q.answer_text, m:q.marks});
+        byChapter[ch].push({id:q.id, q:q.question_text, a:q.answer_text, m:q.marks, topic:q.topic});
       });
       QCACHE[subjCode]=byChapter;
       if(pracState.subject===subjCode) applyCounts(subjCode);
