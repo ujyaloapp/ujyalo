@@ -579,6 +579,9 @@ function toggleAnswer(subId, s, qNum, itemEl) {
 
   var ansSection = buildAnswerSection(s, qNum);
   itemEl.appendChild(ansSection);
+
+  var cb = document.getElementById('conf-' + qNum);
+  if (cb) cb.style.display = '';
 }
 
 function buildAnswerSection(s, qNum) {
@@ -633,6 +636,9 @@ function buildAnswerSection(s, qNum) {
 function buildConfBlock(qNum) {
   var confWrap = document.createElement('div');
   confWrap.className = 'conf-section';
+  confWrap.id = 'conf-' + qNum;
+  // Hidden until the student reveals an answer in this question (or already rated it).
+  if (!confMap[qNum]) confWrap.style.display = 'none';
   var confLbl = document.createElement('div');
   confLbl.className = 'conf-label';
   confLbl.textContent = 'How did you do?';
@@ -672,6 +678,8 @@ function pickMCQ(btn, grid, correct, chosen, itemEl, s, qNum) {
     itemEl.classList.add('open');
     openSubId = itemEl.id;
   }
+  var cb = document.getElementById('conf-' + qNum);
+  if (cb) cb.style.display = '';
 }
 
 // ── CONFIDENCE ──
@@ -693,15 +701,10 @@ function setConf(qNum, val, btnsEl) {
     sbRow.classList.add('sb-q-' + val);
   }
 
-  // Update sub-item border
-  var subItem = document.getElementById('q-' + qNum + '-main');
-  if (!subItem) {
-    var g = DATA.groups.find(function(x) { return x.num === qNum; });
-    if (g && g.subs.length > 0) subItem = document.getElementById('q-' + qNum + '-' + g.subs[0].sub);
-  }
-  if (subItem) {
-    subItem.classList.remove('conf-got', 'conf-almost', 'conf-missed');
-    subItem.classList.add('conf-' + val);
+  // Reflect the rating on the whole question card (not an individual sub-part)
+  var card = document.getElementById('qcard-' + qNum);
+  if (card) {
+    card.style.borderColor = (val === 'got') ? '#15803D' : (val === 'almost') ? '#C0913F' : '#B5532E';
   }
 
   celebrate(val);
