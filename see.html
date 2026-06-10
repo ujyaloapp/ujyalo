@@ -1270,12 +1270,20 @@ function cpComplete(){
   var t=pct>=80?'Excellent work!':pct>=50?'Good effort!':'Keep practising!';
   var d=document.getElementById('cp-doneblock');
   d.style.display='block';
+  var loggedIn = !!localStorage.getItem('ujyalo_token');
+  var nudge = loggedIn ? '' :
+    '<div style="margin-top:22px;padding:18px;background:var(--bg);border:1px dashed var(--blue);border-radius:14px;text-align:center">'+
+    '<div style="font-weight:700;color:var(--ink);font-size:15px;margin-bottom:4px">Save your progress</div>'+
+    '<div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5">Sign up free to keep this score, track every chapter, and see your dashboard.</div>'+
+    '<a href="/signup.html" style="display:inline-block;background:var(--blue);color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:10px;text-decoration:none">Sign up free →</a>'+
+    '<div style="margin-top:10px;font-size:12.5px;color:var(--muted)">Already have an account? <a href="/login.html" style="color:var(--blue);font-weight:600;text-decoration:none">Log in</a></div>'+
+    '</div>';
   d.innerHTML='<div class="cp-done"><div class="cp-done-ic">'+ic+'</div><div class="cp-done-t">'+t+'</div>'+
     '<div class="cp-done-s">You got '+got+' out of '+total+' correct — '+pct+'%</div>'+
     '<div class="cp-done-scores"><div class="cp-done-box '+(pct>=50?'good':'')+'"><div class="cp-done-num">'+got+'/'+total+'</div><div class="cp-done-lbl">Got right</div></div>'+
     '<div class="cp-done-box"><div class="cp-done-num">'+pct+'%</div><div class="cp-done-lbl">Score</div></div></div>'+
     '<div class="cp-done-acts"><button class="cp-bretry" onclick="practiceRun(pracState.chapter)">↻ Try again</button>'+
-    '<button class="cp-bnextch" onclick="practiceStep(\'prac-chapters\')">Back to chapters →</button></div></div>';
+    '<button class="cp-bnextch" onclick="practiceStep(\'prac-chapters\')">Back to chapters →</button></div>'+nudge+'</div>';
   window.scrollTo(0,0);
   // Step 5: save progress if logged in (same contract as live chapter-practice page)
   saveProgress(pracState.subject, pracState.chapter, got, total);
