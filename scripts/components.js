@@ -5,11 +5,36 @@
    (forest --navy #11302a, brass --orange #c0913f)
    ============================================================ */
 
-const ANNOUNCEMENT = `
+// ── SEE EXAM COUNTDOWN ──
+// SEE happens around March–April; NEB announces the exact date a few months before.
+// When the date is announced, set it here in AD format (YYYY-MM-DD) and the countdown
+// turns on site-wide automatically. Leave blank to keep it off. It also hides itself
+// once the date has passed, so a stale countdown can never show.
+const SEE_EXAM_DATE = ''; // e.g. '2027-03-20' once NEB announces it
+
+function seeDaysLeft() {
+  if (!SEE_EXAM_DATE) return null;
+  const d = new Date(SEE_EXAM_DATE + 'T00:00:00');
+  if (isNaN(d.getTime())) return null;
+  const days = Math.ceil((d - new Date()) / 86400000);
+  return days > 0 ? days : null;
+}
+
+function buildAnnounce() {
+  const days = seeDaysLeft();
+  const cd = days ? ` · <b>${days} day${days !== 1 ? 's' : ''}</b> to the SEE exam` : '';
+  return `
 <div class="ujyalo-announce">
-  🇳🇵 Free SEE practice for every Nepali student. No signup needed.
+  🇳🇵 Free SEE practice for every Nepali student${cd}.
   <a href="/see.html">Start now →</a>
 </div>`;
+}
+
+function buildCountdownStrip() {
+  const days = seeDaysLeft();
+  if (!days) return '';
+  return `<div class="ujyalo-announce">⏳ <b>${days} day${days !== 1 ? 's' : ''}</b> to the SEE exam — keep practising.</div>`;
+}
 
 /* ── Text logo — sharp, scalable, consistent ── */
 const LOGO_HTML = `<a href="/index.html" class="ujyalo-logo"><img src="/mark-dark.png" class="ujyalo-logo-mark" alt=""/><span class="ujyalo-logo-text">ujy<span class="ujyalo-logo-a">a</span>lo</span></a>`;
@@ -532,9 +557,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (user && token) {
       const firstName = user.full_name ? user.full_name.split(' ')[0] : user.email.split('@')[0];
       const initials  = firstName.charAt(0).toUpperCase();
-      navEl.innerHTML = buildAppNav(firstName, initials, user.full_name || firstName, user.email || '');
+      navEl.innerHTML = buildCountdownStrip() + buildAppNav(firstName, initials, user.full_name || firstName, user.email || '');
     } else {
-      navEl.innerHTML = ANNOUNCEMENT + NAV_PUBLIC;
+      navEl.innerHTML = buildAnnounce() + NAV_PUBLIC;
     }
   }
 
