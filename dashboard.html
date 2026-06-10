@@ -199,6 +199,14 @@
     </div>
   </section>
 
+  <!-- PAST PAPERS -->
+  <div class="eyebrow fade s4" id="papers-eyebrow" style="display:none">Your past papers</div>
+  <section class="card fade s4" id="papers-box" style="display:none;margin-bottom:30px">
+    <div class="csub" style="margin-bottom:14px">Pick up where you left off.</div>
+    <div id="papers-list"></div>
+    <div id="papers-more"></div>
+  </section>
+
   <!-- STRONG / WEAK -->
   <section class="sw fade s4">
     <div class="card">
@@ -421,6 +429,7 @@ function render(events){
     : '<div class="empty-mini">Nothing flagged. Mark a question “Almost” or “Missed it” and it lands here for another look.</div>';
 
   renderWeek(days);
+  renderPapers(events);
   const recent = events.slice(0,6);
   $('recent').innerHTML = recent.map(e=>{
     const r = e.result;
@@ -447,6 +456,48 @@ function renderEmpty(){
   $('review').innerHTML = '<div class="empty-mini">Nothing to review yet — questions you find tricky will collect here.</div>';
   renderWeek(new Set());
   $('recent').innerHTML = '<div class="empty-mini">No activity yet — your practice and papers will appear here.</div>';
+}
+
+const PP_SHORT = {maths:'Maths', science:'Science', english:'English', nepali:'Nepali', social:'Social Studies', hpe:'HPE'};
+
+async function renderPapers(events){
+  const box = $('papers-box'), eye = $('papers-eyebrow');
+  if(!box || !eye) return;
+  const pe = events.filter(e => e.mode==='past_paper' && e.paper_id);
+  if(!pe.length){ box.style.display='none'; eye.style.display='none'; return; }
+
+  const byPaper = {};
+  pe.forEach(e=>{
+    if(!byPaper[e.paper_id]) byPaper[e.paper_id] = {id:e.paper_id, qids:new Set(), last:e.created_at};
+    if(e.question_id) byPaper[e.paper_id].qids.add(e.question_id);
+    if(new Date(e.created_at) > new Date(byPaper[e.paper_id].last)) byPaper[e.paper_id].last = e.created_at;
+  });
+  const papers = Object.values(byPaper).sort((a,b)=>new Date(b.last)-new Date(a.last));
+  const top = papers.slice(0,3);
+
+  let idMap = {};
+  try{
+    const r = await fetch('/api/see-papers');
+    if(r.ok){
+      const g = (await r.json()).grouped || {};
+      for(const code in g){ for(const yr in g[code]){ (g[code][yr]||[]).forEach(p=>{ idMap[p.id] = {year:yr, province:p.province, code:code}; }); } }
+    }
+  }catch(e){}
+
+  const rows = top.map(p=>{
+    const m = idMap[p.id];
+    const x = p.qids.size;
+    const meta = x + ' reviewed · ' + relTime(p.last) + ' →';
+    if(!m) return '<div class="rev"><span class="revn">A past paper</span><span class="revc">'+meta+'</span></div>';
+    const name = m.year + ' ' + m.province + ' · ' + (PP_SHORT[m.code] || cap(m.code));
+    const link = '/see-paper.html?year='+encodeURIComponent(m.year)+'&province='+encodeURIComponent(m.province)+'&subject='+encodeURIComponent(m.code);
+    return '<a class="rev" href="'+link+'"><span class="revn">'+name+'</span><span class="revc">'+meta+'</span></a>';
+  }).join('');
+
+  const allLabel = papers.length>3 ? 'View all '+papers.length+' papers →' : 'Browse all papers →';
+  $('papers-list').innerHTML = rows;
+  $('papers-more').innerHTML = '<div style="text-align:right;margin-top:10px"><a href="/see.html" style="font-size:13px;color:var(--brand);font-weight:600">'+allLabel+'</a></div>';
+  eye.style.display=''; box.style.display='';
 }
 
 load();
