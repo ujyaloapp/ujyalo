@@ -244,8 +244,10 @@ const SUBJECTS = {
   social:  '🌏 Social Studies',
   hpe:     '❤️ Health & Physical Ed'
 };
+const PRAC_SUBJ = { maths: 1, science: 1 };
 const RING_C = 2 * Math.PI * 58;
 const GOT = 'got_it';
+const MIN = 3;
 
 if (user) {
   const firstName = cap(user.full_name ? user.full_name.split(' ')[0] : user.email.split('@')[0]);
@@ -282,8 +284,6 @@ function renderWeek(practiced){
   $('week-note').textContent = count===7 ? 'Perfect week — all 7 days! 🔥' : count===0 ? 'No practice yet this week — start today.' : count + ' of 7 days practised this week.';
 }
 
-// Keep only the latest rating per question (events arrive newest-first).
-// Rows with no question_id (rare, old test rows) are counted individually.
 function latestPerQuestion(events){
   const seen = {}; const out = [];
   events.forEach((e,i) => {
@@ -299,6 +299,20 @@ function nameOf(e){
   return e.topic || e.chapter_name || (SUBJECTS[e.subject] ? SUBJECTS[e.subject].replace(/^\S+\s/, '') : (e.subject ? cap(e.subject) : 'Question'));
 }
 
+function topKey(obj){
+  let best=null, n=-1;
+  for(const k in obj){ if(obj[k] > n){ n=obj[k]; best=k; } }
+  return best;
+}
+
+function practiceLink(subject, chapter){
+  if(subject && PRAC_SUBJ[subject]){
+    return chapter ? '/see.html#practice/'+subject+'/'+encodeURIComponent(chapter)
+                   : '/see.html#practice/'+subject;
+  }
+  return '/see.html#practice';
+}
+
 async function load(){
   try{
     const res = await fetch('/api/practice?action=get-events', { headers:{ 'Authorization':'Bearer ' + token } });
@@ -310,19 +324,21 @@ async function load(){
 }
 
 function render(events){
-  const latest  = latestPerQuestion(events);
-  const totalQs = latest.length;
-  const gotCount = latest.filter(e=>e.result===GOT).length;
-  const gotPct = totalQs ? Math.round(gotCount/totalQs*100) : 0;
+  const latest = latestPerQuestion(events);
+  const attempted = latest.filter(e => e.result !== 'skipped');
+  if(!attempted.length) return renderEmpty();
 
-  const topicSet = new Set(latest.map(e=>e.topic).filter(Boolean));
+  const totalQs  = attempted.length;
+  const gotCount = attempted.filter(e=>e.result===GOT).length;
+  const gotPct   = totalQs ? Math.round(gotCount/totalQs*100) : 0;
+
+  const topicSet = new Set(attempted.map(e=>e.topic).filter(Boolean));
   const days = new Set(events.map(e=>new Date(e.created_at).toDateString()));
   const streak = calcStreak(days);
   const weekAgo = Date.now() - 7*864e5;
-  const qWeek = latest.filter(e=>new Date(e.created_at).getTime()>=weekAgo).length;
+  const qWeek = attempted.filter(e=>new Date(e.created_at).getTime()>=weekAgo).length;
 
-  // hero
-  $('hero-sub').innerHTML = "You've practised <b>"+totalQs+" question"+(totalQs!==1?'s':'')+"</b> so far and got <b>"+gotPct+"%</b> of them right by your own marking. Every question you rate sharpens this picture.";
+  $('hero-sub').innerHTML = "You've practised <b>"+totalQs+" question"+(totalQs!==1?'s':'')+"</b> so far and got <b>"+gotPct+"%</b> right by your own marking. Every question you rate sharpens this picture.";
   $('ring-pct').textContent = gotPct + '%';
   $('ring-fill').setAttribute('stroke-dashoffset', (RING_C*(1-gotPct/100)).toFixed(1));
   $('st-acc').textContent = totalQs;
@@ -330,34 +346,43 @@ function render(events){
   $('st-streak').innerHTML = streak + '<span class="u"> 🔥</span>';
   $('st-chap').textContent = topicSet.size;
 
-  // per-topic stats
   const topicStats = {};
-  latest.forEach(e=>{
+  attempted.forEach(e=>{
     const t = e.topic; if(!t) return;
-    if(!topicStats[t]) topicStats[t] = {topic:t, subject:e.subject, total:0, got:0};
-    topicStats[t].total++; if(e.result===GOT) topicStats[t].got++;
+    if(!topicStats[t]) topicStats[t] = {topic:t, subject:e.subject, total:0, got:0, chapters:{}};
+    topicStats[t].total++;
+    if(e.result===GOT) topicStats[t].got++;
+    if(e.chapter_name) topicStats[t].chapters[e.chapter_name] = (topicStats[t].chapters[e.chapter_name]||0)+1;
   });
-  const topicList = Object.values(topicStats).map(t=>({topic:t.topic, subject:t.subject, total:t.total, pct:Math.round(t.got/t.total*100)}));
+  const topicList = Object.values(topicStats).map(t=>({
+    topic:t.topic, subject:t.subject, total:t.total,
+    pct:Math.round(t.got/t.total*100), chapter:topKey(t.chapters)
+  }));
+  const judged = topicList.filter(t=>t.total>=MIN);
 
-  // mission
-  const weakest = topicList.filter(t=>t.pct<70).sort((a,b)=>a.pct-b.pct)[0];
+  const weakest = judged.filter(t=>t.pct<70).sort((a,b)=>a.pct-b.pct)[0];
+  const setMission = (title, sub, btn, href) => {
+    $('mission-title').textContent = title;
+    $('mission-sub').textContent = sub;
+    $('mission-btn').textContent = btn;
+    $('mission-btn').href = href;
+  };
   if(weakest){
-    $('mission-title').textContent = 'Revisit ' + weakest.topic;
-    $('mission-sub').textContent = "You're getting "+weakest.pct+"% here — your lowest so far. A short session lifts your overall the fastest.";
-    $('mission-btn').textContent = 'Practise ' + weakest.topic + ' →';
-  } else if(topicList.length){
-    $('mission-title').textContent = 'Strong across the board';
-    $('mission-sub').textContent = "You're at 70%+ on everything you've practised. Add a new topic, or test yourself on a past paper.";
-    $('mission-btn').textContent = 'Practise more →';
+    setMission('Revisit ' + weakest.topic,
+      "You're getting "+weakest.pct+"% across "+weakest.total+" questions here — your lowest. A short session lifts your overall the fastest.",
+      'Practise ' + weakest.topic + ' →', practiceLink(weakest.subject, weakest.chapter));
+  } else if(judged.length){
+    setMission('Strong across the board',
+      "You're at 70%+ on every topic you've done enough of to judge. Add a new topic, or test yourself on a past paper.",
+      'Practise more →', '/see.html#practice');
   } else {
-    $('mission-title').textContent = 'Practise your first question';
-    $('mission-sub').textContent = 'Pick a chapter and answer one question — your progress starts filling in here.';
-    $('mission-btn').textContent = 'Start practising →';
+    setMission('Keep going',
+      "Answer a few more questions and your weak spots will surface here, so you know exactly where to focus.",
+      'Continue practising →', '/see.html#practice');
   }
 
-  // subjects (only practised)
   const subjStats = {};
-  latest.forEach(e=>{
+  attempted.forEach(e=>{
     const c = e.subject; if(!c) return;
     if(!subjStats[c]) subjStats[c] = {code:c, total:0, got:0};
     subjStats[c].total++; if(e.result===GOT) subjStats[c].got++;
@@ -370,30 +395,31 @@ function render(events){
     return '<div class="subj"><div class="subj-top"><span class="nm">'+lbl+'</span><span class="vs">'+right+'</span></div><div class="bar"><div class="fill" style="width:'+pct+'%"></div></div></div>';
   }).join('') : '<div class="empty-mini">Practise a few questions to see your subjects here.</div>';
 
-  // strong / weak topics
-  const strong = topicList.filter(t=>t.pct>=75).sort((a,b)=>b.pct-a.pct).slice(0,4);
-  const weak   = topicList.filter(t=>t.pct<75).sort((a,b)=>a.pct-b.pct).slice(0,4);
+  const chip = (t, kind) => '<div class="chip '+kind+'"><span>'+t.topic+' <span style="opacity:.55;font-weight:500">· '+t.total+'q</span></span><span class="sc">'+t.pct+'%</span></div>';
+  const strong = judged.filter(t=>t.pct>=75).sort((a,b)=>b.pct-a.pct).slice(0,4);
+  const weak   = judged.filter(t=>t.pct<75).sort((a,b)=>a.pct-b.pct).slice(0,4);
   $('strong').innerHTML = strong.length
-    ? '<div class="chiprow">'+strong.map(t=>'<div class="chip good"><span>'+t.topic+'</span><span class="sc">'+t.pct+'%</span></div>').join('')+'</div>'
-    : '<div class="empty-mini">Get 75%+ on a topic and it shows up here.</div>';
+    ? '<div class="chiprow">'+strong.map(t=>chip(t,'good')).join('')+'</div>'
+    : '<div class="empty-mini">Reach 75%+ on a topic (after at least '+MIN+' questions) and it shows up here.</div>';
   $('weak').innerHTML = weak.length
-    ? '<div class="chiprow">'+weak.map(t=>'<div class="chip bad"><span>'+t.topic+'</span><span class="sc">'+t.pct+'%</span></div>').join('')+'</div>'
-    : '<div class="empty-mini">Nothing below 75% — nice work!</div>';
+    ? '<div class="chiprow">'+weak.map(t=>chip(t,'bad')).join('')+'</div>'
+    : '<div class="empty-mini">Nothing below 75% yet — keep it up.</div>';
 
-  // review these (missed/skipped), grouped by topic/chapter
   const reviewMap = {};
   latest.forEach(e=>{
     if(e.result!=='missed' && e.result!=='skipped') return;
     const key = nameOf(e);
-    if(!reviewMap[key]) reviewMap[key] = {name:key, count:0};
+    if(!reviewMap[key]) reviewMap[key] = {name:key, subject:e.subject, count:0, chapters:{}};
     reviewMap[key].count++;
+    if(e.chapter_name) reviewMap[key].chapters[e.chapter_name] = (reviewMap[key].chapters[e.chapter_name]||0)+1;
   });
-  const review = Object.values(reviewMap).sort((a,b)=>b.count-a.count);
+  const review = Object.values(reviewMap)
+    .map(r=>({name:r.name, subject:r.subject, count:r.count, chapter:topKey(r.chapters)}))
+    .sort((a,b)=>b.count-a.count);
   $('review').innerHTML = review.length
-    ? review.map(r=>'<a class="rev" href="/see.html#practice"><span class="revn">'+r.name+'</span><span class="revc">'+r.count+' to review →</span></a>').join('')
+    ? review.map(r=>'<a class="rev" href="'+practiceLink(r.subject, r.chapter)+'"><span class="revn">'+r.name+'</span><span class="revc">'+r.count+' to review →</span></a>').join('')
     : '<div class="empty-mini">Nothing flagged. Mark a question “Almost” or “Missed it” and it lands here for another look.</div>';
 
-  // week + recent
   renderWeek(days);
   const recent = events.slice(0,6);
   $('recent').innerHTML = recent.map(e=>{
@@ -414,8 +440,9 @@ function renderEmpty(){
   $('mission-title').textContent = 'Practise your first question';
   $('mission-sub').textContent = 'Pick any chapter and answer your first question. Your journey starts now.';
   $('mission-btn').textContent = 'Start practising →';
+  $('mission-btn').href = '/see.html#practice';
   $('subjects').innerHTML = '<div class="empty-mini">Practise a few questions to see your subjects here.</div>';
-  $('strong').innerHTML = '<div class="empty-mini">Get 75%+ on a topic and it shows up here.</div>';
+  $('strong').innerHTML = '<div class="empty-mini">Reach 75%+ on a topic and it shows up here.</div>';
   $('weak').innerHTML = '<div class="empty-mini">Practise a few topics to see where to focus.</div>';
   $('review').innerHTML = '<div class="empty-mini">Nothing to review yet — questions you find tricky will collect here.</div>';
   renderWeek(new Set());
