@@ -399,6 +399,57 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 @media(max-width:900px){
   /* (merged into the main responsive block above) */
 }
+
+#stabs{display:none!important}
+.ppl-pad{padding:26px 30px 44px;max-width:880px}
+.ppl-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin-bottom:8px}
+.ppl-h1{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(26px,4vw,36px);line-height:1.06;color:var(--forest);margin-bottom:7px}
+.ppl-h1 em{font-style:italic;color:var(--brass)}
+.ppl-sub{font-size:14px;color:var(--muted);max-width:48ch;line-height:1.5}
+.ppl-rule{height:1px;background:var(--line);margin:18px 0 20px}
+.ppl-slabel,.ppl-ylbl{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.ppl-slabel{display:block;margin-bottom:11px}
+.subtiles{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.st2{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:10px 15px 10px 11px;cursor:pointer;transition:.16s;font-family:inherit}
+.st2:hover{transform:translateY(-2px);border-color:var(--brass-soft)}
+.st2-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;font-family:'Fraunces',serif;background:rgba(17,48,42,.07);color:var(--forest);flex-shrink:0}
+.st2-tx{display:flex;flex-direction:column;line-height:1.15;text-align:left}
+.st2-nm{font-weight:600;font-size:14.5px;color:var(--ink)}
+.st2-np{font-size:11px;color:var(--muted)}
+.st2.on{background:var(--forest);border-color:var(--forest);box-shadow:0 0 0 4px rgba(192,145,63,.38),0 12px 24px rgba(17,48,42,.2)}
+.st2.on .st2-nm{color:#fff}.st2.on .st2-np{color:var(--brass-soft)}.st2.on .st2-ic{background:rgba(192,145,63,.22);color:var(--brass-soft)}
+.st2.soon{opacity:.5;cursor:default}.st2.soon:hover{transform:none;border-color:var(--line)}
+.ppl-yrow{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.ypills2{display:flex;gap:7px;flex-wrap:wrap}
+.yp2{font-size:13px;font-weight:600;padding:6px 14px;border-radius:9px;border:1px solid var(--line);background:var(--card);cursor:pointer;color:var(--muted);font-family:inherit}
+.yp2.on{background:var(--forest);color:#fff;border-color:var(--forest)}
+.maphead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:9px}
+.mh-t{font-family:'Fraunces',serif;font-weight:500;font-size:18px;color:var(--forest)}
+.mh-legend{display:flex;gap:14px;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+.mh-legend span{display:flex;align-items:center;gap:6px}
+.lk{width:11px;height:11px;border-radius:3px;border:1px solid;display:inline-block}
+.lk.av{background:#efe7d4;border-color:var(--brass)}
+.lk.pr{background:rgba(192,145,63,.34);border-color:var(--brass)}
+.lk.dn{background:rgba(52,168,83,.22);border-color:var(--green)}
+.lk.sn{background:var(--paper2);border-color:var(--line)}
+.mapwrap{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px 6px;box-shadow:0 1px 2px rgba(26,36,32,.04),0 8px 26px rgba(17,48,42,.06)}
+.npmap{width:100%;height:auto;display:block}
+.prov{stroke:var(--bg);stroke-width:1.6;stroke-linejoin:round;transition:.16s}
+.prov.avail{fill:#efe7d4}
+.prov.progress{fill:rgba(192,145,63,.34)}
+.prov.done{fill:rgba(52,168,83,.22)}
+.prov.soon{fill:var(--paper2)}
+.prov.avail:hover,.prov.progress:hover,.prov.done:hover{stroke:var(--brass);stroke-width:2.3;filter:drop-shadow(0 5px 9px rgba(17,48,42,.25))}
+.plabel{font-family:'Fraunces',serif;font-weight:600;font-size:14px;fill:var(--forest);text-anchor:middle;pointer-events:none}
+.plabel.soon{fill:var(--muted);font-weight:500}
+.psub{font-family:'DM Sans',system-ui,sans-serif;font-weight:600;font-size:9.5px;text-anchor:middle;pointer-events:none;text-transform:uppercase;letter-spacing:.04em;fill:var(--muted)}
+.psub.progress{fill:#8a6312}.psub.done{fill:var(--green)}
+.mapfb{margin-top:15px;font-size:12.5px;color:var(--muted)}
+.mapfb .fbl{margin-right:8px}
+.fbp{color:var(--forest);font-weight:600;text-decoration:none;margin-right:13px;cursor:pointer}
+.fbp.soon{color:var(--faint);font-weight:400;cursor:default}
+.ppl-empty{padding:40px;text-align:center;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:16px}
+@media(max-width:560px){.plabel{font-size:11px}.psub{font-size:8px}.ppl-pad{padding:22px 18px 36px}}
 </style>
   <meta property="og:image" content="https://ujyalo.app/og-default.png" />
   <meta name="twitter:image" content="https://ujyalo.app/og-default.png" />
@@ -548,35 +599,17 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 
       <!-- PAPERS VIEW (default) -->
       <div class="vw act" id="vw-papers">
-        <div class="hero" id="hero">
-          <div class="hero-in">
-            <div class="hero-l">
-              <div class="hero-ico" id="h-ico">∫</div>
-              <div>
-                <div class="hero-nm" id="h-nm">Maths <em id="h-nm-np" style="color:var(--blue)">गणित</em></div>
-                <div class="hero-sb" id="h-sb">Loading...</div>
-              </div>
-            </div>
-            <div class="hero-stats">
-              <div class="sbox"><div class="sbox-n" id="st-papers">—</div><div class="sbox-l">Papers</div></div>
-              <div class="sbox"><div class="sbox-n" id="st-years">—</div><div class="sbox-l">Years</div></div>
-              <div class="sbox"><div class="sbox-n">7</div><div class="sbox-l">Provinces</div></div>
-              <div class="sbox"><div class="sbox-n" id="st-started">0</div><div class="sbox-l">Started</div></div>
-            </div>
-          </div>
-        </div>
-        <div class="bc">
-          <a href="/see">SEE</a><span style="opacity:.5">›</span>
-          <a href="/see/past-papers">Past Papers</a><span style="opacity:.5">›</span>
-          <span class="bc-cur" id="bc-subj">Maths</span>
-        </div>
-        <div class="frow">
-          <span class="flbl">Year</span>
-          <div id="ypills" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
-          <div class="srch"><span class="srch-ico">🔍</span><input type="text" placeholder="Search province..." oninput="searchProv(this.value)"/></div>
-        </div>
-        <div class="cpad" id="yblocks">
-          <div class="loading"><div class="spin"></div><div style="font-size:14px;color:var(--muted)">Loading papers...</div></div>
+        <div class="ppl-pad">
+          <div class="ppl-eyebrow">SEE · विगतका प्रश्नपत्र</div>
+          <div class="ppl-h1">Find your <em>province</em>.</div>
+          <div class="ppl-sub">Every real SEE paper, free, with worked answers in English and नेपाली. Pick a subject, then tap your province.</div>
+          <div class="ppl-rule"></div>
+          <div class="ppl-slabel">Subject</div>
+          <div class="subtiles" id="subtiles"></div>
+          <div class="ppl-yrow"><span class="ppl-ylbl">Year</span><div class="ypills2" id="ypills"></div></div>
+          <div class="maphead" id="maphead"></div>
+          <div id="yblocks"></div>
+          <div class="mapfb" id="mapfb"></div>
         </div>
       </div>
 
@@ -716,6 +749,8 @@ const PROVINCES = [
   {num:7, name:'Sudurpashchim', np:'सुदूरपश्चिम',  col:'#22c55e'},
 ];
 
+const NP_MAP={w:820,h:469,p:{"Koshi":{d:"M655.0,267.7 L659.2,268.5 L659.6,271.3 L662.3,271.9 L667.7,267.6 L672.7,268.1 L675.4,271.5 L674.1,275.7 L677.9,277.8 L685.7,277.1 L687.9,280.3 L691.5,281.4 L692.4,284.3 L703.0,285.7 L709.8,294.3 L710.7,298.3 L716.3,300.5 L721.8,300.6 L725.3,297.1 L729.6,297.9 L731.0,299.9 L735.0,299.7 L741.2,295.7 L742.5,298.0 L739.7,299.0 L744.3,300.3 L748.4,297.6 L753.0,298.0 L755.7,295.2 L758.1,296.8 L758.4,300.6 L760.6,301.7 L763.1,299.0 L766.0,298.7 L766.0,302.1 L772.1,302.3 L777.4,295.3 L778.0,291.5 L782.1,289.1 L782.8,285.4 L785.3,286.0 L786.2,290.2 L792.9,289.4 L798.2,293.1 L802.8,290.8 L806.2,293.0 L808.2,292.0 L809.4,295.2 L813.3,293.5 L819.5,296.7 L820.0,298.6 L817.2,300.5 L819.6,303.9 L817.7,309.0 L815.5,310.2 L814.3,318.3 L808.0,327.5 L804.1,337.7 L807.8,345.3 L804.8,347.2 L803.9,351.9 L806.4,356.0 L802.9,361.7 L801.0,369.7 L801.7,374.9 L798.5,380.8 L801.9,384.4 L803.5,390.3 L807.5,390.4 L809.0,394.0 L813.4,396.2 L811.9,400.1 L814.4,403.5 L813.5,406.1 L817.2,409.9 L816.6,413.1 L818.7,420.6 L815.9,436.1 L809.6,447.4 L808.8,450.9 L810.5,454.5 L809.0,455.9 L809.4,458.6 L806.9,462.2 L803.2,464.1 L802.8,467.2 L799.3,467.0 L798.9,464.0 L792.4,461.1 L792.2,457.9 L789.5,457.6 L790.6,456.5 L788.5,453.2 L784.5,459.0 L778.5,455.2 L776.3,461.9 L772.9,462.3 L767.3,459.1 L767.3,461.3 L764.5,462.5 L764.7,463.9 L759.9,465.4 L754.2,461.0 L746.0,458.5 L736.2,462.2 L735.1,467.6 L733.4,469.1 L730.5,466.4 L725.8,466.1 L724.8,461.9 L715.4,462.7 L708.2,457.4 L706.3,441.9 L703.5,441.7 L700.6,448.0 L692.3,449.8 L692.0,452.9 L689.4,453.1 L692.3,447.9 L698.3,443.5 L696.9,437.4 L700.4,432.1 L700.0,427.6 L698.1,429.0 L695.7,424.7 L692.2,424.2 L691.2,421.2 L687.4,427.4 L683.7,429.8 L681.3,427.2 L674.2,430.4 L672.5,427.4 L667.3,430.2 L665.3,428.3 L664.4,429.8 L659.8,430.1 L657.4,429.2 L656.1,424.3 L654.0,423.6 L656.5,419.2 L651.7,418.4 L654.1,415.7 L653.9,413.3 L650.7,413.8 L646.6,407.2 L637.0,404.9 L635.2,409.1 L627.3,407.4 L623.2,410.1 L614.1,403.9 L614.1,402.9 L614.2,402.5 L620.6,407.2 L626.9,400.3 L633.9,398.5 L635.1,396.8 L636.9,390.9 L633.2,386.9 L634.8,383.1 L629.2,382.0 L631.2,381.8 L632.9,377.6 L635.4,378.4 L637.6,373.9 L632.9,371.3 L632.7,368.3 L625.1,364.6 L621.5,367.3 L618.8,365.8 L622.6,361.4 L620.0,356.3 L620.7,350.7 L624.9,342.3 L634.1,334.4 L636.3,329.4 L642.1,324.6 L647.9,324.2 L652.5,317.7 L656.0,308.1 L655.4,302.4 L652.7,301.2 L654.2,290.4 L653.5,288.0 L650.9,286.8 L650.0,281.7 L652.1,274.6 L655.3,272.1 L655.0,267.7Z",cx:726.4,cy:370.4},"Madhesh":{d:"M453.8,341.5 L460.2,342.9 L462.1,345.4 L469.3,345.1 L470.0,343.6 L476.6,344.4 L478.5,346.9 L480.9,346.7 L492.1,353.2 L506.2,353.1 L510.3,360.9 L515.7,366.0 L522.0,366.0 L524.0,368.5 L528.6,367.9 L537.2,370.4 L545.2,375.9 L548.1,374.4 L546.9,376.8 L548.1,378.0 L561.0,378.7 L570.5,372.1 L579.1,376.0 L581.3,375.3 L584.5,379.9 L586.5,377.7 L592.1,380.6 L597.5,391.6 L608.4,392.5 L621.9,400.2 L624.4,404.3 L620.9,405.5 L620.7,407.2 L614.2,402.5 L614.0,403.8 L622.9,410.0 L627.3,407.4 L635.2,409.1 L637.0,404.9 L646.6,407.2 L650.7,413.8 L654.2,413.8 L651.7,418.4 L656.5,419.2 L654.0,423.5 L656.1,424.3 L657.4,429.3 L663.7,430.0 L665.3,428.3 L667.3,430.2 L672.5,427.4 L674.2,430.4 L681.3,427.2 L683.7,429.8 L687.4,427.4 L691.2,421.2 L692.2,424.2 L695.7,424.7 L698.1,429.0 L700.0,427.6 L700.4,432.2 L696.9,437.4 L698.3,443.5 L691.6,448.7 L688.1,453.3 L688.3,456.1 L682.3,458.7 L675.5,456.4 L671.9,460.6 L668.1,457.3 L655.8,452.1 L652.9,447.3 L648.4,446.9 L631.9,438.1 L623.7,438.3 L620.2,441.6 L618.0,440.9 L617.7,438.6 L612.0,439.5 L612.3,437.0 L601.0,432.6 L594.3,434.4 L593.1,438.7 L591.1,438.4 L583.1,443.8 L583.3,439.3 L579.9,439.9 L578.3,437.5 L571.6,434.5 L570.5,430.3 L571.6,417.8 L570.2,415.0 L562.3,411.3 L561.5,409.1 L556.6,412.0 L555.6,410.4 L554.6,412.7 L543.4,419.4 L538.7,418.4 L531.3,424.1 L518.9,422.2 L515.4,416.3 L516.7,409.3 L499.8,411.1 L500.6,408.8 L501.8,408.8 L502.5,407.6 L503.2,408.0 L503.6,407.6 L503.7,407.4 L494.4,404.1 L495.4,401.3 L493.8,399.0 L486.7,397.9 L480.1,392.1 L476.8,395.0 L474.8,392.4 L473.1,394.1 L461.6,389.2 L462.0,385.8 L464.9,383.4 L466.4,368.9 L459.6,356.0 L445.7,352.8 L451.3,350.3 L451.9,347.7 L450.5,347.0 L452.1,346.6 L453.8,341.5Z",cx:566.9,cy:402.4},"Bagmati":{d:"M569.3,235.8 L573.0,252.7 L575.8,256.1 L583.1,258.9 L585.2,265.8 L588.1,267.5 L588.3,273.8 L596.0,280.4 L593.1,286.6 L597.2,289.4 L604.9,291.5 L610.8,288.3 L606.3,277.7 L607.9,272.9 L606.7,269.6 L611.4,268.5 L612.6,265.6 L616.3,263.6 L615.8,260.7 L617.1,260.1 L620.5,267.2 L620.7,269.0 L618.9,270.4 L621.8,283.0 L627.4,282.5 L630.4,286.0 L632.1,284.0 L633.4,287.1 L636.7,287.1 L639.7,290.7 L642.9,290.8 L645.6,286.2 L648.4,284.9 L653.6,288.1 L654.2,296.0 L652.7,301.2 L655.4,302.4 L656.0,308.1 L651.3,320.0 L647.9,324.2 L642.1,324.6 L636.3,329.4 L634.1,334.4 L624.9,342.3 L620.7,350.7 L620.0,356.3 L622.6,361.4 L618.8,365.8 L621.5,367.3 L625.1,364.6 L632.7,368.3 L632.9,371.3 L637.6,373.9 L635.4,378.4 L632.9,377.6 L631.2,381.8 L629.2,382.0 L634.8,383.1 L633.2,386.9 L636.9,390.9 L633.9,398.5 L626.9,400.3 L624.5,403.7 L617.2,396.5 L609.0,392.7 L597.5,391.6 L592.1,380.6 L586.5,377.7 L584.5,379.9 L581.4,375.4 L579.1,376.0 L570.6,372.1 L561.0,378.7 L548.0,378.0 L546.9,376.8 L548.1,374.4 L545.2,375.9 L537.2,370.4 L528.6,367.9 L524.0,368.5 L522.0,366.0 L515.7,366.0 L508.1,357.8 L506.3,353.1 L499.8,354.2 L497.5,352.6 L490.2,352.8 L476.6,344.4 L470.0,343.6 L469.3,345.1 L462.1,345.4 L460.2,342.9 L453.5,341.5 L452.1,346.6 L450.5,347.0 L451.9,347.7 L451.3,350.3 L447.7,350.8 L444.3,353.8 L441.3,352.1 L426.3,350.4 L422.5,342.7 L417.9,343.8 L417.6,340.7 L411.9,338.8 L411.6,335.1 L406.8,335.3 L406.5,338.4 L399.7,344.8 L390.0,343.0 L391.3,341.1 L390.7,338.2 L393.8,335.5 L392.2,334.1 L389.4,335.5 L389.3,332.1 L400.1,333.0 L402.0,330.8 L408.5,331.1 L417.7,321.4 L422.9,319.9 L431.5,314.1 L435.1,316.5 L440.2,313.8 L439.4,309.6 L442.3,307.5 L444.4,308.2 L440.3,304.4 L441.7,300.3 L449.0,301.0 L449.5,299.2 L452.8,298.8 L455.4,294.4 L459.4,293.7 L465.9,301.7 L470.5,303.4 L473.7,300.8 L475.7,301.4 L471.0,292.3 L472.0,284.6 L478.6,279.7 L478.4,275.7 L481.9,266.7 L484.5,266.2 L486.8,268.6 L489.4,268.2 L490.5,265.5 L493.3,265.5 L495.0,258.2 L493.8,255.6 L500.4,250.0 L500.9,245.3 L504.5,241.1 L508.5,240.3 L515.9,242.9 L518.0,241.0 L525.1,247.1 L531.9,245.2 L535.7,248.1 L539.5,242.6 L548.6,241.8 L558.1,245.2 L558.9,250.6 L564.2,245.3 L564.7,240.2 L566.7,240.3 L566.5,236.2 L569.3,235.8Z",cx:545.2,cy:316.8},"Gandaki":{d:"M393.2,127.6 L398.5,132.4 L401.3,131.1 L409.0,133.5 L408.6,137.6 L417.2,138.0 L417.0,141.0 L413.3,144.3 L414.5,150.5 L417.2,151.3 L416.0,160.1 L419.2,159.4 L421.9,161.3 L419.7,177.6 L423.7,177.2 L429.5,181.2 L431.5,180.1 L438.1,182.3 L437.3,185.0 L440.8,186.0 L440.9,191.9 L443.3,194.0 L446.5,195.9 L453.0,193.9 L454.5,195.8 L460.0,195.7 L464.2,201.8 L467.9,203.2 L466.9,207.1 L483.2,214.7 L487.6,212.1 L492.1,211.9 L492.5,213.6 L495.9,212.3 L503.5,201.9 L506.1,203.2 L509.2,201.4 L513.4,206.4 L515.9,206.2 L517.6,208.3 L515.1,211.6 L516.9,214.9 L516.4,218.9 L514.3,219.1 L513.0,223.8 L509.6,224.4 L507.6,227.7 L510.4,235.1 L508.5,240.3 L502.3,242.7 L500.4,250.0 L494.1,255.1 L495.0,258.2 L493.3,265.5 L490.5,265.5 L489.4,268.2 L486.8,268.6 L484.5,266.2 L481.9,266.7 L478.4,275.7 L478.6,279.7 L472.0,284.6 L471.0,292.3 L475.7,301.3 L473.7,300.8 L470.5,303.4 L465.9,301.7 L459.4,293.7 L455.4,294.4 L452.8,298.8 L449.5,299.2 L449.0,301.0 L441.7,300.3 L440.3,304.4 L444.4,308.2 L442.3,307.5 L439.4,309.6 L440.2,313.8 L435.0,316.5 L431.5,314.1 L422.9,319.9 L417.7,321.4 L408.5,331.1 L402.0,330.8 L400.1,333.0 L389.3,332.1 L389.4,335.5 L392.3,334.1 L393.8,336.0 L390.7,338.2 L390.5,342.8 L386.4,344.4 L384.3,338.5 L386.6,337.4 L384.4,336.0 L385.1,334.0 L381.5,330.3 L380.4,332.1 L380.4,327.4 L375.8,325.1 L378.0,318.6 L369.2,317.5 L366.2,318.7 L367.2,316.3 L364.4,312.2 L369.6,313.3 L375.0,311.5 L381.4,313.3 L381.3,310.3 L389.3,311.3 L391.9,308.9 L395.9,308.7 L399.6,300.5 L399.8,296.4 L384.6,292.8 L382.7,294.5 L381.3,293.5 L381.4,295.1 L377.5,294.5 L373.0,290.3 L371.0,291.4 L364.3,288.3 L360.1,291.5 L359.3,288.5 L354.1,288.0 L353.7,286.5 L351.4,288.2 L349.7,287.0 L349.0,288.7 L347.4,286.8 L344.9,288.8 L340.6,287.7 L344.8,282.1 L349.7,284.0 L354.4,282.9 L357.0,280.3 L356.3,277.6 L352.8,275.9 L352.7,272.6 L354.7,271.1 L352.0,266.6 L347.6,265.5 L345.1,267.0 L343.9,264.9 L338.8,265.7 L332.0,257.4 L323.8,258.5 L314.8,249.0 L313.1,250.5 L311.9,249.0 L309.4,251.4 L305.6,250.6 L306.0,248.3 L303.0,244.1 L291.7,238.8 L290.5,234.4 L287.8,233.9 L287.6,230.3 L284.0,225.8 L287.3,225.0 L283.9,221.0 L287.6,219.6 L288.2,215.1 L293.9,217.5 L294.7,214.6 L291.4,211.5 L293.9,208.0 L302.0,209.0 L307.9,207.7 L308.2,202.9 L310.2,202.7 L311.6,199.7 L310.9,194.5 L317.4,196.2 L319.3,195.0 L324.1,197.3 L332.7,196.0 L335.3,192.6 L344.9,190.4 L344.6,184.1 L346.7,183.1 L346.5,179.6 L355.8,167.4 L358.1,166.9 L357.9,161.4 L359.8,158.1 L358.2,154.3 L364.7,151.4 L362.3,142.2 L367.8,137.5 L376.5,136.9 L376.2,133.8 L378.1,130.9 L381.6,131.4 L387.3,128.2 L391.6,129.3 L393.2,127.6Z",cx:401.9,cy:233.1},"Lumbini":{d:"M263.1,182.4 L265.6,181.0 L270.2,183.2 L272.6,187.4 L277.8,184.8 L290.9,185.1 L294.3,188.3 L304.2,190.0 L307.7,194.9 L310.9,194.5 L311.6,199.7 L310.2,202.7 L308.2,202.9 L307.9,207.7 L302.0,209.0 L293.9,208.0 L291.4,211.5 L294.7,214.6 L294.2,216.9 L287.8,215.4 L287.6,219.6 L283.9,221.0 L287.3,225.2 L284.1,225.5 L284.4,227.2 L287.6,230.3 L287.8,233.9 L290.5,234.4 L291.7,238.8 L302.4,243.6 L306.0,248.3 L305.6,250.6 L309.4,251.4 L311.9,249.0 L313.1,250.5 L314.8,249.0 L323.8,258.5 L332.0,257.4 L338.8,265.7 L343.9,264.9 L345.1,267.0 L347.6,265.5 L352.0,266.6 L354.7,271.1 L352.7,272.6 L352.8,275.9 L356.3,277.6 L357.0,280.3 L354.4,282.9 L349.7,284.0 L344.8,282.1 L340.6,287.7 L344.9,288.8 L347.4,286.8 L349.0,288.7 L349.7,287.0 L351.4,288.2 L353.7,286.5 L354.1,288.0 L359.3,288.5 L360.1,291.5 L364.3,288.3 L371.0,291.4 L373.0,290.3 L377.5,294.5 L381.4,295.1 L381.3,293.5 L382.7,294.5 L384.6,292.8 L399.8,296.4 L399.6,300.5 L395.9,308.7 L391.9,308.9 L389.3,311.3 L381.3,310.3 L381.4,313.3 L375.0,311.5 L369.6,313.3 L368.1,312.5 L364.9,311.9 L364.4,312.2 L367.2,316.3 L366.2,318.7 L369.2,317.5 L378.0,318.6 L375.8,325.2 L380.4,327.4 L380.4,332.1 L381.9,330.5 L385.1,334.0 L384.4,336.1 L386.6,337.4 L384.3,338.5 L386.4,344.4 L383.6,345.6 L384.1,349.6 L387.4,350.0 L385.6,353.4 L383.1,354.8 L358.1,340.7 L335.4,339.6 L336.7,342.1 L334.9,344.5 L337.5,347.2 L332.4,355.2 L326.9,356.5 L323.7,354.1 L323.6,350.6 L315.1,342.5 L299.7,343.1 L291.6,340.9 L289.1,337.1 L269.6,336.9 L271.6,327.2 L269.5,324.7 L269.7,320.8 L267.2,318.3 L266.8,311.8 L240.7,316.8 L216.5,298.0 L207.9,295.4 L202.7,288.9 L192.3,288.1 L188.1,296.0 L184.0,296.4 L165.1,281.3 L157.7,279.8 L143.0,270.5 L143.6,266.5 L140.1,263.9 L139.7,261.5 L132.5,259.7 L132.2,263.7 L126.8,264.7 L127.8,263.0 L125.2,261.0 L127.2,260.7 L127.1,257.4 L118.2,246.9 L118.4,242.8 L116.3,239.0 L102.8,235.9 L100.8,233.3 L104.0,227.6 L110.9,222.6 L119.9,211.9 L123.8,205.8 L123.5,202.9 L125.8,203.0 L127.1,203.6 L126.7,207.1 L135.2,210.5 L138.9,215.9 L150.9,223.3 L161.1,232.4 L172.0,237.6 L169.8,244.1 L174.1,246.3 L174.7,248.6 L179.8,248.9 L181.5,252.7 L187.6,254.0 L196.3,262.7 L199.8,253.6 L205.7,250.3 L210.0,252.9 L212.6,251.2 L220.1,252.8 L225.8,251.8 L232.5,258.3 L235.1,258.3 L235.5,260.7 L236.5,254.7 L239.5,251.8 L236.2,250.0 L232.1,243.4 L234.1,237.3 L230.9,231.5 L233.4,230.7 L237.6,219.5 L242.1,220.3 L245.1,216.7 L254.0,212.9 L253.9,209.7 L246.7,208.1 L244.4,206.7 L244.8,204.5 L246.0,203.6 L251.4,206.3 L255.9,203.3 L257.5,198.7 L256.1,195.0 L252.5,194.8 L252.1,192.1 L257.9,187.4 L257.3,185.4 L260.3,180.8 L263.1,182.4Z",cx:264.9,cy:274.1},"Karnali":{d:"M157.9,0.0 L168.0,4.0 L170.4,6.5 L182.2,7.8 L186.9,11.0 L190.4,10.0 L194.3,14.3 L197.2,11.6 L201.1,13.0 L202.9,10.0 L206.1,11.0 L208.4,16.5 L205.4,23.7 L208.4,25.2 L209.5,28.3 L214.1,29.2 L213.8,32.6 L216.2,33.5 L212.7,37.1 L214.3,38.3 L212.2,41.7 L212.8,43.6 L220.4,42.4 L225.6,46.7 L229.2,45.7 L232.1,49.8 L235.3,48.3 L245.8,57.2 L248.9,54.3 L250.8,55.3 L256.2,63.7 L260.2,65.9 L258.0,69.7 L265.7,67.6 L268.7,69.9 L269.7,72.4 L265.4,74.9 L265.0,78.2 L271.3,77.9 L272.3,81.8 L277.9,83.0 L278.7,86.5 L282.2,87.2 L289.7,84.8 L291.8,89.7 L297.1,88.5 L304.8,96.5 L308.3,93.6 L311.3,94.1 L312.8,95.0 L312.2,97.2 L314.3,97.6 L316.0,95.6 L318.2,96.2 L317.8,98.1 L319.6,99.4 L324.2,100.4 L324.6,101.7 L321.9,101.8 L323.1,107.4 L330.9,108.9 L330.7,112.2 L333.6,116.5 L337.9,117.3 L339.1,119.4 L338.0,124.4 L340.8,126.0 L340.3,130.2 L342.8,133.8 L345.3,133.5 L348.1,136.2 L348.4,140.3 L350.2,142.2 L353.8,142.3 L354.2,144.9 L357.7,144.8 L360.0,147.4 L362.4,145.4 L364.3,148.7 L364.7,151.4 L358.2,154.3 L359.8,158.1 L357.9,161.4 L358.1,166.9 L355.8,167.4 L346.5,179.6 L346.7,183.1 L344.6,184.1 L344.9,190.4 L335.3,192.6 L332.7,196.0 L324.1,197.3 L319.3,195.0 L317.4,196.2 L307.7,194.9 L304.2,190.0 L294.3,188.3 L290.9,185.1 L277.8,184.8 L272.6,187.4 L270.2,183.2 L260.4,180.7 L257.3,185.4 L257.9,187.4 L252.1,192.1 L252.5,194.8 L256.1,195.0 L257.5,201.0 L251.4,206.3 L246.0,203.6 L244.8,204.5 L244.4,206.7 L246.7,208.1 L253.9,209.7 L254.0,212.9 L245.1,216.7 L242.1,220.3 L237.6,219.5 L233.4,230.7 L230.8,231.7 L234.1,237.3 L232.1,243.4 L236.2,250.0 L239.5,251.8 L236.5,254.7 L235.5,260.7 L235.1,258.3 L232.5,258.3 L225.8,251.8 L220.1,252.8 L212.6,251.2 L210.0,252.9 L205.7,250.3 L199.8,253.6 L196.3,262.7 L187.6,254.0 L181.5,252.7 L179.8,248.9 L174.7,248.6 L174.1,246.3 L169.8,244.1 L172.0,237.6 L161.1,232.4 L150.9,223.3 L138.9,215.9 L135.2,210.5 L126.6,207.1 L127.1,203.6 L123.5,202.9 L121.7,199.4 L122.2,196.8 L120.6,196.4 L119.8,190.7 L117.6,189.0 L119.2,187.2 L115.6,181.3 L115.3,186.5 L110.2,184.9 L109.2,180.0 L105.1,183.3 L92.9,172.5 L99.8,168.0 L106.8,169.7 L115.4,176.0 L119.5,175.2 L121.6,176.7 L125.2,174.0 L130.6,178.1 L138.3,175.7 L141.6,177.7 L141.5,182.4 L147.4,188.0 L146.7,190.7 L148.7,192.8 L147.2,194.2 L153.3,193.1 L146.1,178.1 L139.6,172.3 L136.1,165.9 L142.1,156.6 L151.8,151.1 L147.6,148.0 L145.1,148.1 L143.9,145.7 L143.8,139.7 L145.1,138.2 L141.9,134.4 L146.0,129.5 L151.0,124.5 L151.9,125.7 L156.6,123.1 L159.6,124.8 L160.1,128.8 L169.3,127.3 L171.4,121.4 L174.3,121.0 L175.1,119.0 L175.8,111.1 L174.2,108.3 L171.6,107.7 L174.7,104.8 L175.2,99.5 L172.7,96.2 L166.9,94.4 L165.0,87.9 L169.3,74.8 L173.4,73.1 L175.3,62.4 L166.9,61.4 L164.1,56.9 L159.8,57.0 L146.9,59.9 L145.6,63.3 L142.2,63.7 L140.8,62.4 L140.4,56.9 L142.0,55.2 L141.4,51.6 L135.2,48.4 L130.8,49.8 L122.2,45.9 L124.1,38.2 L120.6,34.3 L125.5,32.2 L128.3,33.5 L134.7,27.1 L134.3,22.4 L136.8,18.8 L135.0,18.8 L135.3,17.5 L137.4,16.1 L134.7,14.0 L135.7,10.6 L134.6,8.9 L138.0,7.2 L135.2,5.7 L135.9,2.8 L139.6,3.4 L144.1,7.4 L150.4,8.7 L151.3,2.0 L155.9,3.9 L157.9,0.0Z",cx:223.8,cy:136.5},"Sudurpashchim":{d:"M93.8,22.9 L97.5,24.2 L99.3,26.9 L98.2,28.5 L103.2,34.1 L103.0,39.5 L105.8,41.2 L104.0,44.8 L108.2,49.2 L113.3,49.8 L114.4,48.4 L118.1,50.2 L120.3,48.8 L118.7,47.4 L122.2,45.9 L132.7,50.3 L136.4,48.9 L141.4,51.6 L142.0,55.2 L140.4,56.9 L140.8,62.4 L142.2,63.7 L145.6,63.3 L146.9,59.9 L159.8,57.0 L164.1,56.9 L166.9,61.4 L175.3,62.4 L173.4,73.1 L169.3,74.8 L165.0,87.9 L166.9,94.4 L172.7,96.2 L175.2,99.5 L174.7,104.8 L171.6,107.7 L174.2,108.3 L175.8,111.1 L175.1,119.0 L174.3,121.0 L171.4,121.4 L169.3,127.3 L160.1,128.8 L159.6,124.8 L156.6,123.1 L151.9,125.7 L151.0,124.5 L146.0,129.5 L141.9,134.4 L145.1,138.2 L143.8,139.7 L143.9,145.7 L145.1,148.1 L147.6,148.0 L151.8,151.1 L142.1,156.6 L136.1,165.9 L139.6,172.3 L146.1,178.1 L153.2,190.7 L153.2,193.3 L147.2,194.2 L148.7,192.8 L146.7,190.7 L147.4,188.0 L141.5,182.4 L141.6,177.7 L138.3,175.7 L130.6,178.1 L125.2,174.0 L121.6,176.7 L119.5,175.2 L115.4,176.0 L106.8,169.7 L99.8,168.0 L93.0,172.4 L105.1,183.3 L109.2,180.0 L110.2,184.9 L115.3,186.5 L114.5,184.6 L115.6,181.3 L119.2,187.2 L117.6,189.0 L119.8,190.7 L120.6,196.4 L122.2,196.8 L121.6,199.4 L123.8,204.0 L119.8,212.0 L110.9,222.6 L103.9,227.7 L100.8,233.1 L101.6,234.8 L96.9,233.0 L98.2,231.0 L96.1,229.8 L96.6,228.3 L91.3,229.9 L92.8,227.9 L90.0,228.8 L88.0,227.5 L89.0,226.4 L86.3,227.6 L84.3,222.1 L79.1,223.3 L73.6,220.0 L71.4,215.2 L66.1,215.0 L63.6,212.8 L64.2,210.9 L62.3,210.8 L61.3,206.5 L53.5,205.8 L53.6,202.2 L51.4,201.2 L48.5,200.9 L44.8,203.8 L47.6,214.5 L46.2,216.8 L41.3,213.2 L39.6,208.0 L30.4,207.2 L26.9,203.7 L26.1,199.9 L19.9,196.5 L20.8,194.9 L19.4,193.3 L15.9,193.5 L6.0,185.1 L1.7,185.6 L0.0,175.1 L4.2,167.1 L6.0,167.6 L7.8,164.7 L6.7,164.0 L7.1,158.5 L8.7,153.7 L12.6,149.8 L17.6,152.0 L21.5,149.3 L18.4,142.3 L19.1,140.2 L23.0,143.2 L24.0,142.0 L23.4,139.0 L26.0,129.5 L22.3,125.9 L21.8,120.5 L18.4,118.4 L18.6,114.7 L24.6,113.6 L23.0,110.9 L29.3,106.1 L30.2,104.6 L28.6,102.2 L32.3,101.3 L35.2,97.4 L36.4,92.4 L32.8,88.3 L31.1,79.7 L34.1,78.7 L35.1,74.6 L37.9,73.3 L43.8,74.5 L45.2,71.3 L49.8,68.2 L54.1,56.4 L57.5,55.0 L62.0,55.9 L66.6,51.0 L69.1,50.6 L70.8,45.4 L82.5,36.3 L81.0,31.7 L84.5,26.7 L87.5,24.1 L93.8,22.9Z",cx:88.8,cy:128.4}}};
+
 const YEAR_AD = {2082:2026,2081:2025,2080:2024,2079:2023,2078:2022,2077:2021};
 
 const HEAT = {
@@ -804,25 +839,26 @@ async function loadPapers(){
 
 // ─── SUBJECT TABS ────────────────────────────────────────────────────────────
 
-function renderTabs(){
-  document.getElementById('stabs').innerHTML = SUBJECTS.map((s,i)=>`
-    <button class="stab${i===0?` act`:''}" id="tab-${s.code}"
-      style="${i===0?`color:${s.accent};border-bottom-color:${s.accent};`:''}"
-      onclick="switchSubj('${s.code}',this)">
-      <span style="opacity:.8">${s.icon}</span>${s.name}
-    </button>`).join('');
+function renderSubjectTiles(){
+  var box=document.getElementById('subtiles'); if(!box) return;
+  var g=(S.data&&S.data.grouped)||{};
+  box.innerHTML=SUBJECTS.map(function(s){
+    var has=g[s.code]&&Object.keys(g[s.code]).length>0;
+    var on=s.code===S.subj;
+    var cls='st2'+(on?' on':'')+(has?'':' soon');
+    var click=has?(' onclick="switchSubj(\''+s.code+'\')"'):'';
+    return '<button class="'+cls+'"'+click+'><span class="st2-ic">'+s.icon+'</span><span class="st2-tx"><span class="st2-nm">'+s.name+'</span><span class="st2-np">'+(has?s.np:'Coming soon')+'</span></span></button>';
+  }).join('');
 }
 
-function switchSubj(code, el){
-  S.subj = code; S.year = 'all';
-  document.querySelectorAll('.stab').forEach(t=>{t.classList.remove('act');t.style.color='';t.style.borderBottomColor='';});
-  const s = subj(code);
-  el.classList.add('act'); el.style.color=s.accent; el.style.borderBottomColor=s.accent;
-  document.getElementById('bc-subj').textContent = s.name;
-  renderPapers();
+function renderTabs(){ renderSubjectTiles(); }
+
+function switchSubj(code){
+  S.subj=code; S.year='all';
   goView('papers');
-  document.querySelectorAll('.li').forEach(i=>i.classList.remove('act'));
-  document.getElementById('nav-papers').classList.add('act');
+  document.querySelectorAll('.li').forEach(function(i){i.classList.remove('act');});
+  var np=document.getElementById('nav-papers'); if(np) np.classList.add('act');
+  renderPapers();
 }
 
 // ─── HERO ────────────────────────────────────────────────────────────────────
@@ -844,76 +880,48 @@ function renderHero(){
 
 function renderPapers(){
   if(!S.data) return;
-  renderHero();
-  updateStartedCount(subj(S.subj));
-  const s = subj(S.subj);
-  const d = S.data.grouped?.[S.subj]||{};
-  const years = Object.keys(d).sort((a,b)=>b-a);
-
-  // Year pills
-  document.getElementById('ypills').innerHTML =
-    `<button class="ypill${S.year==='all'?' act':''}" onclick="setYear('all',this)">All</button>` +
-    years.map(y=>`<button class="ypill${S.year===y?' act':''}" onclick="setYear('${y}',this)">${y}</button>`).join('');
-
-  // Blocks
-  if(!years.length){
-    document.getElementById('yblocks').innerHTML =
-      `<div class="empty"><div class="empty-ico">📭</div><div class="empty-t">No papers yet</div><div class="empty-s">${s.name} papers coming soon.</div></div>`;
+  renderSubjectTiles();
+  var s=subj(S.subj);
+  var d=(S.data.grouped&&S.data.grouped[S.subj])||{};
+  var years=Object.keys(d).sort(function(a,b){return b-a;});
+  var curYear=(S.year!=='all'&&years.indexOf(S.year)>=0)?S.year:(years[0]||null);
+  document.getElementById('ypills').innerHTML=years.map(function(y){
+    return '<button class="yp2'+(y===curYear?' on':'')+'" onclick="setYear(\''+y+'\')">'+y+'</button>';
+  }).join('');
+  if(!curYear){
+    document.getElementById('maphead').innerHTML='';
+    document.getElementById('yblocks').innerHTML='<div class="ppl-empty">No '+s.name+' papers yet — coming soon.</div>';
+    document.getElementById('mapfb').innerHTML='';
     return;
   }
-  const shown = S.year==='all' ? years : years.filter(y=>y===S.year);
-  document.getElementById('yblocks').innerHTML = shown.map(y=>{
-    const provs = d[y]||[];
-    const isN = parseInt(y)>=2082;
-    return `<div class="yblock">
-      <div class="yhdr">
-        <span class="ynum" style="${isN?'color:var(--blue)':'color:var(--ink)'}">SEE ${y}</span>
-        <span class="yad">${YEAR_AD[y]||''} AD</span>
-        ${isN?'<span class="new-b">NEW</span>':''}
-        <div class="ydiv"></div>
-        <span class="ycnt">${provs.length}/7 started</span>
-      </div>
-      <div class="pgrid">${provCards(provs,y,s)}</div>
-    </div>`;
-  }).join('');
+  document.getElementById('maphead').innerHTML=
+    '<span class="mh-t">'+s.name+' · '+curYear+'</span>'+
+    '<span class="mh-legend"><span><i class="lk pr"></i>In progress</span><span><i class="lk dn"></i>Done</span><span><i class="lk av"></i>Available</span><span><i class="lk sn"></i>Coming soon</span></span>';
+  var avail=(d[curYear]||[]).map(function(p){return p.province;});
+  renderMap(curYear, s, avail);
 }
 
-function provCards(avail, year, s){
-  const map={};
-  avail.forEach(p=>{map[p.province]=p;});
-  const ordered = PROVINCES.slice().sort((a,b)=>{
-    const av = map[a.name]?1:0, bv = map[b.name]?1:0;
-    if (av !== bv) return bv - av;   // provinces with a paper come first
-    return a.num - b.num;            // otherwise keep fixed Koshi -> Sudurpashchim order
+function renderMap(year, s, avail){
+  var availSet={}; avail.forEach(function(n){availSet[n]=1;});
+  var paths='', labels='', fb='';
+  PROVINCES.forEach(function(p){
+    var m=NP_MAP.p[p.name]; if(!m) return;
+    var live=!!availSet[p.name];
+    var pct=0;
+    if(live){ var pr=getProgress(s.code+'-'+year+'-'+p.name.toLowerCase()); pct=(pr&&pr.pct)||0; }
+    var st=!live?'soon':(pct>=100?'done':(pct>0?'progress':'avail'));
+    var sub=!live?'Soon':(pct>=100?'Done':(pct>0?pct+'%':'Start'));
+    var click=live?(' onclick="openPaper(\''+s.code+'\',\''+year+'\',\''+p.name+'\')" style="cursor:pointer"'):'';
+    paths+='<path class="prov '+st+'" d="'+m.d+'"'+click+'><title>'+p.name+' — '+sub+'</title></path>';
+    var nm=p.name==='Sudurpashchim'?'Sudur.':p.name;
+    labels+='<text class="plabel '+st+'" x="'+m.cx+'" y="'+(m.cy-2)+'">'+nm+'</text>';
+    labels+='<text class="psub '+st+'" x="'+m.cx+'" y="'+(m.cy+12)+'">'+sub+'</text>';
+    fb+=live
+      ? '<a class="fbp" onclick="openPaper(\''+s.code+'\',\''+year+'\',\''+p.name+'\')">'+p.name+'</a>'
+      : '<span class="fbp soon">'+p.name+'</span>';
   });
-  return ordered.map(p=>{
-    const paper = map[p.name];
-    const live = !!paper;
-    const prog = getProgress(`${s.code}-${year}-${p.name.toLowerCase()}`);
-    const pct = prog?.pct||0;
-    const statusHtml = live
-      ? (pct===100
-          ? `<span class="pc-rt" style="color:var(--green)">✓</span>`
-          : pct>0
-            ? `<span class="pc-rt" style="color:${s.accent}">${pct}%</span>`
-            : `<span class="pc-rt" style="color:var(--faint)">›</span>`)
-      : `<span class="pc-rt" style="font-size:10px;color:var(--faint)">Soon</span>`;
-    const cls = `pc${!live?' soon':''}${pct===100?' done':pct>0?' started':''}`;
-    const click = live ? `onclick="openPaper('${s.code}','${year}','${p.name}')"` : '';
-    const isN = parseInt(year)>=2082;
-    return `<div class="${cls}" ${click}>
-      <div class="pc-strip" style="background:${live?s.accent:'transparent'};width:${pct?pct+'%':'0'};"></div>
-      <div class="pc-in">
-        <div class="pc-badge" style="background:${p.col}18;color:${p.col};">P${p.num}</div>
-        <div class="pc-info">
-          <div class="pc-nm">${p.name}</div>
-          <div class="pc-np">${p.np}</div>
-        </div>
-        ${statusHtml}
-      </div>
-      ${isN&&live?`<div class="pc-new" style="background:${s.accent}">NEW</div>`:''}
-    </div>`;
-  }).join('');
+  document.getElementById('yblocks').innerHTML='<div class="mapwrap"><svg viewBox="-12 -14 '+(NP_MAP.w+24)+' '+(NP_MAP.h+28)+'" class="npmap" xmlns="http://www.w3.org/2000/svg">'+paths+labels+'</svg></div>';
+  document.getElementById('mapfb').innerHTML='<span class="fbl">Or jump to:</span>'+fb;
 }
 
 function openPaper(code,year,province){
@@ -924,12 +932,7 @@ function openPaper(code,year,province){
   window.location.href = '/see/past-papers/'+encodeURIComponent(year)+'/'+encodeURIComponent(prov)+'/'+encodeURIComponent(subj);
 }
 
-function setYear(y,el){
-  S.year=y;
-  document.querySelectorAll('.ypill').forEach(p=>{p.classList.remove('act');});
-  el.classList.add('act');
-  renderPapers();
-}
+function setYear(y){ S.year=y; renderPapers(); }
 
 function searchProv(q){
   const qL = q.toLowerCase();
