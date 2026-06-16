@@ -163,6 +163,148 @@ function rowText(s) {
   if (LANG === 'np') return np || en;
   return en || np;
 }
+
+// English papers: render the first line (the task instruction) as a bold heading,
+// with the passage/poem below. Other subjects: plain text. CSS (.q-text pre-wrap)
+// keeps every line break that's already saved in the data.
+function parentHTML(text) {
+  text = safeStr(text);
+  var eng = !!(DATA && DATA.meta && DATA.meta.isEnglish);
+  if (!eng) return escapeHTML(text);
+  var nl = text.indexOf('\n');
+  if (nl < 0) return escapeHTML(text);
+  return '<span class="q-instr">' + escapeHTML(text.slice(0, nl).trim()) + '</span>'
+       + escapeHTML(text.slice(nl + 1));
+}
+
+// Split an English question into its main instruction (first line) and passage (rest).
+function splitParent(text){
+  text = safeStr(text);
+  var nl = text.indexOf('\n');
+  if (nl < 0) return { instr: text.trim(), passage: '' };
+  return { instr: text.slice(0, nl).trim(), passage: text.slice(nl + 1) };
+}
+function isPoemInstr(instr){ return /\b(poem|verse|stanza)\b/i.test(safeStr(instr)); }
+// Render a passage as tidy paragraphs (prose) or preserved lines (poem) — no giant gaps.
+function passageHTML(passage, poem){
+  passage = safeStr(passage);
+  if (!passage.trim()) return '';
+  if (poem){
+    return '<div class="passage-poem">' +
+      escapeHTML(passage.replace(/\n{2,}/g, '\n')).replace(/\n/g, '<br>') + '</div>';
+  }
+  var paras = passage.split(/\n{2,}/)
+    .map(function(p){ return p.replace(/\n+/g, ' ').trim(); })
+    .filter(Boolean);
+  return paras.map(function(p){ return '<p class="passage-p">' + escapeHTML(p) + '</p>'; }).join('');
+}
+
+// ── English reading-task helpers (gated by DATA.meta.isEnglish) ──
+// Every helper falls back to the raw text, so content is never lost.
+function _txt(s){ return safeStr(s && (s.en || s.np)); }
+
+function commonTaskPrefix(items){
+  if (!items || !items.length) return '';
+  if (items.length === 1){
+    var t = _txt(items[0]);
+    var m = t.match(/^(\[[^\]]+\]|[^:\n]{4,48}:)\s/);
+    return m ? (m[1] + ' ') : '';
+  }
+  var pfx = _txt(items[0]);
+  for (var i=1;i<items.length;i++){
+    var b=_txt(items[i]); var j=0;
+    while (j<pfx.length && j<b.length && pfx[j]===b[j]) j++;
+    pfx = pfx.slice(0,j);
+    if (!pfx) break;
+  }
+  pfx = pfx.replace(/\s+$/,'');
+  var cut = Math.max(pfx.lastIndexOf(']'), pfx.lastIndexOf(':'));
+  if (cut < 4) return '';
+  return pfx.slice(0, cut+1) + ' ';
+}
+
+function headingFromPrefix(pf){
+  var h = pf.trim().replace(/:$/,'').replace(/^\[|\]$/g,'').trim();
+  if (/^true\s*\/\s*false$/i.test(h)) return 'Write TRUE for true and FALSE for false statements.';
+  if (!h) return '';
+  return h.charAt(0).toUpperCase() + h.slice(1) + (/[.?!]$/.test(h) ? '' : '.');
+}
+
+function inferHeading(items){
+  var joined = items.map(_txt).join(' ');
+  if (/\(\s*i\s*\)[\s\S]*\(\s*ii\s*\)/.test(joined)) return 'Choose the best answer.';
+  if (/(\u2026|\.{3,}|_{3,})/.test(joined)) return 'Fill in the gaps with information from the text.';
+  return 'Answer the following questions.';
+}
+
+function splitOptions(text){
+  text = safeStr(text);
+  var m = text.match(/\(\s*i\s*\)/);
+  if (!m) return null;
+  var q = text.slice(0, m.index).trim();
+  var rest = text.slice(m.index);
+  var parts = rest.split(/\(\s*(?:i{1,3}|iv|v|[a-d])\s*\)/i)
+                  .map(function(x){ return x.trim(); })
+                  .filter(Boolean);
+  if (parts.length < 2 || !q) return null;
+  return { q: q, opts: parts };
+}
+
+function splitBracketNote(text){
+  text = safeStr(text);
+  var m = text.match(/\s*\(([^()]{3,})\)\s*$/);
+  if (!m) return { body: text, note: '' };
+  if (!/\b(change|add|use|rewrite|put|combine|correct form|question tag|passive|negative|active|indirect|reported|interrogative|affirmative|exclamatory|join)\b/i.test(m[1]))
+    return { body: text, note: '' };
+  return { body: text.slice(0, m.index).trim(), note: m[1].trim() };
+}
+
+function englishTasks(subs){
+  function buildItem(s, label, pf){
+    var copy = {}; for (var k in s) copy[k] = s[k];
+    var body = _txt(s);
+    if (pf){ var p = pf.trim(); if (body.indexOf(p) === 0) body = body.slice(p.length).replace(/^\s+/,''); }
+    var mc = splitOptions(body); var optlist = null;
+    if (mc){ body = mc.q; optlist = mc.opts; }
+    var bn = splitBracketNote(body); body = bn.body;
+    copy._label = label; copy._body = body; copy._note = bn.note; copy._opts = optlist;
+    return copy;
+  }
+  var grouped = subs.some(function(s){ return /^[A-Za-z][-.\u2013]/.test(safeStr(s.sub)); });
+  if (!grouped){
+    var pf0 = commonTaskPrefix(subs);
+    return [{ heading:null, letter:null, items: subs.map(function(s){ return buildItem(s, safeStr(s.sub), pf0); }) }];
+  }
+  var order=[], map={}, headRow={};
+  subs.forEach(function(s){
+    var lab = safeStr(s.sub);
+    var m = lab.match(/^([A-Za-z])(?:[-.\u2013](.+))?$/);
+    var L = m ? m[1].toUpperCase() : '?';
+    var it = (m && m[2]) ? m[2] : null;
+    if (!map[L]){ map[L]=[]; order.push(L); }
+    if (it === null){ headRow[L] = s; return; }
+    map[L].push({ s:s, it:it });
+  });
+  return order.map(function(L){
+    var entries = map[L];
+    var raw = entries.map(function(e){ return e.s; });
+    var pf = commonTaskPrefix(raw);
+    var heading;
+    if (headRow[L]) heading = _txt(headRow[L]).replace(/\s*\(\s*\d+\s*[\u00d7x]\s*\d[^)]*\)\s*$/,'').trim();
+    else if (pf) heading = headingFromPrefix(pf);
+    else heading = inferHeading(raw);
+    return { heading: heading, letter: L, headMarks: headRow[L] ? safeNum(headRow[L].marks) : 0, items: entries.map(function(e){ return buildItem(e.s, e.it, pf); }) };
+  });
+}
+
+function taskMarksLabel(items){
+  var marks = items.map(function(s){ return safeNum(s.marks); });
+  var total = marks.reduce(function(a,b){ return a+b; }, 0);
+  if (!total) return '';
+  var first = marks[0];
+  var uniform = first>0 && marks.every(function(m){ return m===first; });
+  return uniform ? (items.length + '\u00d7' + first + '=' + total) : (total + ' marks');
+}
 // Does a row carry a usable answer?
 function hasAnswer(s) {
   return !!(s && safeStr(s.answer));
@@ -343,6 +485,17 @@ function closeSidebarMobile() {
 }
 
 // ── BUILD QUESTIONS ──
+// English total marks without double-counting A/B heading rows.
+function englishHeadMarks(g){
+  var subs = g.subs || [], item = 0, head = 0;
+  subs.forEach(function(s){
+    if (/^[A-Za-z]$/.test(safeStr(s.sub))) head += safeNum(s.marks);
+    else item += safeNum(s.marks);
+  });
+  var base = item > 0 ? item : head;
+  return base + safeNum(g.parent && g.parent.marks);
+}
+
 function buildQuestions() {
   var area  = document.getElementById('questions-area');
   area.innerHTML = '';
@@ -379,9 +532,12 @@ function buildQuestions() {
     card.className = 'qcard';
     card.id = 'qcard-' + g.num;
 
+    var isEng = !!(DATA.meta && DATA.meta.isEnglish);
+    var pSplit = (isEng && g.parent) ? splitParent(safeStr(g.parent.en)) : null;
+
     // Head
     var head = document.createElement('div');
-    head.className = 'qcard-head';
+    head.className = 'qcard-head' + (isEng ? ' qcard-head-eng' : '');
 
     var numEl = document.createElement('div');
     numEl.className = 'qnum';
@@ -389,24 +545,34 @@ function buildQuestions() {
     numEl.textContent = g.num;
     head.appendChild(numEl);
 
-    // Topic label inside card header (after the number)
-    var qTopic = groupTopic(g) || '';
-    if (qTopic) {
-      var t = document.createElement('span');
-      t.className = 'qtag qtag-topic';
-      t.textContent = qTopic;
-      head.appendChild(t);
-    }
-    var qFreq = (g.parent && g.parent.frequency) ? g.parent.frequency
-              : (g.subs.length && g.subs[0].frequency) ? g.subs[0].frequency : '';
-    if (qFreq) {
-      var ftag = document.createElement('span');
-      ftag.className = 'qtag qtag-freq';
-      ftag.textContent = '🔥 ' + qFreq;
-      head.appendChild(ftag);
+    if (isEng) {
+      // English: number + main instruction sit together as one bold header.
+      if (pSplit && pSplit.instr) {
+        var ins = document.createElement('div');
+        ins.className = 'qcard-instr';
+        ins.textContent = pSplit.instr;
+        head.appendChild(ins);
+      }
+    } else {
+      // Topic label inside card header (after the number)
+      var qTopic = groupTopic(g) || '';
+      if (qTopic) {
+        var t = document.createElement('span');
+        t.className = 'qtag qtag-topic';
+        t.textContent = qTopic;
+        head.appendChild(t);
+      }
+      var qFreq = (g.parent && g.parent.frequency) ? g.parent.frequency
+                : (g.subs.length && g.subs[0].frequency) ? g.subs[0].frequency : '';
+      if (qFreq) {
+        var ftag = document.createElement('span');
+        ftag.className = 'qtag qtag-freq';
+        ftag.textContent = '🔥 ' + qFreq;
+        head.appendChild(ftag);
+      }
     }
 
-    var totalMarks = groupMarks(g);
+    var totalMarks = isEng ? englishHeadMarks(g) : groupMarks(g);
     var marksEl = document.createElement('span');
     marksEl.className = 'qcard-marks';
     if (totalMarks > 0) {
@@ -419,14 +585,27 @@ function buildQuestions() {
     var body = document.createElement('div');
     body.className = 'qcard-body';
 
-    var parentTxt = g.parent ? rowText(g.parent) : '';
-    if (parentTxt) {
-      var qtxt = document.createElement('div');
-      qtxt.className = 'q-text';
-      qtxt.dataset.en = safeStr(g.parent.en);
-      qtxt.dataset.np = safeStr(g.parent.np) || safeStr(g.parent.en);
-      qtxt.textContent = parentTxt;
-      body.appendChild(qtxt);
+    if (isEng) {
+      // Only the passage goes in the body — the instruction is in the header.
+      if (pSplit && pSplit.passage && pSplit.passage.trim()) {
+        var qtxt = document.createElement('div');
+        qtxt.className = 'q-text';
+        qtxt.dataset.en = pSplit.passage;
+        qtxt.dataset.np = pSplit.passage;
+        qtxt.setAttribute('data-poem', isPoemInstr(pSplit.instr) ? '1' : '');
+        qtxt.innerHTML = passageHTML(pSplit.passage, isPoemInstr(pSplit.instr));
+        body.appendChild(qtxt);
+      }
+    } else {
+      var parentTxt = g.parent ? rowText(g.parent) : '';
+      if (parentTxt) {
+        var qtxt2 = document.createElement('div');
+        qtxt2.className = 'q-text';
+        qtxt2.dataset.en = safeStr(g.parent.en);
+        qtxt2.dataset.np = safeStr(g.parent.np) || safeStr(g.parent.en);
+        qtxt2.innerHTML = parentHTML(parentTxt);
+        body.appendChild(qtxt2);
+      }
     }
     var diagramSVG = g.parent ? safeDiagram(g.parent.diagram) : '';
     if (diagramSVG) {
@@ -446,9 +625,29 @@ function buildQuestions() {
 
     // Sub items, or the parent as a single revealable item (no text repeat).
     if (g.subs && g.subs.length > 0) {
-      g.subs.forEach(function(s) {
-        body.appendChild(buildSubItem(s, g.num, accent, false));
-      });
+      if (DATA.meta && DATA.meta.isEnglish) {
+        englishTasks(g.subs).forEach(function(task){
+          if (task.heading) {
+            var th = document.createElement('div');
+            th.className = 'task-head';
+            var tm = taskMarksLabel(task.items) || (task.headMarks ? (task.headMarks + ' marks') : '');
+            th.innerHTML =
+              (task.letter ? '<span class="task-letter">' + escapeHTML(task.letter) + '</span>' : '') +
+              '<span class="task-instr">' + escapeHTML(task.heading) + '</span>' +
+              (tm ? '<span class="task-marks">' + escapeHTML(tm) + '</span>' : '');
+            body.appendChild(th);
+          }
+          task.items.forEach(function(s){
+            body.appendChild(buildSubItem(s, g.num, accent, false, {
+              label: s._label, bodyText: s._body, note: s._note, opts: s._opts
+            }));
+          });
+        });
+      } else {
+        g.subs.forEach(function(s) {
+          body.appendChild(buildSubItem(s, g.num, accent, false));
+        });
+      }
     } else if (g.parent) {
       // Only show the single Answer reveal if there's actually an answer.
       if (hasAnswer(g.parent)) {
@@ -469,7 +668,7 @@ function buildQuestions() {
   });
 }
 
-function buildSubItem(s, qNum, accent, isParent) {
+function buildSubItem(s, qNum, accent, isParent, view) {
   var subId = isParent ? ('q-' + qNum + '-main') : ('q-' + qNum + '-' + s.sub);
   var item  = document.createElement('div');
   item.className = 'sub-item';
@@ -485,7 +684,7 @@ function buildSubItem(s, qNum, accent, isParent) {
   if (!isParent) {
     var ltr = document.createElement('span');
     ltr.className = 'sub-ltr';
-    ltr.textContent = safeStr(s.sub);
+    ltr.textContent = (view && view.label) ? view.label : safeStr(s.sub);
     subQ.appendChild(ltr);
   }
 
@@ -497,9 +696,10 @@ function buildSubItem(s, qNum, accent, isParent) {
     stxt.classList.add('sub-text-answer-label');
     stxt.textContent = 'Answer';
   } else {
-    stxt.dataset.en = safeStr(s.en);
-    stxt.dataset.np = safeStr(s.np) || safeStr(s.en);
-    stxt.textContent = rowText(s);
+    var _b = (view && typeof view.bodyText === 'string') ? view.bodyText : safeStr(s.en);
+    stxt.dataset.en = _b;
+    stxt.dataset.np = safeStr(s.np) || _b;
+    stxt.textContent = (view && typeof view.bodyText === 'string') ? _b : rowText(s);
   }
   subQ.appendChild(stxt);
 
@@ -520,6 +720,25 @@ function buildSubItem(s, qNum, accent, isParent) {
   }
 
   item.appendChild(subQ);
+
+  // English: grammar bracket note + stacked (display) options
+  if (view && view.note) {
+    var _nt = document.createElement('div');
+    _nt.className = 'sub-note';
+    _nt.textContent = view.note;
+    item.appendChild(_nt);
+  }
+  if (view && view.opts && view.opts.length) {
+    var _st = document.createElement('div');
+    _st.className = 'mcq-stack';
+    view.opts.forEach(function(o){
+      var _op = document.createElement('div');
+      _op.className = 'mcq-stack-opt';
+      _op.textContent = o;
+      _st.appendChild(_op);
+    });
+    item.appendChild(_st);
+  }
 
   // MCQ options
   var opts = null;
@@ -861,7 +1080,14 @@ function setLang(l) {
   var attr = l === 'np' ? 'data-np' : 'data-en';
   document.querySelectorAll('.q-text, .sub-text').forEach(function(el) {
     var txt = el.getAttribute(attr);
-    if (txt && txt.trim()) el.textContent = txt.trim();
+    if (!txt || !txt.trim()) return;
+    if (el.classList.contains('q-text')) {
+      el.innerHTML = (DATA.meta && DATA.meta.isEnglish)
+        ? passageHTML(txt, el.getAttribute('data-poem') === '1')
+        : parentHTML(txt);
+    } else {
+      el.textContent = txt.trim();
+    }
   });
 }
 

@@ -687,3 +687,29 @@ body {
 .sub-note{font-family:'DM Sans',system-ui,sans-serif;font-size:12.5px;color:var(--muted,#5f6b64);margin:3px 0 0 36px;}
 .mcq-stack{display:flex;flex-direction:column;gap:6px;margin:8px 0 2px 36px;}
 .mcq-stack-opt{font-family:'Lora','Fraunces',serif;font-size:calc(var(--qfont) - 1px);border:1px solid var(--line,#e0d9c8);border-radius:8px;padding:7px 11px;background:#fcfbf7;}
+
+
+/* English: number + instruction as one bold header */
+.qcard-head-eng { align-items: flex-start; gap: 10px; }
+.qcard-instr {
+  flex: 1 1 auto; min-width: 0;
+  font-family: 'Fraunces', serif; font-weight: 700;
+  font-size: 16px; line-height: 1.38; color: var(--navy);
+  padding-top: 2px;
+}
+.qcard-head-eng .qcard-marks { margin-top: 3px; }
+
+/* Tidy passage paragraphs (no oversized gaps) */
+.passage-p { margin: 0 0 .55em; line-height: 1.62; }
+.passage-p:last-child { margin-bottom: 0; }
+.passage-poem { font-style: italic; line-height: 1.7; }
+
+/* Lighter a. b. c. item labels (match the real paper) */
+.sub-ltr {
+  background: transparent; color: var(--navy);
+  font-family: 'Lora', 'Fraunces', serif;
+  font-size: calc(var(--qfont) - 2px); font-weight: 700;
+  padding: 0; border-radius: 0; min-width: 15px;
+  margin-top: 2px; text-align: left;
+}
+.sub-ltr::after { content: '.'; }
