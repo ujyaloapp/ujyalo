@@ -592,19 +592,6 @@ function buildQuestions() {
       head.appendChild(marksEl);
     }
 
-    // Tap the question header to show/hide its self-assessment buttons (one question at a time)
-    if (hasConf) {
-      var rateHint = document.createElement('span');
-      rateHint.className = 'qcard-rate-hint';
-      rateHint.textContent = 'Rate this ▾';
-      rateHint.style.cssText = 'margin-left:auto;font-size:12px;font-weight:600;color:#C0913F;cursor:pointer;white-space:nowrap;-webkit-user-select:none;user-select:none;';
-      head.appendChild(rateHint);
-      head.style.cursor = 'pointer';
-      (function(qn) {
-        head.addEventListener('click', function() { toggleConf(qn); });
-      })(g.num);
-    }
-
     card.appendChild(head);
 
     // Body
@@ -882,12 +869,24 @@ function buildConfBlock(qNum) {
   var confWrap = document.createElement('div');
   confWrap.className = 'conf-section';
   confWrap.id = 'conf-' + qNum;
-  // Hidden on load — shown only when the student taps the question header (toggleConf), one at a time.
-  confWrap.style.display = 'none';
-  var confLbl = document.createElement('div');
-  confLbl.className = 'conf-label';
-  confLbl.textContent = 'How did you do?';
-  confWrap.appendChild(confLbl);
+
+  // Always-visible trigger button (clearly tappable)
+  var toggle = document.createElement('button');
+  toggle.type = 'button';
+  toggle.className = 'conf-toggle';
+  toggle.id = 'conf-toggle-' + qNum;
+  toggle.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);font-family:Outfit,sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;';
+  setToggleLabel(toggle, confMap[qNum]);
+  toggle.onclick = function(e) { e.stopPropagation(); toggleConf(qNum); };
+  confWrap.appendChild(toggle);
+
+  // The 3 rating buttons — hidden until the trigger is tapped (one question at a time)
+  var reveal = document.createElement('div');
+  reveal.className = 'conf-reveal';
+  reveal.id = 'conf-reveal-' + qNum;
+  reveal.style.marginTop = '10px';
+  reveal.style.display = 'none';
+
   var btns = document.createElement('div');
   btns.className = 'conf-btns';
   [
@@ -896,6 +895,7 @@ function buildConfBlock(qNum) {
     { cls: 'cb-missed', ico: '✗', lbl: 'Missed it', val: 'missed' }
   ].forEach(function(c) {
     var btn = document.createElement('button');
+    btn.type = 'button';
     btn.className = 'conf-btn ' + c.cls;
     btn.innerHTML = '<div class="cb-ico">' + c.ico + '</div><div class="cb-lbl">' + c.lbl + '</div>';
     if (confMap[qNum] === c.val) btn.classList.add('selected');
@@ -905,8 +905,27 @@ function buildConfBlock(qNum) {
     };
     btns.appendChild(btn);
   });
-  confWrap.appendChild(btns);
+  reveal.appendChild(btns);
+  confWrap.appendChild(reveal);
   return confWrap;
+}
+
+// Sets the trigger button's label/colour to reflect the saved rating (or the default prompt).
+function setToggleLabel(toggle, val) {
+  var map = {
+    got:    ['✓ Got it',    '#15803D'],
+    almost: ['~ Almost',    '#C0913F'],
+    missed: ['✗ Missed it', '#B5532E']
+  };
+  if (val && map[val]) {
+    toggle.innerHTML = '<span>' + map[val][0] + '</span><span class="conf-toggle-arrow" style="opacity:.7;font-weight:600;">change ▾</span>';
+    toggle.style.color = map[val][1];
+    toggle.style.borderColor = map[val][1];
+  } else {
+    toggle.innerHTML = '<span>How did you do?</span><span class="conf-toggle-arrow">▾</span>';
+    toggle.style.color = 'var(--muted)';
+    toggle.style.borderColor = 'var(--line)';
+  }
 }
 
 // ── MCQ PICK ──
@@ -932,17 +951,18 @@ function confColor(v) {
 
 // Show one question's self-assessment buttons at a time (tap the question header to toggle).
 function toggleConf(qNum) {
-  var target = document.getElementById('conf-' + qNum);
+  var target = document.getElementById('conf-reveal-' + qNum);
   if (!target) return;
   var willOpen = (target.style.display === 'none');
-  // Close every open block + reset every header hint
-  document.querySelectorAll('.conf-section').forEach(function(s) { s.style.display = 'none'; });
-  document.querySelectorAll('.qcard-rate-hint').forEach(function(h) { h.textContent = 'Rate this ▾'; });
+  // Close every open rating block + reset every trigger arrow
+  document.querySelectorAll('.conf-reveal').forEach(function(s) { s.style.display = 'none'; });
+  document.querySelectorAll('.conf-toggle .conf-toggle-arrow').forEach(function(a) {
+    a.textContent = (a.textContent.indexOf('change') >= 0) ? 'change ▾' : '▾';
+  });
   if (willOpen) {
     target.style.display = '';
-    var card = document.getElementById('qcard-' + qNum);
-    var hint = card ? card.querySelector('.qcard-rate-hint') : null;
-    if (hint) hint.textContent = 'Rate this ▴';
+    var arrow = document.querySelector('#conf-toggle-' + qNum + ' .conf-toggle-arrow');
+    if (arrow) arrow.textContent = (arrow.textContent.indexOf('change') >= 0) ? 'change ▴' : '▴';
   }
 }
 
@@ -974,6 +994,10 @@ function setConf(qNum, val, btnsEl) {
   if (card) {
     card.style.borderColor = confColor(val);
   }
+
+  // Update the trigger button to show the chosen result
+  var toggle = document.getElementById('conf-toggle-' + qNum);
+  if (toggle) setToggleLabel(toggle, val);
 
   celebrate(val);
   updateProgress();
