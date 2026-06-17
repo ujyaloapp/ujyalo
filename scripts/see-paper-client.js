@@ -677,6 +677,7 @@ function buildQuestions() {
 
     // Restore the saved result border so it persists across reloads.
     if (confMap[g.num]) card.style.borderColor = confColor(confMap[g.num]);
+
     area.appendChild(card);
    } catch (err) {
      console.error('Skipped rendering issue on Q' + (g && g.num), err);
@@ -782,7 +783,7 @@ function buildSubItem(s, qNum, accent, isParent, view) {
 
   // Click to open answer (non-MCQ)
   if (!opts || !opts.length) {
-    item.onclick = function() { toggleAnswer(subId, s, qNum, item); };
+    item.onclick = function(e) { e.stopPropagation(); toggleAnswer(subId, s, qNum, item); };
   }
 
   return item;
@@ -814,6 +815,10 @@ function toggleAnswer(subId, s, qNum, itemEl) {
 
   var ansSection = buildAnswerSection(s, qNum);
   itemEl.appendChild(ansSection);
+
+  // Reveal this question's rating buttons (they stay once shown)
+  var cb = document.getElementById('conf-' + qNum);
+  if (cb) cb.style.display = '';
 }
 
 function buildAnswerSection(s, qNum) {
@@ -869,23 +874,7 @@ function buildConfBlock(qNum) {
   var confWrap = document.createElement('div');
   confWrap.className = 'conf-section';
   confWrap.id = 'conf-' + qNum;
-
-  // Always-visible trigger button (clearly tappable)
-  var toggle = document.createElement('button');
-  toggle.type = 'button';
-  toggle.className = 'conf-toggle';
-  toggle.id = 'conf-toggle-' + qNum;
-  toggle.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);font-family:Outfit,sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;';
-  setToggleLabel(toggle, confMap[qNum]);
-  toggle.onclick = function(e) { e.stopPropagation(); toggleConf(qNum); };
-  confWrap.appendChild(toggle);
-
-  // The 3 rating buttons — hidden until the trigger is tapped (one question at a time)
-  var reveal = document.createElement('div');
-  reveal.className = 'conf-reveal';
-  reveal.id = 'conf-reveal-' + qNum;
-  reveal.style.marginTop = '10px';
-  reveal.style.display = 'none';
+  confWrap.style.display = 'none';   // hidden until a sub-question in this question is opened
 
   var btns = document.createElement('div');
   btns.className = 'conf-btns';
@@ -905,28 +894,10 @@ function buildConfBlock(qNum) {
     };
     btns.appendChild(btn);
   });
-  reveal.appendChild(btns);
-  confWrap.appendChild(reveal);
+  confWrap.appendChild(btns);
   return confWrap;
 }
 
-// Sets the trigger button's label/colour to reflect the saved rating (or the default prompt).
-function setToggleLabel(toggle, val) {
-  var map = {
-    got:    ['✓ Got it',    '#15803D'],
-    almost: ['~ Almost',    '#C0913F'],
-    missed: ['✗ Missed it', '#B5532E']
-  };
-  if (val && map[val]) {
-    toggle.innerHTML = '<span>' + map[val][0] + '</span><span class="conf-toggle-arrow" style="opacity:.7;font-weight:600;">change ▾</span>';
-    toggle.style.color = map[val][1];
-    toggle.style.borderColor = map[val][1];
-  } else {
-    toggle.innerHTML = '<span>How did you do?</span><span class="conf-toggle-arrow">▾</span>';
-    toggle.style.color = 'var(--muted)';
-    toggle.style.borderColor = 'var(--line)';
-  }
-}
 
 // ── MCQ PICK ──
 function pickMCQ(btn, grid, correct, chosen, itemEl, s, qNum) {
@@ -942,28 +913,15 @@ function pickMCQ(btn, grid, correct, chosen, itemEl, s, qNum) {
     itemEl.classList.add('open');
     openSubId = itemEl.id;
   }
+
+  // Reveal this question's rating buttons (they stay once shown)
+  var cb = document.getElementById('conf-' + qNum);
+  if (cb) cb.style.display = '';
 }
 
 // ── CONFIDENCE ──
 function confColor(v) {
   return (v === 'got') ? '#15803D' : (v === 'almost') ? '#C0913F' : '#B5532E';
-}
-
-// Show one question's self-assessment buttons at a time (tap the question header to toggle).
-function toggleConf(qNum) {
-  var target = document.getElementById('conf-reveal-' + qNum);
-  if (!target) return;
-  var willOpen = (target.style.display === 'none');
-  // Close every open rating block + reset every trigger arrow
-  document.querySelectorAll('.conf-reveal').forEach(function(s) { s.style.display = 'none'; });
-  document.querySelectorAll('.conf-toggle .conf-toggle-arrow').forEach(function(a) {
-    a.textContent = (a.textContent.indexOf('change') >= 0) ? 'change ▾' : '▾';
-  });
-  if (willOpen) {
-    target.style.display = '';
-    var arrow = document.querySelector('#conf-toggle-' + qNum + ' .conf-toggle-arrow');
-    if (arrow) arrow.textContent = (arrow.textContent.indexOf('change') >= 0) ? 'change ▴' : '▴';
-  }
 }
 
 function startFresh() {
@@ -994,10 +952,6 @@ function setConf(qNum, val, btnsEl) {
   if (card) {
     card.style.borderColor = confColor(val);
   }
-
-  // Update the trigger button to show the chosen result
-  var toggle = document.getElementById('conf-toggle-' + qNum);
-  if (toggle) setToggleLabel(toggle, val);
 
   celebrate(val);
   updateProgress();
