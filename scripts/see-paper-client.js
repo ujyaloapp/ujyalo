@@ -79,6 +79,17 @@ function init() {
     if (lt) lt.style.display = 'none';
   }
 
+  // Add a "Start fresh" control to the top action bar
+  var heroActions = document.querySelector('.hero-actions');
+  if (heroActions && !document.getElementById('start-fresh-btn')) {
+    var sf = document.createElement('button');
+    sf.id = 'start-fresh-btn';
+    sf.className = 'hero-btn';
+    sf.textContent = '↺ Start fresh';
+    sf.onclick = startFresh;
+    heroActions.insertBefore(sf, heroActions.firstChild);
+  }
+
   loadConf();
   computeChapters();
   // Data-driven: use topic navigation only if the paper actually has topics.
@@ -531,6 +542,7 @@ function buildQuestions() {
     var card = document.createElement('div');
     card.className = 'qcard';
     card.id = 'qcard-' + g.num;
+    var hasConf = (g.subs && g.subs.length > 0) || (g.parent && hasAnswer(g.parent));
 
     var isEng = !!(DATA.meta && DATA.meta.isEnglish);
     var pSplit = (isEng && g.parent) ? splitParent(safeStr(g.parent.en)) : null;
@@ -579,6 +591,20 @@ function buildQuestions() {
       marksEl.textContent = totalMarks + (totalMarks === 1 ? ' mark' : ' marks');
       head.appendChild(marksEl);
     }
+
+    // Tap the question header to show/hide its self-assessment buttons (one question at a time)
+    if (hasConf) {
+      var rateHint = document.createElement('span');
+      rateHint.className = 'qcard-rate-hint';
+      rateHint.textContent = 'Rate this ▾';
+      rateHint.style.cssText = 'margin-left:auto;font-size:12px;font-weight:600;color:#C0913F;cursor:pointer;white-space:nowrap;-webkit-user-select:none;user-select:none;';
+      head.appendChild(rateHint);
+      head.style.cursor = 'pointer';
+      (function(qn) {
+        head.addEventListener('click', function() { toggleConf(qn); });
+      })(g.num);
+    }
+
     card.appendChild(head);
 
     // Body
@@ -656,11 +682,14 @@ function buildQuestions() {
     }
 
     // One self-assessment per question (Option A), shown once at the bottom.
-    if ((g.subs && g.subs.length > 0) || (g.parent && hasAnswer(g.parent))) {
+    if (hasConf) {
       body.appendChild(buildConfBlock(g.num));
     }
 
     card.appendChild(body);
+
+    // Restore the saved result border so it persists across reloads.
+    if (confMap[g.num]) card.style.borderColor = confColor(confMap[g.num]);
     area.appendChild(card);
    } catch (err) {
      console.error('Skipped rendering issue on Q' + (g && g.num), err);
@@ -798,9 +827,6 @@ function toggleAnswer(subId, s, qNum, itemEl) {
 
   var ansSection = buildAnswerSection(s, qNum);
   itemEl.appendChild(ansSection);
-
-  var cb = document.getElementById('conf-' + qNum);
-  if (cb) cb.style.display = '';
 }
 
 function buildAnswerSection(s, qNum) {
@@ -856,8 +882,8 @@ function buildConfBlock(qNum) {
   var confWrap = document.createElement('div');
   confWrap.className = 'conf-section';
   confWrap.id = 'conf-' + qNum;
-  // Hidden until the student reveals an answer in this question (or already rated it).
-  if (!confMap[qNum]) confWrap.style.display = 'none';
+  // Hidden on load — shown only when the student taps the question header (toggleConf), one at a time.
+  confWrap.style.display = 'none';
   var confLbl = document.createElement('div');
   confLbl.className = 'conf-label';
   confLbl.textContent = 'How did you do?';
@@ -897,11 +923,34 @@ function pickMCQ(btn, grid, correct, chosen, itemEl, s, qNum) {
     itemEl.classList.add('open');
     openSubId = itemEl.id;
   }
-  var cb = document.getElementById('conf-' + qNum);
-  if (cb) cb.style.display = '';
 }
 
 // ── CONFIDENCE ──
+function confColor(v) {
+  return (v === 'got') ? '#15803D' : (v === 'almost') ? '#C0913F' : '#B5532E';
+}
+
+// Show one question's self-assessment buttons at a time (tap the question header to toggle).
+function toggleConf(qNum) {
+  var target = document.getElementById('conf-' + qNum);
+  if (!target) return;
+  var willOpen = (target.style.display === 'none');
+  // Close every open block + reset every header hint
+  document.querySelectorAll('.conf-section').forEach(function(s) { s.style.display = 'none'; });
+  document.querySelectorAll('.qcard-rate-hint').forEach(function(h) { h.textContent = 'Rate this ▾'; });
+  if (willOpen) {
+    target.style.display = '';
+    var card = document.getElementById('qcard-' + qNum);
+    var hint = card ? card.querySelector('.qcard-rate-hint') : null;
+    if (hint) hint.textContent = 'Rate this ▴';
+  }
+}
+
+function startFresh() {
+  if (!confirm('Start this paper fresh? This clears your ratings on this paper in this browser so you can try it again. Your account history is not affected.')) return;
+  resetPaper();
+}
+
 function setConf(qNum, val, btnsEl) {
   confMap[qNum] = val;
   saveConf();
@@ -923,7 +972,7 @@ function setConf(qNum, val, btnsEl) {
   // Reflect the rating on the whole question card (not an individual sub-part)
   var card = document.getElementById('qcard-' + qNum);
   if (card) {
-    card.style.borderColor = (val === 'got') ? '#15803D' : (val === 'almost') ? '#C0913F' : '#B5532E';
+    card.style.borderColor = confColor(val);
   }
 
   celebrate(val);
