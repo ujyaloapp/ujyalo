@@ -251,9 +251,9 @@ body {
 
 .questions-wrap { flex: 1; min-width: 0; }
 .questions-area {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 18px 20px 60px;
+  max-width: 860px;
+  margin: 0;
+  padding: 18px 28px 60px;
 }
 
 .chap-group-head {
