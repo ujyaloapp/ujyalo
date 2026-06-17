@@ -18,20 +18,6 @@
   .dev{font-family:'Noto Sans Devanagari',sans-serif;}
   .hidden{display:none!important;}
 
-  /* login */
-  #login{min-height:100vh;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(120% 90% at 50% -10%,#1c4a40 0%,var(--forest) 48%,var(--forest-2) 100%);}
-  .lcard{background:var(--card);border-radius:16px;padding:34px 32px;width:340px;max-width:92vw;box-shadow:0 20px 60px #00000033;}
-  .lwm{font-family:'Fraunces',serif;font-weight:900;font-size:26px;color:var(--forest);}
-  .lwm .a{color:var(--brass);}
-  .ltag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass-deep);margin:4px 0 22px;}
-  #login input{width:100%;border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-family:'Outfit';font-size:15px;margin-bottom:11px;background:#fff;}
-  #login input:focus{outline:none;border-color:var(--brass);}
-  .lbtn{width:100%;background:var(--forest);color:#fff;border:none;border-radius:9px;padding:12px;font-family:'Outfit';font-weight:600;font-size:15px;cursor:pointer;}
-  .lbtn:hover{background:#16403a;}
-  .lerr{color:#9a3f1f;font-size:13px;margin-top:10px;min-height:18px;}
-
-  /* topbar */
   .topbar{background:var(--forest);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:11px 20px;position:sticky;top:0;z-index:20;}
   .wm{font-family:'Fraunces',serif;font-weight:900;font-size:20px;}.wm .a{color:var(--brass-lt);}
   .tb-tag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass-lt);padding-left:12px;border-left:1px solid #3a5249;margin-left:12px;}
@@ -40,10 +26,14 @@
   .who{background:#ffffff14;border:1px solid #ffffff2e;border-radius:99px;padding:5px 13px;color:#e8e2d4;}.who b{color:#fff;}
   .signout{color:#aebaad;font-size:12px;text-decoration:none;cursor:pointer;}
 
-  /* paper bar */
-  .paperbar{background:var(--parch-2);border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:48px;z-index:15;}
-  select.switch{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:9px 13px;font-family:'Outfit';font-weight:600;color:var(--forest);font-size:14px;cursor:pointer;max-width:280px;}
-  .prog{flex:1;min-width:200px;max-width:420px;}
+  .paperbar{background:var(--parch-2);border-bottom:1px solid var(--line);padding:11px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:48px;z-index:15;}
+  .vtabs{display:flex;gap:4px;background:#e4dcc8;border-radius:9px;padding:3px;}
+  .vt{font-family:'Outfit';font-size:13px;font-weight:600;border:none;background:transparent;color:var(--muted);padding:6px 12px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:6px;}
+  .vt.on{background:var(--card);color:var(--forest);box-shadow:0 1px 3px #0000001a;}
+  .flagn{background:var(--flag);color:#fff;border-radius:99px;font-size:10px;padding:1px 6px;min-width:16px;text-align:center;}
+  .flagn:empty{display:none;}
+  select.switch{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:9px 13px;font-family:'Outfit';font-weight:600;color:var(--forest);font-size:14px;cursor:pointer;max-width:260px;}
+  .prog{flex:1;min-width:160px;max-width:360px;}
   .prog-top{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:5px;}.prog-top b{color:var(--forest);}
   .bar{height:7px;background:#dfd7c4;border-radius:99px;overflow:hidden;}
   .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brass),var(--brass-lt));transition:width .3s;}
@@ -80,6 +70,8 @@
 
   .editbox{border:1.5px solid var(--brass);border-radius:9px;background:#fff;padding:9px;}
   .editbox textarea{width:100%;border:none;outline:none;resize:vertical;font-family:'Lora',serif;font-size:15px;color:var(--ink);line-height:1.5;min-height:48px;background:transparent;}
+  .editbox textarea.npx{font-family:'Noto Sans Devanagari',serif;}
+  .nephint{font-size:11px;color:var(--brass-deep);margin-top:6px;}
   .er{display:flex;gap:8px;justify-content:flex-end;margin-top:7px;}
   .btn{font-family:'Outfit';font-size:12.5px;font-weight:600;border-radius:7px;padding:6px 13px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;}
   .btn.save{background:var(--brass);color:#fff;border-color:var(--brass);}
@@ -87,12 +79,24 @@
   .mk:focus{outline:none;border-color:var(--brass);}
   .mkwrap{font-size:12px;color:var(--muted);margin-top:6px;}
 
+  .subctl{display:flex;gap:6px;margin-top:7px;}
+  .sbtn{font-size:11px;border:1px solid var(--line);background:#fff;border-radius:6px;padding:3px 9px;cursor:pointer;color:var(--muted);}
+  .sbtn.del{color:#9a3f1f;border-color:#e8cdbf;}
+  .addpart{margin-top:10px;font-size:12.5px;font-weight:600;color:var(--brass-deep);background:#f3ead4;border:1px dashed #d8c79a;border-radius:8px;padding:8px 13px;cursor:pointer;}
+
   .qc-foot{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line);flex-wrap:wrap;}
   .act{font-family:'Outfit';font-size:12.5px;font-weight:600;border-radius:8px;padding:7px 13px;border:1px solid var(--line);background:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
   .act.verify{color:#1f6b33;border-color:#cfe3cb;}.act.verify:hover{background:var(--green-bg);}
   .act.flag{color:#9a3f1f;border-color:#e8cdbf;}.act.flag:hover{background:var(--flag-bg);}
   .verby{font-size:12.5px;color:var(--muted);}.verby b{color:#1f6b33;}
   .flagnote{font-size:12.5px;color:#9a3f1f;background:var(--flag-bg);border-radius:7px;padding:7px 11px;margin-top:8px;}
+
+  .flagcard{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--flag);border-radius:11px;padding:14px 16px;margin-bottom:12px;}
+  .flagcard .fmeta{font-size:12px;color:var(--brass-deep);font-weight:600;letter-spacing:.02em;}
+  .flagcard .fq{font-family:'Fraunces',serif;color:var(--forest);font-size:15px;margin:3px 0 2px;}
+  .flagcard .fnote{font-size:13.5px;color:#9a3f1f;background:var(--flag-bg);border-radius:7px;padding:8px 11px;margin:7px 0;}
+  .fopen{font-size:12.5px;font-weight:600;color:var(--forest);background:#fff;border:1px solid var(--line);border-radius:7px;padding:6px 13px;cursor:pointer;}
+  .flags-clean{text-align:center;color:var(--muted);padding:50px 0;}.flags-clean b{color:var(--green);}
 
   #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--forest);color:#fff;padding:10px 20px;border-radius:99px;font-size:13.5px;font-weight:500;opacity:0;transition:all .25s;z-index:50;}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -107,16 +111,27 @@
     <div class="tb-right"><span class="who">Signed in · <b id="who-email">—</b></span><span class="signout" id="signout">Sign out</span></div>
   </div>
   <div class="paperbar">
-    <select class="switch" id="switch"><option>Loading papers…</option></select>
-    <div class="prog">
-      <div class="prog-top"><span>Verified</span><span><b id="pg-v">0</b> of <span id="pg-t">0</span></span></div>
-      <div class="bar"><i id="pg-bar"></i></div>
+    <div class="vtabs">
+      <button class="vt on" id="tab-papers">Papers</button>
+      <button class="vt" id="tab-flags">⚑ Flags <span class="flagn" id="flagn"></span></button>
     </div>
-    <div class="tally" id="tally"></div>
+    <span id="paperctrls" style="display:flex;align-items:center;gap:16px;flex:1;flex-wrap:wrap;">
+      <select class="switch" id="switch"><option>Loading papers…</option></select>
+      <div class="prog">
+        <div class="prog-top"><span>Verified</span><span><b id="pg-v">0</b> of <span id="pg-t">0</span></span></div>
+        <div class="bar"><i id="pg-bar"></i></div>
+      </div>
+      <div class="tally" id="tally"></div>
+    </span>
   </div>
   <div class="wrap">
-    <div class="hint">👆 Click any text, the नेपाली, an answer, a topic or a mark to edit it. Press <b>Save</b>. Mark each question <b>Verified</b> when it's correct, or <b>Flag</b> it for Dipesh. Changes save to staging instantly.</div>
-    <div id="questions"><div class="empty-state">Choose a paper above to begin.</div></div>
+    <div id="paperview">
+      <div class="hint">👆 Click any text, the नेपाली, an answer, a topic or a mark to edit it. In a नेपाली box you can type in English letters and it becomes Nepali. Use <b>+ Add a part</b>, <b>▲ ▼</b> and <b>✕</b> to change sub-questions. Mark each question <b>Verified</b>, or <b>Flag</b> it for review.</div>
+      <div id="questions"><div class="empty-state">Choose a paper above to begin.</div></div>
+    </div>
+    <div id="flagsview" class="hidden">
+      <div id="flagslist"></div>
+    </div>
   </div>
 </div>
 
@@ -124,16 +139,16 @@
 
 <script>
 (function(){
-  var API='/api/admin-paper', AUTH='/api/auth';
+  var API='/api/admin-paper';
   var user=JSON.parse(localStorage.getItem('ujyalo_user')||'null');
   var token=localStorage.getItem('ujyalo_token')||'';
-  var DATA=null, PAPER=null, PAPER_TOTAL=75;
+  var DATA=null, PAPER=null, PAPER_TOTAL=75, PENDING_SCROLL=null;
 
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
   function $(id){return document.getElementById(id);}
   function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},1800);}
-
   function authHeaders(){return {'Authorization':'Bearer '+token,'Content-Type':'application/json'};}
+
   async function apiGet(action,params){
     var qs='?action='+action+(params?('&'+params):'');
     var r=await fetch(API+qs,{headers:authHeaders()});
@@ -149,6 +164,37 @@
     return r.json();
   }
 
+  // ── Romanized Nepali → Devanagari (Nepali boxes only; approximate, tweak by hand) ──
+  var NEP_V={'aa':['आ','ा'],'A':['आ','ा'],'ai':['ऐ','ै'],'au':['औ','ौ'],'ii':['ई','ी'],'I':['ई','ी'],'ee':['ई','ी'],'uu':['ऊ','ू'],'U':['ऊ','ू'],'oo':['ऊ','ू'],'ri':['ऋ','ृ'],'a':['अ',''],'i':['इ','ि'],'u':['उ','ु'],'e':['ए','े'],'o':['ओ','ो']};
+  var NEP_C={'ksh':'क्ष','chh':'छ','Ch':'छ','shr':'श्र','kh':'ख','gh':'घ','ng':'ङ','ch':'च','jh':'झ','Th':'ठ','Dh':'ढ','th':'थ','dh':'ध','ph':'फ','bh':'भ','sh':'श','Sh':'ष','gy':'ज्ञ','tr':'त्र','k':'क','g':'ग','c':'च','j':'ज','T':'ट','D':'ड','N':'ण','t':'त','d':'द','n':'न','p':'प','f':'फ','b':'ब','m':'म','y':'य','r':'र','l':'ल','v':'व','w':'व','s':'स','h':'ह','S':'ष','M':'ं','H':'ः'};
+  var NEP_CK=Object.keys(NEP_C).sort(function(a,b){return b.length-a.length;});
+  var NEP_VK=Object.keys(NEP_V).sort(function(a,b){return b.length-a.length;});
+  function matchAt(s,i,keys){for(var k=0;k<keys.length;k++){if(s.substr(i,keys[k].length)===keys[k])return keys[k];}return null;}
+  function romanToNepali(w){
+    if(!w) return w; var out='',i=0,prevC=false;
+    while(i<w.length){
+      var ck=matchAt(w,i,NEP_CK);
+      if(ck){ if(ck==='M'||ck==='H'){out+=NEP_C[ck];i+=ck.length;prevC=false;continue;} if(prevC)out+='्'; out+=NEP_C[ck];i+=ck.length;prevC=true;continue; }
+      var vk=matchAt(w,i,NEP_VK);
+      if(vk){ out+=prevC?NEP_V[vk][1]:NEP_V[vk][0]; i+=vk.length; prevC=false; continue; }
+      out+=w[i]; i++; prevC=false;
+    }
+    return out;
+  }
+  function nepDigits(s){return s.replace(/[0-9]/g,function(d){return '०१२३४५६७८९'[+d];});}
+  function nepFinalize(s){return nepDigits(String(s||'').replace(/[a-zA-Z]+/g,romanToNepali));}
+  function attachNep(ta){
+    ta.addEventListener('keydown',function(e){
+      if(e.key===' '){
+        e.preventDefault();
+        var pos=ta.selectionStart, before=ta.value.slice(0,pos), after=ta.value.slice(pos);
+        var m=before.match(/[a-zA-Z]+$/);
+        if(m){ before=before.slice(0,before.length-m[0].length)+romanToNepali(m[0]); }
+        ta.value=before+' '+after; ta.selectionStart=ta.selectionEnd=before.length+1;
+      }
+    });
+  }
+
   // ── access gate: one login, role decides the door (same as admin) ──
   async function boot(){
     if(!user||!token){ location.replace('/login.html'); return; }
@@ -156,151 +202,141 @@
     $('app').classList.remove('hidden');
     $('who-email').textContent=user.email||'';
     await loadList();
+    refreshFlagCount();
   }
   $('signout').addEventListener('click',function(){ localStorage.removeItem('ujyalo_token'); localStorage.removeItem('ujyalo_user'); location.href='/index.html'; });
+
+  // ── view tabs ──
+  $('tab-papers').addEventListener('click',function(){ setView('papers'); });
+  $('tab-flags').addEventListener('click',function(){ setView('flags'); loadFlags(); });
+  function setView(v){
+    var p=v==='papers';
+    $('tab-papers').classList.toggle('on',p); $('tab-flags').classList.toggle('on',!p);
+    $('paperview').classList.toggle('hidden',!p); $('flagsview').classList.toggle('hidden',p);
+    $('paperctrls').style.display=p?'flex':'none';
+  }
 
   // ── paper list ──
   async function loadList(){
     try{
-      var d=await apiGet('list');
-      var sel=$('switch'); sel.innerHTML='<option value="">— choose a paper —</option>';
-      (d.papers||[]).forEach(function(p){
-        var o=document.createElement('option'); o.value=p.id;
-        o.textContent='SEE '+p.year+' · '+p.province+' · '+(p.subjectName||p.subject);
-        sel.appendChild(o);
-      });
+      var d=await apiGet('list'); var sel=$('switch'); sel.innerHTML='<option value="">— choose a paper —</option>';
+      (d.papers||[]).forEach(function(p){ var o=document.createElement('option'); o.value=p.id; o.textContent='SEE '+p.year+' · '+p.province+' · '+(p.subjectName||p.subject); sel.appendChild(o); });
       sel.onchange=function(){ if(sel.value) loadPaper(sel.value); };
     }catch(e){ toast('Could not load papers'); }
   }
 
-  // ── load + render one paper ──
-  async function loadPaper(id){
+  async function loadPaper(id,scrollTo){
+    PENDING_SCROLL = (scrollTo!=null)?scrollTo:null;
+    setView('papers'); if($('switch').value!==id) $('switch').value=id;
     $('questions').innerHTML='<div class="empty-state">Loading…</div>';
-    try{
-      DATA=await apiGet('load','paper_id='+encodeURIComponent(id));
-      PAPER=DATA.paper.id; PAPER_TOTAL=DATA.paper.total_marks||75;
-      render();
-    }catch(e){ $('questions').innerHTML='<div class="empty-state">Could not load this paper.</div>'; toast('Load failed'); }
+    try{ DATA=await apiGet('load','paper_id='+encodeURIComponent(id)); PAPER=DATA.paper.id; PAPER_TOTAL=DATA.paper.total_marks||75; render(); }
+    catch(e){ $('questions').innerHTML='<div class="empty-state">Could not load this paper.</div>'; toast('Load failed'); }
   }
+  function reloadPaper(){ if(PAPER) loadPaper(PAPER); }
 
+  // ── render paper ──
   function edSpan(row,field,cls){
-    var v=row[field]||'';
-    var inner = v ? esc(v) : '<span class="empty">— add —</span>';
+    var v=row[field]||''; var inner=v?esc(v):'<span class="empty">— add —</span>';
     return '<span class="ed '+(cls||'')+'" data-id="'+row.id+'" data-field="'+field+'">'+inner+'<span class="pen">✎</span></span>';
   }
-  function rowBlock(row,label){
+  function subControls(qn,id){
+    return '<div class="subctl">'+
+      '<button class="sbtn" data-act="up" data-qn="'+qn+'" data-id="'+id+'">▲ up</button>'+
+      '<button class="sbtn" data-act="down" data-qn="'+qn+'" data-id="'+id+'">▼ down</button>'+
+      '<button class="sbtn del" data-act="del-sub" data-id="'+id+'">✕ remove part</button>'+
+    '</div>';
+  }
+  function rowBlock(row,label,qn,isSub){
     var h='<div class="rowblk">';
     if(label) h+='<div class="rl">'+label+'</div>';
     h+='<div class="label">Question · English</div>'+edSpan(row,'question_text_english');
     h+='<div class="label">Question · नेपाली</div>'+edSpan(row,'question_text_nepali','np');
     h+='<div class="label">Answer</div>'+edSpan(row,'answer_text','ans');
     h+='<div class="mkwrap">Marks <input class="mk" type="number" min="0" data-id="'+row.id+'" value="'+(row.marks||0)+'"></div>';
+    if(isSub) h+=subControls(qn,row.id);
     h+='</div>';
     return h;
   }
   function questionCard(g){
-    var lead = g.parent ? g.parent : (g.subs[0]||{});
+    var lead=g.parent?g.parent:(g.subs[0]||{});
     var cls='qc'+(g.verified?' verified':'')+(g.flagged?' flagged':'');
-    var status = g.verified
-      ? '<span class="chip ver">✓ Verified</span>'
-      : (g.flagged?'<span class="chip flg">⚑ Flagged</span>':'<span class="chip unv">○ Unverified</span>');
+    var status=g.verified?'<span class="chip ver">✓ Verified</span>':(g.flagged?'<span class="chip flg">⚑ Flagged</span>':'<span class="chip unv">○ Unverified</span>');
     var h='<div class="'+cls+'" id="qc-'+g.num+'" data-qn="'+g.num+'">';
     h+='<div class="qc-head"><span class="qnum">'+g.num+'</span>';
     h+='<span class="ed chipd" data-id="'+lead.id+'" data-field="topic">'+(lead.topic?esc(lead.topic):'<span class="empty">+ topic</span>')+'<span class="pen">✎</span></span>';
     h+='<span class="ed chipd" data-id="'+lead.id+'" data-field="difficulty">'+(lead.difficulty?esc(lead.difficulty):'<span class="empty">+ level</span>')+'<span class="pen">✎</span></span>';
-    h+='<span class="qc-total">Marks <b class="qtot">0</b></span>';
-    h+='<span id="st-'+g.num+'">'+status+'</span></div>';
-    if(g.parent) h+=rowBlock(g.parent,'Question');
-    g.subs.forEach(function(s){ h+=rowBlock(s,'Part '+(s.sub_part||'').toUpperCase()); });
+    h+='<span class="qc-total">Marks <b class="qtot">0</b></span><span id="st-'+g.num+'">'+status+'</span></div>';
+    if(g.parent) h+=rowBlock(g.parent,'Question',g.num,false);
+    g.subs.forEach(function(s){ h+=rowBlock(s,'Part '+String(s.sub_part||'').toUpperCase(),g.num,true); });
+    h+='<button class="addpart" data-act="add-sub" data-qn="'+g.num+'">+ Add a part</button>';
     if(g.flagged&&g.flag_note) h+='<div class="flagnote">⚑ '+esc(g.flag_note)+'</div>';
-    h+='<div class="qc-foot" id="foot-'+g.num+'">'+footHTML(g)+'</div>';
-    h+='</div>';
+    h+='<div class="qc-foot" id="foot-'+g.num+'">'+footHTML(g)+'</div></div>';
     return h;
   }
   function footHTML(g){
-    if(g.verified) return '<span class="verby">Verified by <b>'+esc(g.verified_by||'editor')+'</b></span> <button class="act flag" data-qn="'+g.num+'" data-act="flag">⚑ Flag</button>';
-    return '<button class="act verify" data-qn="'+g.num+'" data-act="verify">✓ Mark verified</button>'+
-           '<button class="act flag" data-qn="'+g.num+'" data-act="flag">⚑ '+(g.flagged?'Edit flag':'Flag for Dipesh')+'</button>';
+    if(g.verified) return '<span class="verby">Verified by <b>'+esc(g.verified_by||'editor')+'</b></span> <button class="act flag" data-act="flag" data-qn="'+g.num+'">⚑ Flag</button>';
+    return '<button class="act verify" data-act="verify" data-qn="'+g.num+'">✓ Mark verified</button><button class="act flag" data-act="flag" data-qn="'+g.num+'">⚑ '+(g.flagged?'Edit flag':'Flag for review')+'</button>';
   }
-
   function render(){
     var box=$('questions');
     if(!DATA.groups||!DATA.groups.length){ box.innerHTML='<div class="empty-state">No questions in this paper.</div>'; return; }
     box.innerHTML=DATA.groups.map(questionCard).join('');
     DATA.groups.forEach(function(g){ recalcCard(g.num); });
-    updateProgress();
-    updateTally();
+    updateProgress(); updateTally();
+    if(PENDING_SCROLL!=null){ var el=$('qc-'+PENDING_SCROLL); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.outline='2px solid var(--brass)'; setTimeout(function(){el.style.outline='';},1600); } PENDING_SCROLL=null; }
   }
+  function recalcCard(qn){ var card=$('qc-'+qn); if(!card)return; var t=0; card.querySelectorAll('.mk').forEach(function(i){t+=parseInt(i.value||0,10)||0;}); var el=card.querySelector('.qtot'); if(el)el.textContent=t; }
+  function updateTally(){ var t=0; document.querySelectorAll('#questions .mk').forEach(function(i){t+=parseInt(i.value||0,10)||0;}); var el=$('tally'); el.innerHTML='Marks entered: <b>'+t+'</b> / '+PAPER_TOTAL; el.classList.toggle('bad',t!==PAPER_TOTAL); }
+  function updateProgress(){ var total=DATA.groups.length, ver=DATA.groups.filter(function(g){return g.verified;}).length; $('pg-v').textContent=ver; $('pg-t').textContent=total; $('pg-bar').style.width=(total?Math.round(ver/total*100):0)+'%'; }
 
-  function recalcCard(qn){
-    var card=$('qc-'+qn); if(!card) return;
-    var t=0; card.querySelectorAll('.mk').forEach(function(i){ t+=parseInt(i.value||0,10)||0; });
-    var el=card.querySelector('.qtot'); if(el) el.textContent=t;
-  }
-  function updateTally(){
-    var t=0; document.querySelectorAll('#questions .mk').forEach(function(i){ t+=parseInt(i.value||0,10)||0; });
-    var el=$('tally'); el.innerHTML='Marks entered: <b>'+t+'</b> / '+PAPER_TOTAL;
-    el.classList.toggle('bad', t!==PAPER_TOTAL);
-  }
-  function updateProgress(){
-    var total=DATA.groups.length, ver=DATA.groups.filter(function(g){return g.verified;}).length;
-    $('pg-v').textContent=ver; $('pg-t').textContent=total;
-    $('pg-bar').style.width=(total?Math.round(ver/total*100):0)+'%';
-  }
-
-  // ── inline edit (event delegation) ──
+  // ── clicks (edit / status / sub controls) ──
   $('questions').addEventListener('click',function(e){
     if(e.target.closest('.editbox')) return;
     var act=e.target.closest('[data-act]');
-    if(act){ return doStatus(act.getAttribute('data-act'), parseInt(act.getAttribute('data-qn'),10)); }
-    var el=e.target.closest('.ed'); if(!el||el.dataset.editing) return;
-    startEdit(el);
+    if(act){ return handleAct(act); }
+    var el=e.target.closest('.ed'); if(!el||el.dataset.editing) return; startEdit(el);
   });
   $('questions').addEventListener('change',function(e){
     var mk=e.target.closest('.mk'); if(!mk) return;
     saveField(mk.dataset.id,'marks',mk.value,function(){ var card=mk.closest('.qc'); recalcCard(card.dataset.qn); updateTally(); });
   });
 
+  async function handleAct(btn){
+    var a=btn.getAttribute('data-act'); var qn=parseInt(btn.getAttribute('data-qn'),10); var id=btn.getAttribute('data-id');
+    if(a==='verify'||a==='flag') return doStatus(a,qn);
+    if(a==='add-sub'){ try{ await apiPost('add-sub',{paper_id:PAPER,question_number:qn}); toast('Part added'); reloadPaper(); }catch(e){ toast('Failed'); } return; }
+    if(a==='del-sub'){ if(!confirm('Remove this part? This cannot be undone.')) return; try{ await apiPost('delete-sub',{id:id}); toast('Part removed'); reloadPaper(); }catch(e){ toast('Failed'); } return; }
+    if(a==='up'||a==='down') return moveSub(qn,id,a);
+  }
+  async function moveSub(qn,id,dir){
+    var g=DATA.groups.filter(function(x){return x.num===qn;})[0]; if(!g) return;
+    var ids=g.subs.map(function(s){return String(s.id);}); var idx=ids.indexOf(String(id));
+    var tgt=idx+(dir==='up'?-1:1); if(idx<0||tgt<0||tgt>=ids.length) return;
+    var tmp=ids[idx]; ids[idx]=ids[tgt]; ids[tgt]=tmp;
+    try{ await apiPost('reorder-subs',{order:ids}); toast('Reordered'); reloadPaper(); }catch(e){ toast('Failed'); }
+  }
+
+  // ── inline edit ──
   function startEdit(el){
-    var field=el.dataset.field;
-    var g=findGroupRow(el.dataset.id,field);
-    var cur=g!=null?g:stripPen(el);
+    var field=el.dataset.field, isNep=(field==='question_text_nepali');
+    var cur=findVal(el.dataset.id,field); if(cur==null) cur=stripPen(el);
     el.dataset.editing='1'; el.dataset.prev=el.innerHTML;
-    el.innerHTML='<div class="editbox"><textarea>'+esc(cur)+'</textarea><div class="er"><button class="btn c">Cancel</button><button class="btn save s">Save</button></div></div>';
-    var ta=el.querySelector('textarea'); ta.focus();
+    el.innerHTML='<div class="editbox"><textarea class="'+(isNep?'npx':'')+'">'+esc(cur)+'</textarea>'+(isNep?'<div class="nephint">Type in English letters → Nepali (e.g. "ganit" → गणित). Tweak by hand if needed.</div>':'')+'<div class="er"><button class="btn c">Cancel</button><button class="btn save s">Save</button></div></div>';
+    var ta=el.querySelector('textarea'); ta.focus(); if(isNep) attachNep(ta);
     el.querySelector('.c').addEventListener('click',function(ev){ev.stopPropagation();el.innerHTML=el.dataset.prev;el.dataset.editing='';});
     el.querySelector('.s').addEventListener('click',function(ev){ev.stopPropagation();
-      var v=ta.value;
+      var v=ta.value; if(isNep) v=nepFinalize(v);
       saveField(el.dataset.id,field,v,function(){
-        var inner=v?esc(v):'<span class="empty">'+(el.classList.contains('chipd')?(field==='topic'?'+ topic':'+ level'):'— add —')+'</span>';
-        el.innerHTML=inner+'<span class="pen">✎</span>'; el.dataset.editing='';
+        var ph=el.classList.contains('chipd')?(field==='topic'?'+ topic':'+ level'):'— add —';
+        el.innerHTML=(v?esc(v):'<span class="empty">'+ph+'</span>')+'<span class="pen">✎</span>'; el.dataset.editing='';
         updateLocal(el.dataset.id,field,v);
       },function(){ el.innerHTML=el.dataset.prev; el.dataset.editing=''; });
     });
   }
-  function stripPen(el){ var c=el.cloneNode(true); var p=c.querySelector('.pen'); if(p)p.remove(); var em=c.querySelector('.empty'); if(em)return ''; return c.textContent.trim(); }
-
-  // keep DATA in sync so re-renders/cancels show fresh values
-  function findGroupRow(id,field){
-    if(!DATA) return null;
-    for(var i=0;i<DATA.groups.length;i++){var g=DATA.groups[i];
-      if(g.parent&&String(g.parent.id)===String(id)) return g.parent[field]||'';
-      for(var j=0;j<g.subs.length;j++){ if(String(g.subs[j].id)===String(id)) return g.subs[j][field]||''; }
-    }
-    return null;
-  }
-  function updateLocal(id,field,v){
-    if(!DATA) return;
-    DATA.groups.forEach(function(g){
-      if(g.parent&&String(g.parent.id)===String(id)) g.parent[field]=v;
-      g.subs.forEach(function(s){ if(String(s.id)===String(id)) s[field]=v; });
-    });
-  }
-
-  async function saveField(id,field,value,ok,fail){
-    try{ await apiPost('update-field',{id:id,field:field,value:value}); toast('Saved'); ok&&ok(); }
-    catch(e){ toast('Save failed'); fail&&fail(); }
-  }
+  function stripPen(el){ var c=el.cloneNode(true); var p=c.querySelector('.pen'); if(p)p.remove(); if(c.querySelector('.empty'))return ''; return c.textContent.trim(); }
+  function findVal(id,field){ if(!DATA)return null; for(var i=0;i<DATA.groups.length;i++){var g=DATA.groups[i]; if(g.parent&&String(g.parent.id)===String(id))return g.parent[field]||''; for(var j=0;j<g.subs.length;j++){if(String(g.subs[j].id)===String(id))return g.subs[j][field]||'';}} return null; }
+  function updateLocal(id,field,v){ if(!DATA)return; DATA.groups.forEach(function(g){ if(g.parent&&String(g.parent.id)===String(id))g.parent[field]=v; g.subs.forEach(function(s){if(String(s.id)===String(id))s[field]=v;}); }); }
+  async function saveField(id,field,value,ok,fail){ try{ await apiPost('update-field',{id:id,field:field,value:value}); toast('Saved'); ok&&ok(); }catch(e){ toast('Save failed'); fail&&fail(); } }
 
   // ── verify / flag ──
   async function doStatus(act,qn){
@@ -309,26 +345,42 @@
       try{ await apiPost('set-status',{paper_id:PAPER,question_number:qn,verified:true});
         g.verified=true; g.flagged=false; g.verified_by=$('who-email').textContent;
         var card=$('qc-'+qn); card.classList.add('verified'); card.classList.remove('flagged');
-        $('st-'+qn).innerHTML='<span class="chip ver">✓ Verified</span>';
-        $('foot-'+qn).innerHTML=footHTML(g);
+        $('st-'+qn).innerHTML='<span class="chip ver">✓ Verified</span>'; $('foot-'+qn).innerHTML=footHTML(g);
         var fn=card.querySelector('.flagnote'); if(fn)fn.remove();
-        updateProgress(); toast('Verified ✓');
+        updateProgress(); refreshFlagCount(); toast('Verified ✓');
       }catch(e){ toast('Failed'); }
     } else {
-      var note=prompt('What\'s wrong with this question? (a note for Dipesh)', g.flag_note||'');
+      var note=prompt('What needs a look? (a short note so you know what to check)', g.flag_note||'');
       if(note===null) return;
       try{ await apiPost('set-status',{paper_id:PAPER,question_number:qn,flagged:true,flag_note:note});
         g.flagged=true; g.verified=false; g.flag_note=note;
         var card=$('qc-'+qn); card.classList.add('flagged'); card.classList.remove('verified');
         $('st-'+qn).innerHTML='<span class="chip flg">⚑ Flagged</span>';
-        var fn=card.querySelector('.flagnote');
-        if(!fn){ fn=document.createElement('div'); fn.className='flagnote'; $('foot-'+qn).parentNode.insertBefore(fn,$('foot-'+qn)); }
-        fn.textContent='⚑ '+note;
-        $('foot-'+qn).innerHTML=footHTML(g);
-        updateProgress(); toast('Flagged');
+        var fn=card.querySelector('.flagnote'); if(!fn){ fn=document.createElement('div'); fn.className='flagnote'; $('foot-'+qn).parentNode.insertBefore(fn,$('foot-'+qn)); } fn.textContent='⚑ '+note;
+        $('foot-'+qn).innerHTML=footHTML(g); updateProgress(); refreshFlagCount(); toast('Flagged');
       }catch(e){ toast('Failed'); }
     }
   }
+
+  // ── flags inbox ──
+  async function refreshFlagCount(){ try{ var d=await apiGet('flags'); $('flagn').textContent=(d.flags&&d.flags.length)?d.flags.length:''; }catch(e){} }
+  async function loadFlags(){
+    $('flagslist').innerHTML='<div class="empty-state">Loading…</div>';
+    try{
+      var d=await apiGet('flags'); var f=d.flags||[];
+      $('flagn').textContent=f.length?f.length:'';
+      if(!f.length){ $('flagslist').innerHTML='<div class="flags-clean">✓ <b>No flags</b> — everything checked is clean.</div>'; return; }
+      $('flagslist').innerHTML=f.map(function(x){
+        return '<div class="flagcard"><div class="fmeta">SEE '+x.year+' · '+x.province+' · '+(x.subjectName||x.subject)+' — Q'+x.question_number+'</div>'+
+          (x.note?'<div class="fnote">⚑ '+esc(x.note)+'</div>':'<div class="fnote">⚑ (no note)</div>')+
+          '<button class="fopen" data-pid="'+x.paper_id+'" data-qn="'+x.question_number+'">Open this question ▸</button></div>';
+      }).join('');
+    }catch(e){ $('flagslist').innerHTML='<div class="empty-state">Could not load flags.</div>'; }
+  }
+  $('flagslist').addEventListener('click',function(e){
+    var b=e.target.closest('.fopen'); if(!b) return;
+    loadPaper(b.getAttribute('data-pid'), parseInt(b.getAttribute('data-qn'),10));
+  });
 
   boot();
 })();

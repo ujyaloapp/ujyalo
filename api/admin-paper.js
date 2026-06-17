@@ -31,6 +31,18 @@ async function sbPatch(path, body, rep) {
   if (!r.ok) throw new Error(`Supabase PATCH ${r.status}: ${await r.text()}`);
   return rep ? r.json() : null;
 }
+async function sbPost(path, body) {
+  const r = await fetch(`${SB()}/rest/v1${path}`, {
+    method: 'POST', headers: sbHeaders({ Prefer: 'return=representation' }), body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error(`Supabase POST ${r.status}: ${await r.text()}`);
+  return r.json();
+}
+async function sbDelete(path) {
+  const r = await fetch(`${SB()}/rest/v1${path}`, { method: 'DELETE', headers: sbHeaders() });
+  if (!r.ok) throw new Error(`Supabase DELETE ${r.status}: ${await r.text()}`);
+  return true;
+}
 
 // Verify the caller is logged in AND has the editor (or admin) role. Returns email or null.
 async function getEditor(req) {
@@ -109,6 +121,25 @@ export default async function handler(req, res) {
       });
     }
 
+    // ── every flagged question, across all papers (the Flags inbox) ──
+    if (action === 'flags') {
+      const rows = await sbGet('/past_paper_questions?flagged=eq.true&select=paper_id,question_number,flag_note&order=paper_id.asc,question_number.asc');
+      if (!rows.length) return res.status(200).json({ flags: [] });
+      const pids = Array.from(new Set(rows.map(r => r.paper_id)));
+      const papers = await sbGet(`/past_papers?id=in.(${pids.join(',')})&select=id,year,province,subject_id`);
+      const subs = await sbGet('/exam_subjects?select=id,code,name');
+      const pmap = {}; papers.forEach(p => { pmap[p.id] = p; });
+      const smap = {}; subs.forEach(s => { smap[s.id] = s; });
+      const seen = {}, out = [];
+      rows.forEach(r => {
+        const k = r.paper_id + '#' + r.question_number; if (seen[k]) return; seen[k] = 1;
+        const pp = pmap[r.paper_id] || {}, ss = smap[pp.subject_id] || {};
+        out.push({ paper_id: r.paper_id, question_number: r.question_number, note: r.flag_note || '',
+          year: pp.year, province: pp.province, subject: ss.code || '', subjectName: ss.name || '' });
+      });
+      return res.status(200).json({ flags: out });
+    }
+
     // ── writes (POST only) ──
     if (req.method !== 'POST') return res.status(405).json({ error: 'POST required' });
     const body = req.body || {};
@@ -139,6 +170,40 @@ export default async function handler(req, res) {
         if (body.flagged) patch.verified = false;
       }
       await sbPatch(`/past_paper_questions?paper_id=eq.${paper_id}&question_number=eq.${question_number}`, patch, false);
+      return res.status(200).json({ ok: true });
+    }
+
+    if (action === 'add-sub') {
+      const { paper_id, question_number } = body;
+      if (!paper_id || question_number == null) return res.status(400).json({ error: 'Missing paper/question' });
+      const ex = await sbGet(`/past_paper_questions?paper_id=eq.${paper_id}&question_number=eq.${question_number}&select=sub_part`);
+      const used = ex.map(r => (r.sub_part || '')).filter(Boolean);
+      const letters = 'abcdefghijklmnopqrstuvwxyz';
+      let next = 'a'; for (const ch of letters) { if (used.indexOf(ch) < 0) { next = ch; break; } }
+      const row = await sbPost('/past_paper_questions', [{
+        paper_id, question_number, sub_part: next, question_type: 'written',
+        marks: 0, question_text: '', question_text_english: '', question_text_nepali: '',
+        answer_text: '', group_name: 'general', question_no: 0, status: 'live',
+      }]);
+      return res.status(200).json({ ok: true, row: (row && row[0]) || null });
+    }
+
+    if (action === 'delete-sub') {
+      const { id } = body;
+      if (!id) return res.status(400).json({ error: 'Missing id' });
+      await sbDelete(`/past_paper_questions?id=eq.${id}`);
+      return res.status(200).json({ ok: true });
+    }
+
+    if (action === 'reorder-subs') {
+      const { order } = body; // array of row ids in the new order
+      if (!Array.isArray(order) || !order.length) return res.status(400).json({ error: 'Missing order' });
+      const rows = await sbGet(`/past_paper_questions?id=in.(${order.join(',')})&select=id,sub_part`);
+      const labels = rows.map(r => r.sub_part).filter(x => x != null).sort();
+      for (let i = 0; i < order.length; i++) {
+        const lbl = (labels[i] != null) ? labels[i] : String.fromCharCode(97 + i);
+        await sbPatch(`/past_paper_questions?id=eq.${order[i]}`, { sub_part: lbl }, false);
+      }
       return res.status(200).json({ ok: true });
     }
 
