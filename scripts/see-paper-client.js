@@ -816,9 +816,8 @@ function toggleAnswer(subId, s, qNum, itemEl) {
   var ansSection = buildAnswerSection(s, qNum);
   itemEl.appendChild(ansSection);
 
-  // Reveal this question's rating buttons (they stay once shown)
-  var cb = document.getElementById('conf-' + qNum);
-  if (cb) cb.style.display = '';
+  // Show only this question's rating buttons (hide any other question's)
+  showConf(qNum);
 }
 
 function buildAnswerSection(s, qNum) {
@@ -914,14 +913,20 @@ function pickMCQ(btn, grid, correct, chosen, itemEl, s, qNum) {
     openSubId = itemEl.id;
   }
 
-  // Reveal this question's rating buttons (they stay once shown)
-  var cb = document.getElementById('conf-' + qNum);
-  if (cb) cb.style.display = '';
+  // Show only this question's rating buttons (hide any other question's)
+  showConf(qNum);
 }
 
 // ── CONFIDENCE ──
 function confColor(v) {
   return (v === 'got') ? '#15803D' : (v === 'almost') ? '#C0913F' : '#B5532E';
+}
+
+// Show only this question's rating buttons; hide any other question's.
+function showConf(qNum) {
+  document.querySelectorAll('.conf-section').forEach(function(s) { s.style.display = 'none'; });
+  var cb = document.getElementById('conf-' + qNum);
+  if (cb) cb.style.display = '';
 }
 
 function startFresh() {
