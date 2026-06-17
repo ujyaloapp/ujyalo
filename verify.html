@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ujyalo — Verification</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,400&family=Lora:ital,wght@0,400;1,400&family=Outfit:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#11302a;--forest-2:#0b211c;--parch:#f4f0e6;--parch-2:#ece6d6;
+    --card:#fbf9f3;--brass:#c0913f;--brass-lt:#d8b56a;--brass-deep:#9c7330;
+    --ink:#23302b;--muted:#5d685f;--faint:#8a9389;--line:#e2dac7;
+    --green:#34a853;--green-bg:#e7f2e6;--flag:#c0653f;--flag-bg:#f6e7df;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--parch);color:var(--ink);font-family:'Outfit',system-ui,sans-serif;font-size:15px;line-height:1.55;}
+  .dev{font-family:'Noto Sans Devanagari',sans-serif;}
+  .hidden{display:none!important;}
+
+  /* login */
+  #login{min-height:100vh;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(120% 90% at 50% -10%,#1c4a40 0%,var(--forest) 48%,var(--forest-2) 100%);}
+  .lcard{background:var(--card);border-radius:16px;padding:34px 32px;width:340px;max-width:92vw;box-shadow:0 20px 60px #00000033;}
+  .lwm{font-family:'Fraunces',serif;font-weight:900;font-size:26px;color:var(--forest);}
+  .lwm .a{color:var(--brass);}
+  .ltag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass-deep);margin:4px 0 22px;}
+  #login input{width:100%;border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-family:'Outfit';font-size:15px;margin-bottom:11px;background:#fff;}
+  #login input:focus{outline:none;border-color:var(--brass);}
+  .lbtn{width:100%;background:var(--forest);color:#fff;border:none;border-radius:9px;padding:12px;font-family:'Outfit';font-weight:600;font-size:15px;cursor:pointer;}
+  .lbtn:hover{background:#16403a;}
+  .lerr{color:#9a3f1f;font-size:13px;margin-top:10px;min-height:18px;}
+
+  /* topbar */
+  .topbar{background:var(--forest);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:11px 20px;position:sticky;top:0;z-index:20;}
+  .wm{font-family:'Fraunces',serif;font-weight:900;font-size:20px;}.wm .a{color:var(--brass-lt);}
+  .tb-tag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass-lt);padding-left:12px;border-left:1px solid #3a5249;margin-left:12px;}
+  .tb-left{display:flex;align-items:center;}
+  .tb-right{display:flex;align-items:center;gap:12px;font-size:13px;}
+  .who{background:#ffffff14;border:1px solid #ffffff2e;border-radius:99px;padding:5px 13px;color:#e8e2d4;}.who b{color:#fff;}
+  .signout{color:#aebaad;font-size:12px;text-decoration:none;cursor:pointer;}
+
+  /* paper bar */
+  .paperbar{background:var(--parch-2);border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:48px;z-index:15;}
+  select.switch{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:9px 13px;font-family:'Outfit';font-weight:600;color:var(--forest);font-size:14px;cursor:pointer;max-width:280px;}
+  .prog{flex:1;min-width:200px;max-width:420px;}
+  .prog-top{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:5px;}.prog-top b{color:var(--forest);}
+  .bar{height:7px;background:#dfd7c4;border-radius:99px;overflow:hidden;}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brass),var(--brass-lt));transition:width .3s;}
+  .tally{font-size:12.5px;color:var(--muted);white-space:nowrap;}.tally b{color:var(--forest);}.tally.bad b{color:#9a3f1f;}
+
+  .wrap{max-width:780px;margin:0 auto;padding:24px 20px 90px;}
+  .hint{font-size:12.5px;color:var(--muted);background:#fff8e8;border:1px solid #ecdcae;border-radius:9px;padding:9px 13px;margin-bottom:18px;}
+  .hint b{color:var(--brass-deep);}
+  .empty-state{text-align:center;color:var(--muted);padding:60px 0;}
+
+  .qc{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:16px 18px;margin-bottom:16px;}
+  .qc.verified{border-left:3px solid var(--green);}
+  .qc.flagged{border-left:3px solid var(--flag);}
+  .qc-head{display:flex;align-items:center;gap:9px;margin-bottom:8px;flex-wrap:wrap;}
+  .qnum{width:26px;height:26px;border-radius:7px;background:var(--forest);color:#fff;font-family:'Fraunces',serif;font-weight:600;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+  .qc-total{margin-left:auto;font-size:12.5px;color:var(--muted);}.qc-total b{font-family:'Fraunces',serif;color:var(--forest);}
+  .chip{font-size:11.5px;font-weight:600;border-radius:99px;padding:4px 11px;display:inline-flex;align-items:center;gap:5px;}
+  .chip.unv{background:#efe9da;color:var(--muted);}.chip.ver{background:var(--green-bg);color:#1f6b33;}.chip.flg{background:var(--flag-bg);color:#9a3f1f;}
+
+  .label{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:11px 0 2px;}
+  .rowblk{border-top:1px solid var(--line);padding-top:8px;margin-top:8px;}
+  .rowblk:first-of-type{border-top:none;}
+  .rl{font-family:'Lora',serif;font-weight:700;color:var(--forest);font-size:14px;}
+
+  .ed{position:relative;border-radius:7px;padding:3px 26px 3px 6px;margin:1px -6px;cursor:text;display:block;font-family:'Lora',serif;font-size:15px;line-height:1.55;color:var(--ink);transition:background .12s;}
+  .ed.np{font-family:'Noto Sans Devanagari',serif;color:#3c463f;}
+  .ed.ans{background:#eef3ec;color:#2f4f43;}
+  .ed:hover{background:#f1ead7;}
+  .ed .pen{position:absolute;right:6px;top:6px;width:19px;height:19px;border-radius:5px;background:#efe6cf;color:var(--brass-deep);font-size:11px;display:flex;align-items:center;justify-content:center;opacity:.5;}
+  .ed:hover .pen{opacity:1;}
+  .ed .empty{color:var(--faint);font-style:italic;}
+  .chipd{display:inline-block;font-size:11px!important;letter-spacing:.04em;color:var(--brass-deep);font-weight:600;background:#f3ead4;border-radius:99px;padding:3px 24px 3px 10px!important;margin:0;}
+  .chipd .empty{color:var(--brass-deep);}
+
+  .editbox{border:1.5px solid var(--brass);border-radius:9px;background:#fff;padding:9px;}
+  .editbox textarea{width:100%;border:none;outline:none;resize:vertical;font-family:'Lora',serif;font-size:15px;color:var(--ink);line-height:1.5;min-height:48px;background:transparent;}
+  .er{display:flex;gap:8px;justify-content:flex-end;margin-top:7px;}
+  .btn{font-family:'Outfit';font-size:12.5px;font-weight:600;border-radius:7px;padding:6px 13px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;}
+  .btn.save{background:var(--brass);color:#fff;border-color:var(--brass);}
+  .mk{width:50px;text-align:center;border:1px solid var(--line);border-radius:6px;padding:4px;font-family:'Fraunces',serif;color:var(--forest);font-size:14px;}
+  .mk:focus{outline:none;border-color:var(--brass);}
+  .mkwrap{font-size:12px;color:var(--muted);margin-top:6px;}
+
+  .qc-foot{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line);flex-wrap:wrap;}
+  .act{font-family:'Outfit';font-size:12.5px;font-weight:600;border-radius:8px;padding:7px 13px;border:1px solid var(--line);background:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+  .act.verify{color:#1f6b33;border-color:#cfe3cb;}.act.verify:hover{background:var(--green-bg);}
+  .act.flag{color:#9a3f1f;border-color:#e8cdbf;}.act.flag:hover{background:var(--flag-bg);}
+  .verby{font-size:12.5px;color:var(--muted);}.verby b{color:#1f6b33;}
+  .flagnote{font-size:12.5px;color:#9a3f1f;background:var(--flag-bg);border-radius:7px;padding:7px 11px;margin-top:8px;}
+
+  #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--forest);color:#fff;padding:10px 20px;border-radius:99px;font-size:13.5px;font-weight:500;opacity:0;transition:all .25s;z-index:50;}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- APP (editors/admins only; gated in JS) -->
+<div id="app" class="hidden">
+  <div class="topbar">
+    <div class="tb-left"><span class="wm">ujy<span class="a">a</span>lo</span><span class="tb-tag">Verification</span></div>
+    <div class="tb-right"><span class="who">Signed in · <b id="who-email">—</b></span><span class="signout" id="signout">Sign out</span></div>
+  </div>
+  <div class="paperbar">
+    <select class="switch" id="switch"><option>Loading papers…</option></select>
+    <div class="prog">
+      <div class="prog-top"><span>Verified</span><span><b id="pg-v">0</b> of <span id="pg-t">0</span></span></div>
+      <div class="bar"><i id="pg-bar"></i></div>
+    </div>
+    <div class="tally" id="tally"></div>
+  </div>
+  <div class="wrap">
+    <div class="hint">👆 Click any text, the नेपाली, an answer, a topic or a mark to edit it. Press <b>Save</b>. Mark each question <b>Verified</b> when it's correct, or <b>Flag</b> it for Dipesh. Changes save to staging instantly.</div>
+    <div id="questions"><div class="empty-state">Choose a paper above to begin.</div></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+  var API='/api/admin-paper', AUTH='/api/auth';
+  var user=JSON.parse(localStorage.getItem('ujyalo_user')||'null');
+  var token=localStorage.getItem('ujyalo_token')||'';
+  var DATA=null, PAPER=null, PAPER_TOTAL=75;
+
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function $(id){return document.getElementById(id);}
+  function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},1800);}
+
+  function authHeaders(){return {'Authorization':'Bearer '+token,'Content-Type':'application/json'};}
+  async function apiGet(action,params){
+    var qs='?action='+action+(params?('&'+params):'');
+    var r=await fetch(API+qs,{headers:authHeaders()});
+    if(r.status===403){ localStorage.removeItem('ujyalo_token'); location.replace('/login.html'); throw new Error('forbidden'); }
+    if(!r.ok) throw new Error((await r.json().catch(function(){return{};})).error||('HTTP '+r.status));
+    return r.json();
+  }
+  async function apiPost(action,body){
+    body=body||{}; body.action=action;
+    var r=await fetch(API+'?action='+action,{method:'POST',headers:authHeaders(),body:JSON.stringify(body)});
+    if(r.status===403){ localStorage.removeItem('ujyalo_token'); location.replace('/login.html'); throw new Error('forbidden'); }
+    if(!r.ok) throw new Error((await r.json().catch(function(){return{};})).error||('HTTP '+r.status));
+    return r.json();
+  }
+
+  // ── access gate: one login, role decides the door (same as admin) ──
+  async function boot(){
+    if(!user||!token){ location.replace('/login.html'); return; }
+    if(user.role!=='editor' && user.role!=='admin'){ location.replace('/dashboard.html'); return; }
+    $('app').classList.remove('hidden');
+    $('who-email').textContent=user.email||'';
+    await loadList();
+  }
+  $('signout').addEventListener('click',function(){ localStorage.removeItem('ujyalo_token'); localStorage.removeItem('ujyalo_user'); location.href='/index.html'; });
+
+  // ── paper list ──
+  async function loadList(){
+    try{
+      var d=await apiGet('list');
+      var sel=$('switch'); sel.innerHTML='<option value="">— choose a paper —</option>';
+      (d.papers||[]).forEach(function(p){
+        var o=document.createElement('option'); o.value=p.id;
+        o.textContent='SEE '+p.year+' · '+p.province+' · '+(p.subjectName||p.subject);
+        sel.appendChild(o);
+      });
+      sel.onchange=function(){ if(sel.value) loadPaper(sel.value); };
+    }catch(e){ toast('Could not load papers'); }
+  }
+
+  // ── load + render one paper ──
+  async function loadPaper(id){
+    $('questions').innerHTML='<div class="empty-state">Loading…</div>';
+    try{
+      DATA=await apiGet('load','paper_id='+encodeURIComponent(id));
+      PAPER=DATA.paper.id; PAPER_TOTAL=DATA.paper.total_marks||75;
+      render();
+    }catch(e){ $('questions').innerHTML='<div class="empty-state">Could not load this paper.</div>'; toast('Load failed'); }
+  }
+
+  function edSpan(row,field,cls){
+    var v=row[field]||'';
+    var inner = v ? esc(v) : '<span class="empty">— add —</span>';
+    return '<span class="ed '+(cls||'')+'" data-id="'+row.id+'" data-field="'+field+'">'+inner+'<span class="pen">✎</span></span>';
+  }
+  function rowBlock(row,label){
+    var h='<div class="rowblk">';
+    if(label) h+='<div class="rl">'+label+'</div>';
+    h+='<div class="label">Question · English</div>'+edSpan(row,'question_text_english');
+    h+='<div class="label">Question · नेपाली</div>'+edSpan(row,'question_text_nepali','np');
+    h+='<div class="label">Answer</div>'+edSpan(row,'answer_text','ans');
+    h+='<div class="mkwrap">Marks <input class="mk" type="number" min="0" data-id="'+row.id+'" value="'+(row.marks||0)+'"></div>';
+    h+='</div>';
+    return h;
+  }
+  function questionCard(g){
+    var lead = g.parent ? g.parent : (g.subs[0]||{});
+    var cls='qc'+(g.verified?' verified':'')+(g.flagged?' flagged':'');
+    var status = g.verified
+      ? '<span class="chip ver">✓ Verified</span>'
+      : (g.flagged?'<span class="chip flg">⚑ Flagged</span>':'<span class="chip unv">○ Unverified</span>');
+    var h='<div class="'+cls+'" id="qc-'+g.num+'" data-qn="'+g.num+'">';
+    h+='<div class="qc-head"><span class="qnum">'+g.num+'</span>';
+    h+='<span class="ed chipd" data-id="'+lead.id+'" data-field="topic">'+(lead.topic?esc(lead.topic):'<span class="empty">+ topic</span>')+'<span class="pen">✎</span></span>';
+    h+='<span class="ed chipd" data-id="'+lead.id+'" data-field="difficulty">'+(lead.difficulty?esc(lead.difficulty):'<span class="empty">+ level</span>')+'<span class="pen">✎</span></span>';
+    h+='<span class="qc-total">Marks <b class="qtot">0</b></span>';
+    h+='<span id="st-'+g.num+'">'+status+'</span></div>';
+    if(g.parent) h+=rowBlock(g.parent,'Question');
+    g.subs.forEach(function(s){ h+=rowBlock(s,'Part '+(s.sub_part||'').toUpperCase()); });
+    if(g.flagged&&g.flag_note) h+='<div class="flagnote">⚑ '+esc(g.flag_note)+'</div>';
+    h+='<div class="qc-foot" id="foot-'+g.num+'">'+footHTML(g)+'</div>';
+    h+='</div>';
+    return h;
+  }
+  function footHTML(g){
+    if(g.verified) return '<span class="verby">Verified by <b>'+esc(g.verified_by||'editor')+'</b></span> <button class="act flag" data-qn="'+g.num+'" data-act="flag">⚑ Flag</button>';
+    return '<button class="act verify" data-qn="'+g.num+'" data-act="verify">✓ Mark verified</button>'+
+           '<button class="act flag" data-qn="'+g.num+'" data-act="flag">⚑ '+(g.flagged?'Edit flag':'Flag for Dipesh')+'</button>';
+  }
+
+  function render(){
+    var box=$('questions');
+    if(!DATA.groups||!DATA.groups.length){ box.innerHTML='<div class="empty-state">No questions in this paper.</div>'; return; }
+    box.innerHTML=DATA.groups.map(questionCard).join('');
+    DATA.groups.forEach(function(g){ recalcCard(g.num); });
+    updateProgress();
+    updateTally();
+  }
+
+  function recalcCard(qn){
+    var card=$('qc-'+qn); if(!card) return;
+    var t=0; card.querySelectorAll('.mk').forEach(function(i){ t+=parseInt(i.value||0,10)||0; });
+    var el=card.querySelector('.qtot'); if(el) el.textContent=t;
+  }
+  function updateTally(){
+    var t=0; document.querySelectorAll('#questions .mk').forEach(function(i){ t+=parseInt(i.value||0,10)||0; });
+    var el=$('tally'); el.innerHTML='Marks entered: <b>'+t+'</b> / '+PAPER_TOTAL;
+    el.classList.toggle('bad', t!==PAPER_TOTAL);
+  }
+  function updateProgress(){
+    var total=DATA.groups.length, ver=DATA.groups.filter(function(g){return g.verified;}).length;
+    $('pg-v').textContent=ver; $('pg-t').textContent=total;
+    $('pg-bar').style.width=(total?Math.round(ver/total*100):0)+'%';
+  }
+
+  // ── inline edit (event delegation) ──
+  $('questions').addEventListener('click',function(e){
+    if(e.target.closest('.editbox')) return;
+    var act=e.target.closest('[data-act]');
+    if(act){ return doStatus(act.getAttribute('data-act'), parseInt(act.getAttribute('data-qn'),10)); }
+    var el=e.target.closest('.ed'); if(!el||el.dataset.editing) return;
+    startEdit(el);
+  });
+  $('questions').addEventListener('change',function(e){
+    var mk=e.target.closest('.mk'); if(!mk) return;
+    saveField(mk.dataset.id,'marks',mk.value,function(){ var card=mk.closest('.qc'); recalcCard(card.dataset.qn); updateTally(); });
+  });
+
+  function startEdit(el){
+    var field=el.dataset.field;
+    var g=findGroupRow(el.dataset.id,field);
+    var cur=g!=null?g:stripPen(el);
+    el.dataset.editing='1'; el.dataset.prev=el.innerHTML;
+    el.innerHTML='<div class="editbox"><textarea>'+esc(cur)+'</textarea><div class="er"><button class="btn c">Cancel</button><button class="btn save s">Save</button></div></div>';
+    var ta=el.querySelector('textarea'); ta.focus();
+    el.querySelector('.c').addEventListener('click',function(ev){ev.stopPropagation();el.innerHTML=el.dataset.prev;el.dataset.editing='';});
+    el.querySelector('.s').addEventListener('click',function(ev){ev.stopPropagation();
+      var v=ta.value;
+      saveField(el.dataset.id,field,v,function(){
+        var inner=v?esc(v):'<span class="empty">'+(el.classList.contains('chipd')?(field==='topic'?'+ topic':'+ level'):'— add —')+'</span>';
+        el.innerHTML=inner+'<span class="pen">✎</span>'; el.dataset.editing='';
+        updateLocal(el.dataset.id,field,v);
+      },function(){ el.innerHTML=el.dataset.prev; el.dataset.editing=''; });
+    });
+  }
+  function stripPen(el){ var c=el.cloneNode(true); var p=c.querySelector('.pen'); if(p)p.remove(); var em=c.querySelector('.empty'); if(em)return ''; return c.textContent.trim(); }
+
+  // keep DATA in sync so re-renders/cancels show fresh values
+  function findGroupRow(id,field){
+    if(!DATA) return null;
+    for(var i=0;i<DATA.groups.length;i++){var g=DATA.groups[i];
+      if(g.parent&&String(g.parent.id)===String(id)) return g.parent[field]||'';
+      for(var j=0;j<g.subs.length;j++){ if(String(g.subs[j].id)===String(id)) return g.subs[j][field]||''; }
+    }
+    return null;
+  }
+  function updateLocal(id,field,v){
+    if(!DATA) return;
+    DATA.groups.forEach(function(g){
+      if(g.parent&&String(g.parent.id)===String(id)) g.parent[field]=v;
+      g.subs.forEach(function(s){ if(String(s.id)===String(id)) s[field]=v; });
+    });
+  }
+
+  async function saveField(id,field,value,ok,fail){
+    try{ await apiPost('update-field',{id:id,field:field,value:value}); toast('Saved'); ok&&ok(); }
+    catch(e){ toast('Save failed'); fail&&fail(); }
+  }
+
+  // ── verify / flag ──
+  async function doStatus(act,qn){
+    var g=DATA.groups.filter(function(x){return x.num===qn;})[0]; if(!g) return;
+    if(act==='verify'){
+      try{ await apiPost('set-status',{paper_id:PAPER,question_number:qn,verified:true});
+        g.verified=true; g.flagged=false; g.verified_by=$('who-email').textContent;
+        var card=$('qc-'+qn); card.classList.add('verified'); card.classList.remove('flagged');
+        $('st-'+qn).innerHTML='<span class="chip ver">✓ Verified</span>';
+        $('foot-'+qn).innerHTML=footHTML(g);
+        var fn=card.querySelector('.flagnote'); if(fn)fn.remove();
+        updateProgress(); toast('Verified ✓');
+      }catch(e){ toast('Failed'); }
+    } else {
+      var note=prompt('What\'s wrong with this question? (a note for Dipesh)', g.flag_note||'');
+      if(note===null) return;
+      try{ await apiPost('set-status',{paper_id:PAPER,question_number:qn,flagged:true,flag_note:note});
+        g.flagged=true; g.verified=false; g.flag_note=note;
+        var card=$('qc-'+qn); card.classList.add('flagged'); card.classList.remove('verified');
+        $('st-'+qn).innerHTML='<span class="chip flg">⚑ Flagged</span>';
+        var fn=card.querySelector('.flagnote');
+        if(!fn){ fn=document.createElement('div'); fn.className='flagnote'; $('foot-'+qn).parentNode.insertBefore(fn,$('foot-'+qn)); }
+        fn.textContent='⚑ '+note;
+        $('foot-'+qn).innerHTML=footHTML(g);
+        updateProgress(); toast('Flagged');
+      }catch(e){ toast('Failed'); }
+    }
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>

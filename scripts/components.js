@@ -71,12 +71,14 @@ const NAV_PUBLIC = `
 
 /* ── App nav (logged in) ── */
 function buildAppNav(firstName, initials, fullName, email) {
+  const _u = JSON.parse(localStorage.getItem('ujyalo_user')||'null');
+  const _home = (_u && _u.role==='admin') ? '/admin.html' : ((_u && _u.role==='editor') ? '/verify.html' : '/dashboard.html');
   return `
 <nav class="ujyalo-nav">
   <div class="ujyalo-nav-inner">
     ${LOGO_HTML}
     <div class="ujyalo-nav-links" id="nav-links">
-      <a href="/dashboard.html">Dashboard</a>
+      <a href="${_home}">Dashboard</a>
       <a href="/see.html">SEE</a>
     </div>
     <div class="ujyalo-nav-actions" id="nav-actions">
@@ -98,7 +100,7 @@ function buildAppNav(firstName, initials, fullName, email) {
     </button>
   </div>
   <div class="ujyalo-mobile-menu" id="nav-mobile-menu">
-    <a href="/dashboard.html">Dashboard</a>
+    <a href="${_home}">Dashboard</a>
     <a href="/see.html">SEE</a>
     <div class="ujyalo-mobile-divider"></div>
     <a href="/profile.html">Edit profile</a>
@@ -523,6 +525,15 @@ function ujyaloLogout() {
 
 /* ── DOMContentLoaded — inject everything ── */
 document.addEventListener('DOMContentLoaded', function() {
+
+  // Role guard: keep admins/editors off the student dashboard (one login, role decides the door)
+  var _gu = JSON.parse(localStorage.getItem('ujyalo_user')||'null');
+  var _gt = localStorage.getItem('ujyalo_token');
+  var _gp = window.location.pathname.replace(/\/$/,'');
+  if (_gu && _gt && (_gp.endsWith('/dashboard.html') || _gp.endsWith('/dashboard'))) {
+    if (_gu.role==='admin')  { window.location.replace('/admin.html');  return; }
+    if (_gu.role==='editor') { window.location.replace('/verify.html'); return; }
+  }
 
   // Inject global styles + fonts
   document.head.insertAdjacentHTML('beforeend', GLOBAL_STYLES);

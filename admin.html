@@ -516,6 +516,7 @@ let subjectsCache = [];
 function checkAccess() {
   if (!user || !token) { window.location.href = '/login.html'; return false; }
   if (user.role !== 'admin') {
+    if (user.role === 'editor') { window.location.replace('/verify.html'); return false; }
     document.getElementById('access-denied').classList.remove('hidden');
     return false;
   }
