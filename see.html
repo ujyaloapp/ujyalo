@@ -604,8 +604,8 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
       <div class="vw act" id="vw-papers">
         <div class="ppl-pad">
           <div class="ppl-eyebrow">SEE · विगतका प्रश्नपत्र</div>
-          <div class="ppl-h1">Find your <em>province</em>.</div>
-          <div class="ppl-sub">Every real SEE paper, free, with worked answers in English and नेपाली. Pick a subject, then tap your province.</div>
+          <div class="ppl-h1">Every past paper, <em>answered</em>.</div>
+          <div class="ppl-sub">Real SEE papers with model answers, free — in नेपाली or English. Pick a subject to begin.</div>
           <div class="ppl-rule"></div>
           <div class="ppl-slabel">Subject</div>
           <div class="subtiles" id="subtiles"></div>
@@ -845,7 +845,12 @@ async function loadPapers(){
 function renderSubjectTiles(){
   var box=document.getElementById('subtiles'); if(!box) return;
   var g=(S.data&&S.data.grouped)||{};
-  box.innerHTML=SUBJECTS.map(function(s){
+  var list=SUBJECTS.slice().sort(function(a,b){
+    var ha=(g[a.code]&&Object.keys(g[a.code]).length>0)?1:0;
+    var hb=(g[b.code]&&Object.keys(g[b.code]).length>0)?1:0;
+    return hb-ha;           // subjects with papers first; empty ones last (stable)
+  });
+  box.innerHTML=list.map(function(s){
     var has=g[s.code]&&Object.keys(g[s.code]).length>0;
     var on=s.code===S.subj;
     var cls='st2'+(on?' on':'')+(has?'':' soon');
@@ -906,7 +911,7 @@ function renderPapers(){
 
 function renderMap(year, s, avail){
   var availSet={}; avail.forEach(function(n){availSet[n]=1;});
-  var paths='', labels='', badges='', grid='';
+  var paths='', labels='', badges='', gridLive='', gridSoon='';
   PROVINCES.forEach(function(p){
     var m=NP_MAP.p[p.name]; if(!m) return;
     var live=!!availSet[p.name];
@@ -921,12 +926,13 @@ function renderMap(year, s, avail){
     labels+='<text class="psub '+st+'" x="'+m.cx+'" y="'+(m.cy+19)+'">'+sub+'</text>';
     var bc=live?p.col:'#b9b2a0';
     badges+='<g'+click+'><circle class="pbg" cx="'+m.cx+'" cy="'+(m.cy-14)+'" r="10.5" fill="'+bc+'"></circle><text class="pbt" x="'+m.cx+'" y="'+(m.cy-10.5)+'">'+p.num+'</text></g>';
-    grid+='<div class="gr '+(live?'on':'off')+'"'+click+'><span class="gb" style="background:'+bc+'">'+p.num+'</span><span class="gn">'+p.name+'</span><span class="pp '+st+'">'+sub+'</span></div>';
+    var gitem='<div class="gr '+(live?'on':'off')+'"'+click+'><span class="gb" style="background:'+bc+'">'+p.num+'</span><span class="gn">'+p.name+'</span><span class="pp '+st+'">'+sub+'</span></div>';
+    if(live){gridLive+=gitem;}else{gridSoon+=gitem;}
   });
   document.getElementById('yblocks').innerHTML=
     '<div class="taphint">\uD83D\uDC46 Tap your province to open its paper</div>'+
     '<div class="mapwrap"><svg viewBox="-14 -16 '+(NP_MAP.w+28)+' '+(NP_MAP.h+30)+'" class="npmap" xmlns="http://www.w3.org/2000/svg">'+paths+labels+badges+'</svg></div>';
-  document.getElementById('mapfb').innerHTML=grid;
+  document.getElementById('mapfb').innerHTML=gridLive+gridSoon;
 }
 
 function openPaper(code,year,province){
