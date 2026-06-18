@@ -214,6 +214,7 @@
     try{ var d=await apiGet('overview'); OVERVIEW=d.papers||[]; }catch(e){ toast('Could not load papers'); }
     try{ var f=await apiGet('flags'); FLAGS_N=(f.flags||[]).length; $('flagn').textContent=FLAGS_N||''; }catch(e){}
     showPicker();
+    if(/[?&#]tab=flags/.test(location.search+location.hash)){ setTab('flags'); loadFlags(); }
   }
   $('signout').addEventListener('click',function(){ localStorage.removeItem('ujyalo_token'); localStorage.removeItem('ujyalo_user'); location.href='/index.html'; });
 

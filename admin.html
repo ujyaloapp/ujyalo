@@ -38,6 +38,8 @@ a{text-decoration:none;color:inherit;}
 .nav a.on{background:rgba(192,145,63,.16);color:#f4efe2;}
 .nav a.on i{color:var(--brass);opacity:1;}
 .nav-soon{margin-left:auto;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);border:1px solid rgba(255,255,255,.14);border-radius:99px;padding:2px 7px;}
+.nav-ext{margin-top:10px;padding-top:14px !important;border-top:1px solid rgba(255,255,255,.1);}
+.nav-ext .arr{margin-left:auto;font-size:14px;opacity:.7;}
 .side-foot{margin-top:auto;border-top:1px solid rgba(255,255,255,.1);padding-top:14px;display:flex;align-items:center;gap:10px;}
 .side-foot .av{width:34px;height:34px;border-radius:50%;background:var(--brass);color:var(--forest);display:grid;place-items:center;font-weight:700;font-family:'Fraunces',serif;font-size:15px;flex-shrink:0;}
 .side-foot .who{font-size:12.5px;line-height:1.3;min-width:0;}
@@ -158,6 +160,7 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
       <a data-p="coverage"><i class="ti ti-layout-grid"></i> <span>Coverage</span></a>
       <a data-p="people"><i class="ti ti-users"></i> <span>People &amp; Team</span></a>
       <a data-p="inbox"><i class="ti ti-mail"></i> <span>Inbox</span></a>
+      <a class="nav-ext" href="/verify.html"><i class="ti ti-checkup-list"></i> <span>Open verify desk</span> <i class="ti ti-arrow-up-right arr"></i></a>
       <a style="opacity:.5;cursor:default;"><i class="ti ti-chart-histogram"></i> <span>Insights</span> <span class="nav-soon">soon</span></a>
     </nav>
     <div class="side-foot">
@@ -324,7 +327,7 @@ async function loadHome(){
 
     var att='';
     if(ready>0) att+='<div class="att" onclick="goPanel(\'coverage\')"><i class="ti ti-rocket lead"></i><div class="t"><b>'+ready+' paper'+(ready>1?'s':'')+'</b> ready to publish</div><i class="ti ti-chevron-right go"></i></div>';
-    if(fCount>0) att+='<div class="att flag"><i class="ti ti-flag lead"></i><div class="t"><b>'+fCount+' question'+(fCount>1?'s':'')+'</b> flagged in verify need a decision</div><i class="ti ti-chevron-right go"></i></div>';
+    if(fCount>0) att+='<div class="att flag" onclick="location.href=\'/verify.html?tab=flags\'"><i class="ti ti-flag lead"></i><div class="t"><b>'+fCount+' question'+(fCount>1?'s':'')+'</b> flagged in verify need a decision</div><i class="ti ti-chevron-right go"></i></div>';
     if(mCount>0) att+='<div class="att" onclick="goPanel(\'inbox\')"><i class="ti ti-message lead"></i><div class="t"><b>'+mCount+' message'+(mCount>1?'s':'')+'</b> in your inbox</div><i class="ti ti-chevron-right go"></i></div>';
     if(!att) att='<div class="att ok"><i class="ti ti-check lead"></i><div class="t">All clear — nothing needs you right now.</div></div>';
     $('attention').innerHTML = att;
