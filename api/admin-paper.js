@@ -95,7 +95,13 @@ export default async function handler(req, res) {
       const papers = await sbGet('/past_papers?select=id,year,province,subject_id,status&order=year.desc,province.asc');
       const subs   = await sbGet('/exam_subjects?select=id,code,name');
       const byId = {}; subs.forEach(s => { byId[s.id] = s; });
-      const team = {}; // email -> { questions, papers }
+      // current team (admin/editor) — drives who appears; removed accounts never show
+      const teamRows = await sbGet('/users?select=email,full_name,role&role=in.(admin,editor)');
+      const team = {}; // lcEmail -> { email, name, role, questions, papers }
+      (teamRows || []).forEach(u => {
+        const e = (u.email || '').toLowerCase();
+        if (e) team[e] = { email: u.email, name: u.full_name || '', role: u.role || '', questions: 0, papers: 0 };
+      });
       const out = await Promise.all(papers.map(async p => {
         const rows = await sbGet(`/past_paper_questions?paper_id=eq.${p.id}&select=question_number,verified,flagged,verified_by,verified_at`);
         const q = {};
@@ -105,7 +111,7 @@ export default async function handler(req, res) {
           if (r.verified) {
             x.v = true;
             const e = (r.verified_by || '').toLowerCase();
-            if (e) { by[e] = (by[e] || 0) + 1; team[e] = team[e] || { questions: 0, papers: 0 }; team[e].questions++; }
+            if (e) { by[e] = (by[e] || 0) + 1; if (team[e]) team[e].questions++; }
             if (r.verified_at && (!lastAt || r.verified_at > lastAt)) lastAt = r.verified_at;
           }
           if (r.flagged) x.f = true;
@@ -115,7 +121,7 @@ export default async function handler(req, res) {
         const fully = nums.length > 0 && verified === nums.length;
         let topBy = '', topN = -1;
         for (const e in by) { if (by[e] > topN) { topN = by[e]; topBy = e; } }
-        if (fully && topBy) { team[topBy].papers = (team[topBy].papers || 0) + 1; }
+        if (fully && topBy && team[topBy]) { team[topBy].papers++; }
         return {
           id: p.id, year: p.year, province: p.province, status: p.status || '',
           subject: (byId[p.subject_id] || {}).code || '',
@@ -126,8 +132,8 @@ export default async function handler(req, res) {
           fully, verifiedBy: topBy, verifiedAt: lastAt,
         };
       }));
-      const teamArr = Object.keys(team)
-        .map(e => ({ email: e, questions: team[e].questions, papers: team[e].papers || 0 }))
+      const teamArr = Object.values(team)
+        .map(t => ({ email: t.email, name: t.name, role: t.role, questions: t.questions, papers: t.papers }))
         .sort((a, b) => b.questions - a.questions);
       return res.status(200).json({ papers: out, team: teamArr });
     }

@@ -109,23 +109,24 @@
   .bd-h1{font-family:'Fraunces',serif;font-weight:500;font-size:27px;color:var(--forest);margin:2px 0 2px;}
   .bd-sub{color:var(--muted);font-size:14px;margin-bottom:16px;}
   .bd-summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-  .bd-team{margin-bottom:18px;}
-  .team-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px;}
-  .team-card .team-h{font-family:'Fraunces',serif;font-size:15.5px;color:var(--forest);font-weight:600;}
-  .team-card .team-hs{font-size:12px;color:var(--muted);margin:2px 0 11px;}
-  .team-card .mrow{display:flex;align-items:center;gap:11px;padding:9px 0;border-top:1px solid #efe9da;}
-  .team-card .mrow.first{border-top:none;}
-  .team-card .tav{width:32px;height:32px;border-radius:50%;background:var(--brass);color:var(--forest);display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:600;font-size:14px;flex-shrink:0;}
-  .team-card .mname{flex:1;min-width:0;}
-  .team-card .mname b{font-size:13px;color:var(--ink);font-weight:600;}
-  .team-card .mname span{display:block;font-size:11px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;}
-  .team-card .mcount{font-size:12.5px;color:var(--forest);font-weight:600;text-align:right;white-space:nowrap;}
-  .team-card .mcount span{display:block;font-size:11px;color:var(--muted);font-weight:500;}
-  .team-card .together{margin-top:13px;padding-top:12px;border-top:1px solid var(--line);}
-  .team-card .together .t{font-size:12.5px;color:var(--muted);margin-bottom:7px;}
-  .team-card .together .t b{color:var(--forest);}
-  .team-card .tbar{height:8px;background:var(--parch-2);border-radius:99px;overflow:hidden;}
-  .team-card .tbar i{display:block;height:100%;background:var(--brass);}
+  .bd-cols{display:flex;gap:18px;align-items:flex-start;}
+  .bd-main{flex:1;min-width:0;}
+  .bd-side{width:240px;flex-shrink:0;}
+  @media(max-width:680px){ .bd-cols{flex-direction:column;} .bd-side{width:100%;} }
+  .tc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 16px;}
+  .tc-h{font-family:'Fraunces',serif;font-size:15px;color:var(--forest);font-weight:600;}
+  .tc-hs{font-size:11.5px;color:var(--muted);margin:2px 0 12px;}
+  .tc .mrow{padding:9px 0;border-top:1px solid #efe9da;}
+  .tc .mrow.first{border-top:none;}
+  .tc .mtop{display:flex;align-items:center;gap:9px;}
+  .tc .tav{width:28px;height:28px;border-radius:50%;background:var(--brass);color:var(--forest);display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:600;font-size:12.5px;flex-shrink:0;}
+  .tc .mnm{flex:1;min-width:0;font-size:12px;color:var(--ink);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .tc .mn{font-size:13px;color:var(--forest);font-weight:700;}
+  .tc .mbarwrap{display:flex;align-items:center;gap:8px;margin-top:6px;padding-left:37px;}
+  .tc .mbar{flex:1;height:6px;background:var(--parch-2);border-radius:99px;overflow:hidden;}
+  .tc .mbar i{display:block;height:100%;background:var(--brass);}
+  .tc-together{margin-top:12px;padding-top:11px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);}
+  .tc-together b{color:var(--forest);}
   .bd-frow{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:8px;}
   .bd-flbl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700;width:62px;flex-shrink:0;}
   .bd-fchip{font-size:12.5px;font-weight:600;border-radius:99px;padding:5px 12px;background:#fff;border:1px solid var(--line);color:var(--muted);cursor:pointer;}
@@ -182,8 +183,10 @@
         <h1 class="bd-h1">What's left to verify</h1>
         <div class="bd-sub">Tap your subject to see its papers. Everything else stays tucked away.</div>
         <div class="bd-summary" id="bd-summary"></div>
-        <div id="bd-team"></div>
-        <div id="bd-list"></div>
+        <div class="bd-cols">
+          <div class="bd-main"><div id="bd-list"></div></div>
+          <aside class="bd-side"><div id="bd-team"></div></aside>
+        </div>
       </div>
 
       <!-- editor -->
@@ -293,26 +296,25 @@
   }
   function renderTeam(){
     var el=$('bd-team'); if(!el) return;
-    var t=TEAM||[];
+    var t=(TEAM||[]).slice().sort(function(a,b){ return (b.questions||0)-(a.questions||0); });
     if(!t.length){ el.innerHTML=''; return; }
-    var totalP=OVERVIEW.length;
-    var doneCount=OVERVIEW.filter(function(p){ return p.total>0 && p.verified>=p.total; }).length;
-    var pct=totalP?Math.round(doneCount/totalP*100):0;
-    function nameOf(email){ var n=String(email||'').split('@')[0].replace(/[._-]+/g,' ').trim(); return n? (n.charAt(0).toUpperCase()+n.slice(1)) : 'Editor'; }
-    function ini(email){ return (String(email||'?').trim()[0]||'?').toUpperCase(); }
+    var maxQ=1; t.forEach(function(m){ if((m.questions||0)>maxQ) maxQ=(m.questions||0); });
+    var totalQ=t.reduce(function(a,m){ return a+(m.questions||0); },0);
     var meEmail=(user.email||'').toLowerCase();
+    function disp(m){ if(m.name) return m.name; var p=String(m.email||'').split('@')[0]; return p||'Editor'; }
+    function ini(m){ var s=m.name||m.email||'?'; return (String(s).trim()[0]||'?').toUpperCase(); }
     var rows=t.map(function(m,i){
-      var me=meEmail && meEmail===m.email;
+      var me=meEmail && meEmail===String(m.email||'').toLowerCase();
+      var pct=Math.round((m.questions||0)/maxQ*100);
       return '<div class="mrow'+(i===0?' first':'')+'">'+
-        '<div class="tav">'+esc(ini(m.email))+'</div>'+
-        '<div class="mname"><b>'+esc(me?'You':nameOf(m.email))+'</b><span>'+esc(m.email)+'</span></div>'+
-        '<div class="mcount">'+m.papers+' paper'+(m.papers===1?'':'s')+'<span>'+m.questions+' question'+(m.questions===1?'':'s')+'</span></div>'+
-        '</div>';
+        '<div class="mtop"><div class="tav">'+esc(ini(m))+'</div>'+
+        '<div class="mnm">'+esc(me?'You':disp(m))+'</div>'+
+        '<div class="mn">'+(m.questions||0)+'</div></div>'+
+        '<div class="mbarwrap"><div class="mbar"><i style="width:'+pct+'%"></i></div></div></div>';
     }).join('');
-    el.innerHTML='<div class="team-card"><div class="team-h">Verification team</div>'+
-      '<div class="team-hs">What everyone\'s checked so far.</div>'+rows+
-      '<div class="together"><div class="t">Together: <b>'+doneCount+' of '+totalP+' papers</b> fully verified</div>'+
-      '<div class="tbar"><i style="width:'+pct+'%"></i></div></div></div>';
+    el.innerHTML='<div class="tc"><div class="tc-h">Verification team</div>'+
+      '<div class="tc-hs">What everyone\'s checked so far.</div>'+rows+
+      '<div class="tc-together">Together: <b>'+totalQ+' question'+(totalQ===1?'':'s')+'</b> verified</div></div>';
   }
   function renderPicker(){
     renderTeam();
