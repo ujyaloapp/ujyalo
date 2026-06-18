@@ -90,6 +90,32 @@ export default async function handler(req, res) {
       return res.status(200).json({ papers: out });
     }
 
+    // ── verification overview: per-paper verified/total/flagged question counts ──
+    if (action === 'overview') {
+      const papers = await sbGet('/past_papers?select=id,year,province,subject_id&order=year.desc,province.asc');
+      const subs   = await sbGet('/exam_subjects?select=id,code,name');
+      const byId = {}; subs.forEach(s => { byId[s.id] = s; });
+      const out = await Promise.all(papers.map(async p => {
+        const rows = await sbGet(`/past_paper_questions?paper_id=eq.${p.id}&select=question_number,verified,flagged`);
+        const q = {};
+        rows.forEach(r => {
+          const x = q[r.question_number] || (q[r.question_number] = { v: false, f: false });
+          if (r.verified) x.v = true;
+          if (r.flagged)  x.f = true;
+        });
+        const nums = Object.keys(q);
+        return {
+          id: p.id, year: p.year, province: p.province,
+          subject: (byId[p.subject_id] || {}).code || '',
+          subjectName: (byId[p.subject_id] || {}).name || '',
+          total: nums.length,
+          verified: nums.filter(n => q[n].v).length,
+          flagged:  nums.filter(n => q[n].f).length,
+        };
+      }));
+      return res.status(200).json({ papers: out });
+    }
+
     // ── load one paper, fully, for editing ──
     if (action === 'load') {
       const pid = req.query.paper_id;
