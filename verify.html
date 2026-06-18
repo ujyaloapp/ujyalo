@@ -67,6 +67,11 @@
 
   .qc{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:16px 18px;margin-bottom:16px;}
   .qc.verified{border-left:3px solid var(--green);} .qc.flagged{border-left:3px solid var(--flag);}
+  .dgm{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin:11px 0;}
+  .dgm-l{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-deep);font-weight:700;margin-bottom:7px;}
+  .dgm-svg{overflow-x:auto;}
+  .dgm-svg svg{max-width:100%;height:auto;display:block;}
+  .dgm.none{background:transparent;border:1px dashed var(--line);color:var(--faint);font-size:12.5px;font-style:italic;padding:9px 13px;}
   .qc-head{display:flex;align-items:center;gap:9px;margin-bottom:8px;flex-wrap:wrap;}
   .qnum{width:26px;height:26px;border-radius:7px;background:var(--forest);color:#fff;font-family:'Fraunces',serif;font-weight:600;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
   .qc-total{margin-left:auto;font-size:12.5px;color:var(--muted);}.qc-total b{font-family:'Fraunces',serif;color:var(--forest);}
@@ -317,6 +322,13 @@
     if(isSub) h+=subControls(qn,row.id);
     h+='</div>'; return h;
   }
+  function diagramBlock(g){
+    var svg='';
+    if(g.parent && g.parent.diagram_svg) svg=g.parent.diagram_svg;
+    else { for(var i=0;i<g.subs.length;i++){ if(g.subs[i].diagram_svg){ svg=g.subs[i].diagram_svg; break; } } }
+    if(svg) return '<div class="dgm"><div class="dgm-l">Diagram</div><div class="dgm-svg">'+svg+'</div></div>';
+    return '<div class="dgm none">No diagram for this question</div>';
+  }
   function questionCard(g){
     var lead=g.parent?g.parent:(g.subs[0]||{});
     var cls='qc'+(g.verified?' verified':'')+(g.flagged?' flagged':'');
@@ -325,6 +337,7 @@
     h+='<span class="ed chipd" data-id="'+lead.id+'" data-field="topic">'+(lead.topic?esc(lead.topic):'<span class="empty">+ topic</span>')+'<span class="pen">✎</span></span>';
     h+='<span class="ed chipd" data-id="'+lead.id+'" data-field="difficulty">'+(lead.difficulty?esc(lead.difficulty):'<span class="empty">+ level</span>')+'<span class="pen">✎</span></span>';
     h+='<span class="qc-total">Marks <b class="qtot">0</b></span><span id="st-'+g.num+'">'+status+'</span></div>';
+    h+=diagramBlock(g);
     if(g.parent) h+=rowBlock(g.parent,'Question',g.num,false);
     g.subs.forEach(function(s){ h+=rowBlock(s,'Part '+String(s.sub_part||'').toUpperCase(),g.num,true); });
     h+='<button class="addpart" data-act="add-sub" data-qn="'+g.num+'">+ Add a part</button>';

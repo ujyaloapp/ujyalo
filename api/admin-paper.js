@@ -142,7 +142,7 @@ export default async function handler(req, res) {
       const rows = await sbGet(
         `/past_paper_questions?paper_id=eq.${paper.id}` +
         `&order=question_number.asc,sub_part.asc` +
-        `&select=id,question_number,sub_part,question_text_english,question_text_nepali,answer_text,marks,topic,difficulty,verified,flagged,flag_note,verified_by`
+        `&select=id,question_number,sub_part,question_text_english,question_text_nepali,answer_text,marks,topic,difficulty,verified,flagged,flag_note,verified_by,diagram_svg`
       );
       const groups = {};
       rows.forEach(q => {
