@@ -69,10 +69,52 @@ const NAV_PUBLIC = `
   </div>
 </nav>`;
 
+/* ── Staff nav (editor / admin — logged in) ── */
+function buildStaffNav(role, initials, fullName, email) {
+  const workspace = (role === 'admin') ? '/admin.html' : '/verify.html';
+  const label     = (role === 'admin') ? 'Admin'       : 'Verify papers';
+  const badge     = (role === 'admin') ? 'Admin'       : 'Editor';
+  const badgeCss  = 'font-size:11px;font-weight:700;letter-spacing:.3px;color:#11302a;background:rgba(192,145,63,.16);border:1px solid rgba(192,145,63,.45);padding:4px 10px;border-radius:99px;';
+  return `
+<nav class="ujyalo-nav">
+  <div class="ujyalo-nav-inner">
+    ${LOGO_HTML}
+    <div class="ujyalo-nav-links" id="nav-links">
+      <a href="${workspace}">${label}</a>
+    </div>
+    <div class="ujyalo-nav-actions" id="nav-actions">
+      <span class="ujyalo-staff-badge" style="${badgeCss}">${badge}</span>
+      <div class="ujyalo-avwrap">
+        <button class="ujyalo-avatar" id="ujyalo-avatar-btn" onclick="ujyaloToggleMenu(event)" aria-label="Account menu">${initials}</button>
+        <div class="ujyalo-avmenu" id="ujyalo-avmenu">
+          <div class="ujyalo-avmenu-head">
+            <div class="ujyalo-avmenu-name">${fullName}</div>
+            <div class="ujyalo-avmenu-email">${email}</div>
+          </div>
+          <a href="${workspace}" class="ujyalo-avmenu-item">⚙&nbsp; ${label}</a>
+          <button onclick="ujyaloLogout()" class="ujyalo-avmenu-item danger">⇥&nbsp; Log out</button>
+        </div>
+      </div>
+    </div>
+    <button class="ujyalo-hamburger" id="nav-hamburger" aria-label="Open menu" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="ujyalo-mobile-menu" id="nav-mobile-menu">
+    <a href="${workspace}">${label}</a>
+    <div class="ujyalo-mobile-divider"></div>
+    <button onclick="ujyaloLogout()" class="ujyalo-mobile-signup" style="border:none;cursor:pointer;font-family:inherit;">Log out</button>
+  </div>
+</nav>`;
+}
+
 /* ── App nav (logged in) ── */
 function buildAppNav(firstName, initials, fullName, email) {
   const _u = JSON.parse(localStorage.getItem('ujyalo_user')||'null');
-  const _home = (_u && _u.role==='admin') ? '/admin.html' : ((_u && _u.role==='editor') ? '/verify.html' : '/dashboard.html');
+  const _role = _u && _u.role;
+  // Staff get their own nav — never the student chrome (no streak, no student Dashboard/SEE).
+  if (_role === 'admin' || _role === 'editor') return buildStaffNav(_role, initials, fullName, email);
+  const _home = '/dashboard.html';
   return `
 <nav class="ujyalo-nav">
   <div class="ujyalo-nav-inner">
@@ -526,13 +568,17 @@ function ujyaloLogout() {
 /* ── DOMContentLoaded — inject everything ── */
 document.addEventListener('DOMContentLoaded', function() {
 
-  // Role guard: keep admins/editors off the student dashboard (one login, role decides the door)
+  // Role guard: staff (admin/editor) belong in their workspace, not the student pages.
+  // One login, role decides the door — keep them out of the student dashboard AND the student SEE hub.
   var _gu = JSON.parse(localStorage.getItem('ujyalo_user')||'null');
   var _gt = localStorage.getItem('ujyalo_token');
   var _gp = window.location.pathname.replace(/\/$/,'');
-  if (_gu && _gt && (_gp.endsWith('/dashboard.html') || _gp.endsWith('/dashboard'))) {
-    if (_gu.role==='admin')  { window.location.replace('/admin.html');  return; }
-    if (_gu.role==='editor') { window.location.replace('/verify.html'); return; }
+  var _staffHome = (_gu && _gu.role==='admin') ? '/admin.html'
+                 : (_gu && _gu.role==='editor') ? '/verify.html' : null;
+  if (_gu && _gt && _staffHome) {
+    var _studentPage = _gp.endsWith('/dashboard.html') || _gp.endsWith('/dashboard')
+                    || _gp.endsWith('/see.html')       || _gp.endsWith('/see');
+    if (_studentPage) { window.location.replace(_staffHome); return; }
   }
 
   // Inject global styles + fonts
