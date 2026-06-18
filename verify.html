@@ -123,6 +123,18 @@
   .bd-donebar{display:flex;align-items:center;gap:8px;background:var(--green-bg);border:1px solid #cfe3cb;border-radius:12px;padding:13px 16px;color:#1f6b33;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px;}
   .bd-donebar .more{margin-left:auto;font-size:12px;opacity:.8;}
   .bd-empty{text-align:center;color:var(--muted);padding:36px 0;}
+  /* subject accordion */
+  .sg{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px 17px;margin-bottom:10px;cursor:pointer;transition:.12s;}
+  .sg:hover{border-color:var(--brass);}
+  .sg.open{border-color:var(--brass);border-bottom-left-radius:0;border-bottom-right-radius:0;margin-bottom:0;}
+  .sg-tag{font-size:10.5px;font-weight:700;letter-spacing:.04em;border-radius:6px;padding:5px 9px;text-transform:uppercase;white-space:nowrap;}
+  .sg-tag.maths{background:#e8eef6;color:#2a5b9c;}.sg-tag.science{background:#e0f2ee;color:#1f7a68;}.sg-tag.english{background:#fbeede;color:#a4701a;}.sg-tag.social{background:#efe9f6;color:#6b4ba0;}.sg-tag.nepali{background:#fdeef0;color:#a83a5b;}.sg-tag.hpe{background:#fdeaea;color:#b3433f;}
+  .sg-name{font-family:'Fraunces',serif;font-size:17px;color:var(--forest);font-weight:600;min-width:84px;}
+  .sg-bar{flex:1;height:8px;background:var(--parch-2);border-radius:99px;overflow:hidden;max-width:200px;}.sg-bar i{display:block;height:100%;background:var(--green);border-radius:99px;}
+  .sg-cnt{font-size:12.5px;color:var(--muted);font-weight:600;white-space:nowrap;}
+  .sg-flag{background:var(--flag);color:#fff;border-radius:99px;font-size:10.5px;padding:3px 8px;font-weight:700;white-space:nowrap;}
+  .sg-chev{color:var(--faint);font-size:13px;width:14px;text-align:center;}
+  .sg-body{background:#fbf9f2;border:1px solid var(--brass);border-top:none;border-radius:0 0 13px 13px;padding:8px 14px 14px;margin-bottom:10px;}
 </style>
 </head>
 <body>
@@ -144,10 +156,8 @@
       <div id="picker" class="board">
         <div class="eyebrow">Verification workspace</div>
         <h1 class="bd-h1">What's left to verify</h1>
-        <div class="bd-sub">Filter to your subject and work down the list. Finished papers tuck away at the bottom.</div>
+        <div class="bd-sub">Tap your subject to see its papers. Everything else stays tucked away.</div>
         <div class="bd-summary" id="bd-summary"></div>
-        <div class="bd-frow"><span class="bd-flbl">Subject</span><span id="bd-subjects"></span></div>
-        <div class="bd-frow"><span class="bd-flbl">Year</span><span id="bd-years"></span></div>
         <div id="bd-list"></div>
       </div>
 
@@ -175,7 +185,7 @@
   var user=JSON.parse(localStorage.getItem('ujyalo_user')||'null');
   var token=localStorage.getItem('ujyalo_token')||'';
   var DATA=null, PAPER=null, PAPER_TOTAL=75, IS_ENG=false, PENDING_SCROLL=null;
-  var PAPERS=[], FLAGS_N=0, OVERVIEW=[], FILTER={subject:'all',year:'all'}, DONE_OPEN=false;
+  var PAPERS=[], FLAGS_N=0, OVERVIEW=[], OPEN_SUBJECT=null, DONE_OPEN=false;
 
   var SUBJ_CFG={maths:{ic:'∫',np:'गणित',name:'Maths',order:1},science:{ic:'⚗',np:'विज्ञान',name:'Science',order:2},english:{ic:'Aa',np:'अंग्रेजी',name:'English',order:3},social:{ic:'◉',np:'सामाजिक',name:'Social',order:4},nepali:{ic:'क',np:'नेपाली',name:'Nepali',order:5},hpe:{ic:'♡',np:'स्वास्थ्य',name:'HPE',order:6}};
   var PROV_CFG={Koshi:{n:1},Madhesh:{n:2},Bagmati:{n:3},Gandaki:{n:4},Lumbini:{n:5},Karnali:{n:6},Sudurpashchim:{n:7}};
@@ -215,18 +225,44 @@
   // ── picker (subject → year → province) ──
   function showPicker(){ setTab('papers'); $('editor').classList.add('hidden'); $('picker').classList.remove('hidden'); renderPicker(); }
   $('changepaper').addEventListener('click',showPicker);
-  function subjCount(code){ return OVERVIEW.filter(function(p){ return code==='all'||p.subject===code; }).length; }
   function statusOf(p){ if(!p.total||p.verified===0) return 'todo'; if(p.verified>=p.total) return 'done'; return 'prog'; }
   function rowHtml(p){
     var st=statusOf(p), pct=p.total?Math.round(p.verified/p.total*100):0;
-    var nm=(SUBJ_CFG[p.subject]||{}).name||p.subject||'';
     var badge = st==='done' ? '<span class="bd-badge" style="background:var(--green-bg);color:#1f6b33;">✓ Done</span>'
               : st==='prog' ? '<span class="bd-badge prog">In progress</span>'
               :               '<span class="bd-badge todo">Not started</span>';
     var fl = p.flagged ? '<span class="bd-flagn">⚑ '+p.flagged+'</span>' : '';
-    return '<div class="bd-row" data-open="'+p.id+'"><span class="bd-sbj '+esc(p.subject)+'">'+esc(nm)+'</span>'+
+    return '<div class="bd-row" data-open="'+p.id+'">'+
       '<div class="bd-rtitle">SEE '+p.year+' <span class="yp2">· '+esc(p.province)+'</span></div>'+fl+
       '<div class="bd-barwrap"><div class="bd-bar"><i style="width:'+pct+'%"></i></div><div class="bd-cnt">'+p.verified+' / '+p.total+'</div></div>'+badge+'</div>';
+  }
+  function subjGroupHtml(code, papers){
+    var nm=(SUBJ_CFG[code]||{}).name||code;
+    var totP=papers.length;
+    var doneP=papers.filter(function(p){return p.total>0&&p.verified>=p.total;}).length;
+    var flagP=papers.reduce(function(a,p){return a+(p.flagged||0);},0);
+    var pct=totP?Math.round(doneP/totP*100):0;
+    var open=(OPEN_SUBJECT===code);
+    var fl=flagP?'<span class="sg-flag">⚑ '+flagP+'</span>':'';
+    var head='<div class="sg'+(open?' open':'')+'" data-subj="'+esc(code)+'">'+
+      '<span class="sg-tag '+esc(code)+'">'+esc(nm)+'</span>'+
+      '<div class="sg-name">'+esc(nm)+'</div>'+
+      '<div class="sg-bar"><i style="width:'+pct+'%"></i></div>'+
+      '<div class="sg-cnt">'+doneP+' of '+totP+' verified</div>'+fl+
+      '<span class="sg-chev">'+(open?'▾':'▸')+'</span></div>';
+    if(!open) return head;
+    var todo=papers.filter(function(p){return statusOf(p)==='todo';});
+    var prog=papers.filter(function(p){return statusOf(p)==='prog';});
+    var done=papers.filter(function(p){return statusOf(p)==='done';});
+    var b='';
+    if(todo.length) b+='<div class="bd-bucket">○ Not started <span class="n">'+todo.length+'</span></div>'+todo.map(rowHtml).join('');
+    if(prog.length) b+='<div class="bd-bucket">◐ In progress <span class="n">'+prog.length+'</span></div>'+prog.map(rowHtml).join('');
+    if(done.length){
+      if(DONE_OPEN) b+='<div class="bd-bucket">✓ Done <span class="n">'+done.length+'</span></div>'+done.map(rowHtml).join('')+'<div class="bd-donebar" data-done="1">✓ '+done.length+' fully verified <span class="more">hide ▴</span></div>';
+      else b+='<div class="bd-donebar" data-done="1">✓ '+done.length+' paper'+(done.length>1?'s':'')+' fully verified <span class="more">show ▾</span></div>';
+    }
+    if(!totP) b='<div class="bd-empty">No papers in this subject yet.</div>';
+    return head+'<div class="sg-body">'+b+'</div>';
   }
   function renderPicker(){
     var totalPapers=OVERVIEW.length;
@@ -238,28 +274,12 @@
       '<span class="pill flag">⚑ <b>'+FLAGS_N+'</b> flags waiting</span>';
     var codes=[]; OVERVIEW.forEach(function(p){ if(p.subject && codes.indexOf(p.subject)<0) codes.push(p.subject); });
     codes.sort(function(a,b){ return ((SUBJ_CFG[a]||{}).order||9)-((SUBJ_CFG[b]||{}).order||9); });
-    $('bd-subjects').innerHTML='<span class="bd-fchip'+(FILTER.subject==='all'?' on':'')+'" data-f="subject" data-v="all">All<span class="c">'+totalPapers+'</span></span>'+
-      codes.map(function(c){ var nm=(SUBJ_CFG[c]||{}).name||c; return '<span class="bd-fchip'+(FILTER.subject===c?' on':'')+'" data-f="subject" data-v="'+c+'">'+esc(nm)+'<span class="c">'+subjCount(c)+'</span></span>'; }).join('');
-    var years=[]; OVERVIEW.forEach(function(p){ if(years.indexOf(p.year)<0) years.push(p.year); }); years.sort(function(a,b){return b-a;});
-    $('bd-years').innerHTML='<span class="bd-fchip'+(FILTER.year==='all'?' on':'')+'" data-f="year" data-v="all">All</span>'+
-      years.map(function(y){ return '<span class="bd-fchip'+(String(FILTER.year)===String(y)?' on':'')+'" data-f="year" data-v="'+y+'">'+y+'</span>'; }).join('');
-    var list=OVERVIEW.filter(function(p){ return (FILTER.subject==='all'||p.subject===FILTER.subject) && (FILTER.year==='all'||String(p.year)===String(FILTER.year)); });
-    var todo=list.filter(function(p){return statusOf(p)==='todo';});
-    var prog=list.filter(function(p){return statusOf(p)==='prog';});
-    var done=list.filter(function(p){return statusOf(p)==='done';});
-    var h='';
-    if(!list.length) h='<div class="bd-empty">No papers here yet.</div>';
-    if(todo.length) h+='<div class="bd-bucket">○ Not started <span class="n">'+todo.length+'</span></div>'+todo.map(rowHtml).join('');
-    if(prog.length) h+='<div class="bd-bucket">◐ In progress <span class="n">'+prog.length+'</span></div>'+prog.map(rowHtml).join('');
-    if(done.length){
-      if(DONE_OPEN) h+='<div class="bd-bucket">✓ Done <span class="n">'+done.length+'</span></div>'+done.map(rowHtml).join('')+'<div class="bd-donebar" data-done="1">✓ '+done.length+' fully verified <span class="more">hide ▴</span></div>';
-      else h+='<div class="bd-donebar" data-done="1">✓ '+done.length+' paper'+(done.length>1?'s':'')+' fully verified <span class="more">show ▾</span></div>';
-    }
-    $('bd-list').innerHTML=h;
+    if(!codes.length){ $('bd-list').innerHTML='<div class="bd-empty">No papers yet.</div>'; return; }
+    $('bd-list').innerHTML=codes.map(function(c){ return subjGroupHtml(c, OVERVIEW.filter(function(p){return p.subject===c;})); }).join('');
   }
   $('picker').addEventListener('click',function(e){
-    var f=e.target.closest('[data-f]');
-    if(f){ FILTER[f.getAttribute('data-f')]=f.getAttribute('data-v'); renderPicker(); return; }
+    var s=e.target.closest('[data-subj]');
+    if(s){ var c=s.getAttribute('data-subj'); if(OPEN_SUBJECT===c){ OPEN_SUBJECT=null; } else { OPEN_SUBJECT=c; DONE_OPEN=false; } renderPicker(); return; }
     if(e.target.closest('[data-done]')){ DONE_OPEN=!DONE_OPEN; renderPicker(); return; }
     var row=e.target.closest('[data-open]'); if(row){ loadPaper(row.getAttribute('data-open')); return; }
   });
