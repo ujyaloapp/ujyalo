@@ -116,8 +116,10 @@ export default async function handler(req, res) {
 </body>
 </html>`;
 
-    // Send both emails via Resend
-    await Promise.all([
+    // Send both emails via Resend.
+    // The message is already saved above, so even if email delivery fails the
+    // contact is never lost — we just log the failure so it can be looked into.
+    const [userEmailRes, adminEmailRes] = await Promise.all([
       // Confirmation to user
       fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -148,6 +150,9 @@ export default async function handler(req, res) {
         })
       })
     ]);
+
+    if (!userEmailRes.ok) console.error('Contact: user confirmation email failed', await userEmailRes.text());
+    if (!adminEmailRes.ok) console.error('Contact: admin notification email failed', await adminEmailRes.text());
 
     return res.status(200).json({ success: true, message: 'Message sent!' });
 

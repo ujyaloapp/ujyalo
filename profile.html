@@ -408,7 +408,10 @@
 
 const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
 const token = localStorage.getItem('ujyalo_token');
-if (!user || !token) window.location.href = '/login.html';
+if (!user || !token) {
+  window.location.href = '/login.html';
+  throw new Error('Not logged in — redirecting'); // stop the rest of this script from running on empty data
+}
 
 const $ = id => document.getElementById(id);
 
@@ -571,8 +574,9 @@ async function changePassword() {
 }
 
 function logout() {
-  localStorage.removeItem('ujyalo_token');
-  localStorage.removeItem('ujyalo_user');
+  // Clear everything tied to the signed-in user (shared-device safe).
+  ['ujyalo_token', 'ujyalo_user', 'ujyalo_conf', 'ujyalo_progress', 'ujyalo_bookmarks']
+    .forEach(k => localStorage.removeItem(k));
   window.location.href = '/index.html';
 }
 

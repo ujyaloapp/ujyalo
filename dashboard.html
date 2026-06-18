@@ -239,7 +239,10 @@
 <script>
 const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
 const token = localStorage.getItem('ujyalo_token');
-if (!user || !token) window.location.href = '/login.html';
+if (!user || !token) {
+  window.location.href = '/login.html';
+  throw new Error('Not logged in — redirecting'); // stop the rest of this script from running on empty data
+}
 
 const $ = id => document.getElementById(id);
 const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;

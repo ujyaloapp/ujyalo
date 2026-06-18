@@ -13,7 +13,6 @@ const PAGES = [
   { path: '/',                    priority: '1.0', changefreq: 'weekly'  },
   { path: '/chapter-practice.html', priority: '0.9', changefreq: 'weekly'  },
   { path: '/see-practice.html',   priority: '0.8', changefreq: 'weekly'  },
-  { path: '/see-past-papers.html', priority: '0.9', changefreq: 'weekly'  },
   { path: '/see/past-papers',      priority: '0.9', changefreq: 'weekly'  },
   { path: '/blog',                 priority: '0.8', changefreq: 'weekly'  },
   { path: '/signup.html',         priority: '0.8', changefreq: 'monthly' },

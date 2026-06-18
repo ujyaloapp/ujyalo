@@ -74,8 +74,6 @@ export default async function handler(req, res) {
       // Step 3: Redirect based on role
       let redirectTo = '/dashboard.html';
       if (role === 'admin')   redirectTo = '/admin.html';
-      if (role === 'teacher') redirectTo = '/teacher.html';
-      if (role === 'parent')  redirectTo = '/parent.html';
       if (role === 'editor')  redirectTo = '/verify.html';
 
       return res.status(200).json({

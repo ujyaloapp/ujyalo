@@ -69,8 +69,7 @@
     const role = user.role || 'student';
     let dest = '/dashboard.html';
     if (role === 'admin')   dest = '/admin.html';
-    if (role === 'teacher') dest = '/teacher.html';
-    if (role === 'parent')  dest = '/parent.html';
+    if (role === 'editor')  dest = '/verify.html';
     window.location.href = dest;
   }
 </script>

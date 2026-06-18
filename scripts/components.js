@@ -540,10 +540,27 @@ function ujyaloToggleMenu(e){
 }
 
 function ujyaloLogout() {
-  localStorage.removeItem('ujyalo_token');
-  localStorage.removeItem('ujyalo_user');
+  // Clear everything tied to the signed-in user so nothing leaks to the
+  // next person on a shared device (school lab, family computer, etc.).
+  ['ujyalo_token', 'ujyalo_user', 'ujyalo_conf', 'ujyalo_progress', 'ujyalo_bookmarks']
+    .forEach(k => localStorage.removeItem(k));
   window.location.href = '/index.html';
 }
+
+/* ── Site icons + PWA manifest (kept in one place for every page) ── */
+(function() {
+  if (!document.head) return;
+  function addLink(rel, href, attrs) {
+    if (document.querySelector('link[rel="' + rel + '"]')) return; // page already has one — don't duplicate
+    var l = document.createElement('link');
+    l.rel = rel; l.href = href;
+    if (attrs) Object.keys(attrs).forEach(function(k){ l.setAttribute(k, attrs[k]); });
+    document.head.appendChild(l);
+  }
+  addLink('icon', '/favicon.svg', { type: 'image/svg+xml' });
+  addLink('apple-touch-icon', '/apple-touch-icon.png');
+  addLink('manifest', '/site.webmanifest');
+})();
 
 /* ── Google Analytics (real tag) ── */
 (function() {
