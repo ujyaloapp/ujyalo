@@ -226,13 +226,14 @@
   function showPicker(){ setTab('papers'); $('editor').classList.add('hidden'); $('picker').classList.remove('hidden'); renderPicker(); }
   $('changepaper').addEventListener('click',showPicker);
   function statusOf(p){ if(!p.total||p.verified===0) return 'todo'; if(p.verified>=p.total) return 'done'; return 'prog'; }
-  function rowHtml(p){
+  function rowHtml(p, showSubj){
     var st=statusOf(p), pct=p.total?Math.round(p.verified/p.total*100):0;
     var badge = st==='done' ? '<span class="bd-badge" style="background:var(--green-bg);color:#1f6b33;">✓ Done</span>'
               : st==='prog' ? '<span class="bd-badge prog">In progress</span>'
               :               '<span class="bd-badge todo">Not started</span>';
     var fl = p.flagged ? '<span class="bd-flagn">⚑ '+p.flagged+'</span>' : '';
-    return '<div class="bd-row" data-open="'+p.id+'">'+
+    var tag = showSubj ? '<span class="bd-sbj '+esc(p.subject)+'">'+esc((SUBJ_CFG[p.subject]||{}).name||p.subject)+'</span>' : '';
+    return '<div class="bd-row" data-open="'+p.id+'">'+tag+
       '<div class="bd-rtitle">SEE '+p.year+' <span class="yp2">· '+esc(p.province)+'</span></div>'+fl+
       '<div class="bd-barwrap"><div class="bd-bar"><i style="width:'+pct+'%"></i></div><div class="bd-cnt">'+p.verified+' / '+p.total+'</div></div>'+badge+'</div>';
   }
@@ -252,16 +253,15 @@
       '<span class="sg-chev">'+(open?'▾':'▸')+'</span></div>';
     if(!open) return head;
     var todo=papers.filter(function(p){return statusOf(p)==='todo';});
-    var prog=papers.filter(function(p){return statusOf(p)==='prog';});
     var done=papers.filter(function(p){return statusOf(p)==='done';});
     var b='';
-    if(todo.length) b+='<div class="bd-bucket">○ Not started <span class="n">'+todo.length+'</span></div>'+todo.map(rowHtml).join('');
-    if(prog.length) b+='<div class="bd-bucket">◐ In progress <span class="n">'+prog.length+'</span></div>'+prog.map(rowHtml).join('');
+    if(todo.length) b+='<div class="bd-bucket">○ Not started <span class="n">'+todo.length+'</span></div>'+todo.map(function(p){return rowHtml(p);}).join('');
     if(done.length){
-      if(DONE_OPEN) b+='<div class="bd-bucket">✓ Done <span class="n">'+done.length+'</span></div>'+done.map(rowHtml).join('')+'<div class="bd-donebar" data-done="1">✓ '+done.length+' fully verified <span class="more">hide ▴</span></div>';
+      if(DONE_OPEN) b+='<div class="bd-bucket">✓ Done <span class="n">'+done.length+'</span></div>'+done.map(function(p){return rowHtml(p);}).join('')+'<div class="bd-donebar" data-done="1">✓ '+done.length+' fully verified <span class="more">hide ▴</span></div>';
       else b+='<div class="bd-donebar" data-done="1">✓ '+done.length+' paper'+(done.length>1?'s':'')+' fully verified <span class="more">show ▾</span></div>';
     }
     if(!totP) b='<div class="bd-empty">No papers in this subject yet.</div>';
+    else if(!b) b='<div class="bd-empty">All papers in progress — see the top of the page.</div>';
     return head+'<div class="sg-body">'+b+'</div>';
   }
   function renderPicker(){
@@ -275,7 +275,12 @@
     var codes=[]; OVERVIEW.forEach(function(p){ if(p.subject && codes.indexOf(p.subject)<0) codes.push(p.subject); });
     codes.sort(function(a,b){ return ((SUBJ_CFG[a]||{}).order||9)-((SUBJ_CFG[b]||{}).order||9); });
     if(!codes.length){ $('bd-list').innerHTML='<div class="bd-empty">No papers yet.</div>'; return; }
-    $('bd-list').innerHTML=codes.map(function(c){ return subjGroupHtml(c, OVERVIEW.filter(function(p){return p.subject===c;})); }).join('');
+    var prog=OVERVIEW.filter(function(p){return statusOf(p)==='prog';});
+    prog.sort(function(a,b){ var d=((SUBJ_CFG[a.subject]||{}).order||9)-((SUBJ_CFG[b.subject]||{}).order||9); return d||(b.year-a.year); });
+    var top = prog.length ? ('<div class="bd-bucket">◐ In progress <span class="n">'+prog.length+'</span></div>'+prog.map(function(p){return rowHtml(p,true);}).join('')) : '';
+    var sep = prog.length ? '<div class="bd-bucket" style="margin-top:22px;">By subject</div>' : '';
+    var groups = codes.map(function(c){ return subjGroupHtml(c, OVERVIEW.filter(function(p){return p.subject===c;})); }).join('');
+    $('bd-list').innerHTML = top + sep + groups;
   }
   $('picker').addEventListener('click',function(e){
     var s=e.target.closest('[data-subj]');
