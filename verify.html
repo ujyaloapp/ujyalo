@@ -16,6 +16,8 @@
   .tb-left{display:flex;align-items:center;} .tb-right{display:flex;align-items:center;gap:12px;font-size:13px;}
   .who{background:#ffffff14;border:1px solid #ffffff2e;border-radius:99px;padding:5px 13px;color:#e8e2d4;}.who b{color:#fff;}
   .signout{color:#aebaad;font-size:12px;cursor:pointer;}
+  .tb-admin{color:#e9d9b5;font-size:12px;font-weight:600;text-decoration:none;border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:4px 12px;}
+  .tb-admin:hover{border-color:var(--brass);color:#fff;}
 
   .paperbar{background:var(--parch-2);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:48px;z-index:15;}
   .vtabs{display:flex;gap:4px;background:#e4dcc8;border-radius:9px;padding:3px;}
@@ -141,7 +143,7 @@
 <div id="app" class="hidden">
   <div class="topbar">
     <div class="tb-left"><span class="wm">ujy<span class="a">a</span>lo</span><span class="tb-tag">Verification</span></div>
-    <div class="tb-right"><span class="who">Signed in · <b id="who-email">—</b></span><span class="signout" id="signout">Sign out</span></div>
+    <div class="tb-right"><a class="tb-admin hidden" id="tb-admin" href="/admin.html">← Admin</a><span class="who">Signed in · <b id="who-email">—</b></span><span class="signout" id="signout">Sign out</span></div>
   </div>
   <div class="paperbar">
     <div class="vtabs">
@@ -211,6 +213,7 @@
     if(!user||!token){ location.replace('/login.html'); return; }
     if(user.role!=='editor' && user.role!=='admin'){ location.replace('/dashboard.html'); return; }
     $('app').classList.remove('hidden'); $('who-email').textContent=user.email||'';
+    if(user.role==='admin') $('tb-admin').classList.remove('hidden');
     try{ var d=await apiGet('overview'); OVERVIEW=d.papers||[]; }catch(e){ toast('Could not load papers'); }
     try{ var f=await apiGet('flags'); FLAGS_N=(f.flags||[]).length; $('flagn').textContent=FLAGS_N||''; }catch(e){}
     showPicker();
