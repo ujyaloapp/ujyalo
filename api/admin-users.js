@@ -33,19 +33,34 @@ export default async function handler(req, res) {
       throw new Error(data.message || 'Failed to fetch users');
     }
 
-    // Return simplified user list
-    // Filter out all admin emails from student list
-    const ADMIN_EMAILS = ['hello@ujyalo.app']; // keep in sync with auth-login.js
+    // System mailboxes to hide from People entirely (not real users)
+    const HIDE_EMAILS = ['hello@ujyalo.app'];
+
+    // Fetch app roles from the users table (keyed by auth id)
+    let rolesById = {};
+    try {
+      const roleRes = await fetch(
+        `${process.env.SUPABASE_URL}/rest/v1/users?select=id,role,full_name`,
+        { headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}` } }
+      );
+      const roleRows = await roleRes.json();
+      if (Array.isArray(roleRows)) roleRows.forEach(r => { rolesById[r.id] = r; });
+    } catch (e) { /* if roles fail, everyone defaults to student */ }
+
     const users = (data.users || [])
-      .filter(u => !ADMIN_EMAILS.includes(u.email?.toLowerCase()))
-      .map(u => ({
-      id:         u.id,
-      email:      u.email,
-      full_name:  u.user_metadata?.full_name || '—',
-      created_at: u.created_at,
-      confirmed:  !!u.email_confirmed_at,
-      last_sign_in: u.last_sign_in_at,
-    }));
+      .filter(u => !HIDE_EMAILS.includes((u.email || '').toLowerCase()))
+      .map(u => {
+        const r = rolesById[u.id] || {};
+        return {
+          id:           u.id,
+          email:        u.email,
+          full_name:    r.full_name || u.user_metadata?.full_name || '—',
+          role:         r.role || 'student',
+          created_at:   u.created_at,
+          confirmed:    !!u.email_confirmed_at,
+          last_sign_in: u.last_sign_in_at,
+        };
+      });
 
     return res.status(200).json({ success: true, users });
 
