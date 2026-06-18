@@ -91,14 +91,15 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
 .grid th.cor{text-align:left;}
 .grid td.sub{font-weight:600;color:var(--forest);font-size:13.5px;white-space:nowrap;padding-right:6px;}
 .cell{min-width:70px;height:42px;border-radius:9px;display:grid;place-items:center;font-size:12px;font-weight:600;cursor:default;}
-.cell.live{background:var(--green-bg);color:#1f6b33;border:1px solid #cfe3cb;}
+.cell.verok{background:#dfeede;color:#256b38;border:1px solid #b8d8bd;}
+.cell.live{background:#eef0ea;color:#3f5b50;border:1px solid #dde2d6;}
 .cell.prog{background:#f7ecd6;color:var(--brass-deep);border:1px solid #e9d5a8;}
 .cell.miss{background:transparent;color:var(--faint);border:1px dashed var(--line);}
 .cell i{font-size:15px;}
 .legend{display:flex;gap:18px;margin-top:15px;font-size:12px;color:var(--muted);flex-wrap:wrap;}
 .legend span{display:inline-flex;align-items:center;gap:7px;}
 .legend .sw{width:13px;height:13px;border-radius:4px;}
-.sw.live{background:var(--green-bg);border:1px solid #cfe3cb;}.sw.prog{background:#f7ecd6;border:1px solid #e9d5a8;}.sw.miss{border:1px dashed var(--line);}
+.sw.verok{background:#dfeede;border:1px solid #b8d8bd;}.sw.live{background:#eef0ea;border:1px solid #dde2d6;}.sw.prog{background:#f7ecd6;border:1px solid #e9d5a8;}.sw.miss{border:1px dashed var(--line);}
 /* publish list */
 .prow{display:flex;align-items:center;gap:13px;padding:12px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;}
 .prow:last-child{border-bottom:none;}
@@ -205,8 +206,8 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
       <div class="yrtabs" id="cov-years"></div>
       <div class="cov" id="cov-grid"><div class="loading">Loading coverage…</div></div>
       <div class="card">
-        <div class="card-h">Ready to publish</div>
-        <div class="card-hs">Fully verified — your call to take them live. Editing happens in the verify desk.</div>
+        <div class="card-h">Fully verified papers</div>
+        <div class="card-hs">Every question checked and clean. Publish a verified paper to take it live.</div>
         <div id="ready-list"><div class="loading">Loading…</div></div>
       </div>
     </section>
@@ -309,7 +310,8 @@ async function loadHome(){
     ]);
     var live = Array.isArray(papers)? papers.filter(function(p){return p.status==='live';}).length : 0;
     var totalP = Array.isArray(papers)? papers.length : 0;
-    var ready = Array.isArray(papers)? papers.filter(function(p){return p.status==='ready';}).length : 0;
+    await ensurePapers(); await ensureOverview();
+    var ready = (OV && OV.papers ? OV.papers : []).filter(function(p){ return p.fully && p.status!=='live'; }).length;
     var vCount = Array.isArray(qVerified)? qVerified.length : 0;
     var tCount = Array.isArray(qTotal)? qTotal.length : 0;
     var fCount = Array.isArray(qFlagged)? qFlagged.length : 0;
@@ -344,10 +346,24 @@ async function ensurePapers(){
   PAPERS = await sbGet('past_papers','select=id,year,province,status,subject_id&order=year.desc');
   if(!Array.isArray(PAPERS)) PAPERS=[];
 }
+
+/* verification overview (computed on the server so big tables can't truncate) */
+let OV = null, OVMAP = {};
+async function ensureOverview(){
+  try{
+    var r = await fetch('/api/admin-paper?action=overview', { headers:{ 'Authorization':'Bearer '+token } });
+    OV = await r.json();
+  }catch(e){ OV = { papers:[], team:[] }; }
+  if(!OV || !Array.isArray(OV.papers)) OV = { papers:[], team:[] };
+  OVMAP = {}; OV.papers.forEach(function(p){ OVMAP[p.id] = p; });
+  return OV;
+}
+function isFullyVerified(pid){ var o = OVMAP[pid]; return !!(o && o.fully); }
 async function loadCoverage(){
   LOADED.coverage = true;
   try{
     await ensurePapers();
+    await ensureOverview();
     var years=[]; PAPERS.forEach(function(p){ if(years.indexOf(p.year)<0) years.push(p.year); }); years.sort(function(a,b){return b-a;});
     if(!years.length){ $('cov-grid').innerHTML='<div class="empty">No papers yet.</div>'; $('cov-years').innerHTML=''; $('ready-list').innerHTML='<div class="empty">Nothing ready to publish.</div>'; return; }
     if(COV_YEAR===null || years.indexOf(COV_YEAR)<0) COV_YEAR=years[0];
@@ -368,30 +384,36 @@ function renderGrid(){
     var cells = PROV.map(function(prov){
       var paper = PAPERS.filter(function(p){ return p.year===COV_YEAR && p.province===prov && (SUBJECTS[p.subject_id]||{}).code===code; })[0];
       if(!paper) return '<td><div class="cell miss">—</div></td>';
-      if(paper.status==='live') return '<td><div class="cell live" title="Live"><i class="ti ti-check"></i></div></td>';
+      var ver=isFullyVerified(paper.id), live=paper.status==='live';
+      if(ver) return '<td><div class="cell verok" title="Verified'+(live?' &amp; live':' · not live yet')+'"><i class="ti ti-checks"></i></div></td>';
+      if(live) return '<td><div class="cell live" title="Live · not verified"><i class="ti ti-check"></i></div></td>';
       return '<td><div class="cell prog" title="In progress">•</div></td>';
     }).join('');
     return '<tr><td class="sub">'+esc(nm)+'</td>'+cells+'</tr>';
   }).join('');
-  var legend='<div class="legend"><span><span class="sw live"></span> Live</span><span><span class="sw prog"></span> In progress</span><span><span class="sw miss"></span> Missing</span></div>';
+  var legend='<div class="legend"><span><span class="sw verok"></span> Verified</span><span><span class="sw live"></span> Live · unverified</span><span><span class="sw prog"></span> In progress</span><span><span class="sw miss"></span> Missing</span></div>';
   $('cov-grid').innerHTML = head+body+'</tbody></table>'+legend;
 }
 function renderReady(){
-  var ready = PAPERS.filter(function(p){ return p.status==='ready'; });
-  if(!ready.length){ $('ready-list').innerHTML='<div class="empty">Nothing waiting — publish queue is clear.</div>'; return; }
-  $('ready-list').innerHTML = ready.map(function(p){
-    var nm=(SUBJECTS[p.subject_id]||{}).name||'—';
-    return '<div class="prow"><div class="pt">SEE '+p.year+' '+esc(p.province)+' <span>· '+esc(nm)+'</span></div>'+
-      '<span class="pill ready">Ready</span>'+
-      '<a class="btn ghost" href="/verify.html">Open in editor</a>'+
-      '<button class="btn pub" data-pub="'+p.id+'">Publish →</button></div>';
+  var done = (OV && OV.papers ? OV.papers : []).filter(function(p){ return p.fully; });
+  if(!done.length){ $('ready-list').innerHTML='<div class="empty">No papers fully verified yet — finished papers from the verify desk will land here.</div>'; return; }
+  done.sort(function(a,b){ return (a.status==='live'?1:0)-(b.status==='live'?1:0) || (b.year-a.year); });
+  $('ready-list').innerHTML = done.map(function(p){
+    var nm = p.subjectName || p.subject || '—';
+    var live = p.status==='live';
+    var meta = 'Verified by '+esc(p.verifiedBy||'team')+(p.verifiedAt?(' · '+fmtDate(p.verifiedAt)):'')+' · '+p.verified+'/'+p.total+' questions';
+    var liveBadge = live ? '<span class="pill live">● Live</span>' : '<span class="pill draft">Not live</span>';
+    var pubBtn = live ? '' : '<button class="btn pub" data-pub="'+p.id+'">Publish →</button>';
+    return '<div class="prow"><div class="pt">SEE '+p.year+' '+esc(p.province)+' <span>· '+esc(nm)+'</span>'+
+      '<div style="font-size:11.5px;color:var(--faint);font-weight:500;margin-top:3px;">'+meta+'</div></div>'+
+      '<span class="pill live">✓ Verified</span>'+liveBadge+pubBtn+'</div>';
   }).join('');
 }
 $('ready-list').addEventListener('click', async function(e){
   var b=e.target.closest('[data-pub]'); if(!b) return;
   if(!confirm('Publish this paper? It will go live on ujyalo.app.')) return;
   b.disabled=true; b.textContent='Publishing…';
-  try{ var r=await sbPatch('past_papers', b.getAttribute('data-pub'), {status:'live'}); if(!r.ok) throw new Error('patch'); var p=PAPERS.filter(function(x){return x.id===b.getAttribute('data-pub');})[0]; if(p)p.status='live'; renderGrid(); renderReady(); loadHome(); }
+  try{ var r=await sbPatch('past_papers', b.getAttribute('data-pub'), {status:'live'}); if(!r.ok) throw new Error('patch'); var p=PAPERS.filter(function(x){return x.id===b.getAttribute('data-pub');})[0]; if(p)p.status='live'; var ov=OVMAP[b.getAttribute('data-pub')]; if(ov)ov.status='live'; renderGrid(); renderReady(); loadHome(); }
   catch(err){ alert('Could not publish. Try again.'); b.disabled=false; b.textContent='Publish →'; }
 });
 

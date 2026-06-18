@@ -90,30 +90,46 @@ export default async function handler(req, res) {
       return res.status(200).json({ papers: out });
     }
 
-    // ── verification overview: per-paper verified/total/flagged question counts ──
+    // ── verification overview: per-paper verified/total/flagged + attribution + team tally ──
     if (action === 'overview') {
-      const papers = await sbGet('/past_papers?select=id,year,province,subject_id&order=year.desc,province.asc');
+      const papers = await sbGet('/past_papers?select=id,year,province,subject_id,status&order=year.desc,province.asc');
       const subs   = await sbGet('/exam_subjects?select=id,code,name');
       const byId = {}; subs.forEach(s => { byId[s.id] = s; });
+      const team = {}; // email -> { questions, papers }
       const out = await Promise.all(papers.map(async p => {
-        const rows = await sbGet(`/past_paper_questions?paper_id=eq.${p.id}&select=question_number,verified,flagged`);
+        const rows = await sbGet(`/past_paper_questions?paper_id=eq.${p.id}&select=question_number,verified,flagged,verified_by,verified_at`);
         const q = {};
+        const by = {}; let lastAt = null;
         rows.forEach(r => {
           const x = q[r.question_number] || (q[r.question_number] = { v: false, f: false });
-          if (r.verified) x.v = true;
-          if (r.flagged)  x.f = true;
+          if (r.verified) {
+            x.v = true;
+            const e = (r.verified_by || '').toLowerCase();
+            if (e) { by[e] = (by[e] || 0) + 1; team[e] = team[e] || { questions: 0, papers: 0 }; team[e].questions++; }
+            if (r.verified_at && (!lastAt || r.verified_at > lastAt)) lastAt = r.verified_at;
+          }
+          if (r.flagged) x.f = true;
         });
         const nums = Object.keys(q);
+        const verified = nums.filter(n => q[n].v).length;
+        const fully = nums.length > 0 && verified === nums.length;
+        let topBy = '', topN = -1;
+        for (const e in by) { if (by[e] > topN) { topN = by[e]; topBy = e; } }
+        if (fully && topBy) { team[topBy].papers = (team[topBy].papers || 0) + 1; }
         return {
-          id: p.id, year: p.year, province: p.province,
+          id: p.id, year: p.year, province: p.province, status: p.status || '',
           subject: (byId[p.subject_id] || {}).code || '',
           subjectName: (byId[p.subject_id] || {}).name || '',
           total: nums.length,
-          verified: nums.filter(n => q[n].v).length,
-          flagged:  nums.filter(n => q[n].f).length,
+          verified,
+          flagged: nums.filter(n => q[n].f).length,
+          fully, verifiedBy: topBy, verifiedAt: lastAt,
         };
       }));
-      return res.status(200).json({ papers: out });
+      const teamArr = Object.keys(team)
+        .map(e => ({ email: e, questions: team[e].questions, papers: team[e].papers || 0 }))
+        .sort((a, b) => b.questions - a.questions);
+      return res.status(200).json({ papers: out, team: teamArr });
     }
 
     // ── load one paper, fully, for editing ──
