@@ -273,18 +273,6 @@
   .b-dt{display:flex;align-items:center;gap:9px;padding:6px 2px;}
   .b-dt .bt-t{font-weight:500;}
   .b-dw{font-size:10.5px;color:var(--faint);white-space:nowrap;}
-
-  /* ── "your tasks today" teaser on the landing ── */
-  #bd-mytasks .mtcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 15px;margin-bottom:14px;}
-  #bd-mytasks .mt-h{font-family:'Fraunces',serif;font-size:14px;color:var(--forest);font-weight:600;margin-bottom:9px;display:flex;align-items:center;gap:7px;}
-  #bd-mytasks .mt-n{background:var(--brass);color:#fff;border-radius:99px;font-size:10px;font-weight:700;padding:1px 7px;}
-  #bd-mytasks .mt-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid #efe9da;}
-  #bd-mytasks .mt-row:first-of-type{border-top:none;}
-  #bd-mytasks .mt-box{width:16px;height:16px;border:2px solid var(--brass);border-radius:5px;flex-shrink:0;cursor:pointer;}
-  #bd-mytasks .mt-t{flex:1;font-size:12.5px;color:var(--ink);font-weight:600;min-width:0;}
-  #bd-mytasks .mt-tag{font-size:11px;border-radius:6px;padding:2px 6px;flex-shrink:0;}
-  #bd-mytasks .mt-empty{font-size:12px;color:var(--muted);padding:3px 0 2px;}
-  #bd-mytasks .mt-go{margin-top:11px;font-size:11.5px;font-weight:700;color:var(--brass-deep);cursor:pointer;}
 </style>
 </head>
 <body>
@@ -313,7 +301,7 @@
         <div id="bd-continue"></div>
         <div class="bd-cols">
           <div class="bd-main"><div id="bd-list"></div></div>
-          <aside class="bd-side"><div id="bd-mytasks"></div><div id="bd-team"></div></aside>
+          <aside class="bd-side"><div id="bd-team"></div></aside>
         </div>
       </div>
 
@@ -380,7 +368,6 @@
     if(user.role==='admin') $('tb-admin').classList.remove('hidden');
     try{ var d=await apiGet('overview'); OVERVIEW=d.papers||[]; TEAM=d.team||[]; }catch(e){ toast('Could not load papers'); }
     try{ var f=await apiGet('flags'); FLAGS_N=(f.flags||[]).length; $('flagn').textContent=FLAGS_N||''; }catch(e){}
-    try{ BOARD=await teamGet('list')||BOARD; }catch(e){}
     showPicker();
     if(/[?&#]tab=flags/.test(location.search+location.hash)){ setTab('flags'); loadFlags(); }
   }
@@ -481,7 +468,6 @@
   function renderPicker(){
     renderTeam();
     renderModes();
-    renderMyTasks();
     var ov=OVERVIEW||[];
     var totalPapers=ov.length;
     var doneList=ov.filter(function(p){ return p.total>0 && p.verified>=p.total; });
@@ -527,8 +513,6 @@
     $('bd-list').innerHTML = grid + drawer;
   }
   $('picker').addEventListener('click',function(e){
-    var mt=e.target.closest('[data-mytoggle]'); if(mt){ teamPost('toggle',{id:mt.getAttribute('data-mytoggle'),done:true}).then(loadBoard).catch(function(){toast('Failed');}); return; }
-    if(e.target.closest('[data-gotoboard]')){ setTab('board'); loadBoard(); return; }
     var row=e.target.closest('[data-open]'); if(row){ loadPaper(row.getAttribute('data-open')); return; }
     var md=e.target.closest('[data-mode]'); if(md){ if(md.classList.contains('soon')) toast('Chapter-practice verification is coming soon'); return; }
     if(e.target.closest('[data-gotoflags]')){ setTab('flags'); loadFlags(); return; }
@@ -546,7 +530,7 @@
   function assigneeOptions(sel){ sel=(sel||'').toLowerCase(); var o='<option value="">Unassigned</option>'; (BOARD.team||[]).forEach(function(t){ o+='<option value="'+esc(t.email)+'"'+(t.email===sel?' selected':'')+'>'+esc(isMe(t.email)?'You':teamName(t.email))+'</option>'; }); return o; }
   function horizonOptions(sel){ var o=''; HORIZONS.forEach(function(h){ o+='<option value="'+h.k+'"'+(h.k===sel?' selected':'')+'>'+esc(h.n)+'</option>'; }); return o; }
 
-  async function loadBoard(){ try{ BOARD=await teamGet('list')||BOARD; }catch(e){ toast('Could not load board'); } renderBoard(); renderMyTasks(); }
+  async function loadBoard(){ try{ BOARD=await teamGet('list')||BOARD; }catch(e){ toast('Could not load board'); } renderBoard(); }
 
   function taskRow(t){ var done=t.status==='done';
     return '<div class="bt">'+
@@ -604,16 +588,6 @@
     $('board-body').innerHTML='<div class="b-head"><div><h1>Team board</h1><p>What everyone\'s doing, and where we\'re headed.</p></div>'+
       '<div class="b-ctrl"><span class="b-filt"><button data-filter="all"'+(meOnly?'':' class="on"')+'>Everyone</button><button data-filter="me"'+(meOnly?' class="on"':'')+'>Just me</button></span></div></div>'+
       '<div class="b-cols"><div>'+left+'</div><div>'+gr+'</div></div>';
-  }
-
-  function renderMyTasks(){
-    var el=$('bd-mytasks'); if(!el) return;
-    var me=meEmail();
-    var mine=(BOARD.items||[]).filter(function(i){return i.kind==='task'&&i.status!=='done'&&(i.assignee||'').toLowerCase()===me;});
-    var rows;
-    if(!mine.length) rows='<div class="mt-empty">✨ You\'re all caught up.</div>';
-    else rows=mine.map(function(t){ var a=areaCfg(t.area); return '<div class="mt-row"><span class="mt-box" data-mytoggle="'+t.id+'"></span><span class="mt-t">'+esc(t.title)+'</span><span class="mt-tag" style="background:'+a.bg+';color:'+a.fg+'">'+a.ic+'</span></div>'; }).join('');
-    el.innerHTML='<div class="mtcard"><div class="mt-h">Your tasks today'+(mine.length?' <span class="mt-n">'+mine.length+'</span>':'')+'</div>'+rows+'<div class="mt-go" data-gotoboard="1">Open board →</div></div>';
   }
 
   $('boardview').addEventListener('click',function(e){
