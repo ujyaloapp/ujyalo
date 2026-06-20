@@ -125,6 +125,24 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
 .tname{display:flex;align-items:center;gap:10px;}
 .ini{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:12px;font-weight:700;font-family:'Fraunces',serif;background:var(--parch-2);color:var(--forest);}
 .bars{width:120px;height:6px;background:var(--parch-2);border-radius:99px;overflow:hidden;}.bars i{display:block;height:100%;background:var(--brass);border-radius:99px;}
+/* team access panel */
+.tmem{display:flex;align-items:center;gap:11px;}
+.tmem .mi{min-width:0;}
+.tmem .mi b{font-size:13.5px;color:var(--forest);font-weight:600;}
+.tmem .mi span{display:block;font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;}
+.you-tag{font-size:10px;color:var(--faint);font-weight:600;margin-left:6px;}
+.stt{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;}
+.stt .d{width:8px;height:8px;border-radius:50%;}
+.stt.act{color:#2f7d4f;}.stt.act .d{background:#34a853;}
+.stt.un{color:var(--muted);}.stt.un .d{background:#b9b2a3;}
+.lastlog{color:var(--faint);font-size:12.5px;}
+.kebab{color:var(--faint);font-weight:700;cursor:pointer;font-size:18px;padding:0 4px;user-select:none;}
+.kebab:hover{color:var(--forest);}
+.rowmenu{position:absolute;right:8px;top:38px;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:0 12px 30px rgba(0,0,0,.12);padding:6px;width:190px;z-index:20;}
+.rowmenu a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;}
+.rowmenu a:hover{background:var(--parch);}
+.rowmenu a i{font-size:15px;color:var(--muted);}
+.rowmenu a.danger{color:var(--rust);}.rowmenu a.danger i{color:var(--rust);}
 /* inbox */
 .msg{display:flex;gap:14px;padding:15px 16px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:var(--card);}
 .msg .ini{width:38px;height:38px;font-size:14px;}
@@ -158,11 +176,11 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
     <div class="badge">ADMIN</div>
     <nav class="nav" id="nav">
       <a class="on" data-p="home"><i class="ti ti-layout-dashboard"></i> <span>Home</span></a>
-      <a data-p="coverage"><i class="ti ti-layout-grid"></i> <span>Coverage</span></a>
-      <a data-p="people"><i class="ti ti-users"></i> <span>People &amp; Team</span></a>
+      <a data-p="coverage"><i class="ti ti-layout-grid"></i> <span>Content</span></a>
+      <a data-p="team"><i class="ti ti-shield-check"></i> <span>Team</span></a>
+      <a data-p="students"><i class="ti ti-users"></i> <span>Students</span></a>
       <a data-p="inbox"><i class="ti ti-mail"></i> <span>Inbox</span></a>
       <a class="nav-ext" href="/verify.html"><i class="ti ti-checkup-list"></i> <span>Open verify desk</span> <i class="ti ti-arrow-up-right arr"></i></a>
-      <a style="opacity:.5;cursor:default;"><i class="ti ti-chart-histogram"></i> <span>Insights</span> <span class="nav-soon">soon</span></a>
     </nav>
     <div class="side-foot">
       <div class="av" id="av-ini">A</div>
@@ -201,7 +219,7 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
     <!-- COVERAGE -->
     <section class="panel" id="p-coverage">
       <div class="eyebrow">Content cockpit</div>
-      <h1 class="pg">Coverage</h1>
+      <h1 class="pg">Content</h1>
       <div class="pg-sub">What's live, in progress, and still missing. Every empty cell is a paper — and a search result — you don't have yet.</div>
       <div class="yrtabs" id="cov-years"></div>
       <div class="cov" id="cov-grid"><div class="loading">Loading coverage…</div></div>
@@ -212,20 +230,27 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
       </div>
     </section>
 
-    <!-- PEOPLE -->
-    <section class="panel" id="p-people">
-      <div class="eyebrow">Who's here</div>
-      <h1 class="pg">People &amp; Team</h1>
-      <div class="pg-sub">Your verification team and the students who've signed up.</div>
-      <div class="card">
-        <div class="seg-h"><i class="ti ti-shield-check"></i> Team <span class="n" id="team-n">—</span></div>
+    <!-- TEAM (staff & access) -->
+    <section class="panel" id="p-team">
+      <div class="eyebrow">Your staff</div>
+      <h1 class="pg">Team</h1>
+      <div class="pg-sub">Who has access to Ujyalo, and what they can do.</div>
+      <div class="card" style="padding-top:10px;">
+        <div class="seg-h"><i class="ti ti-shield-check"></i> Members <span class="n" id="team-n">—</span></div>
         <div id="team-list"><div class="loading">Loading…</div></div>
       </div>
-      <div class="card">
+    </section>
+
+    <!-- STUDENTS (audience) -->
+    <section class="panel" id="p-students">
+      <div class="eyebrow">Your audience</div>
+      <h1 class="pg">Students</h1>
+      <div class="pg-sub">Everyone who's signed up to learn with Ujyalo.</div>
+      <div class="card" style="padding-top:10px;">
         <div class="seg-h"><i class="ti ti-users"></i> Students <span class="n" id="students-n">—</span></div>
         <div id="students-list"><div class="loading">Loading…</div></div>
       </div>
-      <div class="card">
+      <div class="card" style="padding-top:10px;">
         <div class="seg-h"><i class="ti ti-clipboard-list"></i> Waitlist <span class="n" id="waitlist-n">—</span></div>
         <div id="waitlist-list"><div class="loading">Loading…</div></div>
       </div>
@@ -290,7 +315,7 @@ $('nav').addEventListener('click', function(e){
   document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('on');});
   $('p-'+p).classList.add('on');
   if(p==='coverage' && !LOADED.coverage) loadCoverage();
-  if(p==='people'   && !LOADED.people)   loadPeople();
+  if((p==='team'||p==='students') && !LOADED.people) loadPeople();
   if(p==='inbox'    && !LOADED.inbox)    loadInbox();
 });
 
@@ -417,32 +442,54 @@ $('ready-list').addEventListener('click', async function(e){
   catch(err){ alert('Could not publish. Try again.'); b.disabled=false; b.textContent='Publish →'; }
 });
 
-/* ── PEOPLE ── */
+/* ── TEAM + STUDENTS ── */
+function ago(str){
+  if(!str) return 'never';
+  var t = new Date(str).getTime(); if(isNaN(t)) return '—';
+  var s = Math.floor((Date.now()-t)/1000);
+  if(s<60) return 'just now';
+  var m=Math.floor(s/60); if(m<60) return m+'m ago';
+  var h=Math.floor(m/60); if(h<24) return h+'h ago';
+  var d=Math.floor(h/24); if(d<7) return d+'d ago';
+  return fmtDate(str);
+}
+function teamRow(t){
+  var nm = (t.full_name && t.full_name!=='—') ? t.full_name : (t.email||'—');
+  var isAdmin = t.role==='admin';
+  var pill = '<span class="rolepill '+(isAdmin?'admin':'editor')+'">'+(isAdmin?'Admin':'Editor')+'</span>';
+  var status = t.confirmed ? '<span class="stt act"><span class="d"></span> Active</span>'
+                           : '<span class="stt un"><span class="d"></span> Unverified</span>';
+  var me = user && (String(t.email||'').toLowerCase() === String(user.email||'').toLowerCase());
+  var youtag = me ? '<span class="you-tag">· you</span>' : '';
+  var menu = '';
+  if(!me){
+    var toRole = isAdmin ? 'editor' : 'admin';
+    var toLabel = isAdmin ? 'Make editor' : 'Make admin';
+    var rmConfirm = 'Remove '+nm.replace(/"/g,'')+' from the team? They become a normal student and lose verify access.';
+    menu = '<span class="kebab" data-menu="'+t.id+'">⋯</span>'+
+      '<div class="rowmenu hidden" id="menu-'+t.id+'">'+
+        '<a data-uid="'+t.id+'" data-setrole="'+toRole+'"><i class="ti ti-shield"></i> '+toLabel+'</a>'+
+        '<a class="danger" data-uid="'+t.id+'" data-setrole="student" data-confirm="'+esc(rmConfirm)+'"><i class="ti ti-user-minus"></i> Remove from team</a>'+
+      '</div>';
+  }
+  return '<tr><td><div class="tmem"><div class="ini">'+esc(initials(nm))+'</div><div class="mi"><b>'+esc(nm)+youtag+'</b><span>'+esc(t.email||'')+'</span></div></div></td>'+
+    '<td>'+pill+'</td><td>'+status+'</td><td class="lastlog">'+ago(t.last_sign_in)+'</td>'+
+    '<td style="text-align:right;position:relative;">'+menu+'</td></tr>';
+}
 async function loadPeople(){
   LOADED.people = true;
   try{
-    var res = await Promise.all([
-      fetch('/api/admin-users',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).catch(function(){return {};}),
-      sbGet('past_paper_questions','select=verified_by&verified=eq.true')
-    ]);
-    var allUsers = (res[0] && res[0].users) ? res[0].users : [];
-    var vrows = res[1];
-    var counts={}; if(Array.isArray(vrows)) vrows.forEach(function(r){ var k=(r.verified_by||'').toLowerCase(); if(!k) return; counts[k]=(counts[k]||0)+1; });
+    var data = await fetch('/api/admin-users',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).catch(function(){return {};});
+    var allUsers = (data && data.users) ? data.users : [];
 
-    // Team — real admin/editor roles, with verification counts matched by email
+    // Team — staff & access (admins first, then editors, by name)
     var team = allUsers.filter(function(u){ return isTeam(u.role); });
-    team.forEach(function(u){ u._v = counts[(u.email||'').toLowerCase()] || 0; });
-    team.sort(function(a,b){ return b._v - a._v; });
+    team.sort(function(a,b){ var ra=a.role==='admin'?0:1, rb=b.role==='admin'?0:1; if(ra!==rb) return ra-rb; return String(a.full_name||a.email||'').localeCompare(String(b.full_name||b.email||'')); });
     $('team-n').textContent = team.length;
     if(!team.length){ $('team-list').innerHTML='<div class="empty">No team members yet.</div>'; }
     else{
-      var max = Math.max.apply(null, team.map(function(t){return t._v;}).concat([1]));
-      $('team-list').innerHTML='<table class="tbl"><thead><tr><th>Member</th><th>Role</th><th>Questions verified</th></tr></thead><tbody>'+
-        team.map(function(t){
-          var nm = (t.full_name && t.full_name!=='—') ? t.full_name : (t.email||'—');
-          var pill = '<span class="rolepill '+(t.role==='admin'?'admin':'editor')+'">'+(t.role==='admin'?'Admin':'Editor')+'</span>';
-          return '<tr><td><div class="tname"><div class="ini">'+esc(initials(nm))+'</div> '+esc(nm)+'</div></td><td>'+pill+'</td><td><div class="tname"><div class="bars"><i style="width:'+Math.round(t._v/max*100)+'%"></i></div> '+t._v+'</div></td></tr>';
-        }).join('')+'</tbody></table>';
+      $('team-list').innerHTML='<table class="tbl"><thead><tr><th>Member</th><th>Role</th><th>Status</th><th>Last login</th><th></th></tr></thead><tbody>'+
+        team.map(teamRow).join('')+'</tbody></table>';
     }
 
     // Students — everyone who isn't team
@@ -463,6 +510,25 @@ async function loadPeople(){
       wl.map(function(w){ return '<tr><td>'+esc(w.full_name||'—')+'</td><td>'+esc(w.email||'—')+'</td><td>'+esc(w.role||'—')+'</td><td>'+fmtDate(w.created_at)+'</td></tr>'; }).join('')+'</tbody></table>';
   }catch(e){ $('waitlist-list').innerHTML='<div class="empty">Could not load waitlist.</div>'; }
 }
+
+/* team row menus + role changes */
+function closeMenus(except){ document.querySelectorAll('.rowmenu').forEach(function(m){ if(m!==except) m.classList.add('hidden'); }); }
+document.addEventListener('click', function(){ closeMenus(); });
+$('team-list').addEventListener('click', async function(e){
+  var k = e.target.closest('[data-menu]');
+  if(k){ e.stopPropagation(); var m=$('menu-'+k.getAttribute('data-menu')); closeMenus(m); if(m) m.classList.toggle('hidden'); return; }
+  var a = e.target.closest('[data-setrole]');
+  if(a){ e.stopPropagation(); closeMenus();
+    var cf=a.getAttribute('data-confirm'); if(cf && !confirm(cf)) return;
+    var uid=a.getAttribute('data-uid'), role=a.getAttribute('data-setrole');
+    try{
+      var r=await fetch('/api/admin-users?action=set-role',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({id:uid,role:role})});
+      if(!r.ok){ var er=await r.json().catch(function(){return{};}); throw new Error(er.error||'Update failed'); }
+      LOADED.people=false; loadPeople(); loadHome();
+    }catch(err){ alert(err.message||'Could not update.'); }
+    return;
+  }
+});
 
 /* ── INBOX ── */
 async function loadInbox(){

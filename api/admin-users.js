@@ -7,33 +7,56 @@
 
 // Verify the caller is a real, logged-in admin — not just "sent some token".
 // 1) Ask Supabase whose token this is. 2) Look up that user's role in the DB.
-async function isAdmin(token) {
-  if (!token) return false;
+// Returns { id } for a verified admin, or null.
+async function getAdmin(token) {
+  if (!token) return null;
   const who = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
     headers: { 'apikey': process.env.SUPABASE_ANON_KEY, 'Authorization': `Bearer ${token}` },
   });
-  if (!who.ok) return false;
+  if (!who.ok) return null;
   const u = await who.json();
-  if (!u || !u.id) return false;
+  if (!u || !u.id) return null;
   const roleRes = await fetch(
     `${process.env.SUPABASE_URL}/rest/v1/users?id=eq.${encodeURIComponent(u.id)}&select=role`,
     { headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}` } }
   );
-  if (!roleRes.ok) return false;
+  if (!roleRes.ok) return null;
   const rows = await roleRes.json();
-  return !!(rows && rows[0] && rows[0].role === 'admin');
+  return (rows && rows[0] && rows[0].role === 'admin') ? { id: u.id } : null;
 }
 
 export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
+
+  // Only a verified admin may touch this (the list contains everyone's email)
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  const admin = await getAdmin(token);
+  if (!admin) {
+    return res.status(403).json({ error: 'Not authorized.' });
+  }
+
+  // ── change a user's app role (also powers "remove from team" → student) ──
+  if (req.method === 'POST') {
+    const action = req.query.action || (req.body && req.body.action);
+    if (action !== 'set-role') return res.status(400).json({ error: 'Unknown action' });
+    const id = req.body && req.body.id;
+    const role = req.body && req.body.role;
+    const ALLOWED = ['admin', 'editor', 'student'];
+    if (!id || !ALLOWED.includes(role)) return res.status(400).json({ error: 'Bad request' });
+    if (id === admin.id && role !== 'admin') {
+      return res.status(400).json({ error: 'You cannot change your own admin role.' });
+    }
+    const pr = await fetch(`${process.env.SUPABASE_URL}/rest/v1/users?id=eq.${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ role }),
+    });
+    if (!pr.ok) return res.status(500).json({ error: 'Update failed' });
+    return res.status(200).json({ ok: true });
+  }
 
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  // Only a verified admin may list all users (the list contains everyone's email)
-  const token = req.headers.authorization?.replace('Bearer ', '');
-  if (!(await isAdmin(token))) {
-    return res.status(403).json({ error: 'Not authorized.' });
   }
 
   try {
