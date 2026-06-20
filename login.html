@@ -72,6 +72,11 @@
     if (role === 'editor')  dest = '/verify.html';
     window.location.href = dest;
   }
+  // Arrived here because a saved session expired — explain why.
+  if (/[?&]expired=1/.test(location.search)) {
+    var sub = document.querySelector('.auth-sub');
+    if (sub) { sub.textContent = 'Your session expired for security — please log in again.'; sub.style.color = '#9c7330'; }
+  }
 </script>
 <script>
 async function submitLogin() {

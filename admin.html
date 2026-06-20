@@ -306,12 +306,29 @@ function checkAccess(){
   return true;
 }
 
+// When a saved login has expired, the token is still in localStorage but the
+// server rejects it (401/403). Clear it and send the admin to log in again,
+// with a short note — instead of silently showing an empty page.
+let _expired = false;
+function sessionExpired(){
+  if(_expired) return; _expired = true;
+  try{ localStorage.removeItem('ujyalo_token'); localStorage.removeItem('ujyalo_user'); }catch(e){}
+  window.location.replace('/login.html?expired=1');
+}
+async function authFetch(url, opts){
+  const r = await fetch(url, opts);
+  if(r.status===401 || r.status===403) sessionExpired();
+  return r;
+}
 async function sbGet(table, params){
   const r = await fetch(SUPABASE_URL+'/rest/v1/'+table+'?'+(params||''), { headers:{ 'apikey':window._sbKey, 'Authorization':'Bearer '+token } });
+  if(r.status===401 || r.status===403){ sessionExpired(); return []; }
   return r.json();
 }
 async function sbPatch(table, id, body){
-  return fetch(SUPABASE_URL+'/rest/v1/'+table+'?id=eq.'+id, { method:'PATCH', headers:{ 'apikey':window._sbKey, 'Authorization':'Bearer '+token, 'Content-Type':'application/json', 'Prefer':'return=minimal' }, body:JSON.stringify(body) });
+  const r = await fetch(SUPABASE_URL+'/rest/v1/'+table+'?id=eq.'+id, { method:'PATCH', headers:{ 'apikey':window._sbKey, 'Authorization':'Bearer '+token, 'Content-Type':'application/json', 'Prefer':'return=minimal' }, body:JSON.stringify(body) });
+  if(r.status===401 || r.status===403) sessionExpired();
+  return r;
 }
 
 /* ── nav ── */
@@ -339,7 +356,7 @@ async function loadHome(){
       sbGet('past_paper_questions','select=id&flagged=eq.true'),
       sbGet('past_paper_questions','select=id'),
       sbGet('contact_messages','select=id'),
-      fetch('/api/admin-users',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).catch(function(){return {};})
+      authFetch('/api/admin-users',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).catch(function(){return {};})
     ]);
     var live = Array.isArray(papers)? papers.filter(function(p){return p.status==='live';}).length : 0;
     var totalP = Array.isArray(papers)? papers.length : 0;
@@ -384,7 +401,7 @@ async function ensurePapers(){
 let OV = null, OVMAP = {};
 async function ensureOverview(){
   try{
-    var r = await fetch('/api/admin-paper?action=overview', { headers:{ 'Authorization':'Bearer '+token } });
+    var r = await authFetch('/api/admin-paper?action=overview', { headers:{ 'Authorization':'Bearer '+token } });
     OV = await r.json();
   }catch(e){ OV = { papers:[], team:[] }; }
   if(!OV || !Array.isArray(OV.papers)) OV = { papers:[], team:[] };
@@ -482,7 +499,7 @@ function teamRow(t){
 async function loadPeople(){
   LOADED.people = true;
   try{
-    var data = await fetch('/api/admin-users',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).catch(function(){return {};});
+    var data = await authFetch('/api/admin-users',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).catch(function(){return {};});
     var allUsers = (data && data.users) ? data.users : [];
 
     // Team — staff & access (admins first, then editors, by name)
@@ -525,7 +542,7 @@ $('team-list').addEventListener('click', async function(e){
     var cf=a.getAttribute('data-confirm'); if(cf && !confirm(cf)) return;
     var uid=a.getAttribute('data-uid'), role=a.getAttribute('data-setrole');
     try{
-      var r=await fetch('/api/admin-users?action=set-role',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({id:uid,role:role})});
+      var r=await authFetch('/api/admin-users?action=set-role',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({id:uid,role:role})});
       if(!r.ok){ var er=await r.json().catch(function(){return{};}); throw new Error(er.error||'Update failed'); }
       LOADED.people=false; loadPeople(); loadHome();
     }catch(err){ alert(err.message||'Could not update.'); }
