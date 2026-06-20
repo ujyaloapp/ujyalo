@@ -120,7 +120,7 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
 .tbl tr:last-child td{border-bottom:none;}
 .st-pill{font-size:10.5px;font-weight:700;border-radius:99px;padding:3px 9px;}
 .st-pill.yes{background:var(--green-bg);color:#1f6b33;}.st-pill.no{background:var(--parch-2);color:var(--muted);}
-.rolepill{font-size:10.5px;font-weight:700;border-radius:99px;padding:3px 9px;letter-spacing:.03em;}
+.rolepill{font-size:10.5px;font-weight:700;border-radius:99px;padding:3px 9px;letter-spacing:.03em;background:var(--parch-2);color:var(--muted);}
 .rolepill.admin{background:var(--brass);color:var(--forest);}.rolepill.editor{background:#e0f2ee;color:#1f7a68;}
 .tname{display:flex;align-items:center;gap:10px;}
 .ini{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:12px;font-weight:700;font-family:'Fraunces',serif;background:var(--parch-2);color:var(--forest);}
@@ -274,6 +274,14 @@ const token = localStorage.getItem('ujyalo_token');
 const SUBJ = {maths:{name:'Maths',order:1},science:{name:'Science',order:2},english:{name:'English',order:3},social:{name:'Social',order:4},nepali:{name:'Nepali',order:5},hpe:{name:'HPE',order:6}};
 const PROV = ['Koshi','Madhesh','Bagmati','Gandaki','Lumbini','Karnali','Sudurpashchim'];
 const PROV_SHORT = {Sudurpashchim:'Sudur.'};
+
+// Team roles — add a future role here (e.g. {key:'verifier',name:'Verifier',cls:'editor'})
+// and add its key to ALLOWED in api/admin-users.js to let admins assign it.
+const ROLES = [
+  {key:'admin',  name:'Admin',  cls:'admin'},
+  {key:'editor', name:'Editor', cls:'editor'},
+];
+function roleCfg(k){ for(var i=0;i<ROLES.length;i++){ if(ROLES[i].key===k) return ROLES[i]; } return {key:k, name:(k?k.charAt(0).toUpperCase()+k.slice(1):'—'), cls:''}; }
 
 let SUBJECTS = {};   // subject_id -> {code,name}
 let PAPERS = [];     // raw past_papers
@@ -455,25 +463,21 @@ function ago(str){
 }
 function teamRow(t){
   var nm = (t.full_name && t.full_name!=='—') ? t.full_name : (t.email||'—');
-  var isAdmin = t.role==='admin';
-  var pill = '<span class="rolepill '+(isAdmin?'admin':'editor')+'">'+(isAdmin?'Admin':'Editor')+'</span>';
-  var status = t.confirmed ? '<span class="stt act"><span class="d"></span> Active</span>'
-                           : '<span class="stt un"><span class="d"></span> Unverified</span>';
+  var rc = roleCfg(t.role);
+  var pill = '<span class="rolepill '+esc(rc.cls)+'">'+esc(rc.name)+'</span>';
   var me = user && (String(t.email||'').toLowerCase() === String(user.email||'').toLowerCase());
   var youtag = me ? '<span class="you-tag">· you</span>' : '';
   var menu = '';
   if(!me){
-    var toRole = isAdmin ? 'editor' : 'admin';
-    var toLabel = isAdmin ? 'Make editor' : 'Make admin';
     var rmConfirm = 'Remove '+nm.replace(/"/g,'')+' from the team? They become a normal student and lose verify access.';
-    menu = '<span class="kebab" data-menu="'+t.id+'">⋯</span>'+
-      '<div class="rowmenu hidden" id="menu-'+t.id+'">'+
-        '<a data-uid="'+t.id+'" data-setrole="'+toRole+'"><i class="ti ti-shield"></i> '+toLabel+'</a>'+
-        '<a class="danger" data-uid="'+t.id+'" data-setrole="student" data-confirm="'+esc(rmConfirm)+'"><i class="ti ti-user-minus"></i> Remove from team</a>'+
-      '</div>';
+    var items = ROLES.filter(function(r){ return r.key!==t.role; }).map(function(r){
+      return '<a data-uid="'+t.id+'" data-setrole="'+r.key+'"><i class="ti ti-shield"></i> Make '+esc(r.name)+'</a>';
+    }).join('');
+    items += '<a class="danger" data-uid="'+t.id+'" data-setrole="student" data-confirm="'+esc(rmConfirm)+'"><i class="ti ti-user-minus"></i> Remove from team</a>';
+    menu = '<span class="kebab" data-menu="'+t.id+'">⋯</span><div class="rowmenu hidden" id="menu-'+t.id+'">'+items+'</div>';
   }
   return '<tr><td><div class="tmem"><div class="ini">'+esc(initials(nm))+'</div><div class="mi"><b>'+esc(nm)+youtag+'</b><span>'+esc(t.email||'')+'</span></div></div></td>'+
-    '<td>'+pill+'</td><td>'+status+'</td><td class="lastlog">'+ago(t.last_sign_in)+'</td>'+
+    '<td>'+pill+'</td><td class="lastlog">'+ago(t.last_sign_in)+'</td>'+
     '<td style="text-align:right;position:relative;">'+menu+'</td></tr>';
 }
 async function loadPeople(){
@@ -488,7 +492,7 @@ async function loadPeople(){
     $('team-n').textContent = team.length;
     if(!team.length){ $('team-list').innerHTML='<div class="empty">No team members yet.</div>'; }
     else{
-      $('team-list').innerHTML='<table class="tbl"><thead><tr><th>Member</th><th>Role</th><th>Status</th><th>Last login</th><th></th></tr></thead><tbody>'+
+      $('team-list').innerHTML='<table class="tbl"><thead><tr><th>Member</th><th>Role</th><th>Last login</th><th></th></tr></thead><tbody>'+
         team.map(teamRow).join('')+'</tbody></table>';
     }
 
