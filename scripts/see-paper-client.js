@@ -558,8 +558,10 @@ function buildQuestions() {
     head.appendChild(numEl);
 
     if (isEng) {
-      // English: number + main instruction sit together as one bold header.
-      if (pSplit && pSplit.instr) {
+      // English: the leading instruction sits in the header ONLY when it
+      // introduces sub-parts (e.g. "Read the passage and answer the questions").
+      // A standalone question (no sub-parts) shows its full text in the body.
+      if (pSplit && pSplit.instr && g.subs && g.subs.length > 0) {
         var ins = document.createElement('div');
         ins.className = 'qcard-instr';
         ins.textContent = pSplit.instr;
@@ -599,7 +601,17 @@ function buildQuestions() {
     body.className = 'qcard-body';
 
     if (isEng) {
-      // Only the passage goes in the body — the instruction is in the header.
+      // A standalone question (no sub-parts) is itself the question — show its
+      // full text down in the body, not as a header instruction.
+      if (pSplit && pSplit.instr && (!g.subs || g.subs.length === 0)) {
+        var qtxtS = document.createElement('div');
+        qtxtS.className = 'q-text';
+        qtxtS.dataset.en = pSplit.instr;
+        qtxtS.dataset.np = pSplit.instr;
+        qtxtS.innerHTML = parentHTML(pSplit.instr);
+        body.appendChild(qtxtS);
+      }
+      // The reading passage (comprehension questions) goes in the body.
       if (pSplit && pSplit.passage && pSplit.passage.trim()) {
         var qtxt = document.createElement('div');
         qtxt.className = 'q-text';
