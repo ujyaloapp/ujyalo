@@ -750,6 +750,17 @@ function buildSubItem(s, qNum, accent, isParent, view) {
 
   item.appendChild(subQ);
 
+  // A diagram attached to this specific sub-part (e.g. Q1 part g).
+  if (s.diagram) {
+    var subDiag = safeDiagram(s.diagram);
+    if (subDiag) {
+      var sd = document.createElement('div');
+      sd.className = 'q-diagram';
+      sd.innerHTML = subDiag;
+      item.appendChild(sd);
+    }
+  }
+
   // English: grammar bracket note + stacked (display) options
   if (view && view.note) {
     var _nt = document.createElement('div');

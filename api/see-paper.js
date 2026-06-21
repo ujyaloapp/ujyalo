@@ -102,6 +102,7 @@ export default async function handler(req, res) {
         subs: g.subs.map(s => ({
           id:                   s.id,
           sub:                  s.sub_part,
+          diagram:              s.diagram_svg           || null,
           en:                   s.question_text_english || '',
           np:                   s.question_text_nepali  || '',
           answer:               s.answer_text           || '',
