@@ -393,7 +393,7 @@ body {
   line-height: 1.45; margin-bottom: 8px;
 }
 .q-diagram { margin: 10px 0; overflow-x: auto; }
-.q-diagram svg { max-width: 380px; width: 100%; height: auto; display: block; margin: 0 auto; }
+.q-diagram svg { max-width: 360px; width: 100%; height: auto; display: block; margin: 0 auto; }
 .social-proof {
   font-size: 11px; color: var(--muted);
   display: flex; align-items: center; gap: 4px;
