@@ -631,6 +631,7 @@
     if(!IS_ENG){ h+='<div class="label">Question · नेपाली</div>'+edSpan(row,'question_text_nepali','np'); }
     if(isSub && row.diagram_svg) h+='<div class="dgm"><div class="dgm-l">Diagram</div><div class="dgm-svg">'+row.diagram_svg+'</div></div>';
     h+='<div class="label">Answer</div>'+edSpan(row,'answer_text','ans');
+    if(row.answer_text){ var am=String(row.answer_text).match(/<svg[\s\S]*?<\/svg>/i); if(am) h+='<div class="dgm"><div class="dgm-l">Answer preview</div><div class="dgm-svg">'+am[0]+'</div></div>'; }
     h+='<div class="mkwrap">Marks <input class="mk" type="number" min="0" data-id="'+row.id+'" value="'+(row.marks||0)+'"></div>';
     if(isSub) h+=subControls(qn,row.id);
     h+='</div>'; return h;
