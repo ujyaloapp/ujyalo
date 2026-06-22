@@ -850,12 +850,15 @@ function buildAnswerSection(s, qNum) {
   var sec = document.createElement('div');
   sec.className = 'ans-section';
 
-  // Final answer
+  // Final answer — plain text, or an SVG diagram (e.g. a chart the student draws)
   var answer = safeStr(s.answer) || 'Model answer coming soon.';
+  var svgAnswer = safeDiagram(answer);
   var finalRow = document.createElement('div');
   finalRow.className = 'ans-final-row';
   finalRow.innerHTML = '<div class="ans-check-circle">✓</div>'
-    + '<div class="ans-final-text">' + escapeHTML(answer) + '</div>';
+    + '<div class="ans-final-text">'
+    + (svgAnswer ? '<div class="q-diagram">' + svgAnswer + '</div>' : escapeHTML(answer))
+    + '</div>';
   sec.appendChild(finalRow);
 
   // Marking scheme
