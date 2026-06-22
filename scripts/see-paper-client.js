@@ -850,15 +850,24 @@ function buildAnswerSection(s, qNum) {
   var sec = document.createElement('div');
   sec.className = 'ans-section';
 
-  // Final answer — plain text, or an SVG diagram (e.g. a chart the student draws)
+  // Final answer — text, an SVG diagram, or text with a diagram embedded.
   var answer = safeStr(s.answer) || 'Model answer coming soon.';
-  var svgAnswer = safeDiagram(answer);
   var finalRow = document.createElement('div');
   finalRow.className = 'ans-final-row';
-  finalRow.innerHTML = '<div class="ans-check-circle">✓</div>'
-    + '<div class="ans-final-text">'
-    + (svgAnswer ? '<div class="q-diagram">' + svgAnswer + '</div>' : escapeHTML(answer))
-    + '</div>';
+  var body = '';
+  var lo = answer.toLowerCase();
+  var si = lo.indexOf('<svg'), se = lo.indexOf('</svg>');
+  if (si !== -1 && se > si) {
+    var svgSafe = safeDiagram(answer.slice(si, se + 6));
+    if (svgSafe) {
+      var before = answer.slice(0, si).trim(), after = answer.slice(se + 6).trim();
+      if (before) body += escapeHTML(before);
+      body += '<div class="q-diagram">' + svgSafe + '</div>';
+      if (after) body += '<div style="margin-top:8px">' + escapeHTML(after) + '</div>';
+    }
+  }
+  if (!body) body = escapeHTML(answer);
+  finalRow.innerHTML = '<div class="ans-check-circle">✓</div><div class="ans-final-text">' + body + '</div>';
   sec.appendChild(finalRow);
 
   // Marking scheme
