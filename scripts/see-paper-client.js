@@ -751,7 +751,9 @@ function buildSubItem(s, qNum, accent, isParent, view) {
   item.appendChild(subQ);
 
   // A diagram attached to this specific sub-part (e.g. Q1 part g).
-  if (s.diagram) {
+  // Skip for the parent — its diagram already shows in the question body,
+  // so rendering it here too would duplicate it inside the answer block.
+  if (!isParent && s.diagram) {
     var subDiag = safeDiagram(s.diagram);
     if (subDiag) {
       var sd = document.createElement('div');
