@@ -223,6 +223,29 @@
   #picker .done .m{margin-left:auto;font-size:12px;opacity:.8;}
   #picker .donelist{margin-top:8px;}
   #picker .empty{text-align:center;color:var(--muted);padding:28px 0;font-size:13px;}
+  /* ── fully-verified library ── */
+  #picker .vlib{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:14px;}
+  #picker .vlib-h{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+  #picker .vlib-tick{width:28px;height:28px;border-radius:50%;background:var(--green-bg);color:#1f6b33;display:grid;place-items:center;font-size:14px;font-weight:800;}
+  #picker .vlib-ht{font-family:'Fraunces',serif;font-size:16px;color:var(--forest);font-weight:600;}
+  #picker .vlib-n{background:var(--green-bg);color:#1f6b33;border-radius:99px;font-size:11.5px;font-weight:700;padding:2px 9px;}
+  #picker .vlib-hide{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--muted);cursor:pointer;}
+  #picker .vlf-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+  #picker .vlf{font-size:11.5px;font-weight:600;border-radius:99px;padding:4px 11px;background:#fff;border:1px solid var(--line);color:var(--muted);cursor:pointer;}
+  #picker .vlf.on{background:var(--forest);color:#fff;border-color:var(--forest);}
+  #picker .vlf .c{opacity:.6;margin-left:3px;font-weight:500;}
+  #picker .vlib-scroll{max-height:240px;overflow-y:auto;padding-right:4px;display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  @media(max-width:540px){#picker .vlib-scroll{grid-template-columns:1fr;}}
+  #picker .vlib-scroll::-webkit-scrollbar{width:7px;}
+  #picker .vlib-scroll::-webkit-scrollbar-thumb{background:#dcd3bf;border-radius:99px;}
+  #picker .vc{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--ac,var(--brass));border-radius:11px;padding:9px 11px;cursor:pointer;transition:.12s;}
+  #picker .vc:hover{border-color:var(--brass);transform:translateY(-1px);}
+  #picker .vc-sbj{font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:5px;padding:2px 5px;white-space:nowrap;flex-shrink:0;}
+  #picker .vc-t{flex:1;font-size:12.5px;font-weight:600;color:var(--forest);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #picker .vc-t span{color:var(--muted);font-weight:500;}
+  #picker .vc-live{font-size:9.5px;font-weight:700;color:#1f6b33;display:flex;align-items:center;gap:3px;white-space:nowrap;flex-shrink:0;}
+  #picker .vc-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);}
+  #picker .vl-empty{grid-column:1/-1;text-align:center;color:var(--faint);font-size:12px;padding:14px 0;}
 
   /* ── team board ── */
   #boardview .bwrap{max-width:980px;margin:0 auto;padding:24px 20px 90px;}
@@ -333,7 +356,7 @@
   var user=JSON.parse(localStorage.getItem('ujyalo_user')||'null');
   var token=localStorage.getItem('ujyalo_token')||'';
   var DATA=null, PAPER=null, PAPER_TOTAL=75, IS_ENG=false, PENDING_SCROLL=null;
-  var PAPERS=[], FLAGS_N=0, OVERVIEW=[], TEAM=[], OPEN_SUBJECT=null, DONE_OPEN=false;
+  var PAPERS=[], FLAGS_N=0, OVERVIEW=[], TEAM=[], OPEN_SUBJECT=null, DONE_OPEN=false, VER_FILTER='all';
   var BOARD={items:[],team:[],me:''}, BOARD_FILTER='all', B_DONE_OPEN=false;
   var AREAS=[{k:'content',n:'Content',ic:'📚',bg:'#e0f2ee',fg:'#1f7a68'},{k:'social',n:'Social',ic:'📱',bg:'#fbeede',fg:'#a4701a'},{k:'code',n:'Code',ic:'🧑‍💻',bg:'#e8eef6',fg:'#2a5b9c'},{k:'outreach',n:'Outreach',ic:'📣',bg:'#efe9f6',fg:'#6b4ba0'}];
   var HORIZONS=[{k:'term',n:'This term'},{k:'future',n:'Big picture'}];
@@ -418,10 +441,25 @@
       : '<span class="badge todo">Not started</span>';
     return '<div class="row" data-open="'+p.id+'"><div class="rt">SEE '+p.year+' <span>· '+esc(p.province)+'</span></div>'+fl+right+'</div>';
   }
-  // a finished paper row inside the global "fully verified" drawer
-  function doneRowHtml(p){
-    var c=subjCol(p.subject), nm=(SUBJ_CFG[p.subject]||{}).name||p.subject;
-    return '<div class="row" data-open="'+p.id+'"><span class="sbj" style="background:'+c.bg+';color:'+c.fg+'">'+esc(nm)+'</span><div class="rt">SEE '+p.year+' <span>· '+esc(p.province)+'</span></div><span class="badge done">✓ Done</span></div>';
+  // the "fully verified" library — a height-capped, subject-filterable shelf
+  function verifiedLibraryHtml(list){
+    var bySub={}; list.forEach(function(p){ bySub[p.subject]=(bySub[p.subject]||0)+1; });
+    var subs=Object.keys(bySub).sort(function(a,b){ return ((SUBJ_CFG[a]||{}).order||9)-((SUBJ_CFG[b]||{}).order||9); });
+    if(VER_FILTER!=='all' && !bySub[VER_FILTER]) VER_FILTER='all';
+    var chips='<span class="vlf'+(VER_FILTER==='all'?' on':'')+'" data-vfilter="all">All <span class="c">'+list.length+'</span></span>';
+    subs.forEach(function(c){ var nm=(SUBJ_CFG[c]||{}).name||c; chips+='<span class="vlf'+(VER_FILTER===c?' on':'')+'" data-vfilter="'+esc(c)+'">'+esc(nm)+' <span class="c">'+bySub[c]+'</span></span>'; });
+    var shown=(VER_FILTER==='all')?list.slice():list.filter(function(p){return p.subject===VER_FILTER;});
+    shown.sort(function(a,b){ var d=((SUBJ_CFG[a.subject]||{}).order||9)-((SUBJ_CFG[b.subject]||{}).order||9); return d||(b.year-a.year)||String(a.province).localeCompare(String(b.province)); });
+    var cards=shown.map(function(p){
+      var c=subjCol(p.subject), ab=String((SUBJ_CFG[p.subject]||{}).name||p.subject).slice(0,3);
+      var live=p.status==='live'?'<span class="vc-live">Live</span>':'';
+      return '<div class="vc" data-open="'+p.id+'" style="--ac:'+c.fg+'"><span class="vc-sbj" style="background:'+c.bg+';color:'+c.fg+'">'+esc(ab)+'</span><div class="vc-t">SEE '+p.year+' <span>· '+esc(p.province)+'</span></div>'+live+'</div>';
+    }).join('');
+    if(!cards) cards='<div class="vl-empty">No verified papers in this subject.</div>';
+    return '<div class="vlib">'+
+      '<div class="vlib-h"><div class="vlib-tick">✓</div><div class="vlib-ht">Fully verified</div><span class="vlib-n">'+list.length+'</span><span class="vlib-hide" data-done="1">hide ▴</span></div>'+
+      '<div class="vlf-row">'+chips+'</div>'+
+      '<div class="vlib-scroll">'+cards+'</div></div>';
   }
   // subject card (collapsed shows progress; expanded lists its unfinished papers)
   function scHtml(code, papers){
@@ -504,11 +542,8 @@
       codes.map(function(c){ return scHtml(c, ov.filter(function(p){return p.subject===c;})); }).join('')+'</div>';
     var drawer='';
     if(doneList.length){
-      var head='<div class="done" data-done="1">✓ '+doneList.length+' paper'+(doneList.length>1?'s':'')+' fully verified <span class="m">'+(DONE_OPEN?'hide ▴':'show ▾')+'</span></div>';
-      if(DONE_OPEN){
-        var rows=doneList.slice().sort(function(a,b){ var d=((SUBJ_CFG[a.subject]||{}).order||9)-((SUBJ_CFG[b.subject]||{}).order||9); return d||(b.year-a.year); }).map(function(p){return doneRowHtml(p);}).join('');
-        drawer=head+'<div class="donelist">'+rows+'</div>';
-      } else { drawer=head; }
+      if(DONE_OPEN){ drawer=verifiedLibraryHtml(doneList); }
+      else { drawer='<div class="done" data-done="1">✓ '+doneList.length+' paper'+(doneList.length>1?'s':'')+' fully verified <span class="m">show ▾</span></div>'; }
     }
     $('bd-list').innerHTML = grid + drawer;
   }
@@ -516,6 +551,7 @@
     var row=e.target.closest('[data-open]'); if(row){ loadPaper(row.getAttribute('data-open')); return; }
     var md=e.target.closest('[data-mode]'); if(md){ if(md.classList.contains('soon')) toast('Chapter-practice verification is coming soon'); return; }
     if(e.target.closest('[data-gotoflags]')){ setTab('flags'); loadFlags(); return; }
+    var vf=e.target.closest('[data-vfilter]'); if(vf){ VER_FILTER=vf.getAttribute('data-vfilter'); renderPicker(); return; }
     if(e.target.closest('[data-done]')){ DONE_OPEN=!DONE_OPEN; renderPicker(); return; }
     var s=e.target.closest('[data-subj]');
     if(s){ var c=s.getAttribute('data-subj'); OPEN_SUBJECT=(OPEN_SUBJECT===c)?null:c; renderPicker(); return; }
