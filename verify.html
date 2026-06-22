@@ -629,16 +629,16 @@
     var h='<div class="rowblk">'; if(label) h+='<div class="rl">'+label+'</div>';
     h+='<div class="label">Question · English</div>'+edSpan(row,'question_text_english');
     if(!IS_ENG){ h+='<div class="label">Question · नेपाली</div>'+edSpan(row,'question_text_nepali','np'); }
+    if(isSub && row.diagram_svg) h+='<div class="dgm"><div class="dgm-l">Diagram</div><div class="dgm-svg">'+row.diagram_svg+'</div></div>';
     h+='<div class="label">Answer</div>'+edSpan(row,'answer_text','ans');
     h+='<div class="mkwrap">Marks <input class="mk" type="number" min="0" data-id="'+row.id+'" value="'+(row.marks||0)+'"></div>';
     if(isSub) h+=subControls(qn,row.id);
     h+='</div>'; return h;
   }
   function diagramBlock(g){
-    var svg='';
-    if(g.parent && g.parent.diagram_svg) svg=g.parent.diagram_svg;
-    else { for(var i=0;i<g.subs.length;i++){ if(g.subs[i].diagram_svg){ svg=g.subs[i].diagram_svg; break; } } }
-    if(svg) return '<div class="dgm"><div class="dgm-l">Diagram</div><div class="dgm-svg">'+svg+'</div></div>';
+    if(g.parent && g.parent.diagram_svg) return '<div class="dgm"><div class="dgm-l">Diagram</div><div class="dgm-svg">'+g.parent.diagram_svg+'</div></div>';
+    // sub-part diagrams render inline within their own part below, so don't duplicate here
+    for(var i=0;i<g.subs.length;i++){ if(g.subs[i].diagram_svg) return ''; }
     return '<div class="dgm none">No diagram for this question</div>';
   }
   function questionCard(g){
