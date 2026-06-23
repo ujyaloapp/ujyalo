@@ -431,6 +431,8 @@ body {
   font-size: var(--qfont);
   color: var(--ink); line-height: 1.75; flex: 1; white-space: pre-wrap;
 }
+/* Remainder of a part's text shown after an inline figure (the [[diagram]] marker). */
+.sub-text-after { padding: 0 12px 10px; }
 .sub-text-answer-label {
   font-family: inherit;
   font-size: 12px;

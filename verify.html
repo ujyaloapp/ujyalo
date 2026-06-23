@@ -663,9 +663,29 @@
   function subControls(qn,id){return '<div class="subctl"><button class="sbtn" data-act="up" data-qn="'+qn+'" data-id="'+id+'">▲ up</button><button class="sbtn" data-act="down" data-qn="'+qn+'" data-id="'+id+'">▼ down</button><button class="sbtn del" data-act="del-sub" data-id="'+id+'">✕ remove part</button></div>';}
   function rowBlock(row,label,qn,isSub){
     var h='<div class="rowblk">'; if(label) h+='<div class="rl">'+label+'</div>';
+    var FIGM='[[diagram]]';
+    var _qe=row.question_text_english||'';
+    if(isSub && row.diagram_svg && _qe.indexOf(FIGM)>=0){
+      // Figure sits mid-question: show it between the text halves (display only —
+      // edit the wording or the [[diagram]] marker via SQL).
+      var qfs='style="white-space:pre-wrap;font-family:Lora,serif;font-size:15px;color:#23302b;line-height:1.6;margin:2px 0"';
+      var pe=_qe.split(FIGM);
+      h+='<div class="label">Question · English</div>';
+      h+='<div '+qfs+'>'+esc((pe[0]||'').trim())+'</div>';
+      h+='<div class="dgm"><div class="dgm-l">Figure (in-text)</div><div class="dgm-svg">'+row.diagram_svg+'</div></div>';
+      if((pe[1]||'').trim()) h+='<div '+qfs+'>'+esc(pe[1].trim())+'</div>';
+      if(!IS_ENG){
+        var _qn=row.question_text_nepali||''; var pn=_qn.split(FIGM);
+        h+='<div class="label">Question · नेपाली</div>';
+        h+='<div '+qfs+'>'+esc((pn[0]||'').trim())+'</div>';
+        if(pn.length>1 && (pn[1]||'').trim()) h+='<div '+qfs+'>'+esc(pn[1].trim())+'</div>';
+      }
+      h+='<div style="font-size:11px;color:#8a857c;margin-top:4px">Figure shows where the <code>[[diagram]]</code> marker sits. Edit wording or marker via SQL.</div>';
+    } else {
     h+='<div class="label">Question · English</div>'+edSpan(row,'question_text_english');
     if(!IS_ENG){ h+='<div class="label">Question · नेपाली</div>'+edSpan(row,'question_text_nepali','np'); }
     if(isSub && row.diagram_svg) h+='<div class="dgm"><div class="dgm-l">Diagram</div><div class="dgm-svg">'+row.diagram_svg+'</div></div>';
+    }
     var aSvgM=row.answer_text?String(row.answer_text).match(/<svg[\s\S]*?<\/svg>/i):null;
     if(aSvgM){
       var aTxt=String(row.answer_text).replace(/<svg[\s\S]*?<\/svg>/i,'').trim();

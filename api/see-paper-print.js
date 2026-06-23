@@ -24,6 +24,20 @@ function escape(str) {
     .replace(/"/g, '&quot;');
 }
 
+// A part's text may carry this marker; the figure renders in its place.
+const PRINT_FIG_MARK = '[[diagram]]';
+function splitPrintMarker(text) {
+  const t = text || '';
+  const i = t.indexOf(PRINT_FIG_MARK);
+  if (i < 0) return null;
+  return [t.slice(0, i).replace(/\s+$/, ''), t.slice(i + PRINT_FIG_MARK.length).replace(/^\s+/, '')];
+}
+function stripMarker(text) { return (text || '').split(PRINT_FIG_MARK).join('').trim(); }
+function printDiagram(svg) {
+  const s = (svg || '').trim();
+  return (s.slice(0, 4).toLowerCase() === '<svg' && s.toLowerCase().indexOf('</svg>') >= 0) ? s : null;
+}
+
 function buildPrintHTML({ paper, subject, questions, lang }) {
   const subjectNepaliMap = {
     'maths': 'गणित', 'science': 'विज्ञान', 'english': 'अंग्रेजी',
@@ -72,14 +86,34 @@ function buildPrintHTML({ paper, subject, questions, lang }) {
         <div class="q-subs">`;
 
       g.subs.forEach(sub => {
+        const np = sub.question_text_nepali || '';
+        const en = sub.question_text_english || '';
+        const subDiag = printDiagram(sub.diagram_svg);
+        // Build the np/en text divs for whichever language(s) are shown.
+        const mkBlocks = (n, e) => {
+          let h = '';
+          if (lang === 'both') {
+            if (n) h += `<div class="np">${escape(n)}</div>`;
+            if (e) h += `<div class="en">${escape(e)}</div>`;
+          } else if (showNp && n) { h = `<div class="np">${escape(n)}</div>`; }
+          else if (showEn && e) { h = `<div class="en">${escape(e)}</div>`; }
+          return h;
+        };
+
         let subText = '';
-        if (lang === 'both') {
-          if (sub.question_text_nepali) subText += `<div class="np">${escape(sub.question_text_nepali)}</div>`;
-          if (sub.question_text_english) subText += `<div class="en">${escape(sub.question_text_english)}</div>`;
-        } else if (showNp && sub.question_text_nepali) {
-          subText = `<div class="np">${escape(sub.question_text_nepali)}</div>`;
-        } else if (showEn && sub.question_text_english) {
-          subText = `<div class="en">${escape(sub.question_text_english)}</div>`;
+        if (subDiag) {
+          // Figure attached to this part: place it at the marker, or after the text.
+          const eS = splitPrintMarker(en), nS = splitPrintMarker(np);
+          if (eS || nS) {
+            const eB = eS ? eS[0] : en, eA = eS ? eS[1] : '';
+            const nB = nS ? nS[0] : np, nA = nS ? nS[1] : '';
+            subText = mkBlocks(nB, eB) + `<div class="q-diagram">${subDiag}</div>` + mkBlocks(nA, eA);
+          } else {
+            subText = mkBlocks(np, en) + `<div class="q-diagram">${subDiag}</div>`;
+          }
+        } else {
+          // No figure: drop any stray marker so it never prints literally.
+          subText = mkBlocks(stripMarker(np), stripMarker(en));
         }
 
         questionsHTML += `

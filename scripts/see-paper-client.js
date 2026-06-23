@@ -5,6 +5,10 @@
 // ── STATE ──
 var DATA       = null;
 var LANG       = 'en';
+// A part's text may carry this marker on its own line. Where it appears, the
+// part's figure renders in place of it (instead of after the whole text), so a
+// table/diagram can sit mid-question. No marker → figure renders after the text.
+var FIG_MARK   = '[[diagram]]';
 var PAPER_KEY  = '';
 var PRINT_BASE = '';
 var confMap    = {};
@@ -173,6 +177,15 @@ function rowText(s) {
   var en = safeStr(s.en), np = safeStr(s.np);
   if (LANG === 'np') return np || en;
   return en || np;
+}
+
+// Split a part's text around an inline figure marker. Returns [before, after]
+// with the surrounding blank line trimmed, or null when there's no marker.
+function splitFigureMarker(text) {
+  var t = safeStr(text);
+  var i = t.indexOf(FIG_MARK);
+  if (i < 0) return null;
+  return [t.slice(0, i).replace(/\s+$/, ''), t.slice(i + FIG_MARK.length).replace(/^\s+/, '')];
 }
 
 // English papers: render the first line (the task instruction) as a bold heading,
@@ -719,6 +732,7 @@ function buildSubItem(s, qNum, accent, isParent, view) {
 
   var stxt = document.createElement('div');
   stxt.className = 'sub-text';
+  var afterFig = null;   // {en, np}: text that renders AFTER an inline figure
   if (isParent) {
     // No-sub-part question: the question text is already shown above.
     // Don't repeat it — just label the revealable answer.
@@ -726,9 +740,20 @@ function buildSubItem(s, qNum, accent, isParent, view) {
     stxt.textContent = 'Answer';
   } else {
     var _b = (view && typeof view.bodyText === 'string') ? view.bodyText : safeStr(s.en);
-    stxt.dataset.en = _b;
-    stxt.dataset.np = safeStr(s.np) || _b;
-    stxt.textContent = (view && typeof view.bodyText === 'string') ? _b : rowText(s);
+    var _bnp = safeStr(s.np) || _b;
+    var enSplit = s.diagram ? splitFigureMarker(_b) : null;
+    if (enSplit) {
+      // Figure sits mid-text: show the part before it here, stash the rest.
+      var npSplit = splitFigureMarker(_bnp) || [_bnp, ''];
+      stxt.dataset.en = enSplit[0];
+      stxt.dataset.np = npSplit[0];
+      stxt.textContent = (LANG === 'np' ? (npSplit[0] || enSplit[0]) : enSplit[0]);
+      afterFig = { en: enSplit[1], np: npSplit[1] };
+    } else {
+      stxt.dataset.en = _b;
+      stxt.dataset.np = _bnp;
+      stxt.textContent = (view && typeof view.bodyText === 'string') ? _b : rowText(s);
+    }
   }
   subQ.appendChild(stxt);
 
@@ -760,6 +785,15 @@ function buildSubItem(s, qNum, accent, isParent, view) {
       sd.className = 'q-diagram';
       sd.innerHTML = subDiag;
       item.appendChild(sd);
+      // If a marker split the text, the remainder belongs AFTER the figure.
+      if (afterFig && (afterFig.en || afterFig.np)) {
+        var aft = document.createElement('div');
+        aft.className = 'sub-text sub-text-after';
+        aft.dataset.en = afterFig.en;
+        aft.dataset.np = afterFig.np;
+        aft.textContent = (LANG === 'np' ? (afterFig.np || afterFig.en) : afterFig.en);
+        item.appendChild(aft);
+      }
     }
   }
 
