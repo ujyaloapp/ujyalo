@@ -44,6 +44,11 @@ export default async function handler(req, res) {
     if (!year || !province || !subject) {
       return res.status(400).json({ error: 'Missing params: year, province, subject' });
     }
+    // Year is always a 4-digit Nepali (BS) year — reject anything else so it
+    // can't be used to tamper with the database query below.
+    if (!/^\d{4}$/.test(String(year))) {
+      return res.status(400).json({ error: 'Invalid year' });
+    }
 
     const subjectCode = subject.toLowerCase();
     const provNorm = province.charAt(0).toUpperCase() + province.slice(1).toLowerCase();
@@ -51,12 +56,12 @@ export default async function handler(req, res) {
     const provCfg = PROV_CONFIG[provNorm] || { np: provNorm, num: 1 };
 
     const subjects = await fetchFromSupabase(
-      `/exam_subjects?code=eq.${subjectCode}&select=id,name,code`
+      `/exam_subjects?code=eq.${encodeURIComponent(subjectCode)}&select=id,name,code`
     );
     if (!subjects[0]) return res.status(404).json({ error: 'Subject not found' });
 
     const papers = await fetchFromSupabase(
-      `/past_papers?subject_id=eq.${subjects[0].id}&year=eq.${year}&province=eq.${provNorm}&select=*`
+      `/past_papers?subject_id=eq.${subjects[0].id}&year=eq.${encodeURIComponent(year)}&province=eq.${encodeURIComponent(provNorm)}&select=*`
     );
     if (!papers[0]) return res.status(404).json({ error: 'Paper not found' });
 

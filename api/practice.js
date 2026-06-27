@@ -164,7 +164,16 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required fields.' });
     }
 
-    const pct = total > 0 ? Math.round((score / total) * 100) : 0;
+    // Don't trust the browser's numbers blindly: score/total must be sane,
+    // and the score can never exceed the total.
+    const numScore = Number(score);
+    const numTotal = Number(total);
+    if (!Number.isFinite(numScore) || !Number.isFinite(numTotal) ||
+        numTotal <= 0 || numScore < 0 || numScore > numTotal) {
+      return res.status(400).json({ error: 'Invalid score.' });
+    }
+
+    const pct = Math.round((numScore / numTotal) * 100);
 
     try {
       const userRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
@@ -191,8 +200,8 @@ export default async function handler(req, res) {
           subject:      subject.trim(),
           group_name:   group_name ? group_name.trim() : '',
           chapter_name: chapter_name.trim(),
-          score,
-          total,
+          score:        numScore,
+          total:        numTotal,
           pct,
           completed_at: new Date().toISOString()
         })

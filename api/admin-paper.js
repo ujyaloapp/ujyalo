@@ -142,7 +142,7 @@ export default async function handler(req, res) {
     if (action === 'load') {
       const pid = req.query.paper_id;
       if (!pid) return res.status(400).json({ error: 'Missing paper_id' });
-      const paper = (await sbGet(`/past_papers?id=eq.${pid}&select=*`))[0];
+      const paper = (await sbGet(`/past_papers?id=eq.${encodeURIComponent(pid)}&select=*`))[0];
       if (!paper) return res.status(404).json({ error: 'Paper not found' });
       const subj = (await sbGet(`/exam_subjects?id=eq.${paper.subject_id}&select=id,code,name`))[0] || {};
       const rows = await sbGet(
@@ -198,7 +198,7 @@ export default async function handler(req, res) {
       if (!id || !EDITABLE.includes(field)) return res.status(400).json({ error: 'Field not editable' });
       if (field === 'marks') { value = parseInt(value, 10); if (isNaN(value)) value = 0; }
       const patch = {}; patch[field] = value;
-      const row = await sbPatch(`/past_paper_questions?id=eq.${id}`, patch, true);
+      const row = await sbPatch(`/past_paper_questions?id=eq.${encodeURIComponent(id)}`, patch, true);
       return res.status(200).json({ ok: true, row: (row && row[0]) || null });
     }
 
@@ -217,14 +217,14 @@ export default async function handler(req, res) {
         patch.flag_note = body.flagged ? (body.flag_note || '') : null;
         if (body.flagged) patch.verified = false;
       }
-      await sbPatch(`/past_paper_questions?paper_id=eq.${paper_id}&question_number=eq.${question_number}`, patch, false);
+      await sbPatch(`/past_paper_questions?paper_id=eq.${encodeURIComponent(paper_id)}&question_number=eq.${encodeURIComponent(question_number)}`, patch, false);
       return res.status(200).json({ ok: true });
     }
 
     if (action === 'add-sub') {
       const { paper_id, question_number } = body;
       if (!paper_id || question_number == null) return res.status(400).json({ error: 'Missing paper/question' });
-      const ex = await sbGet(`/past_paper_questions?paper_id=eq.${paper_id}&question_number=eq.${question_number}&select=sub_part`);
+      const ex = await sbGet(`/past_paper_questions?paper_id=eq.${encodeURIComponent(paper_id)}&question_number=eq.${encodeURIComponent(question_number)}&select=sub_part`);
       const used = ex.map(r => (r.sub_part || '')).filter(Boolean);
       const letters = 'abcdefghijklmnopqrstuvwxyz';
       let next = 'a'; for (const ch of letters) { if (used.indexOf(ch) < 0) { next = ch; break; } }
@@ -239,18 +239,18 @@ export default async function handler(req, res) {
     if (action === 'delete-sub') {
       const { id } = body;
       if (!id) return res.status(400).json({ error: 'Missing id' });
-      await sbDelete(`/past_paper_questions?id=eq.${id}`);
+      await sbDelete(`/past_paper_questions?id=eq.${encodeURIComponent(id)}`);
       return res.status(200).json({ ok: true });
     }
 
     if (action === 'reorder-subs') {
       const { order } = body; // array of row ids in the new order
       if (!Array.isArray(order) || !order.length) return res.status(400).json({ error: 'Missing order' });
-      const rows = await sbGet(`/past_paper_questions?id=in.(${order.join(',')})&select=id,sub_part`);
+      const rows = await sbGet(`/past_paper_questions?id=in.(${order.map(encodeURIComponent).join(',')})&select=id,sub_part`);
       const labels = rows.map(r => r.sub_part).filter(x => x != null).sort();
       for (let i = 0; i < order.length; i++) {
         const lbl = (labels[i] != null) ? labels[i] : String.fromCharCode(97 + i);
-        await sbPatch(`/past_paper_questions?id=eq.${order[i]}`, { sub_part: lbl }, false);
+        await sbPatch(`/past_paper_questions?id=eq.${encodeURIComponent(order[i])}`, { sub_part: lbl }, false);
       }
       return res.status(200).json({ ok: true });
     }

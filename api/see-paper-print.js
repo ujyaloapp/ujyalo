@@ -344,16 +344,21 @@ export default async function handler(req, res) {
     if (!year || !province || !subject) {
       return res.status(400).send('Missing parameters');
     }
+    // Year is always a 4-digit Nepali (BS) year — reject anything else so it
+    // can't be used to tamper with the database query below.
+    if (!/^\d{4}$/.test(String(year))) {
+      return res.status(400).send('Invalid year');
+    }
 
     const subjects = await fetchFromSupabase(
-      `/exam_subjects?code=eq.${subject.toLowerCase()}&select=id,name,code`
+      `/exam_subjects?code=eq.${encodeURIComponent(subject.toLowerCase())}&select=id,name,code`
     );
     if (!subjects[0]) return res.status(404).send('Subject not found');
     const subjectData = subjects[0];
 
     const provinceName = province.charAt(0).toUpperCase() + province.slice(1).toLowerCase();
     const papers = await fetchFromSupabase(
-      `/past_papers?subject_id=eq.${subjectData.id}&year=eq.${year}&province=eq.${provinceName}&select=*`
+      `/past_papers?subject_id=eq.${subjectData.id}&year=eq.${encodeURIComponent(year)}&province=eq.${encodeURIComponent(provinceName)}&select=*`
     );
     if (!papers[0]) return res.status(404).send('Paper not found');
     const paper = papers[0];
