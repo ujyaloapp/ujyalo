@@ -59,6 +59,24 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // ── list contact-form messages for the admin Inbox ──
+  // Read with the service key server-side so it works regardless of how
+  // row-level-security is configured on contact_messages.
+  if (req.query.action === 'messages') {
+    try {
+      const r = await fetch(
+        `${process.env.SUPABASE_URL}/rest/v1/contact_messages?select=*&order=created_at.desc`,
+        { headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}` } }
+      );
+      if (!r.ok) throw new Error(await r.text());
+      const messages = await r.json();
+      return res.status(200).json({ success: true, messages });
+    } catch (e) {
+      console.error('Admin messages error:', e);
+      return res.status(500).json({ error: 'Failed to load messages.' });
+    }
+  }
+
   try {
     // Fetch users from Supabase Auth admin endpoint
     const response = await fetch(

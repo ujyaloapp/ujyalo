@@ -359,7 +359,7 @@ async function loadHome(){
       sbGet('past_paper_questions','select=id&verified=eq.true'),
       sbGet('past_paper_questions','select=id&flagged=eq.true'),
       sbGet('past_paper_questions','select=id'),
-      sbGet('contact_messages','select=id'),
+      authFetch('/api/admin-users?action=messages',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).then(function(d){return (d&&d.messages)||[];}).catch(function(){return [];}),
       authFetch('/api/admin-users',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).catch(function(){return {};})
     ]);
     var live = Array.isArray(papers)? papers.filter(function(p){return p.status==='live';}).length : 0;
@@ -558,7 +558,8 @@ $('team-list').addEventListener('click', async function(e){
 async function loadInbox(){
   LOADED.inbox = true;
   try{
-    var msgs = await sbGet('contact_messages','select=*&order=created_at.desc');
+    var data = await authFetch('/api/admin-users?action=messages',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();});
+    var msgs = (data && data.messages) || [];
     if(!Array.isArray(msgs) || !msgs.length){ $('inbox-list').innerHTML='<div class="empty">No messages yet.</div>'; return; }
     $('inbox-list').innerHTML = msgs.map(function(m){
       return '<div class="msg"><div class="ini">'+esc(initials(m.full_name))+'</div><div class="body">'+
