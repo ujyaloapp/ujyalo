@@ -431,6 +431,7 @@ async function loadProfile() {
     const res  = await fetch('/api/profile?user_id=' + user.id, {
       headers: { 'Authorization': 'Bearer ' + token }
     });
+    if (res.status === 401) return ujyaloSessionExpired();
     const data = await res.json();
 
     if (data.success && data.profile) {

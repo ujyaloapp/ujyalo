@@ -327,6 +327,7 @@ function practiceLink(subject, chapter){
 async function load(){
   try{
     const res = await fetch('/api/practice?action=get-events', { headers:{ 'Authorization':'Bearer ' + token } });
+    if(res.status === 401) return ujyaloSessionExpired();
     if(!res.ok) throw new Error();
     const events = await res.json();
     if(!events || !events.length) return renderEmpty();

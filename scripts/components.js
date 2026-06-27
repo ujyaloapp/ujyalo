@@ -547,6 +547,14 @@ function ujyaloLogout() {
   window.location.href = '/index.html';
 }
 
+// Call when a logged-in request comes back 401 (the login has expired).
+// Clears the stale session and sends the user to log in again, with a note.
+function ujyaloSessionExpired() {
+  ['ujyalo_token', 'ujyalo_user', 'ujyalo_conf', 'ujyalo_progress', 'ujyalo_bookmarks']
+    .forEach(k => localStorage.removeItem(k));
+  window.location.href = '/login.html?expired=1';
+}
+
 /* ── Site icons + PWA manifest (kept in one place for every page) ── */
 (function() {
   if (!document.head) return;
