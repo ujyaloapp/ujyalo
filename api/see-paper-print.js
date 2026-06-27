@@ -12,6 +12,7 @@ async function fetchFromSupabase(path) {
       'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`
     }
   });
+  if (!res.ok) throw new Error(`Supabase ${res.status}: ${path}`);
   return res.json();
 }
 
@@ -296,8 +297,8 @@ function buildPrintHTML({ paper, subject, questions, lang }) {
     <div class="header-subject-np">अनिवार्य ${escape(subjectNameNp)}</div>
     <div><span class="header-province">🏔 ${escape(paper.province)} Province</span></div>
     <div class="header-meta">
-      <span>Time: ${paper.time_minutes / 60} Hours &nbsp;|&nbsp; समय : ३ घण्टा</span>
-      <span>Full Marks: ${paper.total_marks} &nbsp;|&nbsp; पूर्णाङ्क : ७५</span>
+      <span>Time: ${paper.time_minutes ? (paper.time_minutes / 60) : 3} Hours &nbsp;|&nbsp; समय : ३ घण्टा</span>
+      <span>Full Marks: ${paper.total_marks || 75} &nbsp;|&nbsp; पूर्णाङ्क : ७५</span>
     </div>
   </div>
 
@@ -375,6 +376,6 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error('Print error:', err);
-    return res.status(500).send(`<html><body><h1>Error</h1><p>${err.message}</p></body></html>`);
+    return res.status(500).send('<html><body><h1>Something went wrong</h1><p>Please try again later.</p></body></html>');
   }
 }

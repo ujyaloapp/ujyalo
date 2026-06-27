@@ -102,6 +102,12 @@ async function handleConfirmation() {
         headers: { 'Authorization': `Bearer ${accessToken}` }
       }
     );
+    if (!roleRes.ok) {
+      // Couldn't determine the role — don't guess (that could send an admin/editor
+      // to the wrong place). Send them to log in, where the server routes correctly.
+      window.location.href = '/login.html';
+      return;
+    }
     const roleData = await roleRes.json();
     const role = roleData?.role || 'student';
 
