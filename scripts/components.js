@@ -200,7 +200,7 @@ const GLOBAL_STYLES = `
   --navy2: #1C4A40;   /* lighter forest */
   --blue:  #1A6FC4;   /* subject-blue, kept for Maths accent */
   --teal:  #3F7D6E;   /* moss */
-  --orange:#C0913F;   /* brass */
+  --orange:#F59E0B;   /* marigold accent (was brass #C0913F) */
   --green: #15803D;
   --ink:   #1A2420;
   --muted: #5F6B64;
@@ -313,8 +313,8 @@ const GLOBAL_STYLES = `
 }
 .ujyalo-btn-ghost:hover { background: var(--bg); color: var(--ink); }
 .ujyalo-btn-primary {
-  background: var(--navy);
-  color: #fff;
+  background: var(--orange);
+  color: #3A2C10;
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
@@ -405,8 +405,8 @@ const GLOBAL_STYLES = `
 .ujyalo-mobile-divider { height: 1px; background: var(--line); margin: 6px 0; }
 .ujyalo-mobile-login { color: var(--muted) !important; }
 .ujyalo-mobile-signup {
-  background: var(--navy) !important;
-  color: #fff !important;
+  background: var(--orange) !important;
+  color: #3A2C10 !important;
   text-align: center !important;
   border-radius: 10px !important;
   padding: 12px !important;
@@ -416,7 +416,7 @@ const GLOBAL_STYLES = `
   display: block;
   text-decoration: none;
 }
-.ujyalo-mobile-signup:hover { background: var(--navy2) !important; }
+.ujyalo-mobile-signup:hover { background: #e08e08 !important; }
 
 @media (max-width: 768px) {
   .ujyalo-hamburger { display: flex; }
