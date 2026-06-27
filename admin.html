@@ -269,10 +269,11 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
   </main>
 </div>
 
+<script src="/scripts/ujyalo-auth.js"></script>
 <script>
 const SUPABASE_URL = 'https://uigausnyrlxxyosxjgvi.supabase.co';
-const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
-const token = localStorage.getItem('ujyalo_token');
+const user  = ujyaloGetUser();
+const token = ujyaloGetToken();
 
 const SUBJ = {maths:{name:'Maths',order:1},science:{name:'Science',order:2},english:{name:'English',order:3},social:{name:'Social',order:4},nepali:{name:'Nepali',order:5},hpe:{name:'HPE',order:6}};
 const PROV = ['Koshi','Madhesh','Bagmati','Gandaki','Lumbini','Karnali','Sudurpashchim'];

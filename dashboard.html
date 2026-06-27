@@ -235,10 +235,11 @@
 </div></main>
 
 <div id="site-footer"></div>
+<script src="/scripts/ujyalo-auth.js"></script>
 <script src="/scripts/components.js"></script>
 <script>
-const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
-const token = localStorage.getItem('ujyalo_token');
+const user  = ujyaloGetUser();
+const token = ujyaloGetToken();
 if (!user || !token) {
   window.location.href = '/login.html';
   throw new Error('Not logged in — redirecting'); // stop the rest of this script from running on empty data

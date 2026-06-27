@@ -353,11 +353,12 @@
 </div>
 <div id="toast"></div>
 
+<script src="/scripts/ujyalo-auth.js"></script>
 <script>
 (function(){
   var API='/api/admin-paper';
-  var user=JSON.parse(localStorage.getItem('ujyalo_user')||'null');
-  var token=localStorage.getItem('ujyalo_token')||'';
+  var user=ujyaloGetUser();
+  var token=ujyaloGetToken();
   var DATA=null, PAPER=null, PAPER_TOTAL=75, IS_ENG=false, PENDING_SCROLL=null;
   var PAPERS=[], FLAGS_N=0, OVERVIEW=[], TEAM=[], OPEN_SUBJECT=null, DONE_OPEN=false, VER_FILTER='all';
   var BOARD={items:[],team:[],me:''}, BOARD_FILTER='all', B_DONE_OPEN=false;
