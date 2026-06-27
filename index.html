@@ -34,106 +34,101 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="/styles/main.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    /* ===== Editorial Scholar — Home page styles =====
-       Scoped to page content only. The top menu and footer are injected
-       by /scripts/components.js, so no nav/footer styles live here. */
+    /* ===== Ujyalo home — bright & encouraging =====
+       Warm off-white base, bold headlines, one marigold accent,
+       subject colours used only as small signals. Page-scoped (.es).
+       Nav + footer are injected by /scripts/components.js. */
     :root{
-      --forest:#11302a;--forest2:#1c4a40;--moss:#3f7d6e;
-      --brass:#c0913f;--brass-soft:#e7c986;
-      --paper:#f4f0e6;--paper2:#ece6d6;--card:#fbf9f3;
-      --ink:#1a2420;--muted:#5f6b64;--faint:#9aa49d;--line:#e0d9c8;--green:#15803d;
+      --ink:#11302a;--ink2:#27433a;--muted:#5b6b62;--faint:#94a08f;
+      --cream:#fbf6ea;--paper:#fbf8f1;--white:#ffffff;--line:#ece6d6;
+      --gold:#f59e0b;--gold-ink:#5c3a00;--gold-deep:#b06d00;--gold-soft:#fff3da;
+      --green:#16a34a;--green-soft:#dcfce7;--blue:#2563eb;--blue-soft:#e7f0ff;
+      --amber:#d97706;--amber-soft:#fff1d6;--pink:#db2777;--pink-soft:#fce7f3;
+      --purple:#7c3aed;--purple-soft:#ede9fe;--red:#e11d48;--red-soft:#ffe4e6;
     }
     html{scroll-behavior:smooth;}
     .es *{margin:0;padding:0;box-sizing:border-box;}
-    .es{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--card);line-height:1.6;}
-    .es em{font-style:italic;}
-    .es a{text-decoration:none;}
-    .wrap{max-width:1100px;margin:0 auto;padding:0 28px;}
+    .es{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--white);line-height:1.6;}
+    .es a{text-decoration:none;color:inherit;}
+    .wrap{max-width:1080px;margin:0 auto;padding:0 26px;}
+    .display{font-family:'Fraunces',serif;font-weight:800;letter-spacing:-1px;line-height:1.08;color:var(--ink);}
 
-    /* HERO */
-    .home-hero{position:relative;overflow:hidden;padding:80px 0 70px;text-align:center;
-      background:radial-gradient(at 25% 0%,rgba(192,145,63,.12) 0,transparent 50%),radial-gradient(at 80% 20%,rgba(63,125,110,.10) 0,transparent 50%),var(--card);}
-    .home-hero::before{content:'उ';position:absolute;right:6%;top:50%;transform:translateY(-50%);font-family:'Fraunces';font-size:340px;font-weight:900;color:rgba(17,48,42,.03);line-height:1;pointer-events:none;}
-    .hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(63,125,110,.1);color:var(--moss);font-size:12.5px;font-weight:600;padding:6px 15px;border-radius:99px;margin-bottom:24px;}
-    .home-hero h1{font-family:'Fraunces';font-weight:900;font-size:clamp(38px,6vw,66px);line-height:1.04;letter-spacing:-1.5px;margin-bottom:20px;color:var(--forest);position:relative;}
-    .home-hero h1 em{color:var(--brass);font-weight:600;}
-    .home-hero p{font-size:19px;color:var(--muted);max-width:560px;margin:0 auto 32px;line-height:1.6;position:relative;}
-    .hero-cta{display:flex;gap:13px;justify-content:center;position:relative;flex-wrap:wrap;}
-    .cta-lg{display:inline-flex;align-items:center;background:var(--forest);color:#fff;font-size:15px;font-weight:600;padding:15px 30px;border-radius:12px;border:none;cursor:pointer;box-shadow:0 10px 28px -10px rgba(17,48,42,.5);}
-    .cta-lg-ghost{display:inline-flex;align-items:center;background:var(--card);color:var(--forest);font-size:15px;font-weight:600;padding:15px 28px;border-radius:12px;border:1.5px solid var(--line);cursor:pointer;}
+    /* buttons */
+    .btn-gold{display:inline-flex;align-items:center;gap:7px;background:var(--gold);color:var(--gold-ink);font-size:15px;font-weight:700;padding:13px 24px;border-radius:12px;border:none;cursor:pointer;}
+    .btn-ghost{display:inline-flex;align-items:center;gap:7px;background:var(--white);color:var(--ink);font-size:15px;font-weight:600;padding:13px 22px;border-radius:12px;border:1.5px solid var(--line);cursor:pointer;}
 
-    /* trust strip */
-    .trust{display:flex;justify-content:center;gap:0;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper);}
-    .trust-item{padding:20px 34px;text-align:center;border-right:1px solid var(--line);}
-    .trust-item:last-child{border-right:none;}
-    .trust-n{font-family:'Fraunces';font-weight:900;font-size:22px;color:var(--forest);}
-    .trust-l{font-size:12px;color:var(--muted);margin-top:3px;}
+    /* hero */
+    .hero{background:var(--cream);}
+    .hero-in{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;padding:62px 0 58px;}
+    .pill{display:inline-flex;align-items:center;gap:7px;background:var(--green-soft);color:#166534;font-size:12.5px;font-weight:700;padding:6px 13px;border-radius:99px;margin-bottom:18px;}
+    .hero h1{font-size:clamp(34px,5.2vw,54px);margin-bottom:16px;}
+    .hero h1 .u{border-bottom:5px solid var(--gold);}
+    .hero-lead{font-size:18px;color:var(--muted);max-width:440px;margin-bottom:26px;}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+    .hero-note{margin-top:22px;font-size:12.5px;font-weight:600;letter-spacing:.4px;color:var(--faint);}
+
+    /* hero art */
+    .hero-art{position:relative;display:flex;justify-content:center;}
+    .hero-art .chip{position:absolute;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:7px 11px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;}
+    .chip-a{top:8px;left:0;color:#166534;}
+    .chip-b{bottom:14px;right:0;color:var(--blue);}
 
     /* section base */
-    .sec{padding:80px 0;}
-    .sec-tag{font-family:'Fraunces';font-style:italic;font-size:17px;color:var(--brass);margin-bottom:10px;text-align:center;}
-    .sec-title{font-family:'Fraunces';font-weight:900;font-size:clamp(28px,4vw,42px);letter-spacing:-1px;text-align:center;color:var(--forest);margin-bottom:14px;}
-    .sec-sub{font-size:16px;color:var(--muted);text-align:center;max-width:520px;margin:0 auto 48px;}
+    .sec{padding:66px 0;}
+    .eyebrow{font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--gold-deep);margin-bottom:8px;}
+    .h2{font-family:'Fraunces',serif;font-weight:800;font-size:clamp(26px,3.6vw,38px);letter-spacing:-.7px;color:var(--ink);}
+    .lead{font-size:16px;color:var(--muted);margin-top:8px;max-width:520px;}
+    .center{text-align:center;} .center .lead{margin-left:auto;margin-right:auto;}
 
-    /* offerings */
-    .offer-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-    .offer{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:32px;position:relative;overflow:hidden;transition:all .25s;}
-    .offer:hover{transform:translateY(-4px);box-shadow:0 20px 44px -18px rgba(17,48,42,.28);border-color:var(--moss);}
-    .offer-ico{width:52px;height:52px;border-radius:14px;background:rgba(63,125,110,.12);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;}
-    .offer h3{font-family:'Fraunces';font-weight:600;font-size:22px;color:var(--ink);margin-bottom:8px;}
-    .offer p{font-size:14.5px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
-    .offer-link{font-size:14px;font-weight:600;color:var(--moss);display:inline-flex;}
-    .offer.plus{background:linear-gradient(135deg,#2a2110,#3a2c12);border-color:rgba(192,145,63,.3);}
-    .offer.plus h3{color:#fff;} .offer.plus p{color:#cbbf9f;}
-    .offer.plus .offer-ico{background:linear-gradient(135deg,var(--brass-soft),var(--brass));}
-    .offer-tag{position:absolute;top:20px;right:20px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--brass);background:rgba(192,145,63,.15);padding:4px 10px;border-radius:99px;}
+    /* subject thumbnails */
+    .subj-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:26px;}
+    .subj{display:block;border:1px solid var(--line);border-radius:14px;padding:16px 12px;text-align:center;background:var(--white);transition:transform .15s,border-color .15s;}
+    .subj:hover{transform:translateY(-3px);border-color:var(--gold);}
+    .subj .ic{width:42px;height:42px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:9px;}
+    .subj .nm{font-size:13.5px;font-weight:700;color:var(--ink);}
+    .subj .mt{font-size:11px;color:var(--faint);margin-top:1px;}
 
-    /* how it works */
+    /* feature row */
+    .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px;}
+    .feat{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:24px;}
+    .feat .ic{width:46px;height:46px;border-radius:13px;display:inline-flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;}
+    .feat h3{font-family:'Fraunces',serif;font-weight:700;font-size:19px;margin-bottom:6px;color:var(--ink);}
+    .feat p{font-size:14px;color:var(--muted);}
+
+    /* steps */
     .how{background:var(--paper);}
-    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
-    .step{text-align:center;}
-    .step-n{font-family:'Fraunces';font-weight:900;font-size:52px;color:var(--brass);line-height:1;margin-bottom:12px;}
-    .step h4{font-family:'Fraunces';font-weight:600;font-size:19px;margin-bottom:7px;color:var(--forest);}
-    .step p{font-size:14px;color:var(--muted);max-width:260px;margin:0 auto;}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:30px;}
+    .step{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:24px;}
+    .step .n{width:34px;height:34px;border-radius:10px;background:var(--gold-soft);color:var(--gold-deep);font-weight:800;display:inline-flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:12px;}
+    .step h4{font-family:'Fraunces',serif;font-weight:700;font-size:18px;margin-bottom:5px;}
+    .step p{font-size:14px;color:var(--muted);}
 
-    /* values */
-    .val-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:840px;margin:0 auto;}
-    .val{display:flex;gap:15px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
-    .val-ico{width:40px;height:40px;border-radius:10px;background:rgba(63,125,110,.12);color:var(--moss);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
-    .val h4{font-family:'Fraunces';font-weight:600;font-size:17px;margin-bottom:4px;}
-    .val p{font-size:13.5px;color:var(--muted);line-height:1.55;}
-
-    /* parents/teachers band */
-    .band{background:linear-gradient(135deg,var(--forest),var(--forest2));color:#fff;border-radius:24px;padding:54px;text-align:center;position:relative;overflow:hidden;margin:0 28px;}
-    .band::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:rgba(192,145,63,.12);}
-    .band-tag{font-family:'Fraunces';font-style:italic;font-size:16px;color:var(--brass-soft);margin-bottom:12px;position:relative;}
-    .band h2{font-family:'Fraunces';font-weight:900;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.5px;margin-bottom:14px;position:relative;}
-    .band p{font-size:16px;color:#cbd8d1;max-width:540px;margin:0 auto 26px;position:relative;line-height:1.6;}
-    .band-cta{display:inline-flex;align-items:center;background:linear-gradient(135deg,var(--brass-soft),var(--brass));color:var(--forest);font-size:15px;font-weight:700;padding:14px 30px;border-radius:12px;border:none;cursor:pointer;position:relative;}
+    /* band */
+    .band{background:var(--ink);color:#fff;border-radius:22px;padding:48px;text-align:center;position:relative;overflow:hidden;}
+    .band .eyebrow{color:var(--gold);}
+    .band h2{font-family:'Fraunces',serif;font-weight:800;font-size:clamp(24px,3.2vw,34px);letter-spacing:-.5px;color:#fff;margin-bottom:12px;}
+    .band p{font-size:16px;color:#cdd8d2;max-width:520px;margin:0 auto 22px;}
 
     /* final */
-    .final{text-align:center;padding:90px 0;}
-    .final h2{font-family:'Fraunces';font-weight:900;font-size:clamp(30px,4.5vw,48px);letter-spacing:-1px;color:var(--forest);margin-bottom:16px;}
-    .final p{font-size:17px;color:var(--muted);margin-bottom:30px;}
+    .final{text-align:center;padding:78px 0;background:var(--cream);}
+    .final h2{font-family:'Fraunces',serif;font-weight:800;font-size:clamp(28px,4.2vw,44px);letter-spacing:-1px;color:var(--ink);margin-bottom:14px;}
+    .final p{font-size:17px;color:var(--muted);margin-bottom:26px;}
 
-    /* ===== Mobile (added — mockup had no phone rules; most students are on phones) ===== */
-    @media (max-width:860px){
-      .home-hero{padding:60px 0 52px;}
-      .home-hero::before{font-size:200px;right:-6%;opacity:.7;}
-      .home-hero p{font-size:17px;}
-      .sec{padding:56px 0;}
-      .offer-grid{grid-template-columns:1fr;}
-      .steps{grid-template-columns:1fr;gap:22px;}
-      .val-grid{grid-template-columns:1fr;}
-      .band{padding:40px 24px;margin:0 16px;}
-      .final{padding:64px 0;}
+    @media (max-width:880px){
+      .hero-in{grid-template-columns:1fr;gap:18px;padding:48px 0 44px;}
+      .hero-art{order:-1;max-width:230px;margin:0 auto;}
+      .subj-grid{grid-template-columns:repeat(3,1fr);}
+      .feat-grid,.steps{grid-template-columns:1fr;}
+      .sec{padding:52px 0;}
+      .band{padding:36px 22px;}
     }
     @media (max-width:480px){
       .wrap{padding:0 18px;}
-      .cta-lg,.cta-lg-ghost{width:100%;justify-content:center;}
-      .trust-item{padding:16px 20px;}
+      .btn-gold,.btn-ghost{width:100%;justify-content:center;}
+      .subj-grid{grid-template-columns:repeat(2,1fr);}
     }
   </style>
   <meta property="og:image" content="https://ujyalo.app/og-default.png" />
@@ -145,81 +140,98 @@
 <div class="es">
 
   <!-- ══ HERO ══ -->
-  <section class="home-hero">
-    <div class="wrap">
-      <div class="hero-badge">✦ Built for Nepal's SEE students</div>
-      <h1>SEE past papers.<br>Model answers. <em>Free.</em></h1>
-      <p>ujyalo brings SEE exam papers, model answers, and smart practice into one calm, beautiful place — in English and Nepali.</p>
-      <div class="hero-cta">
-        <a href="/see.html" class="cta-lg">Explore past papers →</a>
-        <a href="#how" class="cta-lg-ghost">See how it works</a>
+  <section class="hero">
+    <div class="wrap hero-in">
+      <div>
+        <span class="pill">✦ Built for Nepal's SEE students</span>
+        <h1 class="display">SEE past papers &amp; model answers.<br><span class="u">Free, forever.</span></h1>
+        <p class="hero-lead">Real exam papers, step-by-step answers in Nepali &amp; English, and practice that keeps you going — all in one bright place.</p>
+        <div class="hero-actions">
+          <a href="/see.html" class="btn-gold">Start practising →</a>
+          <a href="#how" class="btn-ghost">See how it works</a>
+        </div>
+        <div class="hero-note">FREE FOREVER&nbsp;&nbsp;·&nbsp;&nbsp;NO ADS&nbsp;&nbsp;·&nbsp;&nbsp;ENGLISH &amp; नेपाली</div>
+      </div>
+      <div class="hero-art">
+        <svg viewBox="0 0 220 220" width="220" height="220" role="img" aria-label="Ujyalo sun — bright and encouraging">
+          <circle cx="110" cy="110" r="104" fill="#fff3da"/>
+          <g stroke="#f7b733" stroke-width="8" stroke-linecap="round">
+            <line x1="110" y1="20" x2="110" y2="40"/><line x1="110" y1="180" x2="110" y2="200"/>
+            <line x1="20" y1="110" x2="40" y2="110"/><line x1="180" y1="110" x2="200" y2="110"/>
+            <line x1="48" y1="48" x2="62" y2="62"/><line x1="158" y1="158" x2="172" y2="172"/>
+            <line x1="172" y1="48" x2="158" y2="62"/><line x1="62" y1="158" x2="48" y2="172"/>
+          </g>
+          <circle cx="110" cy="110" r="46" fill="#f59e0b"/>
+        </svg>
+        <span class="chip chip-a"><i class="ti ti-flame" style="color:#f97316;" aria-hidden="true"></i> Daily streaks</span>
+        <span class="chip chip-b"><i class="ti ti-list-check" aria-hidden="true"></i> Model answers</span>
       </div>
     </div>
   </section>
 
-  <!-- ══ TRUST STRIP (number-free) ══ -->
-  <div class="trust">
-    <div class="trust-item"><div class="trust-n">Free</div><div class="trust-l">Forever, for students</div></div>
-    <div class="trust-item"><div class="trust-n">Maths &amp; Science</div><div class="trust-l">Live now</div></div>
-    <div class="trust-item"><div class="trust-n">EN &amp; नेपाली</div><div class="trust-l">Bilingual</div></div>
-    <div class="trust-item"><div class="trust-n">New papers</div><div class="trust-l">Added weekly</div></div>
-  </div>
+  <!-- ══ SUBJECTS ══ -->
+  <section class="sec wrap">
+    <div class="center">
+      <div class="eyebrow">Every subject</div>
+      <div class="h2">Browse the SEE, subject by subject</div>
+      <div class="lead">Pick a subject and open real past papers — colour-coded so it's easy to find your way.</div>
+    </div>
+    <div class="subj-grid">
+      <a class="subj" href="/see.html"><span class="ic" style="background:var(--blue-soft);color:var(--blue);"><i class="ti ti-calculator" aria-hidden="true"></i></span><div class="nm">Maths</div><div class="mt">Past papers</div></a>
+      <a class="subj" href="/see.html"><span class="ic" style="background:var(--green-soft);color:var(--green);"><i class="ti ti-flask" aria-hidden="true"></i></span><div class="nm">Science</div><div class="mt">Past papers</div></a>
+      <a class="subj" href="/see.html"><span class="ic" style="background:var(--amber-soft);color:var(--amber);"><i class="ti ti-abc" aria-hidden="true"></i></span><div class="nm">English</div><div class="mt">Past papers</div></a>
+      <a class="subj" href="/see.html"><span class="ic" style="background:var(--pink-soft);color:var(--pink);"><i class="ti ti-book" aria-hidden="true"></i></span><div class="nm">Nepali</div><div class="mt">Past papers</div></a>
+      <a class="subj" href="/see.html"><span class="ic" style="background:var(--purple-soft);color:var(--purple);"><i class="ti ti-world" aria-hidden="true"></i></span><div class="nm">Social</div><div class="mt">Past papers</div></a>
+      <a class="subj" href="/see.html"><span class="ic" style="background:var(--red-soft);color:var(--red);"><i class="ti ti-heart" aria-hidden="true"></i></span><div class="nm">Health</div><div class="mt">Past papers</div></a>
+    </div>
+  </section>
 
   <!-- ══ WHAT YOU GET ══ -->
   <section class="sec wrap">
-    <div class="sec-tag">What you get</div>
-    <div class="sec-title">Everything you need to ace the SEE</div>
-    <div class="sec-sub">Real exam papers, honest model answers, and practice that actually makes you better.</div>
-    <div class="offer-grid">
-      <div class="offer"><div class="offer-ico">📄</div><h3>Past Papers</h3><p>SEE papers with model answers written to help you understand, not just memorise — added and checked week by week. Open to everyone, no signup.</p><a class="offer-link" href="/see.html">Browse papers →</a></div>
-      <div class="offer"><div class="offer-ico">✏️</div><h3>Practice</h3><p>Solve real questions chapter by chapter, check against model answers, and track how you're improving over time.</p><a class="offer-link" href="/chapter-practice.html">Start practising →</a></div>
-      <div class="offer"><div class="offer-ico">📖</div><h3>Bilingual — English &amp; नेपाली</h3><p>Questions and model answers in both English and Nepali, so you study in the language you think in.</p><a class="offer-link" href="/see.html">See an example →</a></div>
-      <div class="offer plus"><span class="offer-tag">Coming soon</span><div class="offer-ico">✨</div><h3>ujyalo Plus</h3><p>Hot topics that repeat every year, exam predictions, and a personalised paper built from your weak spots.</p><a class="offer-link" style="color:var(--brass-soft)" href="/pricing.html">Explore Plus →</a></div>
+    <div class="center">
+      <div class="eyebrow">What you get</div>
+      <div class="h2">Everything you need to ace the SEE</div>
+    </div>
+    <div class="feat-grid">
+      <div class="feat"><span class="ic" style="background:var(--gold-soft);color:var(--gold-deep);"><i class="ti ti-file-description" aria-hidden="true"></i></span><h3>Past papers</h3><p>Real SEE papers with model answers written to help you understand, not just memorise — open to everyone, no signup.</p></div>
+      <div class="feat"><span class="ic" style="background:var(--green-soft);color:var(--green);"><i class="ti ti-list-check" aria-hidden="true"></i></span><h3>Model answers</h3><p>Step-by-step answers in Nepali &amp; English, so you study in the language you think in.</p></div>
+      <div class="feat"><span class="ic" style="background:var(--blue-soft);color:var(--blue);"><i class="ti ti-flame" aria-hidden="true"></i></span><h3>Daily practice</h3><p>Solve real questions chapter by chapter, build a streak, and watch your confidence grow.</p></div>
     </div>
   </section>
 
   <!-- ══ HOW IT WORKS ══ -->
   <section class="sec how" id="how">
     <div class="wrap">
-      <div class="sec-tag">How it works</div>
-      <div class="sec-title">Start in seconds</div>
-      <div class="sec-sub">No account needed to begin. Just open and study.</div>
+      <div class="center">
+        <div class="eyebrow">How it works</div>
+        <div class="h2">Start in seconds</div>
+        <div class="lead">No account needed to begin. Just open and study.</div>
+      </div>
       <div class="steps">
-        <div class="step"><div class="step-n">1</div><h4>Pick a paper</h4><p>Choose your subject and paper from the SEE collection.</p></div>
-        <div class="step"><div class="step-n">2</div><h4>Read &amp; understand</h4><p>Work through questions with clear model answers, in English or Nepali.</p></div>
-        <div class="step"><div class="step-n">3</div><h4>Practice &amp; improve</h4><p>Test yourself chapter by chapter and watch your confidence grow.</p></div>
+        <div class="step"><span class="n">1</span><h4>Pick a paper</h4><p>Choose your subject and paper from the SEE collection.</p></div>
+        <div class="step"><span class="n">2</span><h4>Read &amp; understand</h4><p>Work through questions with clear model answers, in English or Nepali.</p></div>
+        <div class="step"><span class="n">3</span><h4>Practise &amp; improve</h4><p>Test yourself chapter by chapter and keep your streak going.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- ══ WHY UJYALO ══ -->
-  <section class="sec wrap">
-    <div class="sec-tag">Why ujyalo</div>
-    <div class="sec-title">Made with care, in Nepal</div>
-    <div class="sec-sub" style="margin-bottom:40px;">For every student, whatever school they go to or wherever they live.</div>
-    <div class="val-grid">
-      <div class="val"><div class="val-ico">🆓</div><div><h4>Free &amp; open</h4><p>Papers and answers are open to everyone — no paywall, no catch. We believe good preparation shouldn't depend on money.</p></div></div>
-      <div class="val"><div class="val-ico">🇳🇵</div><div><h4>Truly local</h4><p>Built for Nepal's curriculum, in Nepali and English, for the real SEE exam.</p></div></div>
-      <div class="val"><div class="val-ico">✦</div><div><h4>Quality you can feel</h4><p>Carefully checked answers and a calm, beautiful design that makes studying feel good.</p></div></div>
-      <div class="val"><div class="val-ico">📈</div><div><h4>Always improving</h4><p>We add papers and features every week, listening to what students actually need.</p></div></div>
-    </div>
-  </section>
-
   <!-- ══ PARENTS & TEACHERS BAND ══ -->
-  <section class="sec">
+  <section class="sec wrap">
     <div class="band">
-      <div class="band-tag">For parents &amp; teachers</div>
+      <div class="eyebrow">For parents &amp; teachers</div>
       <h2>A study tool you can trust</h2>
-      <p>ujyalo gives your students real exam papers and honest model answers in a safe, ad-free, distraction-free space — free for every learner.</p>
-      <a href="/for-schools.html" class="band-cta">Learn more for schools →</a>
+      <p>Ujyalo gives students real exam papers and honest model answers in a safe, ad-free, distraction-free space — free for every learner.</p>
+      <a href="/for-schools.html" class="btn-gold">Learn more for schools →</a>
     </div>
   </section>
 
   <!-- ══ FINAL INVITE ══ -->
-  <section class="final wrap">
-    <h2>Ready to start?</h2>
-    <p>Open your first SEE paper right now — no signup needed.</p>
-    <a href="/see.html" class="cta-lg">Explore past papers →</a>
+  <section class="final">
+    <div class="wrap">
+      <h2 class="display">Ready to start?</h2>
+      <p>Open your first SEE paper right now — no signup needed.</p>
+      <a href="/see.html" class="btn-gold">Start practising →</a>
+    </div>
   </section>
 
 </div>
