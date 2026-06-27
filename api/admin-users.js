@@ -77,6 +77,40 @@ export default async function handler(req, res) {
     }
   }
 
+  // ── accurate dashboard counts ──
+  // The browser can only read a capped/RLS-filtered slice of these tables, so
+  // counting client-side gives wrong numbers (e.g. "100% verified"). Here we
+  // ask Postgres for the EXACT count with the service key (no cap, no RLS).
+  if (req.query.action === 'stats') {
+    async function count(filter) {
+      const sep = filter.includes('?') ? '&' : '?';
+      const r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/${filter}${sep}limit=1`, {
+        headers: {
+          'apikey': process.env.SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+          'Prefer': 'count=exact',
+        },
+      });
+      const cr = r.headers.get('content-range') || '';
+      const n = parseInt((cr.split('/')[1] || ''), 10);
+      return Number.isFinite(n) ? n : 0;
+    }
+    try {
+      const [papersTotal, papersLive, qTotal, qVerified, qFlagged, messages] = await Promise.all([
+        count('past_papers?select=id'),
+        count('past_papers?status=eq.live&select=id'),
+        count('past_paper_questions?select=id'),
+        count('past_paper_questions?verified=eq.true&select=id'),
+        count('past_paper_questions?flagged=eq.true&select=id'),
+        count('contact_messages?select=id'),
+      ]);
+      return res.status(200).json({ success: true, papersTotal, papersLive, qTotal, qVerified, qFlagged, messages });
+    } catch (e) {
+      console.error('Admin stats error:', e);
+      return res.status(500).json({ error: 'Failed to load stats.' });
+    }
+  }
+
   try {
     // Fetch users from Supabase Auth admin endpoint
     const response = await fetch(

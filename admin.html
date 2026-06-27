@@ -354,22 +354,18 @@ async function loadHome(){
   $('home-greet').textContent = (h<12?'Good morning':h<17?'Good afternoon':'Good evening')+(user.full_name?(', '+user.full_name.split(' ')[0]):'')+'.';
   $('home-date').textContent = "Here's where ujyalo stands — "+new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})+'.';
   try{
-    const [papers, qVerified, qFlagged, qTotal, messages, studentsRes] = await Promise.all([
-      sbGet('past_papers','select=id,status'),
-      sbGet('past_paper_questions','select=id&verified=eq.true'),
-      sbGet('past_paper_questions','select=id&flagged=eq.true'),
-      sbGet('past_paper_questions','select=id'),
-      authFetch('/api/admin-users?action=messages',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).then(function(d){return (d&&d.messages)||[];}).catch(function(){return [];}),
+    const [stats, studentsRes] = await Promise.all([
+      authFetch('/api/admin-users?action=stats',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).catch(function(){return {};}),
       authFetch('/api/admin-users',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).catch(function(){return {};})
     ]);
-    var live = Array.isArray(papers)? papers.filter(function(p){return p.status==='live';}).length : 0;
-    var totalP = Array.isArray(papers)? papers.length : 0;
+    var live = stats.papersLive || 0;
+    var totalP = stats.papersTotal || 0;
     await ensurePapers(); await ensureOverview();
     var ready = (OV && OV.papers ? OV.papers : []).filter(function(p){ return p.fully && p.status!=='live'; }).length;
-    var vCount = Array.isArray(qVerified)? qVerified.length : 0;
-    var tCount = Array.isArray(qTotal)? qTotal.length : 0;
-    var fCount = Array.isArray(qFlagged)? qFlagged.length : 0;
-    var mCount = Array.isArray(messages)? messages.length : 0;
+    var vCount = stats.qVerified || 0;
+    var tCount = stats.qTotal || 0;
+    var fCount = stats.qFlagged || 0;
+    var mCount = stats.messages || 0;
     var allUsers = (studentsRes && studentsRes.users) ? studentsRes.users : [];
     var sCount = allUsers.filter(function(u){ return !isTeam(u.role); }).length;
     var pct = tCount? Math.round(vCount/tCount*100) : 0;
