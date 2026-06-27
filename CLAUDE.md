@@ -39,7 +39,7 @@ Browser page (`*.html`) → `fetch('/api/<name>?action=<verb>')` → serverless 
 ### API convention (important)
 Each file in `api/` is **one Vercel function that multiplexes many operations via an `?action=` parameter** (and HTTP method), not one endpoint per file. To add behavior, add another `if (action === '...')` branch in the relevant file rather than a new file. Example actions: `auth.js` handles `login | signup | forgot-password | change-password | config | get-role`.
 
-Module style is inconsistent and **intentional to match the file you're editing**: most functions use ESM (`export default async function handler`), but `api/see-papers.js` uses CommonJS (`module.exports`). Match the existing file.
+Module style: all `api/` functions use ESM (`export default async function handler`). (Historically `api/see-papers.js` used CommonJS; it was standardized to ESM.) Keep new functions ESM to match.
 
 ### Auth & roles
 - Supabase Auth issues a JWT. The client stores it in `localStorage` as `ujyalo_token` and the user object as `ujyalo_user` (other client keys: `ujyalo_conf`, `ujyalo_progress`, `ujyalo_bookmarks`).
