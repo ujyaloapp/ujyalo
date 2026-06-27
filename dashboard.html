@@ -12,7 +12,7 @@
 <style>
 :root{
   --brand:#11302A; --brand-dark:#0C241F; --brand-light:#DCE6E1; --brand-50:#EBF1EE;
-  --sun:#C0913F; --sun-soft:#E7C986; --sun-light:#F2E6CC; --sun-50:#FAF4E8;
+  --sun:#f59e0b; --sun-soft:#f6b652; --sun-light:#F2E6CC; --sun-50:#FAF4E8;
   --ink-50:#F4F0E6; --ink-100:#ECE6D6; --ink-200:#E0D9C8; --ink-300:#C3BBA6;
   --ink-500:#5F6B64; --ink-700:#2B3A33; --ink-900:#1A2420;
   --green:#15803D; --green-light:#D1FAE5; --red:#B5532E; --red-light:#F6E2D8;
@@ -32,7 +32,7 @@
 .db .eyebrow::after{content:"";flex:1;height:1px;background:var(--ink-200)}
 
 .db .hero{background:linear-gradient(150deg,var(--brand) 0%,var(--brand-dark) 100%);border-radius:22px;padding:34px 36px;color:#eef3f0;position:relative;overflow:hidden;box-shadow:var(--sh);margin-bottom:30px}
-.db .hero::after{content:"";position:absolute;right:-90px;top:-90px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(192,145,63,.22),transparent 68%)}
+.db .hero::after{content:"";position:absolute;right:-90px;top:-90px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.22),transparent 68%)}
 .db .hero-top{display:flex;align-items:center;justify-content:space-between;gap:28px;position:relative;z-index:1;flex-wrap:wrap}
 .db .hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(28px,3.6vw,40px);line-height:1.05;letter-spacing:-.01em;color:#fff}
 .db .hero h1 em{font-style:italic;font-weight:600;color:var(--sun-soft)}
@@ -146,7 +146,7 @@
       <div class="ring">
         <svg width="132" height="132" viewBox="0 0 132 132">
           <circle cx="66" cy="66" r="58" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="11"/>
-          <circle id="ring-fill" cx="66" cy="66" r="58" fill="none" stroke="#C0913F" stroke-width="11" stroke-linecap="round"
+          <circle id="ring-fill" cx="66" cy="66" r="58" fill="none" stroke="#f59e0b" stroke-width="11" stroke-linecap="round"
                   stroke-dasharray="364.4" stroke-dashoffset="364.4" style="transition:stroke-dashoffset 1s cubic-bezier(.16,1,.3,1)"/>
         </svg>
         <div class="mid"><div class="pct" id="ring-pct">—</div><div class="cap">got it</div></div>
