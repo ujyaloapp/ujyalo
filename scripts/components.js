@@ -427,7 +427,7 @@ const GLOBAL_STYLES = `
 
 /* ── FOOTER ── */
 .ujyalo-footer {
-  background: var(--navy);
+  background: #1e1a15;
   color: rgba(255,255,255,.7);
   padding: 48px 0 0;
   margin-top: 0;
@@ -487,7 +487,7 @@ const GLOBAL_STYLES = `
   position: fixed;
   bottom: 24px;
   right: 24px;
-  background: var(--navy);
+  background: #1e1a15;
   color: #fff;
   font-size: 13px;
   font-weight: 600;
