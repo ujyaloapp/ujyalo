@@ -449,16 +449,25 @@ function renderGrid(){
 function renderReady(){
   var done = (OV && OV.papers ? OV.papers : []).filter(function(p){ return p.fully; });
   if(!done.length){ $('ready-list').innerHTML='<div class="empty">No papers fully verified yet — finished papers from the verify desk will land here.</div>'; return; }
-  done.sort(function(a,b){ return (a.status==='live'?1:0)-(b.status==='live'?1:0) || (b.year-a.year); });
-  $('ready-list').innerHTML = done.map(function(p){
-    var nm = p.subjectName || p.subject || '—';
+  // Group fully-verified papers by subject so the list stays scannable.
+  var groups = {};
+  done.forEach(function(p){ var s=p.subjectName||p.subject||'Other'; (groups[s]=groups[s]||[]).push(p); });
+  function rowHtml(p){
     var live = p.status==='live';
     var meta = 'Verified by '+esc(p.verifiedBy||'team')+(p.verifiedAt?(' · '+fmtDate(p.verifiedAt)):'')+' · '+p.verified+'/'+p.total+' questions';
     var liveBadge = live ? '<span class="pill live">● Live</span>' : '<span class="pill draft">Not live</span>';
     var pubBtn = live ? '' : '<button class="btn pub" data-pub="'+p.id+'">Publish →</button>';
-    return '<div class="prow"><div class="pt">SEE '+p.year+' '+esc(p.province)+' <span>· '+esc(nm)+'</span>'+
+    return '<div class="prow"><div class="pt">SEE '+p.year+' '+esc(p.province)+
       '<div style="font-size:11.5px;color:var(--faint);font-weight:500;margin-top:3px;">'+meta+'</div></div>'+
       '<span class="pill live">✓ Verified</span>'+liveBadge+pubBtn+'</div>';
+  }
+  $('ready-list').innerHTML = Object.keys(groups).sort().map(function(subj, gi){
+    var papers = groups[subj];
+    papers.sort(function(a,b){ return (a.status==='live'?1:0)-(b.status==='live'?1:0) || (b.year-a.year) || String(a.province).localeCompare(String(b.province)); });
+    var head = '<div style="margin:'+(gi===0?'4px':'24px')+' 0 11px;display:flex;align-items:center;gap:9px;">'+
+      '<span style="font-family:\'Fraunces\',serif;font-size:15.5px;font-weight:600;color:var(--forest);">'+esc(subj)+'</span>'+
+      '<span style="font-size:11px;font-weight:700;color:var(--brass-deep);background:var(--parch-2);border-radius:99px;padding:2px 9px;">'+papers.length+'</span></div>';
+    return head + papers.map(rowHtml).join('');
   }).join('');
 }
 $('ready-list').addEventListener('click', async function(e){
