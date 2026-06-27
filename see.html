@@ -432,7 +432,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .lk.pr{background:rgba(245,158,11,.34);border-color:var(--brass)}
 .lk.dn{background:rgba(52,168,83,.22);border-color:var(--green)}
 .lk.sn{background:var(--paper2);border-color:var(--line)}
-.mapwrap{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px 6px;box-shadow:0 1px 2px rgba(26,36,32,.04),0 8px 26px rgba(17,48,42,.06)}
+.mapwrap{position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px 6px;box-shadow:0 1px 2px rgba(26,36,32,.04),0 8px 26px rgba(17,48,42,.06)}
 .npmap{width:100%;height:auto;display:block}
 .prov{stroke:var(--bg);stroke-width:1.6;stroke-linejoin:round;transition:.16s}
 .prov.avail{fill:#ece0c4;stroke:var(--brass);stroke-width:2.1;filter:drop-shadow(0 4px 7px rgba(17,48,42,.20))}
@@ -448,7 +448,8 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .pbt{font-family:'DM Sans',system-ui,sans-serif;font-weight:700;font-size:11px;fill:#fff;text-anchor:middle;pointer-events:none}
 .taphint{position:absolute;left:16px;bottom:16px;max-width:290px;display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:500;color:var(--ink);background:#fff;border:1px solid var(--line);padding:11px 13px;border-radius:12px;line-height:1.4;box-shadow:0 6px 20px rgba(17,48,42,.12)}
 .th-ic{font-size:18px;flex-shrink:0}
-.paplayout{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:start;margin-top:4px}
+.paplayout{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;align-items:stretch;margin-top:4px}
+.paplayout>#yblocks{display:flex;flex-direction:column}
 .pap-list{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
 .pap-list-h{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--forest);margin-bottom:11px}
 .mapfb{display:flex;flex-direction:column;gap:7px}
