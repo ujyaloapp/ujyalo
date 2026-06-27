@@ -453,6 +453,21 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .mapfb{display:flex;flex-direction:column;gap:7px}
 .gopen{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--brass-deep);border:1px solid var(--brass-soft);border-radius:8px;padding:5px 10px;white-space:nowrap;transition:.14s}
 .gr.on:hover .gopen{background:var(--brass);color:#3a2c10;border-color:var(--brass)}
+.lsb-plus-card{margin:14px 12px 0;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:16px 14px;text-align:center}
+.lsb-plus-art{font-size:34px;line-height:1;margin-bottom:6px}
+.lsb-plus-t{font-family:'Fraunces',serif;font-size:14.5px;font-weight:600;color:#e9e2d2;line-height:1.25}
+.lsb-plus-t span{color:var(--brass);font-weight:700}
+.lsb-plus-d{font-size:11.5px;color:#9a9486;line-height:1.5;margin:7px 0 13px}
+.lsb-plus-btn{display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);color:#f4efe2;font-size:12.5px;font-weight:700;border-radius:10px;padding:9px 16px;cursor:pointer;font-family:inherit;width:100%;transition:.14s}
+.lsb-plus-btn:hover{background:var(--brass);color:#3a2c10;border-color:var(--brass)}
+.trust-strip{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 6px;margin-top:18px}
+.ts-item{display:flex;gap:11px;align-items:flex-start;padding:0 18px;border-right:1px solid var(--line)}
+.ts-item:last-child{border-right:none}
+.ts-ic{font-size:16px;flex-shrink:0;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--paper2)}
+.ts-ic.ok{background:rgba(52,168,83,.16);color:var(--green)}
+.ts-t{font-size:13px;font-weight:700;color:var(--ink)}
+.ts-d{font-size:11.5px;color:var(--muted);line-height:1.45;margin-top:2px}
+@media(max-width:760px){.trust-strip{grid-template-columns:1fr 1fr;gap:16px 0}.ts-item{border-right:none;padding:0 12px}}
 .gr{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:12px;padding:9px 11px;background:var(--card)}
 .gr.on{cursor:pointer;transition:.14s}.gr.on:hover{border-color:var(--brass-soft);transform:translateY(-1px)}
 .gr.off{opacity:.5}
@@ -492,6 +507,12 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
       <button class="li li-plus" onclick="showView('predict',this)" id="nav-predict"><span class="li-icon">🎯</span><span class="li-lbl">Predict 2083</span><span class="li-lock">⭐</span></button>
       <button class="li li-plus" onclick="showView('mypaper',this)" id="nav-mypaper"><span class="li-icon">⚡</span><span class="li-lbl">My Paper</span><span class="li-lock">⭐</span></button>
     </nav>
+    <div class="lsb-plus-card">
+      <div class="lsb-plus-art">🎓</div>
+      <div class="lsb-plus-t">Study smarter with<br><span>SEE PLUS</span></div>
+      <div class="lsb-plus-d">Unlock unlimited past papers, predictions, and smart features.</div>
+      <button class="lsb-plus-btn" onclick="showView('plus')">Explore Plus →</button>
+    </div>
     <div class="lsb-foot"><p>SEE 2082 live · 7 provinces<br/>6 subjects · Free forever</p></div>
   </aside>
 
@@ -619,6 +640,12 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
           <div class="paplayout">
             <div id="yblocks"></div>
             <div class="pap-list"><div class="pap-list-h">Choose your province</div><div class="mapfb" id="mapfb"></div></div>
+          </div>
+          <div class="trust-strip">
+            <div class="ts-item"><span class="ts-ic ok">✓</span><div><div class="ts-t">Verified Papers</div><div class="ts-d">All papers are verified and curriculum aligned.</div></div></div>
+            <div class="ts-item"><span class="ts-ic">⚡</span><div><div class="ts-t">Fast &amp; Easy</div><div class="ts-d">Find any paper in seconds by subject, year &amp; province.</div></div></div>
+            <div class="ts-item"><span class="ts-ic">🔖</span><div><div class="ts-t">Save &amp; Access</div><div class="ts-d">Save your papers and access them anytime, anywhere.</div></div></div>
+            <div class="ts-item"><span class="ts-ic">🔒</span><div><div class="ts-t">100% Free</div><div class="ts-d">All past papers are completely free for SEE students.</div></div></div>
           </div>
         </div>
       </div>
@@ -938,7 +965,7 @@ function renderMap(year, s, avail){
     if(live){gridLive+=gitem;}else{gridSoon+=gitem;}
   });
   document.getElementById('yblocks').innerHTML=
-    '<div class="taphint">\uD83D\uDC46 Tap your province to open its paper</div>'+
+    '<div class="taphint">\uD83D\uDCD6 Click on the map or select a province from the list to open past papers.</div>'+
     '<div class="mapwrap"><svg viewBox="-14 -16 '+(NP_MAP.w+28)+' '+(NP_MAP.h+30)+'" class="npmap" xmlns="http://www.w3.org/2000/svg">'+paths+labels+badges+'</svg></div>';
   document.getElementById('mapfb').innerHTML=gridLive+gridSoon;
 }
