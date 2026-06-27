@@ -13,11 +13,11 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
   /* Editorial Scholar palette — variable names kept so existing CSS keeps working */
-  --navy:#11302a;--navy2:#1c4a40;--blue:#1a6fc4;--teal:#3f7d6e;--orange:#c0913f;
+  --navy:#1e1a15;--navy2:#2a2318;--blue:#1a6fc4;--teal:#3f7d6e;--orange:#f59e0b;
   --green:#34a853;--red:#b5532e;--purple:#7a5cc4;--pink:#c2557e;
   --ink:#1a2420;--muted:#5f6b64;--faint:#9aa49d;--line:#e0d9c8;--bg:#f4f0e6;--card:#fbf9f3;
   /* new accents */
-  --brass:#c0913f;--brass-soft:#e7c986;--forest:#11302a;--moss:#3f7d6e;--paper2:#ece6d6;
+  --brass:#f59e0b;--brass-soft:#f6b652;--forest:#11302a;--moss:#3f7d6e;--paper2:#ece6d6;
 }
 *{font-family:'Outfit','DM Sans',sans-serif;}
 html,body{height:100%;margin:0;padding:0;}
@@ -83,7 +83,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .vw.act{display:block;}
 
 /* HERO */
-.hero{padding:28px 32px 24px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--forest),var(--navy2));}
+.hero{padding:28px 32px 24px;position:relative;overflow:hidden;background:linear-gradient(135deg,#2a2318,#1a160f);}
 .hero::after{content:'';position:absolute;right:34px;top:-30px;font-family:'Fraunces',serif;font-size:170px;font-weight:900;color:rgba(255,255,255,.04);line-height:1;pointer-events:none;}
 .hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:rgba(26,111,255,.14);}
 .hero::after{content:'';position:absolute;bottom:-30px;left:-20px;width:140px;height:140px;border-radius:50%;background:rgba(56,201,176,.1);}
@@ -132,7 +132,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 
 /* PRACTICE VIEW */
 .prac-pad{padding:30px 34px;}
-.prac-hero{padding:28px 34px 24px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--forest),var(--navy2));}
+.prac-hero{padding:28px 34px 24px;position:relative;overflow:hidden;background:linear-gradient(135deg,#2a2318,#1a160f);}
 .prac-hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:rgba(192,145,63,.10);}
 .prac-hero::after{content:'';position:absolute;bottom:-40px;left:30%;width:150px;height:150px;border-radius:50%;background:rgba(63,125,110,.10);}
 .prac-hero-in{position:relative;display:flex;align-items:center;gap:16px;}
