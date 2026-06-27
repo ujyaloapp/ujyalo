@@ -77,6 +77,28 @@ function init() {
   document.getElementById('hero-sub-text').textContent = DATA.paper.province + ' · ' + DATA.paper.marks + 'm · ' + DATA.paper.duration;
   document.title = 'SEE ' + DATA.paper.year + ' ' + DATA.paper.province + ' ' + DATA.subject.name + ' | ujyalo';
 
+  // ── Per-paper SEO: each paper page describes itself so Google can index
+  //    them distinctly (canonical + description + social title/description). ──
+  (function seo() {
+    var year = DATA.paper.year, prov = DATA.paper.province, subj = DATA.subject.name;
+    var title = 'SEE ' + year + ' ' + prov + ' ' + subj + ' — Past Paper with Model Answers | Ujyalo';
+    var desc  = 'SEE ' + year + ' ' + prov + ' Province ' + subj +
+                ' past paper with step-by-step model answers in Nepali and English. Free to read and download.';
+    function setMeta(key, keyAttr, value) {
+      var el = document.head.querySelector('meta[' + keyAttr + '="' + key + '"]');
+      if (!el) { el = document.createElement('meta'); el.setAttribute(keyAttr, key); document.head.appendChild(el); }
+      el.setAttribute('content', value);
+    }
+    setMeta('description', 'name', desc);
+    setMeta('og:title', 'property', title);
+    setMeta('og:description', 'property', desc);
+    if (DATA.meta && DATA.meta.canonicalUrl) {
+      var link = document.head.querySelector('link[rel="canonical"]');
+      if (!link) { link = document.createElement('link'); link.rel = 'canonical'; document.head.appendChild(link); }
+      link.href = DATA.meta.canonicalUrl;
+    }
+  })();
+
   // Hide lang toggle for English papers
   if (DATA.meta.isEnglish) {
     var lt = document.getElementById('lang-tog');
