@@ -14,8 +14,6 @@ var PRINT_BASE = '';
 var confMap    = {};
 var openSubId  = null;
 
-const isMobile = () => window.innerWidth < 768;
-
 // ── INIT ──
 // Reads paper params from the clean URL path first:
 //   /see/past-papers/<year>/<province>/<subject>

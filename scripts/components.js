@@ -344,14 +344,6 @@ const GLOBAL_STYLES = `
   font-weight: 700;
   font-size: 13px;
 }
-.ujyalo-logout-btn {
-  font-size: 13px;
-  color: var(--muted);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-}
 .ujyalo-avatar { cursor: pointer; border: 1px solid transparent; }
 .ujyalo-avatar:hover { border-color: var(--brass-soft); }
 .ujyalo-avwrap { position: relative; }
