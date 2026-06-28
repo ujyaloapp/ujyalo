@@ -51,7 +51,7 @@ Module style: all `api/` functions use ESM (`export default async function handl
 - `api/auth.js` — all authentication + the public `config` action that hands the anon key to the browser.
 - `api/practice.js` — chapter questions + AI: `generate`/`evaluate` call Anthropic; also reads `chapter_questions` and writes attempts/progress.
 - `api/admin-paper.js` — editor/verification workflow for past papers; only `EDITABLE` fields can be patched; actions `whoami | list | load | update-field | set-status`.
-- `api/admin-users.js` — admin user management.
+- `api/admin-users.js` — admin-only (verified `admin` role). Actions: list users (GET, no action), `set-role` (POST), `messages` (GET — contact-form inbox), `stats` (GET — exact dashboard counts via Postgres `count=exact`). Reads with the service key so counts aren't capped (~1000-row limit) or RLS-filtered the way browser reads are — the admin dashboard reads its stats/messages here, not directly from Supabase.
 - `api/see-papers.js` / `api/see-paper.js` / `api/see-paper-print.js` — past-paper library, single-paper view, print/PDF rendering.
 - `api/contact.js`, `api/waitlist.js` — forms (email via Resend). `api/sitemap.js` — dynamic sitemap (rewritten from `/sitemap.xml`).
 
@@ -62,10 +62,12 @@ Module style: all `api/` functions use ESM (`export default async function handl
 - `scripts/components.js` injects the shared **nav + footer on every page** and contains a site-wide SEE-exam countdown controlled by the single `SEE_EXAM_DATE` constant (blank = off; set to `YYYY-MM-DD` when NEB announces the date). It builds different navs for public vs. logged-in staff (`buildStaffNav`) based on role.
 - `scripts/see-paper-client.js` drives the past-paper viewer. It reads paper identity from the **clean URL path first** (`/see/past-papers/:year/:province/:subject`) and falls back to the legacy query string (`?year=&province=&subject=`).
 - `scripts/practice.js` drives the practice page (subject select → `POST /api/practice`).
-- `styles/main.css` is the global stylesheet (design system: Fraunces + Outfit fonts, "Editorial Scholar" palette — forest `#11302a`, brass `#c0913f`).
+- `styles/main.css` is the global stylesheet. **Design system (redesigned ~2026-06, currently on `dev`):** Fraunces (headlines) + Outfit (body). Palette — **marigold accent `#f59e0b`**, **warm near-black `#1e1a15`** for ink/headlines and dark anchors (footer, bands, page heroes), warm cream/white surfaces. **Forest green `#11302a` and brass `#c0913f` are retired as UI colours** (green survives only in the logo) — don't reintroduce them. In `components.js` the accent token is `--orange` (now marigold).
+- `scripts/ujyalo-auth.js` — tiny, side-effect-free `ujyaloGetUser()` / `ujyaloGetToken()` (read the signed-in user/token from localStorage). Loaded **before** the inline script on login/dashboard/profile/admin/verify. `components.js` keeps its own inline reads on purpose (so it has no load-order dependency across the ~15 pages it serves).
+- Tabler icons (`ti ti-*`) load **per page** via a CDN `<link>` only where used (home, admin, chapter-practice…); `see.html` uses emoji, not Tabler — match the page you're editing.
 
 ### Routing (`vercel.json`)
-Only URL rewrites, no build/env config. It maps `/sitemap.xml → /api/sitemap`, `/see → /see.html`, and the clean past-paper paths to their `.html` files. Note: `/see/past-papers` rewrites to `see-past-papers.html`, which does not currently exist in the repo — keep this in mind when touching that route.
+Only URL rewrites, no build/env config. It maps `/sitemap.xml → /api/sitemap`, `/see → /see.html`, `/see/past-papers → /see.html` (the library — repointed here; the old `see-past-papers.html` never existed), and `/see/past-papers/:year/:province/:subject → /see-paper.html` (single paper).
 
 ## Conventions to follow
 
@@ -73,3 +75,6 @@ Only URL rewrites, no build/env config. It maps `/sitemap.xml → /api/sitemap`,
 - Add operations as new `?action=` branches in the existing `api/` file; match that file's ESM/CJS style.
 - Roles come from the `users` table — don't reintroduce hardcoded email checks.
 - Most `.html` pages are standalone; rely on `components.js` for nav/footer rather than duplicating markup.
+- **Palette discipline:** marigold accent + near-black ink/anchors + cream/white only. Don't reintroduce forest-green (UI) or brass.
+- **No fabricated content:** the site is pre-launch — never add fake stats, user counts, or testimonials. Use honest copy until real data exists.
+- **Admin counts come from the server:** the browser only sees a capped/RLS-filtered slice of tables, so compute dashboard counts via `api/admin-users?action=stats` (service key, `count=exact`), not client-side `.length`.
