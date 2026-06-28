@@ -18,3 +18,6 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Archived one-off SQL fix scripts (already applied)
+sql-archive/
