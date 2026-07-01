@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SEE Past Paper — ujyalo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,700&family=DM+Sans:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles/see-paper.css"/>
+  <meta property="og:image" content="https://ujyalo.app/og-default.png" />
+  <meta name="twitter:image" content="https://ujyalo.app/og-default.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:title" content="SEE Past Papers with Model Answers | Ujyalo" />
+  <meta property="og:description" content="Read real SEE past papers with step-by-step model answers in Nepali and English. Free." />
+  <meta property="og:type" content="website" />
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<!-- LOADING -->
+<div id="loading-state">
+  <div class="load-spinner"></div>
+  <div class="load-text">Loading paper...</div>
+</div>
+
+<!-- ERROR -->
+<div id="error-state" style="display:none;">
+  <div class="err-icon">⚠️</div>
+  <div class="err-title">Could not load paper</div>
+  <div class="err-msg" id="error-msg"></div>
+  <a href="/see.html" class="err-back">← Back to papers</a>
+</div>
+
+<!-- APP BODY -->
+<div id="app-body" style="display:none;">
+
+  <!-- COMPACT HEADER BAR -->
+  <div class="paper-hero" id="paper-hero">
+    <div class="hero-bg-circle"></div>
+    <div class="hero-inner">
+      <div class="hero-bar-left">
+        <button class="hero-back" onclick="history.back()">← Back</button>
+        <div class="hero-badge" id="hero-badge"></div>
+        <div class="hero-sub-text" id="hero-sub-text"></div>
+      </div>
+      <div class="hero-actions">
+        <div class="lang-tog" id="lang-tog">
+          <button class="lt-btn act" id="lt-en" onclick="setLang('en')">EN</button>
+          <button class="lt-btn off" id="lt-np" onclick="setLang('np')">NP</button>
+        </div>
+        <!-- PDF download hidden for launch — re-enable by uncommenting this button (modal + code are still in place):
+        <button class="hero-btn" onclick="openDownload()">⬇ PDF</button>
+        -->
+        <button class="finish-btn" id="finish-btn" onclick="finishPaper()" style="display:none;">Finish →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER BAR (top pills) -->
+  <div class="chap-bar" id="prog-strip"></div>
+
+  <!-- MAIN LAYOUT: sidebar + questions -->
+  <div class="paper-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-head">
+        <div class="sb-label">Questions</div>
+        <div class="sb-progress"><div class="sb-progress-fill" id="sb-progress-fill"></div></div>
+        <div class="sb-count" id="sb-count">0 / 0 answered</div>
+      </div>
+      <div class="sb-scroll" id="sb-scroll"></div>
+    </aside>
+
+    <div class="questions-wrap">
+      <div class="questions-area" id="questions-area"></div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-section" id="results-section" style="display:none;">
+    <div class="results-hero">
+      <div class="res-ring">
+        <div class="res-score-num" id="res-score-num">0</div>
+        <div class="res-score-of">/ <span id="res-score-of">75</span></div>
+      </div>
+      <div class="res-title" id="res-title">Paper complete!</div>
+      <div class="res-sub" id="res-sub"></div>
+    </div>
+    <div class="results-body">
+      <div class="res-stats-row" id="res-stats-row"></div>
+      <div class="res-breakdown-label">Topic breakdown</div>
+      <div class="res-breakdown" id="res-breakdown"></div>
+      <button class="res-cta" id="res-cta" onclick="window.location.href='/see.html'">Try another paper →</button>
+      <button class="res-sec" onclick="resetPaper()">Review this paper again</button>
+    </div>
+  </div>
+
+</div><!-- /app-body -->
+
+<!-- Download modal -->
+<div class="dl-overlay" id="dl-overlay" onclick="if(event.target===this)closeDownload()" style="display:none;">
+  <div class="dl-modal">
+    <div class="dl-modal-head">
+      <div>
+        <div class="dl-modal-title">Download PDF</div>
+        <div class="dl-modal-sub" id="dl-modal-sub"></div>
+      </div>
+      <button class="dl-close" onclick="closeDownload()">✕</button>
+    </div>
+    <div class="dl-opts" id="dl-opts"></div>
+    <div class="dl-note">🔒 Invisible watermark included for copyright protection.</div>
+  </div>
+</div>
+
+<!-- Mobile answer drawer -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+<div id="drawer" class="drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-head">
+    <div>
+      <div class="drawer-q" id="drawer-q"></div>
+      <div class="drawer-marks" id="drawer-marks"></div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()">✕ Close</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+</div>
+
+<!-- Celebration toast -->
+<div id="celeb-toast" class="celeb-toast"></div>
+
+<script src="/scripts/components.js"></script>
+<script src="/scripts/see-paper-client.js"></script>
+</body>
+</html>

@@ -3,1100 +3,599 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
 <title>Admin — Ujyalo</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
-/* ============================================================
-   UJYALO ADMIN PANEL
-   ADMIN_EMAILS = who can access (edit below)
-   ============================================================ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --blue:      #1E5FA8;
-  --blue-dark: #154A8A;
-  --blue-bg:   #EFF6FF;
-  --gold:      #F59E0B;
-  --green:     #15803D;
-  --green-bg:  #DCFCE7;
-  --red:       #B91C1C;
-  --red-bg:    #FEE2E2;
-  --purple:    #9333EA;
-  --purple-bg: #FDF4FF;
-  --ink-900:   #0A1628;
-  --ink-700:   #1F2D44;
-  --ink-500:   #5C6B82;
-  --ink-300:   #B5C0D0;
-  --ink-200:   #D9E1EC;
-  --ink-100:   #EDF1F7;
-  --ink-50:    #F6F8FB;
-  --r:         10px;
-  --pill:      999px;
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --forest:#1e1a15; --parch:#f4f0e6; --parch-2:#e7e0cf;
+  --card:#fffdf8; --line:#e3dccb; --brass:#f59e0b; --brass-deep:#9c7320;
+  --ink:#23201a; --muted:#6f6a5d; --faint:#a59f8e;
+  --green:#3f8f5b; --green-bg:#e7f0e3; --rust:#b5532e; --rust-bg:#f6e7df;
 }
-body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--ink-50); color:var(--ink-900); min-height:100vh; -webkit-font-smoothing:antialiased; }
-
-/* NAV */
-.nav { background:var(--ink-900); height:54px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; position:sticky; top:0; z-index:100; }
-.nav-logo { font-family:'Fraunces',serif; font-size:18px; font-weight:700; color:var(--gold); display:flex; align-items:center; gap:8px; }
-.admin-badge { background:var(--red); color:white; font-size:10px; font-weight:700; padding:2px 8px; border-radius:var(--pill); letter-spacing:0.08em; text-transform:uppercase; }
-.nav-right { display:flex; align-items:center; gap:12px; font-size:13px; color:var(--ink-300); }
-.btn-logout { background:none; border:1px solid var(--ink-500); color:var(--ink-300); padding:5px 14px; border-radius:var(--pill); font-family:inherit; font-size:12px; cursor:pointer; transition:all 0.2s; }
-.btn-logout:hover { border-color:var(--red); color:var(--red); }
-
-/* TABS */
-.tabs { background:white; border-bottom:1px solid var(--ink-100); display:flex; padding:0 24px; gap:2px; overflow-x:auto; }
-.tab { padding:14px 18px; font-size:13px; font-weight:600; color:var(--ink-500); cursor:pointer; border:none; background:none; border-bottom:2px solid transparent; font-family:inherit; transition:all 0.2s; display:flex; align-items:center; gap:6px; white-space:nowrap; }
-.tab:hover { color:var(--ink-900); }
-.tab.on { color:var(--blue); border-bottom-color:var(--blue); }
-.tab-count { background:var(--ink-100); color:var(--ink-500); font-size:11px; font-weight:700; padding:2px 7px; border-radius:var(--pill); }
-.tab.on .tab-count { background:var(--blue); color:white; }
-
-/* PANELS */
-.panel { display:none; padding:24px; max-width:1100px; margin:0 auto; }
-.panel.on { display:block; }
-
-/* CARDS */
-.card { background:white; border-radius:var(--r); border:1px solid var(--ink-100); padding:24px; margin-bottom:16px; }
-.card-title { font-family:'Fraunces',serif; font-size:17px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
-
-/* BUTTONS */
-.btn { display:inline-flex; align-items:center; gap:6px; padding:9px 18px; border-radius:var(--pill); font-family:inherit; font-size:13px; font-weight:700; border:none; cursor:pointer; transition:all 0.2s; }
-.btn-primary { background:var(--blue); color:white; }
-.btn-primary:hover { background:var(--blue-dark); }
-.btn-success { background:var(--green-bg); color:var(--green); }
-.btn-success:hover { background:var(--green); color:white; }
-.btn-danger { background:var(--red-bg); color:var(--red); }
-.btn-danger:hover { background:var(--red); color:white; }
-.btn-ghost { background:none; color:var(--ink-500); border:1px solid var(--ink-200); }
-.btn-ghost:hover { border-color:var(--blue); color:var(--blue); }
-.btn-purple { background:var(--purple-bg); color:var(--purple); }
-.btn-purple:hover { background:var(--purple); color:white; }
-.btn-sm { padding:5px 12px; font-size:12px; }
-.btn-xs { padding:3px 8px; font-size:11px; }
-
-/* FORM */
-.field { margin-bottom:14px; }
-.field label { display:block; font-size:12px; font-weight:700; color:var(--ink-700); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.05em; }
-.field input,.field select,.field textarea { width:100%; padding:10px 14px; border:1.5px solid var(--ink-200); border-radius:var(--r); font-family:inherit; font-size:14px; color:var(--ink-900); background:white; transition:all 0.2s; }
-.field input:focus,.field select:focus,.field textarea:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(30,95,168,0.08); }
-.field textarea { min-height:90px; resize:vertical; line-height:1.65; }
-.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
-.grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
-
-/* TABLE */
-.table-wrap { overflow-x:auto; }
-table { width:100%; border-collapse:collapse; font-size:13px; }
-th { background:var(--ink-50); text-align:left; padding:10px 14px; font-size:11px; font-weight:700; color:var(--ink-500); text-transform:uppercase; letter-spacing:0.06em; border-bottom:1px solid var(--ink-100); }
-td { padding:12px 14px; border-bottom:1px solid var(--ink-100); color:var(--ink-700); vertical-align:top; }
-tr:last-child td { border-bottom:none; }
-tr:hover td { background:var(--ink-50); }
-.td-wrap { max-width:280px; word-break:break-word; }
-
-/* BADGES */
-.badge { display:inline-block; padding:2px 8px; border-radius:var(--pill); font-size:11px; font-weight:700; }
-.badge-green  { background:var(--green-bg); color:var(--green); }
-.badge-blue   { background:var(--blue-bg);  color:var(--blue); }
-.badge-gold   { background:#FEF3C7; color:#92400e; }
-.badge-red    { background:var(--red-bg);   color:var(--red); }
-.badge-purple { background:var(--purple-bg);color:var(--purple); }
-.badge-gray   { background:var(--ink-100);  color:var(--ink-500); }
-
-/* STATS */
-.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
-.stat-card { background:white; border:1px solid var(--ink-100); border-radius:var(--r); padding:20px; text-align:center; }
-.stat-num { font-family:'Fraunces',serif; font-size:32px; font-weight:700; color:var(--blue); line-height:1; margin-bottom:6px; }
-.stat-lbl { font-size:12px; color:var(--ink-500); font-weight:500; }
-
-/* ALERTS */
-.alert { padding:12px 16px; border-radius:var(--r); font-size:13px; font-weight:600; margin-bottom:16px; display:none; }
-.alert-success { background:var(--green-bg); color:var(--green); }
-.alert-error   { background:var(--red-bg);   color:var(--red); }
-
-/* LOADING */
-.loading { text-align:center; padding:40px; color:var(--ink-300); font-size:14px; }
-.spinner { width:28px; height:28px; border:2.5px solid var(--ink-100); border-top-color:var(--blue); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 10px; }
-@keyframes spin { to { transform:rotate(360deg); } }
-
-/* MODAL */
-.modal-overlay { position:fixed; inset:0; background:rgba(10,22,40,0.5); display:flex; align-items:center; justify-content:center; z-index:200; padding:24px; }
-.modal { background:white; border-radius:16px; padding:28px; width:100%; max-width:600px; max-height:90vh; overflow-y:auto; }
-.modal-title { font-family:'Fraunces',serif; font-size:18px; font-weight:700; margin-bottom:20px; }
-.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
-
-/* PAPER LIST */
-.paper-row { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border:1px solid var(--ink-100); border-radius:10px; margin-bottom:8px; background:white; flex-wrap:wrap; gap:10px; }
-.paper-row:hover { border-color:var(--blue-bg); background:var(--blue-bg); }
-.paper-row-left { display:flex; align-items:center; gap:12px; }
-.paper-row-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-.paper-row-name { font-size:14px; font-weight:700; color:var(--ink-900); margin-bottom:2px; }
-.paper-row-sub  { font-size:12px; color:var(--ink-500); }
-.paper-row-right { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-
-/* Q ROW */
-.q-entry { background:var(--ink-50); border:1px solid var(--ink-100); border-radius:10px; padding:14px 16px; margin-bottom:8px; }
-.q-entry-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:8px; }
-.q-entry-text { font-size:13px; color:var(--ink-700); line-height:1.6; margin-bottom:4px; }
-.q-entry-answer { font-size:12px; color:var(--green); background:var(--green-bg); border-radius:6px; padding:6px 10px; margin-top:6px; line-height:1.6; }
-
-/* ACCESS DENIED */
-.access-denied { min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:24px; }
-.access-card { background:white; border-radius:16px; padding:48px 40px; max-width:400px; box-shadow:0 4px 24px rgba(10,22,40,0.08); }
-.hidden { display:none !important; }
-
-@media(max-width:700px) {
-  .stats-grid { grid-template-columns:1fr 1fr; }
-  .grid-2,.grid-3,.grid-4 { grid-template-columns:1fr; }
+body{font-family:'Outfit',sans-serif;background:var(--parch);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.hidden{display:none !important;}
+a{text-decoration:none;color:inherit;}
+/* access denied */
+.denied{max-width:460px;margin:16vh auto;text-align:center;padding:0 24px;}
+.denied h2{font-family:'Fraunces',serif;font-size:24px;color:var(--forest);margin-bottom:8px;}
+.denied p{color:var(--muted);font-size:14px;}
+.denied a{color:var(--brass-deep);font-weight:600;}
+/* shell */
+.shell{display:flex;min-height:100vh;}
+.side{width:236px;flex-shrink:0;background:#1e1a15;color:#e9e2d2;display:flex;flex-direction:column;padding:22px 16px;position:sticky;top:0;height:100vh;}
+.brand{font-family:'Fraunces',serif;font-size:23px;font-weight:600;color:#f4efe2;letter-spacing:-.01em;padding:4px 8px 2px;}
+.brand .a{color:var(--brass);}
+.badge{display:inline-block;font-size:9.5px;letter-spacing:.16em;font-weight:700;color:var(--forest);background:var(--brass);border-radius:99px;padding:3px 9px;margin:8px 8px 0;}
+.nav{margin-top:26px;display:flex;flex-direction:column;gap:3px;}
+.nav a{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:10px;color:#cdc6b5;font-size:14px;font-weight:500;cursor:pointer;transition:.13s;}
+.nav a i{font-size:18px;width:20px;text-align:center;opacity:.85;}
+.nav a:hover{background:rgba(255,255,255,.06);color:#f4efe2;}
+.nav a.on{background:rgba(245,158,11,.16);color:#f4efe2;}
+.nav a.on i{color:var(--brass);opacity:1;}
+.nav-soon{margin-left:auto;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);border:1px solid rgba(255,255,255,.14);border-radius:99px;padding:2px 7px;}
+.nav-ext{margin-top:10px;padding-top:14px !important;border-top:1px solid rgba(255,255,255,.1);}
+.nav-ext .arr{margin-left:auto;font-size:14px;opacity:.7;}
+.side-foot{margin-top:auto;border-top:1px solid rgba(255,255,255,.1);padding-top:14px;display:flex;align-items:center;gap:10px;}
+.side-foot .av{width:34px;height:34px;border-radius:50%;background:var(--brass);color:var(--forest);display:grid;place-items:center;font-weight:700;font-family:'Fraunces',serif;font-size:15px;flex-shrink:0;}
+.side-foot .who{font-size:12.5px;line-height:1.3;min-width:0;}
+.side-foot .who b{display:block;color:#f4efe2;font-weight:600;}
+.side-foot .who span{color:var(--faint);font-size:11px;overflow:hidden;text-overflow:ellipsis;display:block;}
+.side-foot .out{margin-left:auto;color:var(--faint);font-size:18px;cursor:pointer;}
+.side-foot .out:hover{color:var(--rust);}
+/* content */
+.main{flex:1;padding:34px 40px 60px;max-width:1080px;}
+.eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass-deep);font-weight:600;}
+h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--forest);margin:6px 0 3px;letter-spacing:-.01em;}
+.pg-sub{color:var(--muted);font-size:14.5px;margin-bottom:26px;}
+.panel{display:none;}.panel.on{display:block;}
+.loading{color:var(--muted);font-size:14px;padding:24px 2px;}
+.empty{text-align:center;color:var(--faint);padding:34px 0;font-size:14px;}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:24px;}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:18px 19px;}
+.stat .lbl{font-size:12px;color:var(--muted);font-weight:500;display:flex;align-items:center;gap:7px;}
+.stat .lbl i{color:var(--brass-deep);font-size:15px;}
+.stat .num{font-family:'Fraunces',serif;font-weight:500;font-size:38px;color:var(--forest);line-height:1.05;margin-top:7px;}
+.stat .num small{font-size:20px;color:var(--muted);}
+.stat .sub{font-size:12px;color:var(--muted);margin-top:3px;}
+.stat .barwrap{height:7px;background:var(--parch-2);border-radius:99px;overflow:hidden;margin-top:11px;}
+.stat .barwrap i{display:block;height:100%;background:var(--brass);border-radius:99px;}
+/* cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:20px 22px;margin-bottom:18px;}
+.card-h{font-family:'Fraunces',serif;font-size:17px;color:var(--forest);font-weight:600;margin-bottom:3px;}
+.card-hs{font-size:12.5px;color:var(--muted);margin-bottom:15px;}
+.att{display:flex;align-items:center;gap:13px;padding:13px 15px;border:1px solid var(--line);border-left:3px solid var(--brass);border-radius:10px;margin-bottom:9px;background:#fffaf0;cursor:pointer;transition:.12s;}
+.att:hover{border-left-color:var(--brass-deep);}
+.att i.lead{font-size:19px;color:var(--brass-deep);}
+.att .t{flex:1;font-size:13.5px;color:var(--ink);font-weight:500;}
+.att .t b{color:var(--forest);}
+.att .go{color:var(--faint);font-size:16px;}
+.att.flag{border-left-color:var(--rust);background:#fdf3ee;}.att.flag i.lead{color:var(--rust);}
+.att.ok{border-left-color:var(--green);background:var(--green-bg);cursor:default;}.att.ok i.lead{color:var(--green);}
+.links{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;}
+.lnk{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--forest);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer;}
+.lnk:hover{border-color:var(--brass);}
+.lnk i{color:var(--brass-deep);}
+/* coverage */
+.yrtabs{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap;}
+.yrtab{font-size:13px;font-weight:600;border-radius:99px;padding:6px 15px;border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer;}
+.yrtab.on{background:#1e1a15;color:#fff;border-color:var(--forest);}
+.cov{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:20px 22px;margin-bottom:18px;overflow-x:auto;}
+.grid{border-collapse:separate;border-spacing:7px;width:100%;}
+.grid th{font-size:11px;font-weight:600;color:var(--muted);text-align:center;padding:2px;}
+.grid th.cor{text-align:left;}
+.grid td.sub{font-weight:600;color:var(--forest);font-size:13.5px;white-space:nowrap;padding-right:6px;}
+.cell{min-width:70px;height:42px;border-radius:9px;display:grid;place-items:center;font-size:12px;font-weight:600;cursor:default;}
+.cell.verok{background:#dfeede;color:#256b38;border:1px solid #b8d8bd;}
+.cell.live{background:#eef0ea;color:#3f5b50;border:1px solid #dde2d6;}
+.cell.prog{background:#f7ecd6;color:var(--brass-deep);border:1px solid #e9d5a8;}
+.cell.miss{background:transparent;color:var(--faint);border:1px dashed var(--line);}
+.cell i{font-size:15px;}
+.legend{display:flex;gap:18px;margin-top:15px;font-size:12px;color:var(--muted);flex-wrap:wrap;}
+.legend span{display:inline-flex;align-items:center;gap:7px;}
+.legend .sw{width:13px;height:13px;border-radius:4px;}
+.sw.verok{background:#dfeede;border:1px solid #b8d8bd;}.sw.live{background:#eef0ea;border:1px solid #dde2d6;}.sw.prog{background:#f7ecd6;border:1px solid #e9d5a8;}.sw.miss{border:1px dashed var(--line);}
+/* publish list */
+.prow{display:flex;align-items:center;gap:13px;padding:12px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+.prow:last-child{border-bottom:none;}
+.prow .pt{flex:1;font-weight:600;font-size:14px;color:var(--forest);min-width:150px;}
+.prow .pt span{color:var(--muted);font-weight:500;}
+.pill{font-size:11px;font-weight:700;border-radius:99px;padding:4px 11px;}
+.pill.ready{background:#f7ecd6;color:var(--brass-deep);}.pill.live{background:var(--green-bg);color:#1f6b33;}.pill.draft{background:var(--parch-2);color:var(--muted);}
+.btn{font-size:13px;font-weight:600;border-radius:9px;padding:8px 15px;border:none;cursor:pointer;font-family:inherit;}
+.btn.pub{background:#1e1a15;color:#fff;}.btn.pub:hover{background:#0c241f;}
+.btn.ghost{background:var(--card);border:1px solid var(--line);color:var(--forest);}.btn.ghost:hover{border-color:var(--brass);}
+/* tables */
+.seg-h{font-family:'Fraunces',serif;font-size:14px;color:var(--forest);font-weight:600;margin:4px 0 12px;display:flex;align-items:center;gap:8px;}
+.seg-h i{color:var(--brass-deep);}
+.seg-h .n{font-size:11px;font-weight:600;color:var(--muted);background:var(--parch-2);border-radius:99px;padding:1px 9px;font-family:'Outfit';}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:700;padding:0 10px 10px;border-bottom:1px solid var(--line);}
+.tbl td{padding:13px 10px;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--ink);}
+.tbl tr:last-child td{border-bottom:none;}
+.st-pill{font-size:10.5px;font-weight:700;border-radius:99px;padding:3px 9px;}
+.st-pill.yes{background:var(--green-bg);color:#1f6b33;}.st-pill.no{background:var(--parch-2);color:var(--muted);}
+.rolepill{font-size:10.5px;font-weight:700;border-radius:99px;padding:3px 9px;letter-spacing:.03em;background:var(--parch-2);color:var(--muted);}
+.rolepill.admin{background:var(--brass);color:var(--forest);}.rolepill.editor{background:#e0f2ee;color:#1f7a68;}
+.tname{display:flex;align-items:center;gap:10px;}
+.ini{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:12px;font-weight:700;font-family:'Fraunces',serif;background:var(--parch-2);color:var(--forest);}
+.bars{width:120px;height:6px;background:var(--parch-2);border-radius:99px;overflow:hidden;}.bars i{display:block;height:100%;background:var(--brass);border-radius:99px;}
+/* team access panel */
+.tmem{display:flex;align-items:center;gap:11px;}
+.tmem .mi{min-width:0;}
+.tmem .mi b{font-size:13.5px;color:var(--forest);font-weight:600;}
+.tmem .mi span{display:block;font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;}
+.you-tag{font-size:10px;color:var(--faint);font-weight:600;margin-left:6px;}
+.stt{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;}
+.stt .d{width:8px;height:8px;border-radius:50%;}
+.stt.act{color:#2f7d4f;}.stt.act .d{background:#34a853;}
+.stt.un{color:var(--muted);}.stt.un .d{background:#b9b2a3;}
+.lastlog{color:var(--faint);font-size:12.5px;}
+.kebab{color:var(--faint);font-weight:700;cursor:pointer;font-size:18px;padding:0 4px;user-select:none;}
+.kebab:hover{color:var(--forest);}
+.rowmenu{position:absolute;right:8px;top:38px;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:0 12px 30px rgba(0,0,0,.12);padding:6px;width:190px;z-index:20;}
+.rowmenu a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;}
+.rowmenu a:hover{background:var(--parch);}
+.rowmenu a i{font-size:15px;color:var(--muted);}
+.rowmenu a.danger{color:var(--rust);}.rowmenu a.danger i{color:var(--rust);}
+/* inbox */
+.msg{display:flex;gap:14px;padding:15px 16px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:var(--card);}
+.msg .ini{width:38px;height:38px;font-size:14px;}
+.msg .body{flex:1;min-width:0;}
+.msg .top{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.msg .nm{font-weight:600;color:var(--forest);font-size:14px;}
+.msg .em{font-size:12px;color:var(--muted);}
+.msg .role{font-size:10.5px;font-weight:700;border-radius:99px;padding:3px 9px;background:var(--parch-2);color:var(--muted);}
+.msg .date{margin-left:auto;font-size:11.5px;color:var(--faint);}
+.msg .snip{font-size:13.5px;color:var(--ink);margin-top:6px;line-height:1.55;white-space:pre-wrap;}
+@media(max-width:760px){
+  .side{width:64px;padding:18px 8px;}
+  .brand,.badge,.nav a span,.nav-soon,.side-foot .who{display:none;}
+  .nav a{justify-content:center;}
+  .main{padding:24px 18px 50px;}
+  .stats{grid-template-columns:repeat(2,1fr);}
 }
 </style>
 </head>
 <body>
 
-<!-- ACCESS DENIED -->
-<div id="access-denied" class="hidden">
-  <div class="access-denied">
-    <div class="access-card">
-      <div style="font-size:48px;margin-bottom:16px;">🔒</div>
-      <h2 style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;margin-bottom:8px;">Access denied</h2>
-      <p style="font-size:14px;color:var(--ink-500);line-height:1.6;margin-bottom:20px;">This page is only accessible to Ujyalo administrators.</p>
-      <a href="/login.html" style="display:inline-block;background:var(--blue);color:white;padding:10px 22px;border-radius:var(--pill);font-weight:700;font-size:14px;text-decoration:none;">Go to login →</a>
-    </div>
-  </div>
+<!-- access denied -->
+<div class="denied hidden" id="access-denied">
+  <h2>Access denied</h2>
+  <p>This area is for ujyalo administrators. <a href="/index.html">Go home →</a></p>
 </div>
 
-<!-- MAIN ADMIN APP -->
-<div id="admin-app" class="hidden">
-
-  <nav class="nav">
-    <div class="nav-logo">⚡ ujyalo <span class="admin-badge">Admin</span></div>
-    <div class="nav-right">
-      <span id="admin-email">—</span>
-      <button class="btn-logout" onclick="logout()">Log out</button>
+<div class="shell hidden" id="admin-app">
+  <aside class="side">
+    <div class="brand">ujy<span class="a">a</span>lo</div>
+    <div class="badge">ADMIN</div>
+    <nav class="nav" id="nav">
+      <a class="on" data-p="home"><i class="ti ti-layout-dashboard"></i> <span>Home</span></a>
+      <a data-p="coverage"><i class="ti ti-layout-grid"></i> <span>Content</span></a>
+      <a data-p="team"><i class="ti ti-shield-check"></i> <span>Team</span></a>
+      <a data-p="students"><i class="ti ti-users"></i> <span>Students</span></a>
+      <a data-p="inbox"><i class="ti ti-mail"></i> <span>Inbox</span></a>
+      <a class="nav-ext" href="/verify.html"><i class="ti ti-checkup-list"></i> <span>Open verify desk</span> <i class="ti ti-arrow-up-right arr"></i></a>
+    </nav>
+    <div class="side-foot">
+      <div class="av" id="av-ini">A</div>
+      <div class="who"><b>Admin</b><span id="admin-email">—</span></div>
+      <i class="ti ti-logout out" onclick="logout()" title="Sign out"></i>
     </div>
-  </nav>
+  </aside>
 
-  <div class="tabs">
-    <button class="tab on" onclick="switchTab('overview')"   id="tab-overview">📊 Overview</button>
-    <button class="tab"    onclick="switchTab('papers')"     id="tab-papers">📄 Past Papers <span class="tab-count" id="count-papers">—</span></button>
-    <button class="tab"    onclick="switchTab('students')"   id="tab-students">👩‍🎓 Students <span class="tab-count" id="count-students">—</span></button>
-    <button class="tab"    onclick="switchTab('waitlist')"   id="tab-waitlist">📋 Waitlist <span class="tab-count" id="count-waitlist">—</span></button>
-    <button class="tab"    onclick="switchTab('messages')"   id="tab-messages">✉️ Messages <span class="tab-count" id="count-messages">—</span></button>
-  </div>
-
-  <!-- ══ OVERVIEW ══ -->
-  <div class="panel on" id="panel-overview">
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-num" id="ov-papers">—</div><div class="stat-lbl">Past papers</div></div>
-      <div class="stat-card"><div class="stat-num" id="ov-questions">—</div><div class="stat-lbl">Total questions</div></div>
-      <div class="stat-card"><div class="stat-num" id="ov-students">—</div><div class="stat-lbl">Students</div></div>
-      <div class="stat-card"><div class="stat-num" id="ov-messages">—</div><div class="stat-lbl">Messages</div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Quick actions</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="btn btn-primary" onclick="switchTab('papers');openAddPaper()"><i class="ti ti-plus"></i> Add past paper</button>
-        <button class="btn btn-ghost"   onclick="switchTab('students')">View students</button>
-        <button class="btn btn-ghost"   onclick="switchTab('waitlist')">View waitlist</button>
-        <button class="btn btn-ghost"   onclick="switchTab('messages')">View messages</button>
+  <main class="main">
+    <!-- HOME -->
+    <section class="panel on" id="p-home">
+      <div class="eyebrow">Command center</div>
+      <h1 class="pg" id="home-greet">Welcome back.</h1>
+      <div class="pg-sub" id="home-date">Here's where ujyalo stands today.</div>
+      <div class="stats">
+        <div class="stat"><div class="lbl"><i class="ti ti-users"></i> Students</div><div class="num" id="s-students">—</div><div class="sub">signed up</div></div>
+        <div class="stat"><div class="lbl"><i class="ti ti-file-text"></i> Papers live</div><div class="num" id="s-live">—</div><div class="sub" id="s-live-sub">in the library</div></div>
+        <div class="stat"><div class="lbl"><i class="ti ti-circle-check"></i> Verified</div><div class="num" id="s-verified">—</div><div class="barwrap"><i id="s-verified-bar" style="width:0%"></i></div></div>
+        <div class="stat"><div class="lbl"><i class="ti ti-mail"></i> Messages</div><div class="num" id="s-messages">—</div><div class="sub">received</div></div>
       </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Paper status overview</div>
-      <div id="status-overview-loading" class="loading"><div class="spinner"></div>Loading...</div>
-      <div id="status-overview-content" class="hidden">
-        <div class="grid-3">
-          <div style="text-align:center;padding:16px;background:#FEF3C7;border-radius:10px;">
-            <div style="font-size:28px;font-weight:700;color:#92400E;" id="ov-draft">—</div>
-            <div style="font-size:12px;color:#92400E;font-weight:600;margin-top:4px;">📋 Draft</div>
-          </div>
-          <div style="text-align:center;padding:16px;background:#DBEAFE;border-radius:10px;">
-            <div style="font-size:28px;font-weight:700;color:var(--blue);" id="ov-ready">—</div>
-            <div style="font-size:12px;color:var(--blue);font-weight:600;margin-top:4px;">🔵 Ready for review</div>
-          </div>
-          <div style="text-align:center;padding:16px;background:var(--green-bg);border-radius:10px;">
-            <div style="font-size:28px;font-weight:700;color:var(--green);" id="ov-live">—</div>
-            <div style="font-size:12px;color:var(--green);font-weight:600;margin-top:4px;">✅ Live</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ PAST PAPERS ══ -->
-  <div class="panel" id="panel-papers">
-
-    <!-- View: Paper list -->
-    <div id="view-papers">
       <div class="card">
-        <div class="card-title">
-          Past Papers
-          <button class="btn btn-primary btn-sm" onclick="openAddPaper()"><i class="ti ti-plus"></i> New paper</button>
-        </div>
-
-        <!-- Filters -->
-        <div class="grid-4" style="margin-bottom:16px;">
-          <div class="field" style="margin:0;">
-            <select id="filter-exam" onchange="loadPapers()">
-              <option value="">All exams</option>
-            </select>
-          </div>
-          <div class="field" style="margin:0;">
-            <select id="filter-subject" onchange="loadPapers()">
-              <option value="">All subjects</option>
-            </select>
-          </div>
-          <div class="field" style="margin:0;">
-            <select id="filter-year" onchange="loadPapers()">
-              <option value="">All years</option>
-              <option value="2081">2081</option>
-              <option value="2080">2080</option>
-              <option value="2079">2079</option>
-              <option value="2078">2078</option>
-              <option value="2077">2077</option>
-            </select>
-          </div>
-          <div class="field" style="margin:0;">
-            <select id="filter-status" onchange="loadPapers()">
-              <option value="">All statuses</option>
-              <option value="draft">Draft</option>
-              <option value="ready">Ready</option>
-              <option value="live">Live</option>
-            </select>
-          </div>
-        </div>
-
-        <div id="papers-loading" class="loading"><div class="spinner"></div>Loading papers...</div>
-        <div id="papers-list" class="hidden"></div>
-        <div id="papers-empty" class="hidden" style="text-align:center;padding:40px;color:var(--ink-300);font-size:14px;">
-          No papers yet. Click "+ New paper" to get started.
-        </div>
+        <div class="card-h">Needs your attention</div>
+        <div class="card-hs">The few things only you can move forward.</div>
+        <div id="attention"><div class="loading">Loading…</div></div>
       </div>
-    </div>
-
-    <!-- View: Paper questions -->
-    <div id="view-questions" class="hidden">
       <div class="card">
-        <div class="card-title">
-          <div>
-            <button class="btn btn-ghost btn-sm" onclick="backToPapers()" style="margin-bottom:8px;"><i class="ti ti-arrow-left"></i> Back to papers</button>
-            <div id="paper-view-title" style="font-family:'Fraunces',serif;font-size:20px;font-weight:700;"></div>
-            <div id="paper-view-meta" style="font-size:13px;color:var(--ink-500);margin-top:2px;"></div>
-          </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <span id="paper-status-badge"></span>
-            <button class="btn btn-primary btn-sm" onclick="openAddQuestion()"><i class="ti ti-plus"></i> Add question</button>
-            <button class="btn btn-success btn-sm hidden" id="btn-mark-ready" onclick="updatePaperStatus('ready')">Mark as Ready</button>
-            <button class="btn btn-purple btn-sm hidden" id="btn-approve"     onclick="updatePaperStatus('live')">✅ Approve → Go Live</button>
-            <button class="btn btn-danger  btn-sm hidden" id="btn-unpublish"  onclick="updatePaperStatus('draft')">Unpublish</button>
-          </div>
-        </div>
-
-        <!-- Question stats for this paper -->
-        <div id="q-stats" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;"></div>
-
-        <div id="questions-loading" class="loading"><div class="spinner"></div>Loading questions...</div>
-        <div id="questions-list" class="hidden"></div>
-        <div id="questions-empty" class="hidden" style="text-align:center;padding:40px;color:var(--ink-300);font-size:14px;">
-          No questions yet. Click "+ Add question" to start entering this paper.
+        <div class="card-h">Analytics</div>
+        <div class="card-hs">Traffic and behaviour live in your analytics tools.</div>
+        <div class="links">
+          <a class="lnk" href="https://analytics.google.com/" target="_blank" rel="noopener"><i class="ti ti-brand-google-analytics"></i> Open Google Analytics</a>
+          <a class="lnk" href="https://clarity.microsoft.com/" target="_blank" rel="noopener"><i class="ti ti-click"></i> Open Microsoft Clarity</a>
         </div>
       </div>
-    </div>
+    </section>
 
-  </div>
-
-  <!-- ══ STUDENTS ══ -->
-  <div class="panel" id="panel-students">
-    <div class="card">
-      <div class="card-title">Signed up students</div>
-      <div id="students-loading" class="loading"><div class="spinner"></div>Loading...</div>
-      <div class="table-wrap hidden" id="students-table-wrap">
-        <table>
-          <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Last login</th><th>Joined</th></tr></thead>
-          <tbody id="students-tbody"></tbody>
-        </table>
+    <!-- COVERAGE -->
+    <section class="panel" id="p-coverage">
+      <div class="eyebrow">Content cockpit</div>
+      <h1 class="pg">Content</h1>
+      <div class="pg-sub">What's live, in progress, and still missing. Every empty cell is a paper — and a search result — you don't have yet.</div>
+      <div class="yrtabs" id="cov-years"></div>
+      <div class="cov" id="cov-grid"><div class="loading">Loading coverage…</div></div>
+      <div class="card">
+        <div class="card-h">Fully verified papers</div>
+        <div class="card-hs">Every question checked and clean. Publish a verified paper to take it live.</div>
+        <div id="ready-list"><div class="loading">Loading…</div></div>
       </div>
-      <div id="students-empty" class="hidden" style="text-align:center;padding:40px;color:var(--ink-300);">No students yet.</div>
-    </div>
-  </div>
+    </section>
 
-  <!-- ══ WAITLIST ══ -->
-  <div class="panel" id="panel-waitlist">
-    <div class="card">
-      <div class="card-title">Waitlist</div>
-      <div id="waitlist-loading" class="loading"><div class="spinner"></div>Loading...</div>
-      <div class="table-wrap hidden" id="waitlist-table-wrap">
-        <table>
-          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th></tr></thead>
-          <tbody id="waitlist-tbody"></tbody>
-        </table>
+    <!-- TEAM (staff & access) -->
+    <section class="panel" id="p-team">
+      <div class="eyebrow">Your staff</div>
+      <h1 class="pg">Team</h1>
+      <div class="pg-sub">Who has access to Ujyalo, and what they can do.</div>
+      <div class="card" style="padding-top:10px;">
+        <div class="seg-h"><i class="ti ti-shield-check"></i> Members <span class="n" id="team-n">—</span></div>
+        <div id="team-list"><div class="loading">Loading…</div></div>
       </div>
-      <div id="waitlist-empty" class="hidden" style="text-align:center;padding:40px;color:var(--ink-300);">No waitlist entries yet.</div>
-    </div>
-  </div>
+    </section>
 
-  <!-- ══ MESSAGES ══ -->
-  <div class="panel" id="panel-messages">
-    <div class="card">
-      <div class="card-title">Contact messages</div>
-      <div id="messages-loading" class="loading"><div class="spinner"></div>Loading...</div>
-      <div class="table-wrap hidden" id="messages-table-wrap">
-        <table>
-          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Message</th><th>Date</th></tr></thead>
-          <tbody id="messages-tbody"></tbody>
-        </table>
+    <!-- STUDENTS (audience) -->
+    <section class="panel" id="p-students">
+      <div class="eyebrow">Your audience</div>
+      <h1 class="pg">Students</h1>
+      <div class="pg-sub">Everyone who's signed up to learn with Ujyalo.</div>
+      <div class="card" style="padding-top:10px;">
+        <div class="seg-h"><i class="ti ti-users"></i> Students <span class="n" id="students-n">—</span></div>
+        <div id="students-list"><div class="loading">Loading…</div></div>
       </div>
-      <div id="messages-empty" class="hidden" style="text-align:center;padding:40px;color:var(--ink-300);">No messages yet.</div>
-    </div>
-  </div>
+      <div class="card" style="padding-top:10px;">
+        <div class="seg-h"><i class="ti ti-clipboard-list"></i> Waitlist <span class="n" id="waitlist-n">—</span></div>
+        <div id="waitlist-list"><div class="loading">Loading…</div></div>
+      </div>
+    </section>
 
+    <!-- INBOX -->
+    <section class="panel" id="p-inbox">
+      <div class="eyebrow">Messages</div>
+      <h1 class="pg">Inbox</h1>
+      <div class="pg-sub">Contact-form messages. Replies are handled in your shared Gmail (hello@ujyalo.app).</div>
+      <div id="inbox-list"><div class="loading">Loading…</div></div>
+    </section>
+  </main>
 </div>
 
-<!-- ══ MODAL: Add/Edit Paper ══ -->
-<div class="modal-overlay hidden" id="paper-modal">
-  <div class="modal">
-    <div class="modal-title" id="paper-modal-title">New Past Paper</div>
-    <div id="paper-modal-alert" class="alert"></div>
-    <input type="hidden" id="pm-id">
-    <div class="grid-2">
-      <div class="field">
-        <label>Exam *</label>
-        <select id="pm-exam" onchange="loadSubjectsForExam()">
-          <option value="">Select exam...</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Subject *</label>
-        <select id="pm-subject">
-          <option value="">Select subject...</option>
-        </select>
-      </div>
-    </div>
-    <div class="grid-3">
-      <div class="field">
-        <label>Year *</label>
-        <input type="number" id="pm-year" placeholder="e.g. 2081" min="2060" max="2090">
-      </div>
-      <div class="field">
-        <label>Total marks *</label>
-        <input type="number" id="pm-marks" placeholder="e.g. 75">
-      </div>
-      <div class="field">
-        <label>Duration *</label>
-        <input type="text" id="pm-duration" placeholder="e.g. 3 hours">
-      </div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closePaperModal()">Cancel</button>
-      <button class="btn btn-primary" id="paper-modal-save" onclick="savePaper()">Create paper</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ MODAL: Add/Edit Question ══ -->
-<div class="modal-overlay hidden" id="q-modal">
-  <div class="modal">
-    <div class="modal-title" id="q-modal-title">Add Question</div>
-    <div id="q-modal-alert" class="alert"></div>
-    <input type="hidden" id="qm-id">
-    <div class="grid-3">
-      <div class="field">
-        <label>Group *</label>
-        <input type="text" id="qm-group" placeholder="e.g. A, B, C, D" style="text-transform:uppercase;">
-      </div>
-      <div class="field">
-        <label>Question No *</label>
-        <input type="number" id="qm-qno" placeholder="e.g. 1" min="1">
-      </div>
-      <div class="field">
-        <label>Marks *</label>
-        <input type="number" id="qm-marks" placeholder="e.g. 1" min="1">
-      </div>
-    </div>
-
-    <!-- ── Chapter dropdown — populated based on current paper's subject ── -->
-    <div class="field">
-      <label>Chapter <span style="font-weight:400;text-transform:none;color:var(--ink-300);">(tag for progress tracking)</span></label>
-      <select id="qm-chapter">
-        <option value="">Select chapter...</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Question *</label>
-      <textarea id="qm-text" placeholder="Type the full question exactly as it appears in the paper..."></textarea>
-    </div>
-    <div class="field">
-      <label>Answer <span style="font-weight:400;text-transform:none;color:var(--ink-300);">(can leave blank and add later)</span></label>
-      <textarea id="qm-answer" placeholder="Type the correct answer and working steps..."></textarea>
-    </div>
-    <div class="field">
-      <label>Status</label>
-      <select id="qm-status">
-        <option value="draft">Draft — answer not verified yet</option>
-        <option value="ready">Ready — question + answer verified</option>
-      </select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeQModal()">Cancel</button>
-      <button class="btn btn-primary" id="q-modal-save" onclick="saveQuestion()">Save question</button>
-    </div>
-  </div>
-</div>
-
+<script src="/scripts/ujyalo-auth.js"></script>
 <script>
-/* ============================================================
-   CONFIG — Edit admin emails here
-   Add more emails to the array to grant access
-   ============================================================ */
 const SUPABASE_URL = 'https://uigausnyrlxxyosxjgvi.supabase.co';
+const user  = ujyaloGetUser();
+const token = ujyaloGetToken();
 
-/* ============================================================
-   CHAPTERS — per subject
-   Key must match the exam_subjects.code value in your DB.
-   Add/remove chapters here as needed.
-   ============================================================ */
-const CHAPTERS = {
-  maths: [
-    'Algebra',
-    'Arithmetic',
-    'Coordinate Geometry',
-    'Geometry',
-    'Matrices',
-    'Mensuration',
-    'Probability',
-    'Sets',
-    'Statistics',
-    'Trigonometry',
-  ],
-  science: [
-    'Acids & Bases',
-    'Chemical Reactions',
-    'Electricity',
-    'Environment & Ecology',
-    'Force & Motion',
-    'Human Biology',
-    'Light & Optics',
-    'Plant Biology',
-    'Space & Universe',
-    'Waves & Sound',
-  ],
-  english: [
-    'Reading Comprehension',
-    'Grammar',
-    'Writing',
-    'Vocabulary',
-    'Literature',
-  ],
-  social: [
-    'Geography of Nepal',
-    'History of Nepal',
-    'Civics',
-    'Economics',
-    'Social Issues',
-  ],
-  nepali: [
-    'व्याकरण (Grammar)',
-    'निबन्ध (Essay)',
-    'पत्र लेखन (Letter Writing)',
-    'गद्यांश (Prose)',
-    'पद्यांश (Poetry)',
-  ],
-};
+const SUBJ = {maths:{name:'Maths',order:1},science:{name:'Science',order:2},english:{name:'English',order:3},social:{name:'Social',order:4},nepali:{name:'Nepali',order:5},hpe:{name:'HPE',order:6}};
+const PROV = ['Koshi','Madhesh','Bagmati','Gandaki','Lumbini','Karnali','Sudurpashchim'];
+const PROV_SHORT = {Sudurpashchim:'Sudur.'};
 
-/* ── State ── */
-const user  = JSON.parse(localStorage.getItem('ujyalo_user') || 'null');
-const token = localStorage.getItem('ujyalo_token');
-let currentPaper  = null;
-let examsCache    = [];
-let subjectsCache = [];
+// Team roles — add a future role here (e.g. {key:'verifier',name:'Verifier',cls:'editor'})
+// and add its key to ALLOWED in api/admin-users.js to let admins assign it.
+const ROLES = [
+  {key:'admin',  name:'Admin',  cls:'admin'},
+  {key:'editor', name:'Editor', cls:'editor'},
+];
+function roleCfg(k){ for(var i=0;i<ROLES.length;i++){ if(ROLES[i].key===k) return ROLES[i]; } return {key:k, name:(k?k.charAt(0).toUpperCase()+k.slice(1):'—'), cls:''}; }
 
-/* ── Access check ── */
-function checkAccess() {
-  if (!user || !token) { window.location.href = '/login.html'; return false; }
-  if (user.role !== 'admin') {
-    document.getElementById('access-denied').classList.remove('hidden');
-    return false;
+let SUBJECTS = {};   // subject_id -> {code,name}
+let PAPERS = [];     // raw past_papers
+let COV_YEAR = null;
+const LOADED = {};
+
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function $(id){return document.getElementById(id);}
+function initials(s){ s=String(s||'').trim(); if(!s) return '?'; var p=s.split(/\s+/); return ((p[0]||'')[0]||'').toUpperCase()+((p[1]||'')[0]||'').toUpperCase()||'?'; }
+function isTeam(role){ return role==='admin' || role==='editor'; }
+function fmtDate(str){ if(!str) return '—'; try{ return new Date(str).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }catch(e){ return '—'; } }
+
+function checkAccess(){
+  if(!user || !token){ window.location.href='/login.html'; return false; }
+  if(user.role !== 'admin'){
+    if(user.role === 'editor'){ window.location.replace('/verify.html'); return false; }
+    $('access-denied').classList.remove('hidden'); return false;
   }
-  document.getElementById('admin-app').classList.remove('hidden');
-  document.getElementById('admin-email').textContent = user.email;
+  $('admin-app').classList.remove('hidden');
+  $('admin-email').textContent = user.email || '';
+  $('av-ini').textContent = (user.full_name ? user.full_name[0] : (user.email||'A')[0]).toUpperCase();
   return true;
 }
 
-/* ── Tabs ── */
-function switchTab(name) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
-  document.getElementById('panel-' + name).classList.add('on');
-  document.getElementById('tab-' + name).classList.add('on');
-  if (name === 'papers')   loadPapers();
-  if (name === 'students') loadStudents();
-  if (name === 'waitlist') loadWaitlist();
-  if (name === 'messages') loadMessages();
+// When a saved login has expired, the token is still in localStorage but the
+// server rejects it (401/403). Clear it and send the admin to log in again,
+// with a short note — instead of silently showing an empty page.
+let _expired = false;
+function sessionExpired(){
+  if(_expired) return; _expired = true;
+  try{ localStorage.removeItem('ujyalo_token'); localStorage.removeItem('ujyalo_user'); }catch(e){}
+  window.location.replace('/login.html?expired=1');
+}
+async function authFetch(url, opts){
+  const r = await fetch(url, opts);
+  if(r.status===401 || r.status===403) sessionExpired();
+  return r;
+}
+async function sbGet(table, params){
+  const r = await fetch(SUPABASE_URL+'/rest/v1/'+table+'?'+(params||''), { headers:{ 'apikey':window._sbKey, 'Authorization':'Bearer '+token } });
+  if(r.status===401 || r.status===403){ sessionExpired(); return []; }
+  return r.json();
+}
+async function sbPatch(table, id, body){
+  const r = await fetch(SUPABASE_URL+'/rest/v1/'+table+'?id=eq.'+id, { method:'PATCH', headers:{ 'apikey':window._sbKey, 'Authorization':'Bearer '+token, 'Content-Type':'application/json', 'Prefer':'return=minimal' }, body:JSON.stringify(body) });
+  if(r.status===401 || r.status===403) sessionExpired();
+  return r;
 }
 
-/* ── Supabase helpers ── */
-async function sbGet(table, params = '') {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
-    headers: { 'apikey': window._sbKey, 'Authorization': `Bearer ${token}` }
-  });
-  return res.json();
-}
+/* ── nav ── */
+$('nav').addEventListener('click', function(e){
+  var a = e.target.closest('a[data-p]'); if(!a) return;
+  var p = a.getAttribute('data-p');
+  document.querySelectorAll('#nav a').forEach(function(x){x.classList.remove('on');});
+  a.classList.add('on');
+  document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('on');});
+  $('p-'+p).classList.add('on');
+  if(p==='coverage' && !LOADED.coverage) loadCoverage();
+  if((p==='team'||p==='students') && !LOADED.people) loadPeople();
+  if(p==='inbox'    && !LOADED.inbox)    loadInbox();
+});
 
-async function sbPost(table, body) {
-  return fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
-    method: 'POST',
-    headers: { 'apikey': window._sbKey, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-    body: JSON.stringify(body)
-  });
-}
-
-async function sbPatch(table, id, body) {
-  return fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
-    method: 'PATCH',
-    headers: { 'apikey': window._sbKey, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-    body: JSON.stringify(body)
-  });
-}
-
-async function sbDelete(table, id) {
-  return fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
-    method: 'DELETE',
-    headers: { 'apikey': window._sbKey, 'Authorization': `Bearer ${token}` }
-  });
-}
-
-/* ── Overview ── */
-async function loadOverview() {
-  try {
-    const [papers, questions, waitlist, messages, studentsRes] = await Promise.all([
-      sbGet('past_papers', 'select=id,status'),
-      sbGet('past_paper_questions', 'select=id'),
-      sbGet('waitlist', 'select=id'),
-      sbGet('contact_messages', 'select=id'),
-      fetch('/api/admin-users', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.json()),
+/* ── HOME ── */
+async function loadHome(){
+  var h = new Date().getHours();
+  $('home-greet').textContent = (h<12?'Good morning':h<17?'Good afternoon':'Good evening')+(user.full_name?(', '+user.full_name.split(' ')[0]):'')+'.';
+  $('home-date').textContent = "Here's where ujyalo stands — "+new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})+'.';
+  try{
+    const [stats, studentsRes, flagsRes] = await Promise.all([
+      authFetch('/api/admin-users?action=stats',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).catch(function(){return {};}),
+      authFetch('/api/admin-users',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).catch(function(){return {};}),
+      authFetch('/api/admin-paper?action=flags',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).catch(function(){return {};})
     ]);
+    var live = stats.papersLive || 0;
+    var totalP = stats.papersTotal || 0;
+    await ensurePapers(); await ensureOverview();
+    var ready = (OV && OV.papers ? OV.papers : []).filter(function(p){ return p.fully && p.status!=='live'; }).length;
+    var vCount = stats.qVerified || 0;
+    var tCount = stats.qTotal || 0;
+    // Match the verify desk: count unique flagged QUESTIONS (deduped sub-parts), not raw rows.
+    var fCount = (flagsRes && Array.isArray(flagsRes.flags)) ? flagsRes.flags.length : (stats.qFlagged || 0);
+    var mCount = stats.messages || 0;
+    var allUsers = (studentsRes && studentsRes.users) ? studentsRes.users : [];
+    var sCount = allUsers.filter(function(u){ return !isTeam(u.role); }).length;
+    var pct = tCount? Math.round(vCount/tCount*100) : 0;
 
-    const pCount = Array.isArray(papers) ? papers.length : 0;
-    const qCount = Array.isArray(questions) ? questions.length : 0;
-    const sCount = studentsRes.success ? studentsRes.users.length : 0;
-    const mCount = Array.isArray(messages) ? messages.length : 0;
-    const wCount = Array.isArray(waitlist) ? waitlist.length : 0;
+    $('s-students').textContent = sCount;
+    $('s-live').textContent = live;
+    $('s-live-sub').textContent = 'of '+totalP+' in the library';
+    $('s-verified').innerHTML = pct+'<small>%</small>';
+    $('s-verified-bar').style.width = pct+'%';
+    $('s-messages').textContent = mCount;
 
-    document.getElementById('ov-papers').textContent    = pCount;
-    document.getElementById('ov-questions').textContent = qCount;
-    document.getElementById('ov-students').textContent  = sCount;
-    document.getElementById('ov-messages').textContent  = mCount;
-    document.getElementById('count-papers').textContent   = pCount;
-    document.getElementById('count-students').textContent = sCount;
-    document.getElementById('count-waitlist').textContent = wCount;
-    document.getElementById('count-messages').textContent = mCount;
+    var att='';
+    if(ready>0) att+='<div class="att" onclick="goPanel(\'coverage\')"><i class="ti ti-rocket lead"></i><div class="t"><b>'+ready+' paper'+(ready>1?'s':'')+'</b> ready to publish</div><i class="ti ti-chevron-right go"></i></div>';
+    if(fCount>0) att+='<div class="att flag" onclick="location.href=\'/verify.html?tab=flags\'"><i class="ti ti-flag lead"></i><div class="t"><b>'+fCount+' question'+(fCount>1?'s':'')+'</b> flagged in verify need a decision</div><i class="ti ti-chevron-right go"></i></div>';
+    if(mCount>0) att+='<div class="att" onclick="goPanel(\'inbox\')"><i class="ti ti-message lead"></i><div class="t"><b>'+mCount+' message'+(mCount>1?'s':'')+'</b> in your inbox</div><i class="ti ti-chevron-right go"></i></div>';
+    if(!att) att='<div class="att ok"><i class="ti ti-check lead"></i><div class="t">All clear — nothing needs you right now.</div></div>';
+    $('attention').innerHTML = att;
+  }catch(e){ console.error('Home error',e); $('attention').innerHTML='<div class="empty">Could not load. Try refreshing.</div>'; }
+}
+function goPanel(p){ var a=document.querySelector('#nav a[data-p="'+p+'"]'); if(a) a.click(); }
 
-    if (Array.isArray(papers)) {
-      document.getElementById('ov-draft').textContent = papers.filter(p => p.status === 'draft').length;
-      document.getElementById('ov-ready').textContent = papers.filter(p => p.status === 'ready').length;
-      document.getElementById('ov-live').textContent  = papers.filter(p => p.status === 'live').length;
-      document.getElementById('status-overview-loading').style.display = 'none';
-      document.getElementById('status-overview-content').classList.remove('hidden');
+/* ── COVERAGE ── */
+async function ensurePapers(){
+  if(!Object.keys(SUBJECTS).length){
+    var subs = await sbGet('exam_subjects','select=id,code,name');
+    if(Array.isArray(subs)) subs.forEach(function(s){ SUBJECTS[s.id]={code:s.code,name:s.name}; });
+  }
+  PAPERS = await sbGet('past_papers','select=id,year,province,status,subject_id&order=year.desc');
+  if(!Array.isArray(PAPERS)) PAPERS=[];
+}
+
+/* verification overview (computed on the server so big tables can't truncate) */
+let OV = null, OVMAP = {};
+async function ensureOverview(){
+  try{
+    var r = await authFetch('/api/admin-paper?action=overview', { headers:{ 'Authorization':'Bearer '+token } });
+    OV = await r.json();
+  }catch(e){ OV = { papers:[], team:[] }; }
+  if(!OV || !Array.isArray(OV.papers)) OV = { papers:[], team:[] };
+  OVMAP = {}; OV.papers.forEach(function(p){ OVMAP[p.id] = p; });
+  return OV;
+}
+function isFullyVerified(pid){ var o = OVMAP[pid]; return !!(o && o.fully); }
+async function loadCoverage(){
+  LOADED.coverage = true;
+  try{
+    await ensurePapers();
+    await ensureOverview();
+    var years=[]; PAPERS.forEach(function(p){ if(years.indexOf(p.year)<0) years.push(p.year); }); years.sort(function(a,b){return b-a;});
+    if(!years.length){ $('cov-grid').innerHTML='<div class="empty">No papers yet.</div>'; $('cov-years').innerHTML=''; $('ready-list').innerHTML='<div class="empty">Nothing ready to publish.</div>'; return; }
+    if(COV_YEAR===null || years.indexOf(COV_YEAR)<0) COV_YEAR=years[0];
+    $('cov-years').innerHTML = years.map(function(y){ return '<span class="yrtab'+(y===COV_YEAR?' on':'')+'" data-y="'+y+'">'+y+'</span>'; }).join('');
+    renderGrid();
+    renderReady();
+  }catch(e){ console.error('Coverage error',e); $('cov-grid').innerHTML='<div class="empty">Could not load coverage.</div>'; }
+}
+$('cov-years').addEventListener('click',function(e){ var t=e.target.closest('[data-y]'); if(!t) return; COV_YEAR=parseInt(t.getAttribute('data-y'),10); document.querySelectorAll('#cov-years .yrtab').forEach(function(x){x.classList.toggle('on', x.getAttribute('data-y')==String(COV_YEAR));}); renderGrid(); });
+
+function renderGrid(){
+  var codes=[]; PAPERS.forEach(function(p){ var c=(SUBJECTS[p.subject_id]||{}).code; if(c && codes.indexOf(c)<0) codes.push(c); });
+  codes.sort(function(a,b){ return ((SUBJ[a]||{}).order||9)-((SUBJ[b]||{}).order||9); });
+  if(!codes.length) codes = Object.keys(SUBJ);
+  var head='<table class="grid"><thead><tr><th class="cor">Subject</th>'+PROV.map(function(p){return '<th>'+(PROV_SHORT[p]||p)+'</th>';}).join('')+'</tr></thead><tbody>';
+  var body = codes.map(function(code){
+    var nm=(SUBJ[code]||{}).name||code;
+    var cells = PROV.map(function(prov){
+      var paper = PAPERS.filter(function(p){ return p.year===COV_YEAR && p.province===prov && (SUBJECTS[p.subject_id]||{}).code===code; })[0];
+      if(!paper) return '<td><div class="cell miss">—</div></td>';
+      var ver=isFullyVerified(paper.id), live=paper.status==='live';
+      if(ver) return '<td><div class="cell verok" title="Verified'+(live?' &amp; live':' · not live yet')+'"><i class="ti ti-checks"></i></div></td>';
+      if(live) return '<td><div class="cell live" title="Live · not verified"><i class="ti ti-check"></i></div></td>';
+      return '<td><div class="cell prog" title="In progress">•</div></td>';
+    }).join('');
+    return '<tr><td class="sub">'+esc(nm)+'</td>'+cells+'</tr>';
+  }).join('');
+  var legend='<div class="legend"><span><span class="sw verok"></span> Verified</span><span><span class="sw live"></span> Live · unverified</span><span><span class="sw prog"></span> In progress</span><span><span class="sw miss"></span> Missing</span></div>';
+  $('cov-grid').innerHTML = head+body+'</tbody></table>'+legend;
+}
+function renderReady(){
+  var done = (OV && OV.papers ? OV.papers : []).filter(function(p){ return p.fully; });
+  if(!done.length){ $('ready-list').innerHTML='<div class="empty">No papers fully verified yet — finished papers from the verify desk will land here.</div>'; return; }
+  // Group fully-verified papers by subject so the list stays scannable.
+  var groups = {};
+  done.forEach(function(p){ var s=p.subjectName||p.subject||'Other'; (groups[s]=groups[s]||[]).push(p); });
+  function rowHtml(p){
+    var live = p.status==='live';
+    var meta = 'Verified by '+esc(p.verifiedBy||'team')+(p.verifiedAt?(' · '+fmtDate(p.verifiedAt)):'')+' · '+p.verified+'/'+p.total+' questions';
+    var liveBadge = live ? '<span class="pill live">● Live</span>' : '<span class="pill draft">Not live</span>';
+    var pubBtn = live ? '' : '<button class="btn pub" data-pub="'+p.id+'">Publish →</button>';
+    return '<div class="prow"><div class="pt">SEE '+p.year+' '+esc(p.province)+
+      '<div style="font-size:11.5px;color:var(--faint);font-weight:500;margin-top:3px;">'+meta+'</div></div>'+
+      '<span class="pill live">✓ Verified</span>'+liveBadge+pubBtn+'</div>';
+  }
+  $('ready-list').innerHTML = Object.keys(groups).sort().map(function(subj){
+    var papers = groups[subj];
+    papers.sort(function(a,b){ return (a.status==='live'?1:0)-(b.status==='live'?1:0) || (b.year-a.year) || String(a.province).localeCompare(String(b.province)); });
+    var liveN = papers.filter(function(p){return p.status==='live';}).length;
+    var header = '<button type="button" onclick="toggleRgrp(this)" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px;cursor:pointer;margin-top:10px;font-family:inherit;">'+
+      '<i class="ti ti-chevron-right" style="font-size:16px;color:var(--brass-deep);transition:transform .15s;"></i>'+
+      '<span style="font-family:\'Fraunces\',serif;font-size:16px;font-weight:600;color:var(--forest);">'+esc(subj)+'</span>'+
+      '<span style="font-size:11px;font-weight:700;color:var(--brass-deep);background:var(--parch-2);border-radius:99px;padding:2px 9px;">'+papers.length+'</span>'+
+      '<span style="margin-left:auto;font-size:12px;color:var(--faint);">'+liveN+' live</span></button>';
+    var body = '<div class="rgrp-body" style="display:none;padding:6px 0 4px;">'+papers.map(rowHtml).join('')+'</div>';
+    return '<div style="margin-bottom:2px;">'+header+body+'</div>';
+  }).join('');
+}
+window.toggleRgrp = function(btn){
+  var body = btn.parentNode.querySelector('.rgrp-body');
+  var chev = btn.querySelector('.ti');
+  if(!body) return;
+  var open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if(chev) chev.style.transform = open ? '' : 'rotate(90deg)';
+};
+$('ready-list').addEventListener('click', async function(e){
+  var b=e.target.closest('[data-pub]'); if(!b) return;
+  if(!confirm('Publish this paper? It will go live on ujyalo.app.')) return;
+  b.disabled=true; b.textContent='Publishing…';
+  try{ var r=await sbPatch('past_papers', b.getAttribute('data-pub'), {status:'live'}); if(!r.ok) throw new Error('patch'); var p=PAPERS.filter(function(x){return x.id===b.getAttribute('data-pub');})[0]; if(p)p.status='live'; var ov=OVMAP[b.getAttribute('data-pub')]; if(ov)ov.status='live'; renderGrid(); renderReady(); loadHome(); }
+  catch(err){ alert('Could not publish. Try again.'); b.disabled=false; b.textContent='Publish →'; }
+});
+
+/* ── TEAM + STUDENTS ── */
+function ago(str){
+  if(!str) return 'never';
+  var t = new Date(str).getTime(); if(isNaN(t)) return '—';
+  var s = Math.floor((Date.now()-t)/1000);
+  if(s<60) return 'just now';
+  var m=Math.floor(s/60); if(m<60) return m+'m ago';
+  var h=Math.floor(m/60); if(h<24) return h+'h ago';
+  var d=Math.floor(h/24); if(d<7) return d+'d ago';
+  return fmtDate(str);
+}
+function teamRow(t){
+  var nm = (t.full_name && t.full_name!=='—') ? t.full_name : (t.email||'—');
+  var rc = roleCfg(t.role);
+  var pill = '<span class="rolepill '+esc(rc.cls)+'">'+esc(rc.name)+'</span>';
+  var me = user && (String(t.email||'').toLowerCase() === String(user.email||'').toLowerCase());
+  var menu = '';
+  if(!me){
+    var rmConfirm = 'Remove '+nm.replace(/"/g,'')+' from the team? They become a normal student and lose verify access.';
+    var items = ROLES.filter(function(r){ return r.key!==t.role; }).map(function(r){
+      return '<a data-uid="'+t.id+'" data-setrole="'+r.key+'"><i class="ti ti-shield"></i> Make '+esc(r.name)+'</a>';
+    }).join('');
+    items += '<a class="danger" data-uid="'+t.id+'" data-setrole="student" data-confirm="'+esc(rmConfirm)+'"><i class="ti ti-user-minus"></i> Remove from team</a>';
+    menu = '<span class="kebab" data-menu="'+t.id+'">⋯</span><div class="rowmenu hidden" id="menu-'+t.id+'">'+items+'</div>';
+  }
+  return '<tr><td><div class="tmem"><div class="ini">'+esc(initials(nm))+'</div><div class="mi"><b>'+esc(nm)+'</b><span>'+esc(t.email||'')+'</span></div></div></td>'+
+    '<td>'+pill+'</td><td class="lastlog">'+ago(t.last_sign_in)+'</td>'+
+    '<td style="text-align:right;position:relative;">'+menu+'</td></tr>';
+}
+async function loadPeople(){
+  LOADED.people = true;
+  try{
+    var data = await authFetch('/api/admin-users',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();}).catch(function(){return {};});
+    var allUsers = (data && data.users) ? data.users : [];
+
+    // Team — staff & access (admins first, then editors, by name)
+    var team = allUsers.filter(function(u){ return isTeam(u.role); });
+    team.sort(function(a,b){ var ra=a.role==='admin'?0:1, rb=b.role==='admin'?0:1; if(ra!==rb) return ra-rb; return String(a.full_name||a.email||'').localeCompare(String(b.full_name||b.email||'')); });
+    $('team-n').textContent = team.length;
+    if(!team.length){ $('team-list').innerHTML='<div class="empty">No team members yet.</div>'; }
+    else{
+      $('team-list').innerHTML='<table class="tbl"><thead><tr><th>Member</th><th>Role</th><th>Last login</th><th></th></tr></thead><tbody>'+
+        team.map(teamRow).join('')+'</tbody></table>';
     }
-  } catch(e) { console.error('Overview error:', e); }
+
+    // Students — everyone who isn't team
+    var students = allUsers.filter(function(u){ return !isTeam(u.role); });
+    $('students-n').textContent = students.length;
+    if(!students.length){ $('students-list').innerHTML='<div class="empty">No students yet.</div>'; }
+    else $('students-list').innerHTML='<table class="tbl"><thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Joined</th></tr></thead><tbody>'+
+      students.map(function(u){ return '<tr><td>'+esc(u.full_name||'—')+'</td><td>'+esc(u.email||'—')+'</td><td><span class="st-pill '+(u.confirmed?'yes':'no')+'">'+(u.confirmed?'Verified':'Unverified')+'</span></td><td>'+fmtDate(u.created_at)+'</td></tr>'; }).join('')+'</tbody></table>';
+  }catch(e){ console.error('People error',e); $('team-list').innerHTML='<div class="empty">Could not load team.</div>'; $('students-list').innerHTML='<div class="empty">Could not load students.</div>'; }
+
+  // Waitlist
+  try{
+    var wl = await sbGet('waitlist','select=*&order=created_at.desc');
+    if(!Array.isArray(wl)) wl=[];
+    $('waitlist-n').textContent = wl.length;
+    if(!wl.length){ $('waitlist-list').innerHTML='<div class="empty">No waitlist entries.</div>'; }
+    else $('waitlist-list').innerHTML='<table class="tbl"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th></tr></thead><tbody>'+
+      wl.map(function(w){ return '<tr><td>'+esc(w.full_name||'—')+'</td><td>'+esc(w.email||'—')+'</td><td>'+esc(w.role||'—')+'</td><td>'+fmtDate(w.created_at)+'</td></tr>'; }).join('')+'</tbody></table>';
+  }catch(e){ $('waitlist-list').innerHTML='<div class="empty">Could not load waitlist.</div>'; }
 }
 
-/* ══ PAST PAPERS ══ */
-
-async function loadExamsAndSubjects() {
-  try {
-    examsCache    = await sbGet('exams', 'select=*&order=name');
-    subjectsCache = await sbGet('exam_subjects', 'select=*&order=name');
-
-    const examFilter = document.getElementById('filter-exam');
-    examsCache.forEach(e => {
-      const opt = document.createElement('option');
-      opt.value = e.id; opt.textContent = e.name;
-      examFilter.appendChild(opt);
-    });
-
-    const pmExam = document.getElementById('pm-exam');
-    examsCache.forEach(e => {
-      const opt = document.createElement('option');
-      opt.value = e.id; opt.textContent = e.name;
-      pmExam.appendChild(opt);
-    });
-  } catch(e) { console.error('Exams load error:', e); }
-}
-
-function loadSubjectsForExam() {
-  const examId = document.getElementById('pm-exam').value;
-  const subjectSel = document.getElementById('pm-subject');
-  subjectSel.innerHTML = '<option value="">Select subject...</option>';
-  subjectsCache.filter(s => s.exam_id === examId).forEach(s => {
-    const opt = document.createElement('option');
-    opt.value = s.id; opt.textContent = s.name;
-    subjectSel.appendChild(opt);
-  });
-}
-
-/* Populate chapter dropdown based on current paper's subject code */
-function populateChapters(selectedChapter = '') {
-  const chapterSel = document.getElementById('qm-chapter');
-  chapterSel.innerHTML = '<option value="">Select chapter...</option>';
-
-  if (!currentPaper) return;
-
-  // Find the subject record to get its code (e.g. 'maths', 'science')
-  const subj = subjectsCache.find(s => s.id === currentPaper.subject_id);
-  const subjectCode = subj?.code || '';
-  const chapters = CHAPTERS[subjectCode] || [];
-
-  if (chapters.length === 0) {
-    // Subject not in CHAPTERS yet — show a text fallback note
-    const opt = document.createElement('option');
-    opt.value = ''; opt.textContent = '— No chapters defined for this subject yet —';
-    opt.disabled = true;
-    chapterSel.appendChild(opt);
+/* team row menus + role changes */
+function closeMenus(except){ document.querySelectorAll('.rowmenu').forEach(function(m){ if(m!==except) m.classList.add('hidden'); }); }
+document.addEventListener('click', function(){ closeMenus(); });
+$('team-list').addEventListener('click', async function(e){
+  var k = e.target.closest('[data-menu]');
+  if(k){ e.stopPropagation(); var m=$('menu-'+k.getAttribute('data-menu')); closeMenus(m); if(m) m.classList.toggle('hidden'); return; }
+  var a = e.target.closest('[data-setrole]');
+  if(a){ e.stopPropagation(); closeMenus();
+    var cf=a.getAttribute('data-confirm'); if(cf && !confirm(cf)) return;
+    var uid=a.getAttribute('data-uid'), role=a.getAttribute('data-setrole');
+    try{
+      var r=await authFetch('/api/admin-users?action=set-role',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({id:uid,role:role})});
+      if(!r.ok){ var er=await r.json().catch(function(){return{};}); throw new Error(er.error||'Update failed'); }
+      LOADED.people=false; loadPeople(); loadHome();
+    }catch(err){ alert(err.message||'Could not update.'); }
     return;
   }
+});
 
-  chapters.forEach(ch => {
-    const opt = document.createElement('option');
-    opt.value = ch;
-    opt.textContent = ch;
-    if (ch === selectedChapter) opt.selected = true;
-    chapterSel.appendChild(opt);
-  });
+/* ── INBOX ── */
+async function loadInbox(){
+  LOADED.inbox = true;
+  try{
+    var data = await authFetch('/api/admin-users?action=messages',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();});
+    var msgs = (data && data.messages) || [];
+    if(!Array.isArray(msgs) || !msgs.length){ $('inbox-list').innerHTML='<div class="empty">No messages yet.</div>'; return; }
+    $('inbox-list').innerHTML = msgs.map(function(m){
+      return '<div class="msg"><div class="ini">'+esc(initials(m.full_name))+'</div><div class="body">'+
+        '<div class="top"><span class="nm">'+esc(m.full_name||'—')+'</span><span class="em">'+esc(m.email||'')+'</span><span class="role">'+esc(m.role||'—')+'</span><span class="date">'+fmtDate(m.created_at)+'</span></div>'+
+        '<div class="snip">'+esc(m.message||'')+'</div></div></div>';
+    }).join('');
+  }catch(e){ $('inbox-list').innerHTML='<div class="empty">Could not load messages.</div>'; }
 }
 
-async function loadPapers() {
-  const loading = document.getElementById('papers-loading');
-  const list    = document.getElementById('papers-list');
-  const empty   = document.getElementById('papers-empty');
+function logout(){ localStorage.removeItem('ujyalo_token'); localStorage.removeItem('ujyalo_user'); window.location.href='/index.html'; }
 
-  loading.style.display = 'block';
-  list.classList.add('hidden');
-  empty.classList.add('hidden');
-
-  try {
-    let params = 'select=*,exam_subjects(name,code,exam_id,exams(name))&order=year.desc';
-    const examId   = document.getElementById('filter-exam').value;
-    const subjId   = document.getElementById('filter-subject').value;
-    const year     = document.getElementById('filter-year').value;
-    const status   = document.getElementById('filter-status').value;
-    if (subjId) params += `&subject_id=eq.${subjId}`;
-    if (year)   params += `&year=eq.${year}`;
-    if (status) params += `&status=eq.${status}`;
-
-    let papers = await sbGet('past_papers', params);
-
-    if (examId && Array.isArray(papers)) {
-      papers = papers.filter(p => p.exam_subjects?.exam_id === examId);
-    }
-
-    const subjFilter = document.getElementById('filter-subject');
-    subjFilter.innerHTML = '<option value="">All subjects</option>';
-    const filtered = examId ? subjectsCache.filter(s => s.exam_id === examId) : subjectsCache;
-    filtered.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s.id; opt.textContent = s.name;
-      subjFilter.appendChild(opt);
-    });
-
-    loading.style.display = 'none';
-
-    if (!Array.isArray(papers) || papers.length === 0) {
-      empty.classList.remove('hidden');
-      return;
-    }
-
-    list.innerHTML = '';
-    papers.forEach(p => {
-      const subjectName = p.exam_subjects?.name || '—';
-      const examName    = p.exam_subjects?.exams?.name || '—';
-      const statusBadge = {
-        draft: '<span class="badge badge-gold">📋 Draft</span>',
-        ready: '<span class="badge badge-blue">🔵 Ready</span>',
-        live:  '<span class="badge badge-green">✅ Live</span>',
-      }[p.status] || '<span class="badge badge-gray">—</span>';
-
-      const row = document.createElement('div');
-      row.className = 'paper-row';
-      row.innerHTML = `
-        <div class="paper-row-left">
-          <div class="paper-row-icon" style="background:var(--blue-bg);">📄</div>
-          <div>
-            <div class="paper-row-name">${examName} · ${subjectName} · ${p.year}</div>
-            <div class="paper-row-sub">${p.total_marks} marks · ${p.duration}</div>
-          </div>
-        </div>
-        <div class="paper-row-right">
-          ${statusBadge}
-          <button class="btn btn-ghost btn-sm" onclick="openPaperQuestions(${JSON.stringify(p).replace(/"/g,'&quot;')})">
-            <i class="ti ti-pencil"></i> Manage questions
-          </button>
-          <button class="btn btn-danger btn-sm" onclick="deletePaper('${p.id}')">
-            <i class="ti ti-trash"></i>
-          </button>
-        </div>`;
-      list.appendChild(row);
-    });
-
-    list.classList.remove('hidden');
-  } catch(e) {
-    loading.style.display = 'none';
-    console.error('Papers error:', e);
-  }
+async function init(){
+  if(!checkAccess()) return;
+  try{ var c = await fetch('/api/auth?action=config').then(function(r){return r.json();}); window._sbKey = c.anon_key; }
+  catch(e){ console.error('Config error',e); }
+  loadHome();
 }
-
-function openAddPaper() {
-  document.getElementById('paper-modal-title').textContent = 'New Past Paper';
-  document.getElementById('paper-modal-save').textContent  = 'Create paper';
-  document.getElementById('pm-id').value       = '';
-  document.getElementById('pm-exam').value     = '';
-  document.getElementById('pm-subject').innerHTML = '<option value="">Select subject...</option>';
-  document.getElementById('pm-year').value     = '';
-  document.getElementById('pm-marks').value    = '';
-  document.getElementById('pm-duration').value = '';
-  document.getElementById('paper-modal-alert').style.display = 'none';
-  document.getElementById('paper-modal').classList.remove('hidden');
-}
-
-function closePaperModal() {
-  document.getElementById('paper-modal').classList.add('hidden');
-}
-
-async function savePaper() {
-  const id       = document.getElementById('pm-id').value;
-  const subjId   = document.getElementById('pm-subject').value;
-  const year     = document.getElementById('pm-year').value;
-  const marks    = document.getElementById('pm-marks').value;
-  const duration = document.getElementById('pm-duration').value.trim();
-
-  if (!subjId)   { showPaperAlert('Please select a subject.'); return; }
-  if (!year)     { showPaperAlert('Please enter the year.'); return; }
-  if (!marks)    { showPaperAlert('Please enter total marks.'); return; }
-  if (!duration) { showPaperAlert('Please enter the duration.'); return; }
-
-  const btn = document.getElementById('paper-modal-save');
-  btn.disabled = true; btn.textContent = 'Saving...';
-
-  const body = { subject_id: subjId, year: parseInt(year), total_marks: parseInt(marks), duration, status: 'draft' };
-
-  try {
-    const res = id ? await sbPatch('past_papers', id, body) : await sbPost('past_papers', body);
-    if (res.ok) {
-      closePaperModal();
-      loadPapers();
-      loadOverview();
-    } else {
-      showPaperAlert('Error saving paper. Please try again.');
-    }
-  } catch(e) { showPaperAlert('Something went wrong.'); }
-
-  btn.disabled = false;
-  btn.textContent = id ? 'Update paper' : 'Create paper';
-}
-
-function showPaperAlert(msg) {
-  const a = document.getElementById('paper-modal-alert');
-  a.textContent = msg; a.className = 'alert alert-error'; a.style.display = 'block';
-}
-
-async function deletePaper(id) {
-  if (!confirm('Delete this paper and ALL its questions? This cannot be undone.')) return;
-  await sbDelete('past_papers', id);
-  loadPapers(); loadOverview();
-}
-
-async function openPaperQuestions(paper) {
-  currentPaper = paper;
-  document.getElementById('view-papers').classList.add('hidden');
-  document.getElementById('view-questions').classList.remove('hidden');
-
-  const subj = subjectsCache.find(s => s.id === paper.subject_id);
-  const exam = examsCache.find(e => e.id === subj?.exam_id);
-  const title = `${exam?.name || ''} · ${subj?.name || ''} · ${paper.year}`;
-
-  document.getElementById('paper-view-title').textContent = title;
-  document.getElementById('paper-view-meta').textContent  = `${paper.total_marks} marks · ${paper.duration}`;
-
-  const statusMap = {
-    draft: '<span class="badge badge-gold">📋 Draft</span>',
-    ready: '<span class="badge badge-blue">🔵 Ready for review</span>',
-    live:  '<span class="badge badge-green">✅ Live</span>',
-  };
-  document.getElementById('paper-status-badge').innerHTML = statusMap[paper.status] || '';
-
-  document.getElementById('btn-mark-ready').classList.toggle('hidden', paper.status !== 'draft');
-  document.getElementById('btn-approve').classList.toggle('hidden',    paper.status !== 'ready');
-  document.getElementById('btn-unpublish').classList.toggle('hidden',  paper.status === 'draft');
-
-  loadQuestions();
-}
-
-function backToPapers() {
-  currentPaper = null;
-  document.getElementById('view-questions').classList.add('hidden');
-  document.getElementById('view-papers').classList.remove('hidden');
-}
-
-async function updatePaperStatus(newStatus) {
-  if (!currentPaper) return;
-  const labels = { ready:'mark as Ready', live:'approve and go Live', draft:'unpublish' };
-  if (!confirm(`Are you sure you want to ${labels[newStatus]}?`)) return;
-  await sbPatch('past_papers', currentPaper.id, { status: newStatus });
-  currentPaper.status = newStatus;
-  openPaperQuestions(currentPaper);
-  loadOverview();
-}
-
-/* ── Questions ── */
-async function loadQuestions() {
-  if (!currentPaper) return;
-  const loading = document.getElementById('questions-loading');
-  const list    = document.getElementById('questions-list');
-  const empty   = document.getElementById('questions-empty');
-  const stats   = document.getElementById('q-stats');
-
-  loading.style.display = 'block';
-  list.classList.add('hidden');
-  empty.classList.add('hidden');
-  stats.innerHTML = '';
-
-  try {
-    const data = await sbGet('past_paper_questions', `select=*&paper_id=eq.${currentPaper.id}&order=group_name.asc,question_no.asc`);
-    loading.style.display = 'none';
-
-    if (!Array.isArray(data) || data.length === 0) {
-      empty.classList.remove('hidden');
-      return;
-    }
-
-    const groups = [...new Set(data.map(q => q.group_name))].sort();
-    const totalMarks = data.reduce((sum, q) => sum + (q.marks || 0), 0);
-    const taggedCount = data.filter(q => q.chapter).length;
-
-    stats.innerHTML = `
-      <span class="badge badge-blue">${data.length} questions</span>
-      <span class="badge badge-gold">${totalMarks} marks entered</span>
-      ${groups.map(g => `<span class="badge badge-gray">Group ${g}: ${data.filter(q=>q.group_name===g).length}q</span>`).join('')}
-      <span class="badge ${data.filter(q=>q.status==='ready').length === data.length ? 'badge-green' : 'badge-gold'}">${data.filter(q=>q.status==='ready').length}/${data.length} verified</span>
-      <span class="badge ${taggedCount === data.length ? 'badge-green' : 'badge-gold'}">${taggedCount}/${data.length} chapter-tagged</span>`;
-
-    list.innerHTML = '';
-    groups.forEach(g => {
-      const groupQs = data.filter(q => q.group_name === g);
-      const groupDiv = document.createElement('div');
-      groupDiv.style.marginBottom = '16px';
-      groupDiv.innerHTML = `<div style="font-size:12px;font-weight:700;color:var(--ink-400);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;padding:0 4px;">Group ${g} — ${groupQs.length} questions</div>`;
-
-      groupQs.forEach(q => {
-        const qDiv = document.createElement('div');
-        qDiv.className = 'q-entry';
-        qDiv.innerHTML = `
-          <div class="q-entry-top">
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-              <span class="badge badge-gray">Q${q.question_no}</span>
-              <span class="badge badge-gold">${q.marks} mark${q.marks>1?'s':''}</span>
-              ${q.chapter ? `<span class="badge badge-purple">${q.chapter}</span>` : '<span class="badge badge-gray" style="opacity:0.5;">No chapter</span>'}
-              <span class="badge ${q.status==='ready'?'badge-green':'badge-gold'}">${q.status==='ready'?'✓ Verified':'Draft'}</span>
-            </div>
-            <div style="display:flex;gap:6px;">
-              <button class="btn btn-ghost btn-xs" onclick="editQuestion(${JSON.stringify(q).replace(/"/g,'&quot;')})"><i class="ti ti-pencil"></i> Edit</button>
-              <button class="btn btn-danger btn-xs" onclick="deleteQuestion('${q.id}')"><i class="ti ti-trash"></i></button>
-            </div>
-          </div>
-          <div class="q-entry-text">${q.question_text}</div>
-          ${q.answer ? `<div class="q-entry-answer">✓ ${q.answer}</div>` : '<div style="font-size:12px;color:var(--ink-300);margin-top:4px;">No answer yet</div>'}`;
-        groupDiv.appendChild(qDiv);
-      });
-
-      list.appendChild(groupDiv);
-    });
-
-    list.classList.remove('hidden');
-  } catch(e) {
-    loading.style.display = 'none';
-    console.error('Questions error:', e);
-  }
-}
-
-function openAddQuestion() {
-  document.getElementById('q-modal-title').textContent = 'Add Question';
-  document.getElementById('q-modal-save').textContent  = 'Save question';
-  document.getElementById('qm-id').value     = '';
-  document.getElementById('qm-group').value  = '';
-  document.getElementById('qm-qno').value    = '';
-  document.getElementById('qm-marks').value  = '';
-  document.getElementById('qm-text').value   = '';
-  document.getElementById('qm-answer').value = '';
-  document.getElementById('qm-status').value = 'draft';
-  document.getElementById('q-modal-alert').style.display = 'none';
-  populateChapters(); // populate chapter dropdown for current paper's subject
-  document.getElementById('q-modal').classList.remove('hidden');
-}
-
-function editQuestion(q) {
-  document.getElementById('q-modal-title').textContent = 'Edit Question';
-  document.getElementById('q-modal-save').textContent  = 'Update question';
-  document.getElementById('qm-id').value     = q.id;
-  document.getElementById('qm-group').value  = q.group_name;
-  document.getElementById('qm-qno').value    = q.question_no;
-  document.getElementById('qm-marks').value  = q.marks;
-  document.getElementById('qm-text').value   = q.question_text;
-  document.getElementById('qm-answer').value = q.answer || '';
-  document.getElementById('qm-status').value = q.status || 'draft';
-  document.getElementById('q-modal-alert').style.display = 'none';
-  populateChapters(q.chapter || ''); // pre-select existing chapter
-  document.getElementById('q-modal').classList.remove('hidden');
-}
-
-function closeQModal() {
-  document.getElementById('q-modal').classList.add('hidden');
-}
-
-async function saveQuestion() {
-  const id      = document.getElementById('qm-id').value;
-  const group   = document.getElementById('qm-group').value.trim().toUpperCase();
-  const qno     = document.getElementById('qm-qno').value;
-  const marks   = document.getElementById('qm-marks').value;
-  const text    = document.getElementById('qm-text').value.trim();
-  const answer  = document.getElementById('qm-answer').value.trim();
-  const status  = document.getElementById('qm-status').value;
-  const chapter = document.getElementById('qm-chapter').value || null;
-
-  if (!group)  { showQAlert('Please enter the group (A, B, C, D).'); return; }
-  if (!qno)    { showQAlert('Please enter the question number.'); return; }
-  if (!marks)  { showQAlert('Please enter the marks.'); return; }
-  if (!text)   { showQAlert('Please enter the question text.'); return; }
-
-  const btn = document.getElementById('q-modal-save');
-  btn.disabled = true; btn.textContent = 'Saving...';
-
-  const body = {
-    paper_id:      currentPaper.id,
-    group_name:    group,
-    question_no:   parseInt(qno),
-    marks:         parseInt(marks),
-    question_text: text,
-    answer:        answer || null,
-    status,
-    chapter,       // new — saved to DB
-  };
-
-  try {
-    const res = id ? await sbPatch('past_paper_questions', id, body) : await sbPost('past_paper_questions', body);
-    if (res.ok) {
-      closeQModal();
-      loadQuestions();
-    } else {
-      showQAlert('Error saving question. Please try again.');
-    }
-  } catch(e) { showQAlert('Something went wrong.'); }
-
-  btn.disabled = false;
-  btn.textContent = id ? 'Update question' : 'Save question';
-}
-
-async function deleteQuestion(id) {
-  if (!confirm('Delete this question? Cannot be undone.')) return;
-  await sbDelete('past_paper_questions', id);
-  loadQuestions();
-}
-
-function showQAlert(msg) {
-  const a = document.getElementById('q-modal-alert');
-  a.textContent = msg; a.className = 'alert alert-error'; a.style.display = 'block';
-}
-
-/* ── Students ── */
-async function loadStudents() {
-  const loading = document.getElementById('students-loading');
-  const wrap    = document.getElementById('students-table-wrap');
-  const empty   = document.getElementById('students-empty');
-  const tbody   = document.getElementById('students-tbody');
-  loading.style.display = 'block'; wrap.classList.add('hidden'); empty.classList.add('hidden');
-  try {
-    const res  = await fetch('/api/admin-users', { headers: { 'Authorization': `Bearer ${token}` } });
-    const data = await res.json();
-    loading.style.display = 'none';
-    if (!data.success || !data.users?.length) { empty.classList.remove('hidden'); return; }
-    document.getElementById('count-students').textContent = data.users.length;
-    tbody.innerHTML = '';
-    data.users.forEach(u => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${u.full_name||'—'}</td><td>${u.email||'—'}</td><td><span class="badge ${u.confirmed?'badge-green':'badge-gold'}">${u.confirmed?'Verified':'Unverified'}</span></td><td>${formatDate(u.last_sign_in)}</td><td>${formatDate(u.created_at)}</td>`;
-      tbody.appendChild(tr);
-    });
-    wrap.classList.remove('hidden');
-  } catch(e) { loading.style.display='none'; console.error(e); }
-}
-
-/* ── Waitlist ── */
-async function loadWaitlist() {
-  const loading = document.getElementById('waitlist-loading');
-  const wrap    = document.getElementById('waitlist-table-wrap');
-  const empty   = document.getElementById('waitlist-empty');
-  const tbody   = document.getElementById('waitlist-tbody');
-  loading.style.display = 'block'; wrap.classList.add('hidden'); empty.classList.add('hidden');
-  try {
-    const data = await sbGet('waitlist', 'select=*&order=created_at.desc');
-    loading.style.display = 'none';
-    if (!Array.isArray(data)||!data.length) { empty.classList.remove('hidden'); return; }
-    tbody.innerHTML = '';
-    data.forEach(w => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${w.full_name||'—'}</td><td>${w.email||'—'}</td><td><span class="badge badge-gold">${w.role||'—'}</span></td><td>${formatDate(w.created_at)}</td>`;
-      tbody.appendChild(tr);
-    });
-    wrap.classList.remove('hidden');
-  } catch(e) { loading.style.display='none'; }
-}
-
-/* ── Messages ── */
-async function loadMessages() {
-  const loading = document.getElementById('messages-loading');
-  const wrap    = document.getElementById('messages-table-wrap');
-  const empty   = document.getElementById('messages-empty');
-  const tbody   = document.getElementById('messages-tbody');
-  loading.style.display = 'block'; wrap.classList.add('hidden'); empty.classList.add('hidden');
-  try {
-    const data = await sbGet('contact_messages', 'select=*&order=created_at.desc');
-    loading.style.display = 'none';
-    if (!Array.isArray(data)||!data.length) { empty.classList.remove('hidden'); return; }
-    tbody.innerHTML = '';
-    data.forEach(m => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${m.full_name||'—'}</td><td>${m.email||'—'}</td><td><span class="badge badge-blue">${m.role||'—'}</span></td><td class="td-wrap">${m.message||'—'}</td><td>${formatDate(m.created_at)}</td>`;
-      tbody.appendChild(tr);
-    });
-    wrap.classList.remove('hidden');
-  } catch(e) { loading.style.display='none'; }
-}
-
-/* ── Helpers ── */
-function formatDate(str) {
-  if (!str) return '—';
-  return new Date(str).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
-}
-
-function logout() {
-  localStorage.removeItem('ujyalo_token');
-  localStorage.removeItem('ujyalo_user');
-  window.location.href = '/index.html';
-}
-
-/* ── Boot ── */
-async function init() {
-  if (!checkAccess()) return;
-  try {
-    const res  = await fetch('/api/auth?action=config');
-    const data = await res.json();
-    window._sbKey = data.anon_key;
-  } catch(e) { console.error('Config error:', e); }
-  await loadExamsAndSubjects();
-  loadOverview();
-}
-
 init();
 </script>
 </body>

@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Confirming your account — Ujyalo</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -102,6 +105,12 @@ async function handleConfirmation() {
         headers: { 'Authorization': `Bearer ${accessToken}` }
       }
     );
+    if (!roleRes.ok) {
+      // Couldn't determine the role — don't guess (that could send an admin/editor
+      // to the wrong place). Send them to log in, where the server routes correctly.
+      window.location.href = '/login.html';
+      return;
+    }
     const roleData = await roleRes.json();
     const role = roleData?.role || 'student';
 
@@ -120,8 +129,7 @@ async function handleConfirmation() {
     // Step 4: Redirect based on role
     let redirectTo = '/dashboard.html';
     if (role === 'admin')   redirectTo = '/admin.html';
-    if (role === 'teacher') redirectTo = '/teacher.html';
-    if (role === 'parent')  redirectTo = '/parent.html';
+    if (role === 'editor')  redirectTo = '/verify.html';
 
     setTimeout(() => { window.location.href = redirectTo; }, 1500);
 

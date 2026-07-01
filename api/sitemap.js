@@ -13,8 +13,8 @@ const PAGES = [
   { path: '/',                    priority: '1.0', changefreq: 'weekly'  },
   { path: '/chapter-practice.html', priority: '0.9', changefreq: 'weekly'  },
   { path: '/see-practice.html',   priority: '0.8', changefreq: 'weekly'  },
-  { path: '/see-past-papers.html', priority: '0.9', changefreq: 'weekly'  },
   { path: '/see/past-papers',      priority: '0.9', changefreq: 'weekly'  },
+  { path: '/blog',                 priority: '0.8', changefreq: 'weekly'  },
   { path: '/signup.html',         priority: '0.8', changefreq: 'monthly' },
   { path: '/features.html',       priority: '0.7', changefreq: 'monthly' },
   { path: '/for-schools.html',    priority: '0.7', changefreq: 'monthly' },
@@ -26,6 +26,12 @@ const PAGES = [
   { path: '/login.html',          priority: '0.4', changefreq: 'monthly' },
   { path: '/terms.html',          priority: '0.3', changefreq: 'yearly'  },
   { path: '/privacy.html',        priority: '0.3', changefreq: 'yearly'  },
+];
+
+// ── Blog posts — static HTML files in /blog/ ─────────────────
+// Add one line here each time you publish a new post.
+const BLOG_POSTS = [
+  { path: '/blog/how-to-use-see-past-papers.html', priority: '0.7', changefreq: 'monthly' },
 ];
 
 // ── Past paper pages — fetched dynamically from Supabase ──────
@@ -85,6 +91,7 @@ export default async function handler(req, res) {
     const pastPaperUrls = await getPastPaperUrls();
     const allUrls = [
       ...PAGES,
+      ...BLOG_POSTS,
       ...pastPaperUrls,
     ];
 

@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SEE Past Papers — ujyalo</title>
+<meta name="description" content="Every SEE past paper, all subjects, all 7 provinces. Free forever. Practice with model answers."/>
+<link rel="canonical" href="https://ujyalo.app/see/past-papers"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,700&family=Outfit:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  /* Editorial Scholar palette — variable names kept so existing CSS keeps working */
+  --navy:#1e1a15;--navy2:#2a2318;--blue:#1a6fc4;--teal:#3f7d6e;--orange:#f59e0b;
+  --green:#34a853;--red:#b5532e;--purple:#7a5cc4;--pink:#c2557e;
+  --ink:#1a2420;--muted:#5f6b64;--faint:#9aa49d;--line:#ece6d6;--bg:#fbf7ef;--card:#ffffff;
+  /* new accents */
+  --brass:#f59e0b;--brass-soft:#f6b652;--forest:#1e1a15;--moss:#3f7d6e;--paper2:#ece6d6;
+}
+*{font-family:'Outfit','DM Sans',sans-serif;}
+html,body{height:100%;margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;overflow:hidden;height:100vh;}
+.ujyalo-nav,.ujyalo-announce{flex-shrink:0;}
+.ujyalo-nav{position:relative!important;}
+#site-footer,.ujyalo-footer,.ujyalo-help-bubble{display:none!important;}
+
+/* ANNOUNCE */
+/* nav handled by components.js */
+
+/* LAYOUT */
+.app{display:flex;flex:1;overflow:hidden;}
+.app, body{max-width:100%;overflow-x:hidden;}
+
+/* LEFT SIDEBAR */
+.lsb{width:220px;flex-shrink:0;background:#1e1a15;display:flex;flex-direction:column;}
+.lsb-head{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.08);}
+.lsb-title{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;}
+.lsb-sub{font-size:11px;color:#8898b8;margin-top:3px;}
+.lsb-brand{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:#fff;margin-top:4px;}
+.lsb-slash{color:var(--teal);font-style:italic;font-weight:700;margin:0 2px;}
+.lsb-grade{color:var(--teal);font-size:20px;}
+.lsb-section{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1px;padding:14px 18px 6px;}
+.lsb-plus-label{position:relative;display:inline-flex;align-items:center;gap:5px;margin:18px 18px 8px;padding:4px 12px;border-radius:99px;font-size:11px;font-weight:800;letter-spacing:1px;color:#2a2110;background:linear-gradient(135deg,var(--brass-soft),var(--brass));box-shadow:0 2px 10px rgba(245,158,11,.3);}
+.lsb-plus-label .plus-star{font-size:11px;}
+.lsb-nav{position:relative;}
+.lsb-plus-label::before{content:'';position:absolute;left:0;right:-18px;top:-9px;height:1px;background:rgba(255,255,255,.08);}
+.li-plus .li-lbl{color:rgba(255,236,190,.75);}
+.li-plus:hover{background:rgba(245,166,35,.10);}
+.li-plus.act{background:rgba(245,166,35,.14);border-left-color:var(--orange);}
+.li-plus.act .li-lbl{color:#ffe7a8;}
+.li-lock{margin-left:auto;font-size:11px;opacity:.7;}
+.li-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;}
+.badge-daily{background:var(--green);color:#062b14;}
+.badge-year{background:rgba(245,156,26,.2);color:var(--orange);}
+.lsb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.li{display:flex;align-items:center;gap:11px;padding:11px 18px;cursor:pointer;border-left:3px solid transparent;background:none;border-top:none;border-right:none;border-bottom:none;width:100%;text-align:left;transition:all .14s;}
+.li:hover{background:rgba(255,255,255,.05);}
+.li.act{background:rgba(255,255,255,.08);border-left-color:var(--brass);}
+.li-icon{font-size:16px;width:20px;text-align:center;}
+.li-lbl{font-size:13px;font-weight:500;color:rgba(255,255,255,.6);}
+.li.act .li-lbl{color:#fff;font-weight:700;}
+.lsb-foot{padding:12px 18px;border-top:1px solid rgba(255,255,255,.08);}
+.lsb-foot p{font-size:10px;color:rgba(255,255,255,.22);line-height:1.6;}
+
+/* MAIN */
+.mn{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* SUBJECT TABS */
+.stabs{background:#1e1a15;border-bottom:1px solid rgba(255,255,255,.08);display:flex;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
+.stabs::-webkit-scrollbar{display:none;}
+.stab{padding:13px 20px;border:none;background:transparent;border-bottom:3px solid transparent;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .15s;}
+.stab.act{color:#fff;border-bottom-color:var(--brass);font-weight:700;}
+
+/* SCROLL */
+.scroll{flex:1;overflow-y:auto;}
+.scroll::-webkit-scrollbar{width:4px;}
+.scroll::-webkit-scrollbar-thumb{background:#dde3f0;border-radius:99px;}
+
+/* VIEWS */
+.vw{display:none;}
+.vw.act{display:block;}
+
+/* HERO */
+.hero{padding:28px 32px 24px;position:relative;overflow:hidden;background:linear-gradient(135deg,#2a2318,#1a160f);}
+.hero::after{content:'';position:absolute;right:34px;top:-30px;font-family:'Fraunces',serif;font-size:170px;font-weight:900;color:rgba(255,255,255,.04);line-height:1;pointer-events:none;}
+.hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:rgba(245,158,11,.18);}
+.hero::after{content:'';position:absolute;bottom:-30px;left:-20px;width:140px;height:140px;border-radius:50%;background:rgba(56,201,176,.1);}
+.hero-in{position:relative;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.hero-l{display:flex;align-items:center;gap:16px;}
+.hero-ico{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:26px;}
+.hero-nm{font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:#fff;}
+.hero-nm em{font-style:italic;}
+.hero-sb{font-size:13px;color:#8898b8;margin-top:2px;}
+.hero-stats{display:flex;gap:10px;flex-wrap:wrap;}
+.sbox{background:rgba(255,255,255,.07);border-radius:10px;padding:10px 16px;text-align:center;}
+.sbox-n{font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:#fff;}
+.sbox-l{font-size:10px;color:#8898b8;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+
+/* BREADCRUMB */
+.bc{padding:9px 28px;font-size:12px;color:var(--faint);display:flex;align-items:center;gap:6px;background:var(--card);border-bottom:1px solid var(--line);}
+.bc a{color:var(--faint);text-decoration:none;}
+.bc a:hover{color:var(--blue);}
+.bc-cur{color:var(--ink);font-weight:600;}
+
+/* FILTERS */
+.frow{padding:11px 28px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg);border-bottom:1px solid var(--line);flex-shrink:0;}
+.flbl{font-size:11px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:1px;margin-right:2px;}
+.ypill{padding:6px 13px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;}
+.ypill:hover{border-color:var(--orange);color:var(--ink);}
+.ypill.act{background:var(--orange);border-color:var(--orange);color:#3a2c10;}
+.srch{flex:1;max-width:220px;position:relative;margin-left:auto;}
+.srch input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:7px 11px 7px 30px;font-size:13px;color:var(--ink);background:var(--card);outline:none;transition:border-color .15s;}
+.srch input:focus{border-color:var(--blue);}
+.srch-ico{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--faint);}
+
+/* CONTENT */
+.cpad{padding:20px 28px;}
+
+/* YEAR BLOCK */
+.yblock{margin-bottom:28px;}
+.yhdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.ynum{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--blue);}
+.yad{font-size:13px;color:var(--faint);}
+.new-b{background:rgba(26,111,255,.15);color:var(--blue);font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;}
+.ydiv{flex:1;height:1px;background:var(--line);}
+.ycnt{font-size:11px;color:var(--faint);}
+
+/* PROVINCE GRID */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;}
+
+/* PRACTICE VIEW */
+.prac-pad{padding:30px 34px;}
+.prac-hero{padding:28px 34px 24px;position:relative;overflow:hidden;background:linear-gradient(135deg,#2a2318,#1a160f);}
+.prac-hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:rgba(245,158,11,.10);}
+.prac-hero::after{content:'';position:absolute;bottom:-40px;left:30%;width:150px;height:150px;border-radius:50%;background:rgba(63,125,110,.10);}
+.prac-hero-in{position:relative;display:flex;align-items:center;gap:16px;}
+.prac-hero-ico{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:rgba(255,255,255,.08);flex-shrink:0;}
+.prac-hero-nm{font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:#fff;}
+.prac-hero-nm em{font-style:italic;color:var(--brass-soft);}
+.prac-hero-sb{font-size:13px;color:#8898b8;margin-top:3px;max-width:520px;}
+.prac-label{font-size:12px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:20px;}
+.subj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;max-width:920px;}
+.subj-card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:24px 24px 22px;cursor:pointer;text-align:left;transition:all .16s;position:relative;display:block;width:100%;}
+.subj-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(17,48,42,.14);border-color:var(--orange);}
+.subj-ico{width:56px;height:56px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:16px;}
+.subj-nm{font-size:20px;font-weight:700;color:var(--ink);}
+.subj-np{font-size:14px;color:var(--faint);margin-top:1px;}
+.subj-bar{height:5px;background:var(--line);border-radius:99px;margin-top:18px;overflow:hidden;}
+.subj-fill{height:100%;border-radius:99px;transition:width .4s;}
+.subj-meta{font-size:13px;color:var(--faint);font-weight:600;margin-top:9px;}
+.subj-card.soon{opacity:.6;cursor:default;}
+.subj-card.soon:hover{transform:none;box-shadow:none;border-color:var(--line);}
+.soon-tag{position:absolute;top:16px;right:16px;font-size:10px;font-weight:700;color:var(--muted);background:var(--line);padding:3px 9px;border-radius:99px;}
+
+/* PRACTICE 3-STEP FLOW */
+.prac-step{display:none;}
+.prac-step.show{display:block;animation:pracFade .25s ease;}
+@keyframes pracFade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.prac-crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:18px;}
+.prac-bk{display:flex;align-items:center;gap:5px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;font-size:13px;}
+.prac-sep{color:var(--line);}
+.prac-crumb strong{color:var(--ink);}
+
+/* CHAPTER CARDS */
+.chap-grp{margin-bottom:22px;}
+.chap-grp-h{display:flex;align-items:center;gap:8px;margin-bottom:11px;}
+.chap-grp-nm{font-size:14px;font-weight:700;color:var(--ink);}
+.chap-grp-line{flex:1;height:1px;background:var(--line);}
+.chap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:11px;max-width:920px;}
+.chap-card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 15px;cursor:pointer;text-align:left;transition:transform .15s,box-shadow .15s,border-color .15s;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.chap-card:active{transform:scale(.98);}
+.chap-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(13,27,62,.08);border-color:rgba(26,111,255,.3);}
+.chap-card.done{border-color:rgba(34,197,94,.4);}
+.chap-nm{font-size:14px;font-weight:600;color:var(--ink);}
+.chap-prog{font-size:11px;color:var(--faint);margin-top:3px;}
+.chap-ct{font-size:11px;font-weight:700;color:var(--blue);background:rgba(26,111,255,.1);padding:3px 9px;border-radius:99px;flex-shrink:0;}
+.chap-card.done .chap-ct{background:var(--green);color:#fff;}
+
+/* PRACTICE ENGINE */
+.prac-wrap{max-width:680px;}
+.cp-prog{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.cp-pbar{flex:1;height:6px;background:var(--line);border-radius:99px;overflow:hidden;}
+.cp-pfill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:99px;transition:width .4s;}
+.cp-ptxt{font-size:12px;font-weight:700;color:var(--muted);min-width:38px;}
+.cp-qcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 2px 16px rgba(10,22,40,.05);}
+.cp-qmeta{display:flex;justify-content:space-between;margin-bottom:14px;}
+.cp-qnum{font-size:11px;font-weight:600;color:var(--faint);background:var(--bg);padding:2px 8px;border-radius:4px;}
+.cp-qmarks{font-size:11px;font-weight:700;background:#fef3c7;color:#854f0b;padding:3px 10px;border-radius:99px;}
+.cp-qtext{font-family:'Fraunces',serif;font-size:19px;line-height:1.5;color:var(--ink);margin-bottom:16px;}
+.cp-qans{width:100%;min-height:96px;padding:13px;border:2px solid var(--line);border-radius:14px;font-size:15px;background:var(--bg);resize:none;line-height:1.6;font-family:inherit;}
+.cp-qans:focus{outline:none;border-color:var(--blue);background:#fff;}
+.cp-qact{display:flex;justify-content:space-between;align-items:center;margin-top:14px;}
+.cp-bskip{font-size:13px;color:var(--faint);background:none;border:none;cursor:pointer;font-weight:500;}
+.cp-bcheck{background:var(--blue);color:#fff;border:none;padding:12px 24px;border-radius:99px;font-size:14px;font-weight:700;cursor:pointer;}
+.cp-bcheck:active{transform:scale(.97);}
+.cp-model{background:#fff;border:1px solid #86efac;border-left:3px solid var(--green);border-radius:12px;padding:15px 17px;margin-top:14px;}
+.cp-model-t{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;}
+.cp-model-b{font-size:15px;color:#334155;line-height:1.8;white-space:pre-line;}
+.cp-assess{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 17px;display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:12px;flex-wrap:wrap;}
+.cp-assess p{font-size:14px;font-weight:600;color:#334155;}
+.cp-assess-btns{display:flex;gap:8px;}
+.cp-bgot{background:#dcfce7;color:var(--green);border:1.5px solid #86efac;padding:10px 18px;border-radius:99px;font-size:13px;font-weight:700;cursor:pointer;}
+.cp-bnext{background:var(--bg);color:var(--muted);border:1.5px solid var(--line);padding:10px 18px;border-radius:99px;font-size:13px;font-weight:700;cursor:pointer;}
+.cp-balmost{background:#fdecc8;color:#92610a;border:1.5px solid #f3c34f;padding:10px 18px;border-radius:99px;font-size:13px;font-weight:700;cursor:pointer;}
+.cp-bmiss{background:#f9e0d8;color:#a23f1d;border:1.5px solid #e8a78f;padding:10px 18px;border-radius:99px;font-size:13px;font-weight:700;cursor:pointer;}
+.cp-tips{margin-top:16px;}
+.cp-tips-tog{width:100%;display:flex;justify-content:space-between;padding:12px 15px;background:#fff;border:1.5px solid var(--line);border-radius:14px;font-size:13px;font-weight:700;color:#334155;cursor:pointer;}
+.cp-tips-tog.open{border-color:var(--blue);background:rgba(26,111,255,.05);color:var(--blue);border-radius:14px 14px 0 0;}
+.cp-tips-body{display:none;background:#fff;border:1.5px solid var(--blue);border-top:none;border-radius:0 0 14px 14px;padding:14px 15px;}
+.cp-tips-body.open{display:block;}
+.cp-tip-f{font-size:13px;color:#334155;line-height:1.6;padding:6px 10px;background:var(--bg);border-radius:6px;margin-bottom:5px;font-family:'Courier New',monospace;}
+.cp-tip-m{font-size:13px;color:#334155;line-height:1.5;padding:5px 10px 5px 26px;position:relative;margin-bottom:4px;}
+.cp-tip-m::before{content:'⚠️';position:absolute;left:6px;font-size:11px;}
+.cp-tip-h{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin:8px 0 6px;}
+.cp-done{background:#fff;border:1px solid var(--line);border-radius:20px;padding:34px 26px;text-align:center;box-shadow:0 4px 24px rgba(10,22,40,.06);}
+.cp-done-ic{font-size:52px;margin-bottom:12px;}
+.cp-done-t{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--ink);margin-bottom:6px;}
+.cp-done-s{font-size:14px;color:var(--muted);margin-bottom:22px;}
+.cp-done-scores{display:flex;justify-content:center;gap:14px;margin-bottom:24px;flex-wrap:wrap;}
+.cp-done-box{background:var(--bg);border-radius:14px;padding:16px 22px;min-width:96px;}
+.cp-done-box.good{background:#dcfce7;}
+.cp-done-num{font-family:'Fraunces',serif;font-size:30px;font-weight:900;color:var(--blue);line-height:1;margin-bottom:3px;}
+.cp-done-box.good .cp-done-num{color:var(--green);}
+.cp-done-lbl{font-size:12px;color:var(--muted);font-weight:600;}
+.cp-done-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.cp-bretry{background:var(--bg);color:var(--ink);border:1.5px solid var(--line);padding:12px 22px;border-radius:99px;font-size:14px;font-weight:700;cursor:pointer;}
+.cp-bnextch{background:var(--blue);color:#fff;border:none;padding:12px 22px;border-radius:99px;font-size:14px;font-weight:700;cursor:pointer;}
+
+/* PLUS HUB */
+.plus-hero{background:linear-gradient(135deg,#fff6e0,#ffe9c2);border:1.5px solid #ffdd9e;border-radius:18px;padding:24px;margin-bottom:20px;}
+.plus-hero-badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#3a2a05;background:linear-gradient(135deg,#ffd86b,#f5a623);padding:4px 12px;border-radius:99px;margin-bottom:10px;}
+.plus-hero-title{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--navy);}
+.plus-hero-sub{font-size:14px;color:#7a5a1a;margin-top:4px;}
+.plus-cards{display:grid;gap:12px;max-width:620px;}
+.plus-card{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:16px 18px;cursor:pointer;text-align:left;transition:transform .15s,box-shadow .15s,border-color .15s;width:100%;}
+.plus-card:active{transform:scale(.98);}
+.plus-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(13,27,62,.08);border-color:#ffd98a;}
+.plus-card-ico{width:46px;height:46px;border-radius:13px;background:#fff6e0;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.plus-card-body{flex:1;}
+.plus-card-nm{font-size:16px;font-weight:700;color:var(--ink);}
+.plus-card-ds{font-size:12.5px;color:var(--faint);margin-top:2px;}
+.plus-card-star{color:var(--orange);font-size:14px;}
+
+/* MOBILE HEADER + BOTTOM NAV (hidden on desktop) */
+.mtop{display:none;align-items:center;gap:10px;padding:12px 16px;background:#1e1a15;position:sticky;top:0;z-index:30;}
+.mtop-back{background:rgba(255,255,255,.12);border:none;color:#fff;width:34px;height:34px;border-radius:10px;font-size:18px;cursor:pointer;flex-shrink:0;display:none;align-items:center;justify-content:center;}
+.mtop-title{font-family:'Fraunces',serif;font-size:17px;font-weight:900;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.mtop-slash{color:var(--teal);font-style:italic;}
+.mbtm{display:none;position:fixed;bottom:0;left:0;right:0;background:#1e1a15;border-top:1px solid rgba(255,255,255,.08);z-index:40;padding:6px 4px;padding-bottom:calc(6px + env(safe-area-inset-bottom));}
+.mbtm-i{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;background:none;border:none;cursor:pointer;}
+.mbtm-ic{font-size:19px;line-height:1;opacity:.55;}
+.mbtm-tx{font-size:10px;font-weight:600;color:rgba(255,255,255,.5);}
+.mbtm-i.act .mbtm-ic{opacity:1;}
+.mbtm-i.act .mbtm-tx{color:#fff;}
+.mbtm-plus .mbtm-tx{color:var(--orange);}
+.mbtm-plus.act .mbtm-tx{color:var(--orange);}
+
+@media(max-width:900px){
+  .lsb{display:none;}
+  .mtop{display:flex;}
+  .mbtm{display:flex;}
+  .gnav{padding:0 16px;}
+  .nav-links{display:none;}
+  html,body{height:auto;overflow:visible;}
+  body{display:block;}
+  .app{display:block;overflow:visible;}
+  .mn{display:block;overflow:visible;}
+  .scroll{overflow:visible;height:auto;}
+  .mn{padding-bottom:calc(60px + env(safe-area-inset-bottom));}
+  .prac-pad{padding:18px 16px;}
+  .prac-hero{padding:18px 16px;}
+  .prac-hero-nm{font-size:21px;}
+  .prac-hero-ico{width:46px;height:46px;font-size:22px;}
+  .prac-crumb{display:none;}
+  .subj-grid{grid-template-columns:repeat(2,1fr);gap:12px;max-width:100%;}
+  .subj-card{padding:16px;}
+  .subj-ico{width:46px;height:46px;font-size:21px;margin-bottom:12px;}
+  .subj-nm{font-size:16px;}
+  .chap-grid{grid-template-columns:1fr;max-width:100%;}
+  .cp-qtext{font-size:18px;}
+  .vpad,.cpad{padding:16px;}
+  .hero{padding:20px 16px;}
+  .frow{padding:10px 16px;}
+  .srch{max-width:100%;margin-left:0;width:100%;}
+  .pgrid{grid-template-columns:repeat(2,1fr);}
+  .cgrid{grid-template-columns:1fr;}
+  .bc{padding:8px 16px;}
+  .plus-cards{max-width:100%;}
+  .prac-wrap{max-width:100%;}
+}
+@media(max-width:380px){
+  .subj-grid{grid-template-columns:1fr;}
+  .pgrid{grid-template-columns:1fr;}
+}
+
+/* PROVINCE CARD */
+.pc{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;}
+.pc:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.07);}
+.pc.started{border-color:rgba(26,111,255,.35);}
+.pc.done{border-color:rgba(34,197,94,.45);}
+.pc-strip{position:absolute;top:0;left:0;right:0;height:3px;}
+.pc-in{display:flex;align-items:center;gap:9px;margin-top:2px;}
+.pc-badge{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.pc-info{flex:1;min-width:0;}
+.pc-nm{font-size:13px;font-weight:700;color:var(--ink);}
+.pc-np{font-size:10px;color:var(--faint);margin-top:1px;}
+.pc-rt{font-size:11px;font-weight:700;margin-left:6px;flex-shrink:0;}
+.pc-new{position:absolute;top:7px;right:8px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;color:#fff;}
+.pc.soon{opacity:.45;cursor:not-allowed;}
+.pc.soon:hover{transform:none;box-shadow:none;}
+
+/* LOADING / EMPTY */
+.loading{padding:60px 28px;text-align:center;}
+.spin{width:32px;height:32px;border:3px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.empty{padding:60px 28px;text-align:center;}
+.empty-ico{font-size:44px;margin-bottom:14px;}
+.empty-t{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.empty-s{font-size:14px;color:var(--muted);}
+
+/* VIEW PAD */
+.vpad{padding:28px;}
+.vtitle{font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--ink);margin-bottom:4px;}
+.vtitle em{font-style:italic;}
+.vsub{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+
+/* COMING SOON STATES */
+.cs-wrap{position:relative;border-radius:20px;overflow:hidden;border:1.5px solid var(--line);background:var(--card);padding:44px 28px;text-align:center;}
+.cs-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#1a6fff,#7c3aed);}
+.cs-icon-ring{width:68px;height:68px;border-radius:20px;background:#1e1a15;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 18px;box-shadow:0 10px 30px rgba(13,27,62,.28);}
+.cs-premium{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(90deg,#f59c1a,#f5b94a);color:#fff;font-size:11px;font-weight:700;padding:5px 13px;border-radius:99px;margin-bottom:14px;box-shadow:0 3px 10px rgba(245,156,26,.32);letter-spacing:.3px;}
+.cs-title{font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:var(--ink);margin-bottom:10px;}
+.cs-title em{font-style:italic;}
+.cs-desc{font-size:17px;color:var(--ink);line-height:1.6;max-width:480px;margin:0 auto 24px;font-weight:600;}
+.cs-bullets{display:flex;flex-direction:column;gap:12px;margin:0 auto 26px;text-align:left;width:fit-content;}
+.cs-bullet{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--ink);font-weight:600;}
+.cs-bullet-ico{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#1a6fff,#4da3ff);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.cs-status{display:inline-flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--line);border-radius:99px;padding:9px 20px;font-size:13px;font-weight:700;color:var(--muted);}
+.cs-pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:cspulse 1.6s ease-in-out infinite;}
+@keyframes cspulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.3);}}
+
+/* SUBJECT FILTER PILLS */
+.spills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.spill{padding:7px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;}
+
+/* HEATMAP */
+.hcard{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:10px;}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.htag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;}
+.hbar-t{height:8px;background:var(--bg);border-radius:99px;overflow:hidden;margin-bottom:8px;}
+.hbar-f{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+.hfoot{display:flex;justify-content:space-between;font-size:11px;color:var(--faint);}
+.hlegend{background:#1e1a15;border-radius:14px;padding:14px 18px;display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;}
+.hleg{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.7);}
+
+/* COMPARE */
+.cmp-ctrl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
+.cmp-sel{border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;color:var(--ink);background:var(--card);outline:none;cursor:pointer;}
+.vs{font-size:14px;font-weight:700;color:var(--faint);}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.chead{border-radius:12px 12px 0 0;padding:14px 16px;color:#fff;}
+.chead-y{font-family:'Fraunces',serif;font-size:18px;font-weight:900;}
+.chead-s{font-size:11px;opacity:.75;margin-top:2px;}
+.cbody{background:var(--card);border:1.5px solid var(--line);border-radius:0 0 12px 12px;padding:14px 16px;}
+.cbody-q{font-size:14px;color:var(--ink);line-height:1.7;margin-bottom:10px;}
+.insight{border-radius:8px;padding:10px 12px;font-size:12px;line-height:1.6;}
+.insight-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.pat{background:#1e1a15;border-radius:12px;padding:14px 18px;margin-top:16px;}
+.pat-l{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.pat-t{font-size:13px;line-height:1.6;color:rgba(255,255,255,.8);}
+
+/* MY PAPER */
+.mp-banner{border-radius:14px;padding:20px;margin-bottom:20px;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(124,58,237,.04));border:1.5px solid rgba(124,58,237,.18);}
+.mp-banner h3{font-family:'Fraunces',serif;font-size:18px;font-weight:900;color:var(--ink);margin-bottom:6px;}
+.mp-banner p{font-size:13px;color:var(--muted);line-height:1.6;}
+.gen-btn{width:100%;background:var(--purple);color:#fff;border:none;border-radius:12px;padding:16px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s;}
+.gen-btn:hover{opacity:.88;}
+.gen-btn:disabled{background:var(--line);color:var(--faint);cursor:not-allowed;opacity:1;}
+
+/* BOOKMARKS */
+.bk-t{font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:var(--ink);}
+.bk-t em{font-style:italic;color:var(--orange);}
+.bk-s{font-size:13px;color:var(--muted);margin-top:4px;margin-bottom:20px;}
+.bk-card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:10px;animation:fadeUp .3s ease both;}
+.bk-src{font-size:11px;color:var(--faint);}
+.bk-qt{font-size:14px;color:var(--ink);line-height:1.65;margin:10px 0 12px;}
+.bk-acts{display:flex;gap:8px;}
+.bk-see{flex:1;border-radius:9px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid;transition:all .15s;}
+.bk-del{background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:9px 14px;font-size:14px;cursor:pointer;}
+.bk-del:hover{background:rgba(239,68,68,.08);border-color:var(--red);}
+.bk-empty{text-align:center;padding:40px 20px;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* MOBILE */
+@media(max-width:900px){
+  /* (merged into the main responsive block above) */
+}
+
+#stabs{display:none!important}
+.ppl-pad{padding:26px 30px 44px;max-width:880px}
+.ppl-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin-bottom:8px}
+.ppl-h1{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(26px,4vw,36px);line-height:1.06;color:var(--forest);margin-bottom:7px}
+.ppl-h1 em{font-style:italic;color:var(--brass)}
+.ppl-sub{font-size:14px;color:var(--muted);max-width:48ch;line-height:1.5}
+.ppl-rule{height:1px;background:var(--line);margin:18px 0 20px}
+.ppl-slabel,.ppl-ylbl{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.ppl-slabel{display:block;margin-bottom:11px}
+.subtiles{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.st2{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:7px 13px 7px 8px;cursor:pointer;transition:.16s;font-family:inherit}
+.st2:hover{transform:translateY(-2px);border-color:var(--brass-soft)}
+.st2-ic{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:'Fraunces',serif;background:rgba(17,48,42,.07);color:var(--forest);flex-shrink:0}
+.st2-tx{display:flex;flex-direction:column;line-height:1.15;text-align:left}
+.st2-nm{font-weight:600;font-size:13px;color:var(--ink)}
+.st2-np{font-size:10.5px;color:var(--muted)}
+.st2.on{background:#1e1a15;border-color:#1e1a15;box-shadow:0 5px 14px rgba(17,48,42,.16)}
+.st2.on .st2-nm{color:#fff}.st2.on .st2-np{color:var(--brass-soft)}.st2.on .st2-ic{background:rgba(245,158,11,.22);color:var(--brass-soft)}
+.st2.soon{opacity:.5;cursor:default}.st2.soon:hover{transform:none;border-color:var(--line)}
+.ppl-yrow{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.ypills2{display:flex;gap:7px;flex-wrap:wrap}
+.yp2{font-size:13px;font-weight:600;padding:6px 14px;border-radius:9px;border:1px solid var(--line);background:var(--card);cursor:pointer;color:var(--muted);font-family:inherit}
+.yp2.on{background:#1e1a15;color:#fff;border-color:var(--forest)}
+.maphead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:9px}
+.mh-t{font-family:'Fraunces',serif;font-weight:500;font-size:18px;color:var(--forest)}
+.mh-legend{display:flex;gap:14px;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+.mh-legend span{display:flex;align-items:center;gap:6px}
+.lk{width:11px;height:11px;border-radius:3px;border:1px solid;display:inline-block}
+.lk.av{background:#efe7d4;border-color:var(--brass)}
+.lk.pr{background:rgba(245,158,11,.34);border-color:var(--brass)}
+.lk.dn{background:rgba(52,168,83,.22);border-color:var(--green)}
+.lk.sn{background:var(--paper2);border-color:var(--line)}
+.mapwrap{position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px 6px;box-shadow:0 1px 2px rgba(26,36,32,.04),0 8px 26px rgba(17,48,42,.06)}
+.npmap{width:100%;height:auto;display:block}
+.prov{stroke:var(--bg);stroke-width:1.6;stroke-linejoin:round;transition:.16s}
+.prov.avail{fill:#ece0c4;stroke:var(--brass);stroke-width:2.1;filter:drop-shadow(0 4px 7px rgba(17,48,42,.20))}
+.prov.progress{fill:rgba(245,158,11,.42);stroke:var(--brass);stroke-width:2.1;filter:drop-shadow(0 4px 7px rgba(17,48,42,.20))}
+.prov.done{fill:rgba(52,168,83,.30);stroke:var(--green);stroke-width:2.1;filter:drop-shadow(0 4px 7px rgba(17,48,42,.16))}
+.prov.soon{fill:var(--paper2);opacity:.72}
+.prov.avail:hover,.prov.progress:hover,.prov.done:hover{stroke-width:2.8;filter:drop-shadow(0 7px 13px rgba(17,48,42,.30))}
+.plabel{font-family:'Fraunces',serif;font-weight:600;font-size:14px;fill:var(--forest);text-anchor:middle;pointer-events:none}
+.plabel.soon{fill:var(--muted);font-weight:500}
+.psub{font-family:'DM Sans',system-ui,sans-serif;font-weight:700;font-size:9.5px;text-anchor:middle;pointer-events:none;text-transform:uppercase;letter-spacing:.04em;fill:var(--muted)}
+.psub.progress{fill:#8a6312}.psub.done{fill:var(--green)}
+.pbg{stroke:var(--card);stroke-width:1.5}
+.pbt{font-family:'DM Sans',system-ui,sans-serif;font-weight:700;font-size:11px;fill:#fff;text-anchor:middle;pointer-events:none}
+.taphint{position:absolute;left:16px;bottom:16px;max-width:290px;display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:500;color:var(--ink);background:#fff;border:1px solid var(--line);padding:11px 13px;border-radius:12px;line-height:1.4;box-shadow:0 6px 20px rgba(17,48,42,.12)}
+.th-ic{font-size:18px;flex-shrink:0}
+.paplayout{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;align-items:stretch;margin-top:4px}
+.paplayout>#yblocks{display:flex;flex-direction:column}
+.pap-list{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.pap-list-h{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--forest);margin-bottom:11px}
+.mapfb{display:flex;flex-direction:column;gap:7px}
+.gopen{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--brass-deep);border:1px solid var(--brass-soft);border-radius:8px;padding:5px 10px;white-space:nowrap;transition:.14s}
+.gr.on:hover .gopen{background:var(--brass);color:#3a2c10;border-color:var(--brass)}
+.lsb-plus-card{margin:14px 12px 0;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:16px 14px;text-align:center}
+.lsb-plus-art{font-size:34px;line-height:1;margin-bottom:6px}
+.lsb-plus-t{font-family:'Fraunces',serif;font-size:14.5px;font-weight:600;color:#e9e2d2;line-height:1.25}
+.lsb-plus-t span{color:var(--brass);font-weight:700}
+.lsb-plus-d{font-size:11.5px;color:#9a9486;line-height:1.5;margin:7px 0 13px}
+.lsb-plus-btn{display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);color:#f4efe2;font-size:12.5px;font-weight:700;border-radius:10px;padding:9px 16px;cursor:pointer;font-family:inherit;width:100%;transition:.14s}
+.lsb-plus-btn:hover{background:var(--brass);color:#3a2c10;border-color:var(--brass)}
+.trust-strip{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 6px;margin-top:18px}
+.ts-item{display:flex;gap:11px;align-items:flex-start;padding:0 18px;border-right:1px solid var(--line)}
+.ts-item:last-child{border-right:none}
+.ts-ic{font-size:16px;flex-shrink:0;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--paper2)}
+.ts-ic.ok{background:rgba(52,168,83,.16);color:var(--green)}
+.ts-t{font-size:13px;font-weight:700;color:var(--ink)}
+.ts-d{font-size:11.5px;color:var(--muted);line-height:1.45;margin-top:2px}
+@media(max-width:760px){.trust-strip{grid-template-columns:1fr 1fr;gap:16px 0}.ts-item{border-right:none;padding:0 12px}}
+.gr{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:12px;padding:9px 11px;background:var(--card)}
+.gr.on{cursor:pointer;transition:.14s}.gr.on:hover{border-color:var(--brass-soft);transform:translateY(-1px)}
+.gr.off{opacity:.5}
+.gb{width:24px;height:24px;border-radius:7px;color:#fff;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gn{font-weight:600;font-size:13.5px;flex:1;color:var(--ink)}
+.pp{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 7px;border-radius:99px;white-space:nowrap}
+.pp.progress{background:rgba(245,158,11,.22);color:#8a6312}.pp.done{background:rgba(52,168,83,.18);color:var(--green)}
+.pp.avail{background:#efe7d4;color:var(--brass)}.pp.soon{background:var(--paper2);color:var(--faint)}
+@media(max-width:860px){.paplayout{grid-template-columns:1fr}}
+@media(max-width:640px){.psub{display:none}.mh-legend{display:none}.plabel{font-size:13px}.ppl-pad{padding:22px 18px 36px}}
+</style>
+  <meta property="og:image" content="https://ujyalo.app/og-default.png" />
+  <meta name="twitter:image" content="https://ujyalo.app/og-default.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:title" content="SEE Past Papers & Practice — Free | Ujyalo" />
+  <meta property="og:description" content="Every SEE past paper with bilingual model answers, plus chapter practice. Free, no signup." />
+  <meta property="og:type" content="website" />
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<div class="app">
+
+  <aside class="lsb">
+    <div class="lsb-head">
+      <div class="lsb-title">EXAMINATION</div>
+      <div class="lsb-brand">SEE <span class="lsb-slash">/</span> <span class="lsb-grade">कक्षा १०</span></div>
+    </div>
+    <nav class="lsb-nav">
+      <button class="li act" onclick="showView('papers',this)" id="nav-papers"><span class="li-icon">📄</span><span class="li-lbl">Past Papers</span></button>
+      <button class="li" onclick="showView('practice',this)" id="nav-practice"><span class="li-icon">📖</span><span class="li-lbl">Practice</span></button>
+      <button class="li" onclick="showView('saved',this)" id="nav-saved"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
+
+      <div class="lsb-plus-label"><span class="plus-star">⭐</span> PLUS</div>
+      <button class="li li-plus" onclick="showView('heatmap',this)" id="nav-heatmap"><span class="li-icon">🔥</span><span class="li-lbl">Hot Topics</span><span class="li-lock">⭐</span></button>
+      <button class="li li-plus" onclick="showView('predict',this)" id="nav-predict"><span class="li-icon">🎯</span><span class="li-lbl">Predict 2083</span><span class="li-lock">⭐</span></button>
+      <button class="li li-plus" onclick="showView('mypaper',this)" id="nav-mypaper"><span class="li-icon">⚡</span><span class="li-lbl">My Paper</span><span class="li-lock">⭐</span></button>
+    </nav>
+    <div class="lsb-plus-card">
+      <div class="lsb-plus-art">🎓</div>
+      <div class="lsb-plus-t">Study smarter with<br><span>SEE PLUS</span></div>
+      <div class="lsb-plus-d">Unlock unlimited past papers, predictions, and smart features.</div>
+      <button class="lsb-plus-btn" onclick="showView('plus')">Explore Plus →</button>
+    </div>
+    <div class="lsb-foot"><p>SEE 2082 live · 7 provinces<br/>6 subjects · Free forever</p></div>
+  </aside>
+
+  <div class="mn">
+    <div class="mtop">
+      <button class="mtop-back" id="mtop-back" onclick="mobileBack()">←</button>
+      <div class="mtop-title" id="mtop-title">SEE <span class="mtop-slash">/</span> Practice</div>
+    </div>
+    <div class="stabs" id="stabs"></div>
+
+    <div class="scroll" id="scroll">
+
+      <!-- PRACTICE VIEW (3-step flow) -->
+      <div class="vw" id="vw-practice">
+
+        <!-- Step 1: Subjects -->
+        <div class="prac-step show" id="prac-subjects">
+          <div class="prac-pad">
+            <div class="ppl-eyebrow">SEE · अभ्यास</div>
+            <div class="ppl-h1">Practice makes <em>ready</em>.</div>
+            <div class="ppl-sub">Pick a subject, solve, check the model answer, repeat — that’s how toppers are made.</div>
+            <div class="ppl-rule"></div>
+                        <div class="prac-label">PICK A SUBJECT TO PRACTICE</div>
+            <div class="subj-grid" id="subj-grid">
+              <button class="subj-card" onclick="practiceChapters('maths')">
+                <div class="subj-ico" style="background:rgba(26,111,255,.12);color:#1a6fff;">∫</div>
+                <div class="subj-nm">Maths</div><div class="subj-np">गणित</div>
+                <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#1a6fff;"></div></div>
+                <div class="subj-meta">Tap to start</div>
+              </button>
+              <button class="subj-card" onclick="practiceChapters('science')">
+                <div class="subj-ico" style="background:rgba(56,201,176,.14);color:#1aa890;">🔬</div>
+                <div class="subj-nm">Science</div><div class="subj-np">विज्ञान</div>
+                <div class="subj-bar"><div class="subj-fill" style="width:0%;background:#38c9b0;"></div></div>
+                <div class="subj-meta">Tap to start</div>
+              </button>
+              <button class="subj-card soon">
+                <div class="soon-tag">Soon</div>
+                <div class="subj-ico" style="background:rgba(245,156,26,.14);color:#e08a0a;">Aa</div>
+                <div class="subj-nm">English</div><div class="subj-np">अङ्ग्रेजी</div>
+                <div class="subj-bar"><div class="subj-fill" style="width:0%;"></div></div>
+                <div class="subj-meta">Coming soon</div>
+              </button>
+              <button class="subj-card soon">
+                <div class="soon-tag">Soon</div>
+                <div class="subj-ico" style="background:rgba(232,67,147,.12);color:#e84393;">क</div>
+                <div class="subj-nm">Nepali</div><div class="subj-np">नेपाली</div>
+                <div class="subj-bar"><div class="subj-fill" style="width:0%;"></div></div>
+                <div class="subj-meta">Coming soon</div>
+              </button>
+              <button class="subj-card soon">
+                <div class="soon-tag">Soon</div>
+                <div class="subj-ico" style="background:rgba(124,58,237,.12);color:#7c3aed;">◉</div>
+                <div class="subj-nm">Social</div><div class="subj-np">सामाजिक</div>
+                <div class="subj-bar"><div class="subj-fill" style="width:0%;"></div></div>
+                <div class="subj-meta">Coming soon</div>
+              </button>
+              <button class="subj-card soon">
+                <div class="soon-tag">Soon</div>
+                <div class="subj-ico" style="background:rgba(239,68,68,.10);color:#ef4444;">♡</div>
+                <div class="subj-nm">HPE</div><div class="subj-np">स्वास्थ्य</div>
+                <div class="subj-bar"><div class="subj-fill" style="width:0%;"></div></div>
+                <div class="subj-meta">Coming soon</div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Chapters -->
+        <div class="prac-step" id="prac-chapters">
+          <div class="prac-pad">
+            <div class="prac-crumb"><button class="prac-bk" onclick="practiceStep('prac-subjects')">← Subjects</button><span class="prac-sep">›</span><strong id="pc-subj">Maths</strong></div>
+            <div class="prac-label">PICK A CHAPTER</div>
+            <div id="chap-groups"></div>
+          </div>
+        </div>
+
+        <!-- Step 3: Practice -->
+        <div class="prac-step" id="prac-run">
+          <div class="prac-pad">
+            <div class="prac-crumb"><button class="prac-bk" id="pr-back" onclick="practiceStep('prac-chapters')">← Chapters</button><span class="prac-sep">›</span><span id="pr-subj">Maths</span><span class="prac-sep">›</span><strong id="pr-chap">Sets</strong></div>
+            <div class="prac-wrap">
+              <div class="cp-prog"><div class="cp-pbar"><div class="cp-pfill" id="cp-pfill" style="width:0%"></div></div><div class="cp-ptxt" id="cp-ptxt">0 / 0</div></div>
+
+              <div id="cp-qblock">
+                <div class="cp-qcard">
+                  <div class="cp-qmeta"><span class="cp-qnum" id="cp-qnum">Q1</span><span class="cp-qmarks" id="cp-qmarks">2 marks</span></div>
+                  <div class="cp-qtext" id="cp-qtext"></div>
+                  <textarea class="cp-qans" id="cp-qans" placeholder="Write your answer here…&#10;&#10;Show your working — just like the real SEE exam."></textarea>
+                  <div class="cp-qact"><button class="cp-bskip" onclick="cpSkip()">⤼ Skip</button><button class="cp-bcheck" onclick="cpCheck()">Check answer →</button></div>
+                </div>
+                <div class="cp-model" id="cp-model" style="display:none">
+                  <div class="cp-model-t">✓ Model answer</div>
+                  <div class="cp-model-b" id="cp-model-b"></div>
+                </div>
+                <div class="cp-assess" id="cp-assess" style="display:none">
+                  <p>How did you do?</p>
+                  <div class="cp-assess-btns"><button class="cp-bgot" onclick="cpResult('got_it')">✓ Got it</button><button class="cp-balmost" onclick="cpResult('almost')">~ Almost</button><button class="cp-bmiss" onclick="cpResult('missed')">✗ Didn't get it</button></div>
+                </div>
+              </div>
+
+              <div id="cp-doneblock" style="display:none"></div>
+
+              <div class="cp-tips" id="cp-tips" style="display:none">
+                <button class="cp-tips-tog" id="cp-tips-tog" onclick="cpToggleTips()">📋 Key Formulas &amp; Common Mistakes <span>▼</span></button>
+                <div class="cp-tips-body" id="cp-tips-body"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PAPERS VIEW (default) -->
+      <div class="vw act" id="vw-papers">
+        <div class="ppl-pad">
+          <div class="ppl-eyebrow">SEE · विगतका प्रश्नपत्र</div>
+          <div class="ppl-h1">Every past paper, <em>answered</em>.</div>
+          <div class="ppl-sub">Real SEE papers with model answers, free — in नेपाली or English. Pick a subject to begin.</div>
+          <div class="ppl-rule"></div>
+          <div class="ppl-slabel">Subject</div>
+          <div class="subtiles" id="subtiles"></div>
+          <div class="ppl-yrow"><span class="ppl-ylbl">Year</span><div class="ypills2" id="ypills"></div></div>
+          <div class="maphead" id="maphead"></div>
+          <div class="paplayout">
+            <div id="yblocks"></div>
+            <div class="pap-list"><div class="pap-list-h">Choose your province</div><div class="mapfb" id="mapfb"></div></div>
+          </div>
+          <div class="trust-strip">
+            <div class="ts-item"><span class="ts-ic ok">✓</span><div><div class="ts-t">Verified Papers</div><div class="ts-d">All papers are verified and curriculum aligned.</div></div></div>
+            <div class="ts-item"><span class="ts-ic">⚡</span><div><div class="ts-t">Fast &amp; Easy</div><div class="ts-d">Find any paper in seconds by subject, year &amp; province.</div></div></div>
+            <div class="ts-item"><span class="ts-ic">🔖</span><div><div class="ts-t">Save &amp; Access</div><div class="ts-d">Save your papers and access them anytime, anywhere.</div></div></div>
+            <div class="ts-item"><span class="ts-ic">🔒</span><div><div class="ts-t">100% Free</div><div class="ts-d">All past papers are completely free for SEE students.</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HEATMAP VIEW -->
+      <div class="vw" id="vw-heatmap">
+        <div class="vpad">
+          <div class="vtitle">Hot <em>Topics</em></div>
+          <div class="vsub">Which topics appear most across years of SEE exams.</div>
+          <div class="cs-wrap">
+            <div class="cs-icon-ring">🔥</div>
+            <div class="cs-premium">⭐ ujyalo Plus</div>
+            <div class="cs-title">Hot <em>Topics</em></div>
+            <div class="cs-desc">Stop guessing what to study. See the topics that show up year after year — and spend your time where it counts.</div>
+            <div class="cs-status"><span class="cs-pulse"></span> Analysing past papers — coming soon</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPARE VIEW -->
+      <div class="vw" id="vw-compare">
+        <div class="vpad">
+          <div class="vtitle">Year vs Year <em>Comparison</em></div>
+          <div class="vsub">See how exam questions evolve between two years.</div>
+          <div class="cs-wrap">
+            <div class="cs-icon-ring">↔️</div>
+            <div class="cs-premium">⭐ ujyalo Plus</div>
+            <div class="cs-title">Year vs Year <em>Comparison</em></div>
+            <div class="cs-desc">Two years, side by side. See exactly what the examiner keeps repeating — so nothing in your exam catches you off guard.</div>
+            <div class="cs-status"><span class="cs-pulse"></span> Building comparisons — coming soon</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PREDICT VIEW -->
+      <div class="vw" id="vw-predict">
+        <div class="vpad">
+          <div class="vtitle">Topic <em>Predictions</em></div>
+          <div class="vsub">Topics most likely to appear in your next SEE exam.</div>
+          <div class="cs-wrap">
+            <div class="cs-icon-ring">🎯</div>
+            <div class="cs-premium">⭐ ujyalo Plus</div>
+            <div class="cs-title">Topic <em>Predictions</em></div>
+            <div class="cs-desc">Walk into your exam knowing what's coming. We read years of patterns and tell you the topics most likely to appear next.</div>
+            <div class="cs-status"><span class="cs-pulse"></span> Training predictions — coming soon</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MY PAPER VIEW -->
+      <div class="vw" id="vw-mypaper">
+        <div class="vpad">
+          <div class="vtitle">My <em>Paper</em></div>
+          <div class="vsub">A personalised practice paper built from your weak topics.</div>
+          <div class="cs-wrap">
+            <div class="cs-icon-ring">⚡</div>
+            <div class="cs-premium">⭐ ujyalo Plus</div>
+            <div class="cs-title">My <em>Paper</em></div>
+            <div class="cs-desc">Your weak spots, turned into one paper built just for you. The more you practise, the smarter it gets.</div>
+            <div class="cs-bullets">
+              <div class="cs-bullet"><span class="cs-bullet-ico">1</span> Attempt past papers</div>
+              <div class="cs-bullet"><span class="cs-bullet-ico">2</span> We find where you struggle</div>
+              <div class="cs-bullet"><span class="cs-bullet-ico">3</span> Get a paper made just for you</div>
+            </div>
+            <div class="cs-status"><span class="cs-pulse"></span> Start practising to unlock</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SAVED VIEW -->
+      <div class="vw" id="vw-saved">
+        <div class="vpad">
+          <div class="bk-t">Bookmarked <em>Questions</em></div>
+          <div class="bk-s">Questions you've saved for later review.</div>
+          <div id="bk-list"></div>
+        </div>
+      </div>
+
+      <!-- PLUS HUB VIEW (mobile premium hub) -->
+      <div class="vw" id="vw-plus">
+        <div class="vpad">
+          <div class="plus-hero">
+            <div class="plus-hero-badge">⭐ ujyalo Plus</div>
+            <div class="plus-hero-title">Unlock your edge</div>
+            <div class="plus-hero-sub">Smart tools that turn your practice into exam-ready confidence.</div>
+          </div>
+          <div class="plus-cards">
+            <button class="plus-card" onclick="showView('heatmap',document.getElementById('nav-heatmap'))">
+              <div class="plus-card-ico">🔥</div>
+              <div class="plus-card-body"><div class="plus-card-nm">Hot Topics</div><div class="plus-card-ds">The topics examiners repeat most</div></div>
+              <div class="plus-card-star">⭐</div>
+            </button>
+            <button class="plus-card" onclick="showView('predict',document.getElementById('nav-predict'))">
+              <div class="plus-card-ico">🎯</div>
+              <div class="plus-card-body"><div class="plus-card-nm">Predict 2083</div><div class="plus-card-ds">Topics likely to appear next exam</div></div>
+              <div class="plus-card-star">⭐</div>
+            </button>
+            <button class="plus-card" onclick="showView('mypaper',document.getElementById('nav-mypaper'))">
+              <div class="plus-card-ico">⚡</div>
+              <div class="plus-card-body"><div class="plus-card-nm">My Paper</div><div class="plus-card-ds">A paper built from your weak spots</div></div>
+              <div class="plus-card-star">⭐</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /scroll -->
+  </div><!-- /mn -->
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="mbtm">
+    <button class="mbtm-i" id="mb-papers" onclick="mobileNav('papers',this)"><span class="mbtm-ic">📄</span><span class="mbtm-tx">Papers</span></button>
+    <button class="mbtm-i" id="mb-practice" onclick="mobileNav('practice',this)"><span class="mbtm-ic">📖</span><span class="mbtm-tx">Practice</span></button>
+    <button class="mbtm-i" id="mb-saved" onclick="mobileNav('saved',this)"><span class="mbtm-ic">🔖</span><span class="mbtm-tx">Saved</span></button>
+    <button class="mbtm-i mbtm-plus" id="mb-plus" onclick="mobileNav('plus',this)"><span class="mbtm-ic">⭐</span><span class="mbtm-tx">Plus</span></button>
+  </nav>
+</div><!-- /app -->
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+
+const SUBJECTS = [
+  {code:'maths',   name:'Maths',   np:'गणित',      icon:'∫',  accent:'#1a6fff', light:'#e8f0ff'},
+  {code:'science', name:'Science', np:'विज्ञान',    icon:'⚗',  accent:'#38c9b0', light:'#e0f7f2'},
+  {code:'english', name:'English', np:'अंग्रेजी',  icon:'Aa', accent:'#f59c1a', light:'#fff4e0'},
+  {code:'nepali',  name:'Nepali',  np:'नेपाली',    icon:'क',  accent:'#e84393', light:'#ffeaf5'},
+  {code:'social',  name:'Social',  np:'सामाजिक',   icon:'◉',  accent:'#7c3aed', light:'#f0ebff'},
+  {code:'hpe',     name:'HPE',     np:'स्वास्थ्य', icon:'♡',  accent:'#ef4444', light:'#fff0f0'},
+];
+
+const PROVINCES = [
+  {num:1, name:'Koshi',         np:'कोशी',        col:'#1a6fff'},
+  {num:2, name:'Madhesh',       np:'मधेश',         col:'#38c9b0'},
+  {num:3, name:'Bagmati',       np:'बागमती',       col:'#f59c1a'},
+  {num:4, name:'Gandaki',       np:'गण्डकी',       col:'#e84393'},
+  {num:5, name:'Lumbini',       np:'लुम्बिनी',     col:'#7c3aed'},
+  {num:6, name:'Karnali',       np:'कर्णाली',      col:'#ef4444'},
+  {num:7, name:'Sudurpashchim', np:'सुदूरपश्चिम',  col:'#22c55e'},
+];
+
+const NP_MAP={w:820,h:469,p:{"Koshi":{d:"M655.0,267.7 L659.2,268.5 L659.6,271.3 L662.3,271.9 L667.7,267.6 L672.7,268.1 L675.4,271.5 L674.1,275.7 L677.9,277.8 L685.7,277.1 L687.9,280.3 L691.5,281.4 L692.4,284.3 L703.0,285.7 L709.8,294.3 L710.7,298.3 L716.3,300.5 L721.8,300.6 L725.3,297.1 L729.6,297.9 L731.0,299.9 L735.0,299.7 L741.2,295.7 L742.5,298.0 L739.7,299.0 L744.3,300.3 L748.4,297.6 L753.0,298.0 L755.7,295.2 L758.1,296.8 L758.4,300.6 L760.6,301.7 L763.1,299.0 L766.0,298.7 L766.0,302.1 L772.1,302.3 L777.4,295.3 L778.0,291.5 L782.1,289.1 L782.8,285.4 L785.3,286.0 L786.2,290.2 L792.9,289.4 L798.2,293.1 L802.8,290.8 L806.2,293.0 L808.2,292.0 L809.4,295.2 L813.3,293.5 L819.5,296.7 L820.0,298.6 L817.2,300.5 L819.6,303.9 L817.7,309.0 L815.5,310.2 L814.3,318.3 L808.0,327.5 L804.1,337.7 L807.8,345.3 L804.8,347.2 L803.9,351.9 L806.4,356.0 L802.9,361.7 L801.0,369.7 L801.7,374.9 L798.5,380.8 L801.9,384.4 L803.5,390.3 L807.5,390.4 L809.0,394.0 L813.4,396.2 L811.9,400.1 L814.4,403.5 L813.5,406.1 L817.2,409.9 L816.6,413.1 L818.7,420.6 L815.9,436.1 L809.6,447.4 L808.8,450.9 L810.5,454.5 L809.0,455.9 L809.4,458.6 L806.9,462.2 L803.2,464.1 L802.8,467.2 L799.3,467.0 L798.9,464.0 L792.4,461.1 L792.2,457.9 L789.5,457.6 L790.6,456.5 L788.5,453.2 L784.5,459.0 L778.5,455.2 L776.3,461.9 L772.9,462.3 L767.3,459.1 L767.3,461.3 L764.5,462.5 L764.7,463.9 L759.9,465.4 L754.2,461.0 L746.0,458.5 L736.2,462.2 L735.1,467.6 L733.4,469.1 L730.5,466.4 L725.8,466.1 L724.8,461.9 L715.4,462.7 L708.2,457.4 L706.3,441.9 L703.5,441.7 L700.6,448.0 L692.3,449.8 L692.0,452.9 L689.4,453.1 L692.3,447.9 L698.3,443.5 L696.9,437.4 L700.4,432.1 L700.0,427.6 L698.1,429.0 L695.7,424.7 L692.2,424.2 L691.2,421.2 L687.4,427.4 L683.7,429.8 L681.3,427.2 L674.2,430.4 L672.5,427.4 L667.3,430.2 L665.3,428.3 L664.4,429.8 L659.8,430.1 L657.4,429.2 L656.1,424.3 L654.0,423.6 L656.5,419.2 L651.7,418.4 L654.1,415.7 L653.9,413.3 L650.7,413.8 L646.6,407.2 L637.0,404.9 L635.2,409.1 L627.3,407.4 L623.2,410.1 L614.1,403.9 L614.1,402.9 L614.2,402.5 L620.6,407.2 L626.9,400.3 L633.9,398.5 L635.1,396.8 L636.9,390.9 L633.2,386.9 L634.8,383.1 L629.2,382.0 L631.2,381.8 L632.9,377.6 L635.4,378.4 L637.6,373.9 L632.9,371.3 L632.7,368.3 L625.1,364.6 L621.5,367.3 L618.8,365.8 L622.6,361.4 L620.0,356.3 L620.7,350.7 L624.9,342.3 L634.1,334.4 L636.3,329.4 L642.1,324.6 L647.9,324.2 L652.5,317.7 L656.0,308.1 L655.4,302.4 L652.7,301.2 L654.2,290.4 L653.5,288.0 L650.9,286.8 L650.0,281.7 L652.1,274.6 L655.3,272.1 L655.0,267.7Z",cx:726.4,cy:370.4},"Madhesh":{d:"M453.8,341.5 L460.2,342.9 L462.1,345.4 L469.3,345.1 L470.0,343.6 L476.6,344.4 L478.5,346.9 L480.9,346.7 L492.1,353.2 L506.2,353.1 L510.3,360.9 L515.7,366.0 L522.0,366.0 L524.0,368.5 L528.6,367.9 L537.2,370.4 L545.2,375.9 L548.1,374.4 L546.9,376.8 L548.1,378.0 L561.0,378.7 L570.5,372.1 L579.1,376.0 L581.3,375.3 L584.5,379.9 L586.5,377.7 L592.1,380.6 L597.5,391.6 L608.4,392.5 L621.9,400.2 L624.4,404.3 L620.9,405.5 L620.7,407.2 L614.2,402.5 L614.0,403.8 L622.9,410.0 L627.3,407.4 L635.2,409.1 L637.0,404.9 L646.6,407.2 L650.7,413.8 L654.2,413.8 L651.7,418.4 L656.5,419.2 L654.0,423.5 L656.1,424.3 L657.4,429.3 L663.7,430.0 L665.3,428.3 L667.3,430.2 L672.5,427.4 L674.2,430.4 L681.3,427.2 L683.7,429.8 L687.4,427.4 L691.2,421.2 L692.2,424.2 L695.7,424.7 L698.1,429.0 L700.0,427.6 L700.4,432.2 L696.9,437.4 L698.3,443.5 L691.6,448.7 L688.1,453.3 L688.3,456.1 L682.3,458.7 L675.5,456.4 L671.9,460.6 L668.1,457.3 L655.8,452.1 L652.9,447.3 L648.4,446.9 L631.9,438.1 L623.7,438.3 L620.2,441.6 L618.0,440.9 L617.7,438.6 L612.0,439.5 L612.3,437.0 L601.0,432.6 L594.3,434.4 L593.1,438.7 L591.1,438.4 L583.1,443.8 L583.3,439.3 L579.9,439.9 L578.3,437.5 L571.6,434.5 L570.5,430.3 L571.6,417.8 L570.2,415.0 L562.3,411.3 L561.5,409.1 L556.6,412.0 L555.6,410.4 L554.6,412.7 L543.4,419.4 L538.7,418.4 L531.3,424.1 L518.9,422.2 L515.4,416.3 L516.7,409.3 L499.8,411.1 L500.6,408.8 L501.8,408.8 L502.5,407.6 L503.2,408.0 L503.6,407.6 L503.7,407.4 L494.4,404.1 L495.4,401.3 L493.8,399.0 L486.7,397.9 L480.1,392.1 L476.8,395.0 L474.8,392.4 L473.1,394.1 L461.6,389.2 L462.0,385.8 L464.9,383.4 L466.4,368.9 L459.6,356.0 L445.7,352.8 L451.3,350.3 L451.9,347.7 L450.5,347.0 L452.1,346.6 L453.8,341.5Z",cx:566.9,cy:402.4},"Bagmati":{d:"M569.3,235.8 L573.0,252.7 L575.8,256.1 L583.1,258.9 L585.2,265.8 L588.1,267.5 L588.3,273.8 L596.0,280.4 L593.1,286.6 L597.2,289.4 L604.9,291.5 L610.8,288.3 L606.3,277.7 L607.9,272.9 L606.7,269.6 L611.4,268.5 L612.6,265.6 L616.3,263.6 L615.8,260.7 L617.1,260.1 L620.5,267.2 L620.7,269.0 L618.9,270.4 L621.8,283.0 L627.4,282.5 L630.4,286.0 L632.1,284.0 L633.4,287.1 L636.7,287.1 L639.7,290.7 L642.9,290.8 L645.6,286.2 L648.4,284.9 L653.6,288.1 L654.2,296.0 L652.7,301.2 L655.4,302.4 L656.0,308.1 L651.3,320.0 L647.9,324.2 L642.1,324.6 L636.3,329.4 L634.1,334.4 L624.9,342.3 L620.7,350.7 L620.0,356.3 L622.6,361.4 L618.8,365.8 L621.5,367.3 L625.1,364.6 L632.7,368.3 L632.9,371.3 L637.6,373.9 L635.4,378.4 L632.9,377.6 L631.2,381.8 L629.2,382.0 L634.8,383.1 L633.2,386.9 L636.9,390.9 L633.9,398.5 L626.9,400.3 L624.5,403.7 L617.2,396.5 L609.0,392.7 L597.5,391.6 L592.1,380.6 L586.5,377.7 L584.5,379.9 L581.4,375.4 L579.1,376.0 L570.6,372.1 L561.0,378.7 L548.0,378.0 L546.9,376.8 L548.1,374.4 L545.2,375.9 L537.2,370.4 L528.6,367.9 L524.0,368.5 L522.0,366.0 L515.7,366.0 L508.1,357.8 L506.3,353.1 L499.8,354.2 L497.5,352.6 L490.2,352.8 L476.6,344.4 L470.0,343.6 L469.3,345.1 L462.1,345.4 L460.2,342.9 L453.5,341.5 L452.1,346.6 L450.5,347.0 L451.9,347.7 L451.3,350.3 L447.7,350.8 L444.3,353.8 L441.3,352.1 L426.3,350.4 L422.5,342.7 L417.9,343.8 L417.6,340.7 L411.9,338.8 L411.6,335.1 L406.8,335.3 L406.5,338.4 L399.7,344.8 L390.0,343.0 L391.3,341.1 L390.7,338.2 L393.8,335.5 L392.2,334.1 L389.4,335.5 L389.3,332.1 L400.1,333.0 L402.0,330.8 L408.5,331.1 L417.7,321.4 L422.9,319.9 L431.5,314.1 L435.1,316.5 L440.2,313.8 L439.4,309.6 L442.3,307.5 L444.4,308.2 L440.3,304.4 L441.7,300.3 L449.0,301.0 L449.5,299.2 L452.8,298.8 L455.4,294.4 L459.4,293.7 L465.9,301.7 L470.5,303.4 L473.7,300.8 L475.7,301.4 L471.0,292.3 L472.0,284.6 L478.6,279.7 L478.4,275.7 L481.9,266.7 L484.5,266.2 L486.8,268.6 L489.4,268.2 L490.5,265.5 L493.3,265.5 L495.0,258.2 L493.8,255.6 L500.4,250.0 L500.9,245.3 L504.5,241.1 L508.5,240.3 L515.9,242.9 L518.0,241.0 L525.1,247.1 L531.9,245.2 L535.7,248.1 L539.5,242.6 L548.6,241.8 L558.1,245.2 L558.9,250.6 L564.2,245.3 L564.7,240.2 L566.7,240.3 L566.5,236.2 L569.3,235.8Z",cx:545.2,cy:316.8},"Gandaki":{d:"M393.2,127.6 L398.5,132.4 L401.3,131.1 L409.0,133.5 L408.6,137.6 L417.2,138.0 L417.0,141.0 L413.3,144.3 L414.5,150.5 L417.2,151.3 L416.0,160.1 L419.2,159.4 L421.9,161.3 L419.7,177.6 L423.7,177.2 L429.5,181.2 L431.5,180.1 L438.1,182.3 L437.3,185.0 L440.8,186.0 L440.9,191.9 L443.3,194.0 L446.5,195.9 L453.0,193.9 L454.5,195.8 L460.0,195.7 L464.2,201.8 L467.9,203.2 L466.9,207.1 L483.2,214.7 L487.6,212.1 L492.1,211.9 L492.5,213.6 L495.9,212.3 L503.5,201.9 L506.1,203.2 L509.2,201.4 L513.4,206.4 L515.9,206.2 L517.6,208.3 L515.1,211.6 L516.9,214.9 L516.4,218.9 L514.3,219.1 L513.0,223.8 L509.6,224.4 L507.6,227.7 L510.4,235.1 L508.5,240.3 L502.3,242.7 L500.4,250.0 L494.1,255.1 L495.0,258.2 L493.3,265.5 L490.5,265.5 L489.4,268.2 L486.8,268.6 L484.5,266.2 L481.9,266.7 L478.4,275.7 L478.6,279.7 L472.0,284.6 L471.0,292.3 L475.7,301.3 L473.7,300.8 L470.5,303.4 L465.9,301.7 L459.4,293.7 L455.4,294.4 L452.8,298.8 L449.5,299.2 L449.0,301.0 L441.7,300.3 L440.3,304.4 L444.4,308.2 L442.3,307.5 L439.4,309.6 L440.2,313.8 L435.0,316.5 L431.5,314.1 L422.9,319.9 L417.7,321.4 L408.5,331.1 L402.0,330.8 L400.1,333.0 L389.3,332.1 L389.4,335.5 L392.3,334.1 L393.8,336.0 L390.7,338.2 L390.5,342.8 L386.4,344.4 L384.3,338.5 L386.6,337.4 L384.4,336.0 L385.1,334.0 L381.5,330.3 L380.4,332.1 L380.4,327.4 L375.8,325.1 L378.0,318.6 L369.2,317.5 L366.2,318.7 L367.2,316.3 L364.4,312.2 L369.6,313.3 L375.0,311.5 L381.4,313.3 L381.3,310.3 L389.3,311.3 L391.9,308.9 L395.9,308.7 L399.6,300.5 L399.8,296.4 L384.6,292.8 L382.7,294.5 L381.3,293.5 L381.4,295.1 L377.5,294.5 L373.0,290.3 L371.0,291.4 L364.3,288.3 L360.1,291.5 L359.3,288.5 L354.1,288.0 L353.7,286.5 L351.4,288.2 L349.7,287.0 L349.0,288.7 L347.4,286.8 L344.9,288.8 L340.6,287.7 L344.8,282.1 L349.7,284.0 L354.4,282.9 L357.0,280.3 L356.3,277.6 L352.8,275.9 L352.7,272.6 L354.7,271.1 L352.0,266.6 L347.6,265.5 L345.1,267.0 L343.9,264.9 L338.8,265.7 L332.0,257.4 L323.8,258.5 L314.8,249.0 L313.1,250.5 L311.9,249.0 L309.4,251.4 L305.6,250.6 L306.0,248.3 L303.0,244.1 L291.7,238.8 L290.5,234.4 L287.8,233.9 L287.6,230.3 L284.0,225.8 L287.3,225.0 L283.9,221.0 L287.6,219.6 L288.2,215.1 L293.9,217.5 L294.7,214.6 L291.4,211.5 L293.9,208.0 L302.0,209.0 L307.9,207.7 L308.2,202.9 L310.2,202.7 L311.6,199.7 L310.9,194.5 L317.4,196.2 L319.3,195.0 L324.1,197.3 L332.7,196.0 L335.3,192.6 L344.9,190.4 L344.6,184.1 L346.7,183.1 L346.5,179.6 L355.8,167.4 L358.1,166.9 L357.9,161.4 L359.8,158.1 L358.2,154.3 L364.7,151.4 L362.3,142.2 L367.8,137.5 L376.5,136.9 L376.2,133.8 L378.1,130.9 L381.6,131.4 L387.3,128.2 L391.6,129.3 L393.2,127.6Z",cx:401.9,cy:233.1},"Lumbini":{d:"M263.1,182.4 L265.6,181.0 L270.2,183.2 L272.6,187.4 L277.8,184.8 L290.9,185.1 L294.3,188.3 L304.2,190.0 L307.7,194.9 L310.9,194.5 L311.6,199.7 L310.2,202.7 L308.2,202.9 L307.9,207.7 L302.0,209.0 L293.9,208.0 L291.4,211.5 L294.7,214.6 L294.2,216.9 L287.8,215.4 L287.6,219.6 L283.9,221.0 L287.3,225.2 L284.1,225.5 L284.4,227.2 L287.6,230.3 L287.8,233.9 L290.5,234.4 L291.7,238.8 L302.4,243.6 L306.0,248.3 L305.6,250.6 L309.4,251.4 L311.9,249.0 L313.1,250.5 L314.8,249.0 L323.8,258.5 L332.0,257.4 L338.8,265.7 L343.9,264.9 L345.1,267.0 L347.6,265.5 L352.0,266.6 L354.7,271.1 L352.7,272.6 L352.8,275.9 L356.3,277.6 L357.0,280.3 L354.4,282.9 L349.7,284.0 L344.8,282.1 L340.6,287.7 L344.9,288.8 L347.4,286.8 L349.0,288.7 L349.7,287.0 L351.4,288.2 L353.7,286.5 L354.1,288.0 L359.3,288.5 L360.1,291.5 L364.3,288.3 L371.0,291.4 L373.0,290.3 L377.5,294.5 L381.4,295.1 L381.3,293.5 L382.7,294.5 L384.6,292.8 L399.8,296.4 L399.6,300.5 L395.9,308.7 L391.9,308.9 L389.3,311.3 L381.3,310.3 L381.4,313.3 L375.0,311.5 L369.6,313.3 L368.1,312.5 L364.9,311.9 L364.4,312.2 L367.2,316.3 L366.2,318.7 L369.2,317.5 L378.0,318.6 L375.8,325.2 L380.4,327.4 L380.4,332.1 L381.9,330.5 L385.1,334.0 L384.4,336.1 L386.6,337.4 L384.3,338.5 L386.4,344.4 L383.6,345.6 L384.1,349.6 L387.4,350.0 L385.6,353.4 L383.1,354.8 L358.1,340.7 L335.4,339.6 L336.7,342.1 L334.9,344.5 L337.5,347.2 L332.4,355.2 L326.9,356.5 L323.7,354.1 L323.6,350.6 L315.1,342.5 L299.7,343.1 L291.6,340.9 L289.1,337.1 L269.6,336.9 L271.6,327.2 L269.5,324.7 L269.7,320.8 L267.2,318.3 L266.8,311.8 L240.7,316.8 L216.5,298.0 L207.9,295.4 L202.7,288.9 L192.3,288.1 L188.1,296.0 L184.0,296.4 L165.1,281.3 L157.7,279.8 L143.0,270.5 L143.6,266.5 L140.1,263.9 L139.7,261.5 L132.5,259.7 L132.2,263.7 L126.8,264.7 L127.8,263.0 L125.2,261.0 L127.2,260.7 L127.1,257.4 L118.2,246.9 L118.4,242.8 L116.3,239.0 L102.8,235.9 L100.8,233.3 L104.0,227.6 L110.9,222.6 L119.9,211.9 L123.8,205.8 L123.5,202.9 L125.8,203.0 L127.1,203.6 L126.7,207.1 L135.2,210.5 L138.9,215.9 L150.9,223.3 L161.1,232.4 L172.0,237.6 L169.8,244.1 L174.1,246.3 L174.7,248.6 L179.8,248.9 L181.5,252.7 L187.6,254.0 L196.3,262.7 L199.8,253.6 L205.7,250.3 L210.0,252.9 L212.6,251.2 L220.1,252.8 L225.8,251.8 L232.5,258.3 L235.1,258.3 L235.5,260.7 L236.5,254.7 L239.5,251.8 L236.2,250.0 L232.1,243.4 L234.1,237.3 L230.9,231.5 L233.4,230.7 L237.6,219.5 L242.1,220.3 L245.1,216.7 L254.0,212.9 L253.9,209.7 L246.7,208.1 L244.4,206.7 L244.8,204.5 L246.0,203.6 L251.4,206.3 L255.9,203.3 L257.5,198.7 L256.1,195.0 L252.5,194.8 L252.1,192.1 L257.9,187.4 L257.3,185.4 L260.3,180.8 L263.1,182.4Z",cx:264.9,cy:274.1},"Karnali":{d:"M157.9,0.0 L168.0,4.0 L170.4,6.5 L182.2,7.8 L186.9,11.0 L190.4,10.0 L194.3,14.3 L197.2,11.6 L201.1,13.0 L202.9,10.0 L206.1,11.0 L208.4,16.5 L205.4,23.7 L208.4,25.2 L209.5,28.3 L214.1,29.2 L213.8,32.6 L216.2,33.5 L212.7,37.1 L214.3,38.3 L212.2,41.7 L212.8,43.6 L220.4,42.4 L225.6,46.7 L229.2,45.7 L232.1,49.8 L235.3,48.3 L245.8,57.2 L248.9,54.3 L250.8,55.3 L256.2,63.7 L260.2,65.9 L258.0,69.7 L265.7,67.6 L268.7,69.9 L269.7,72.4 L265.4,74.9 L265.0,78.2 L271.3,77.9 L272.3,81.8 L277.9,83.0 L278.7,86.5 L282.2,87.2 L289.7,84.8 L291.8,89.7 L297.1,88.5 L304.8,96.5 L308.3,93.6 L311.3,94.1 L312.8,95.0 L312.2,97.2 L314.3,97.6 L316.0,95.6 L318.2,96.2 L317.8,98.1 L319.6,99.4 L324.2,100.4 L324.6,101.7 L321.9,101.8 L323.1,107.4 L330.9,108.9 L330.7,112.2 L333.6,116.5 L337.9,117.3 L339.1,119.4 L338.0,124.4 L340.8,126.0 L340.3,130.2 L342.8,133.8 L345.3,133.5 L348.1,136.2 L348.4,140.3 L350.2,142.2 L353.8,142.3 L354.2,144.9 L357.7,144.8 L360.0,147.4 L362.4,145.4 L364.3,148.7 L364.7,151.4 L358.2,154.3 L359.8,158.1 L357.9,161.4 L358.1,166.9 L355.8,167.4 L346.5,179.6 L346.7,183.1 L344.6,184.1 L344.9,190.4 L335.3,192.6 L332.7,196.0 L324.1,197.3 L319.3,195.0 L317.4,196.2 L307.7,194.9 L304.2,190.0 L294.3,188.3 L290.9,185.1 L277.8,184.8 L272.6,187.4 L270.2,183.2 L260.4,180.7 L257.3,185.4 L257.9,187.4 L252.1,192.1 L252.5,194.8 L256.1,195.0 L257.5,201.0 L251.4,206.3 L246.0,203.6 L244.8,204.5 L244.4,206.7 L246.7,208.1 L253.9,209.7 L254.0,212.9 L245.1,216.7 L242.1,220.3 L237.6,219.5 L233.4,230.7 L230.8,231.7 L234.1,237.3 L232.1,243.4 L236.2,250.0 L239.5,251.8 L236.5,254.7 L235.5,260.7 L235.1,258.3 L232.5,258.3 L225.8,251.8 L220.1,252.8 L212.6,251.2 L210.0,252.9 L205.7,250.3 L199.8,253.6 L196.3,262.7 L187.6,254.0 L181.5,252.7 L179.8,248.9 L174.7,248.6 L174.1,246.3 L169.8,244.1 L172.0,237.6 L161.1,232.4 L150.9,223.3 L138.9,215.9 L135.2,210.5 L126.6,207.1 L127.1,203.6 L123.5,202.9 L121.7,199.4 L122.2,196.8 L120.6,196.4 L119.8,190.7 L117.6,189.0 L119.2,187.2 L115.6,181.3 L115.3,186.5 L110.2,184.9 L109.2,180.0 L105.1,183.3 L92.9,172.5 L99.8,168.0 L106.8,169.7 L115.4,176.0 L119.5,175.2 L121.6,176.7 L125.2,174.0 L130.6,178.1 L138.3,175.7 L141.6,177.7 L141.5,182.4 L147.4,188.0 L146.7,190.7 L148.7,192.8 L147.2,194.2 L153.3,193.1 L146.1,178.1 L139.6,172.3 L136.1,165.9 L142.1,156.6 L151.8,151.1 L147.6,148.0 L145.1,148.1 L143.9,145.7 L143.8,139.7 L145.1,138.2 L141.9,134.4 L146.0,129.5 L151.0,124.5 L151.9,125.7 L156.6,123.1 L159.6,124.8 L160.1,128.8 L169.3,127.3 L171.4,121.4 L174.3,121.0 L175.1,119.0 L175.8,111.1 L174.2,108.3 L171.6,107.7 L174.7,104.8 L175.2,99.5 L172.7,96.2 L166.9,94.4 L165.0,87.9 L169.3,74.8 L173.4,73.1 L175.3,62.4 L166.9,61.4 L164.1,56.9 L159.8,57.0 L146.9,59.9 L145.6,63.3 L142.2,63.7 L140.8,62.4 L140.4,56.9 L142.0,55.2 L141.4,51.6 L135.2,48.4 L130.8,49.8 L122.2,45.9 L124.1,38.2 L120.6,34.3 L125.5,32.2 L128.3,33.5 L134.7,27.1 L134.3,22.4 L136.8,18.8 L135.0,18.8 L135.3,17.5 L137.4,16.1 L134.7,14.0 L135.7,10.6 L134.6,8.9 L138.0,7.2 L135.2,5.7 L135.9,2.8 L139.6,3.4 L144.1,7.4 L150.4,8.7 L151.3,2.0 L155.9,3.9 L157.9,0.0Z",cx:223.8,cy:136.5},"Sudurpashchim":{d:"M93.8,22.9 L97.5,24.2 L99.3,26.9 L98.2,28.5 L103.2,34.1 L103.0,39.5 L105.8,41.2 L104.0,44.8 L108.2,49.2 L113.3,49.8 L114.4,48.4 L118.1,50.2 L120.3,48.8 L118.7,47.4 L122.2,45.9 L132.7,50.3 L136.4,48.9 L141.4,51.6 L142.0,55.2 L140.4,56.9 L140.8,62.4 L142.2,63.7 L145.6,63.3 L146.9,59.9 L159.8,57.0 L164.1,56.9 L166.9,61.4 L175.3,62.4 L173.4,73.1 L169.3,74.8 L165.0,87.9 L166.9,94.4 L172.7,96.2 L175.2,99.5 L174.7,104.8 L171.6,107.7 L174.2,108.3 L175.8,111.1 L175.1,119.0 L174.3,121.0 L171.4,121.4 L169.3,127.3 L160.1,128.8 L159.6,124.8 L156.6,123.1 L151.9,125.7 L151.0,124.5 L146.0,129.5 L141.9,134.4 L145.1,138.2 L143.8,139.7 L143.9,145.7 L145.1,148.1 L147.6,148.0 L151.8,151.1 L142.1,156.6 L136.1,165.9 L139.6,172.3 L146.1,178.1 L153.2,190.7 L153.2,193.3 L147.2,194.2 L148.7,192.8 L146.7,190.7 L147.4,188.0 L141.5,182.4 L141.6,177.7 L138.3,175.7 L130.6,178.1 L125.2,174.0 L121.6,176.7 L119.5,175.2 L115.4,176.0 L106.8,169.7 L99.8,168.0 L93.0,172.4 L105.1,183.3 L109.2,180.0 L110.2,184.9 L115.3,186.5 L114.5,184.6 L115.6,181.3 L119.2,187.2 L117.6,189.0 L119.8,190.7 L120.6,196.4 L122.2,196.8 L121.6,199.4 L123.8,204.0 L119.8,212.0 L110.9,222.6 L103.9,227.7 L100.8,233.1 L101.6,234.8 L96.9,233.0 L98.2,231.0 L96.1,229.8 L96.6,228.3 L91.3,229.9 L92.8,227.9 L90.0,228.8 L88.0,227.5 L89.0,226.4 L86.3,227.6 L84.3,222.1 L79.1,223.3 L73.6,220.0 L71.4,215.2 L66.1,215.0 L63.6,212.8 L64.2,210.9 L62.3,210.8 L61.3,206.5 L53.5,205.8 L53.6,202.2 L51.4,201.2 L48.5,200.9 L44.8,203.8 L47.6,214.5 L46.2,216.8 L41.3,213.2 L39.6,208.0 L30.4,207.2 L26.9,203.7 L26.1,199.9 L19.9,196.5 L20.8,194.9 L19.4,193.3 L15.9,193.5 L6.0,185.1 L1.7,185.6 L0.0,175.1 L4.2,167.1 L6.0,167.6 L7.8,164.7 L6.7,164.0 L7.1,158.5 L8.7,153.7 L12.6,149.8 L17.6,152.0 L21.5,149.3 L18.4,142.3 L19.1,140.2 L23.0,143.2 L24.0,142.0 L23.4,139.0 L26.0,129.5 L22.3,125.9 L21.8,120.5 L18.4,118.4 L18.6,114.7 L24.6,113.6 L23.0,110.9 L29.3,106.1 L30.2,104.6 L28.6,102.2 L32.3,101.3 L35.2,97.4 L36.4,92.4 L32.8,88.3 L31.1,79.7 L34.1,78.7 L35.1,74.6 L37.9,73.3 L43.8,74.5 L45.2,71.3 L49.8,68.2 L54.1,56.4 L57.5,55.0 L62.0,55.9 L66.6,51.0 L69.1,50.6 L70.8,45.4 L82.5,36.3 L81.0,31.7 L84.5,26.7 L87.5,24.1 L93.8,22.9Z",cx:88.8,cy:128.4}}};
+
+const YEAR_AD = {2082:2026,2081:2025,2080:2024,2079:2023,2078:2022,2077:2021};
+
+const HEAT = {
+  maths:[
+    {t:'Quadratic Equations',   f:10, m:8,  l:95},
+    {t:'Statistics',            f:10, m:6,  l:95},
+    {t:'Coordinate Geometry',   f:9,  m:8,  l:90},
+    {t:'Functions & Graphs',    f:9,  m:4,  l:90},
+    {t:'Trigonometry',          f:8,  m:6,  l:80},
+    {t:'Sets & Venn Diagrams',  f:7,  m:4,  l:70},
+    {t:'Mensuration',           f:6,  m:6,  l:60},
+    {t:'Probability',           f:5,  m:4,  l:50},
+    {t:'Financial Maths',       f:5,  m:4,  l:50},
+    {t:'Sequence & Series',     f:4,  m:4,  l:40},
+  ],
+  english:[
+    {t:'Reading Comprehension', f:10, m:15, l:100},
+    {t:'Grammar',               f:10, m:11, l:100},
+    {t:'Essay Writing',         f:10, m:8,  l:100},
+    {t:'Letter Writing',        f:9,  m:6,  l:90},
+    {t:'Vocabulary',            f:8,  m:5,  l:80},
+    {t:'Report / Diary',        f:7,  m:5,  l:70},
+    {t:'Dialogue Writing',      f:6,  m:6,  l:60},
+    {t:'Notice Writing',        f:5,  m:5,  l:50},
+  ],
+  science:[
+    {t:'Human Body Systems',    f:9, m:8, l:90},
+    {t:'Chemical Reactions',    f:8, m:6, l:80},
+    {t:'Electricity',           f:8, m:8, l:80},
+    {t:'Light & Optics',        f:7, m:6, l:70},
+    {t:'Ecosystem',             f:7, m:4, l:70},
+    {t:'Heredity & Evolution',  f:6, m:6, l:60},
+  ],
+};
+
+const CMP_DATA = {
+  'maths-2082-2081':{
+    y1:{topic:'Quadratic Equations', q:'Solve: 2x² + 7x + 3 = 0 by factorisation and verify your answer.', insight:'Tests factorisation and verification skills.'},
+    y2:{topic:'Quadratic Equations', q:'Solve: x² − 5x + 6 = 0 and check your answer.', insight:'Same technique, different coefficients.'},
+    pat:'Quadratic Equations has appeared in every SEE paper for 10 consecutive years. Expect it again in 2083 — likely 8 marks.',
+  },
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+
+const S = {subj:'maths', year:'all', data:null};
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+(async function init(){
+  renderTabs();
+  renderBookmarks();
+  // Papers is the default view, so the subject tabs are visible on load.
+  syncMobileChrome('papers');
+  await loadPapers();
+  // Deep-link support: #practice, #saved, #papers — and #practice/<subject>/<chapter>
+  var _deep=(location.hash||'').replace('#','');
+  var _parts=_deep.split('/');
+  var _view=_parts[0];
+  var _navMap={papers:'nav-papers',practice:'nav-practice',saved:'nav-saved'};
+  if(_view && _navMap[_view]){
+    showView(_view, document.getElementById(_navMap[_view]));
+    if(_view==='practice' && _parts[1]){
+      var _subj=decodeURIComponent(_parts[1]);
+      if(typeof PRAC_STRUCT!=='undefined' && PRAC_STRUCT[_subj]){
+        practiceChapters(_subj);
+        if(_parts[2]){ practiceRun(decodeURIComponent(_parts[2])); }
+      }
+    }
+  }
+})();
+
+// ─── PAPERS API ──────────────────────────────────────────────────────────────
+
+async function loadPapers(){
+  try{
+    const r = await fetch('/api/see-papers');
+    if(!r.ok) throw new Error();
+    S.data = await r.json();
+    renderPapers();
+  }catch{
+    document.getElementById('yblocks').innerHTML =
+      `<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-t">Couldn't load papers</div><div class="empty-s">Please refresh the page.</div></div>`;
+  }
+}
+
+// ─── SUBJECT TABS ────────────────────────────────────────────────────────────
+
+function renderSubjectTiles(){
+  var box=document.getElementById('subtiles'); if(!box) return;
+  var g=(S.data&&S.data.grouped)||{};
+  var list=SUBJECTS.slice().sort(function(a,b){
+    var ha=(g[a.code]&&Object.keys(g[a.code]).length>0)?1:0;
+    var hb=(g[b.code]&&Object.keys(g[b.code]).length>0)?1:0;
+    return hb-ha;           // subjects with papers first; empty ones last (stable)
+  });
+  box.innerHTML=list.map(function(s){
+    var has=g[s.code]&&Object.keys(g[s.code]).length>0;
+    var on=s.code===S.subj;
+    var cls='st2'+(on?' on':'')+(has?'':' soon');
+    var click=has?(' onclick="switchSubj(\''+s.code+'\')"'):'';
+    return '<button class="'+cls+'"'+click+'><span class="st2-ic">'+s.icon+'</span><span class="st2-tx"><span class="st2-nm">'+s.name+'</span><span class="st2-np">'+(has?s.np:'Coming soon')+'</span></span></button>';
+  }).join('');
+}
+
+function renderTabs(){ renderSubjectTiles(); }
+
+function switchSubj(code){
+  S.subj=code; S.year='all';
+  goView('papers');
+  document.querySelectorAll('.li').forEach(function(i){i.classList.remove('act');});
+  var np=document.getElementById('nav-papers'); if(np) np.classList.add('act');
+  renderPapers();
+}
+
+// ─── HERO ────────────────────────────────────────────────────────────────────
+
+function renderHero(){
+  const s = subj(S.subj);
+  const ico = document.getElementById('h-ico');
+  ico.textContent = s.icon; ico.style.background = s.light; ico.style.color = s.accent;
+  document.getElementById('h-nm').innerHTML = `${s.name} <em id="h-nm-np" style="color:${s.accent}">/ ${s.np}</em>`;
+  const d = S.data?.grouped?.[s.code]||{};
+  const years = Object.keys(d);
+  const total = years.reduce((a,y)=>a+d[y].length,0);
+  document.getElementById('h-sb').textContent = `${years.length} year${years.length!==1?'s':''} · 7 provinces · ${total} paper${total!==1?'s':''}`;
+  document.getElementById('st-papers').textContent = total||'—';
+  document.getElementById('st-years').textContent = years.length||'—';
+}
+
+// ─── PAPERS VIEW ─────────────────────────────────────────────────────────────
+
+function renderPapers(){
+  if(!S.data) return;
+  renderSubjectTiles();
+  var s=subj(S.subj);
+  var d=(S.data.grouped&&S.data.grouped[S.subj])||{};
+  var years=Object.keys(d).sort(function(a,b){return b-a;});
+  var curYear=(S.year!=='all'&&years.indexOf(S.year)>=0)?S.year:(years[0]||null);
+  document.getElementById('ypills').innerHTML=years.map(function(y){
+    return '<button class="yp2'+(y===curYear?' on':'')+'" onclick="setYear(\''+y+'\')">'+y+'</button>';
+  }).join('');
+  if(!curYear){
+    document.getElementById('maphead').innerHTML='';
+    document.getElementById('yblocks').innerHTML='<div class="ppl-empty">No '+s.name+' papers yet — coming soon.</div>';
+    document.getElementById('mapfb').innerHTML='';
+    return;
+  }
+  document.getElementById('maphead').innerHTML=
+    '<span class="mh-t">'+s.name+' · '+curYear+'</span>'+
+    '<span class="mh-legend"><span><i class="lk pr"></i>In progress</span><span><i class="lk dn"></i>Done</span><span><i class="lk av"></i>Available</span><span><i class="lk sn"></i>Coming soon</span></span>';
+  var avail=(d[curYear]||[]).map(function(p){return p.province;});
+  renderMap(curYear, s, avail);
+}
+
+function renderMap(year, s, avail){
+  var availSet={}; avail.forEach(function(n){availSet[n]=1;});
+  var paths='', labels='', badges='', gridLive='', gridSoon='';
+  PROVINCES.forEach(function(p){
+    var m=NP_MAP.p[p.name]; if(!m) return;
+    var live=!!availSet[p.name];
+    var pct=0;
+    if(live){ var pr=getProgress(s.code+'-'+year+'-'+p.name.toLowerCase()); pct=(pr&&pr.pct)||0; }
+    var st=!live?'soon':(pct>=100?'done':(pct>0?'progress':'avail'));
+    var sub=!live?'Soon':(pct>=100?'Done':(pct>0?pct+'%':'Start'));
+    var click=live?(' onclick="openPaper(\''+s.code+'\',\''+year+'\',\''+p.name+'\')" style="cursor:pointer"'):'';
+    paths+='<path class="prov '+st+'" d="'+m.d+'"'+click+'><title>'+p.name+' — '+sub+'</title></path>';
+    var nm=p.name==='Sudurpashchim'?'Sudur.':p.name;
+    labels+='<text class="plabel '+st+'" x="'+m.cx+'" y="'+(m.cy+6)+'">'+nm+'</text>';
+    labels+='<text class="psub '+st+'" x="'+m.cx+'" y="'+(m.cy+19)+'">'+sub+'</text>';
+    var bc=live?p.col:'#b9b2a0';
+    badges+='<g'+click+'><circle class="pbg" cx="'+m.cx+'" cy="'+(m.cy-14)+'" r="10.5" fill="'+bc+'"></circle><text class="pbt" x="'+m.cx+'" y="'+(m.cy-10.5)+'">'+p.num+'</text></g>';
+    var action=live?'<span class="gopen">📄 Open Paper</span>':'<span class="pp soon">Soon</span>';
+    var gitem='<div class="gr '+(live?'on':'off')+'"'+click+'><span class="gb" style="background:'+bc+'">'+p.num+'</span><span class="gn">'+p.name+'</span>'+action+'</div>';
+    if(live){gridLive+=gitem;}else{gridSoon+=gitem;}
+  });
+  document.getElementById('yblocks').innerHTML=
+    '<div class="mapwrap"><svg viewBox="-14 -16 '+(NP_MAP.w+28)+' '+(NP_MAP.h+30)+'" class="npmap" xmlns="http://www.w3.org/2000/svg">'+paths+labels+badges+'</svg>'+
+    '<div class="taphint"><span class="th-ic">\uD83D\uDCD6</span><span>Click on the map or select a province from the list to open past papers.</span></div></div>';
+  document.getElementById('mapfb').innerHTML=gridLive+gridSoon;
+}
+
+function openPaper(code,year,province){
+  // Clean URL: /see/past-papers/<year>/<province>/<subject>
+  // Province lowercased to match the sitemap + canonical convention.
+  var prov = String(province||'').toLowerCase();
+  var subj = String(code||'').toLowerCase();
+  window.location.href = '/see/past-papers/'+encodeURIComponent(year)+'/'+encodeURIComponent(prov)+'/'+encodeURIComponent(subj);
+}
+
+function setYear(y){ S.year=y; renderPapers(); }
+
+function searchProv(q){
+  const qL = q.toLowerCase();
+  document.querySelectorAll('.pc').forEach(c=>{
+    const nm = c.querySelector('.pc-nm')?.textContent?.toLowerCase()||'';
+    const np = c.querySelector('.pc-np')?.textContent?.toLowerCase()||'';
+    c.style.display = (!qL||nm.includes(qL)||np.includes(qL)) ? '' : 'none';
+  });
+}
+
+// ─── VIEW SWITCH ─────────────────────────────────────────────────────────────
+
+function showView(id,btn){
+  goView(id);
+  document.querySelectorAll('.li').forEach(i=>i.classList.remove('act'));
+  if(btn) btn.classList.add('act');
+  document.getElementById('scroll').scrollTop=0;
+  syncMobileChrome(id);
+}
+function goView(id){
+  document.querySelectorAll('.vw').forEach(v=>v.classList.remove('act'));
+  document.getElementById('vw-'+id).classList.add('act');
+  // Subject tabs belong only to the Past Papers view
+  var stabs=document.getElementById('stabs');
+  if(stabs) stabs.style.display = (id==='papers') ? '' : 'none';
+  // When leaving practice, reset to step 1 so it's clean on return
+  if(id!=='practice') practiceStep('prac-subjects', true);
+}
+
+/* ─── MOBILE CHROME (top header + bottom nav sync) ─────────────────────────── */
+function syncMobileChrome(viewId){
+  // bottom nav highlight
+  var map={papers:'mb-papers',practice:'mb-practice',saved:'mb-saved',plus:'mb-plus',
+           heatmap:'mb-plus',predict:'mb-plus',mypaper:'mb-plus'};
+  document.querySelectorAll('.mbtm-i').forEach(b=>b.classList.remove('act'));
+  var mbId=map[viewId]; if(mbId) document.getElementById(mbId)?.classList.add('act');
+  updateMobileHeader(viewId);
+}
+function updateMobileHeader(viewId){
+  var t=document.getElementById('mtop-title');
+  var back=document.getElementById('mtop-back');
+  var titles={papers:'Past Papers',practice:'Practice',saved:'Saved',plus:'ujyalo Plus',
+              heatmap:'Hot Topics',predict:'Predict 2083',mypaper:'My Paper'};
+  if(!t) return;
+  // On practice, header reflects the step
+  if(viewId==='practice'){
+    var step=document.querySelector('.prac-step.show');
+    if(step && step.id==='prac-subjects'){ t.innerHTML='SEE <span class="mtop-slash">/</span> Practice'; back.style.display='none'; }
+    else if(step && step.id==='prac-chapters'){ t.textContent=document.getElementById('pc-subj').textContent; back.style.display='flex'; }
+    else { t.textContent=document.getElementById('pr-chap').textContent; back.style.display='flex'; }
+    return;
+  }
+  t.textContent=titles[viewId]||'SEE';
+  // Plus sub-pages get a back arrow (returns to the Plus hub)
+  if(viewId==='heatmap'||viewId==='predict'||viewId==='mypaper'){ back.style.display='flex'; }
+  else { back.style.display='none'; }
+}
+function mobileNav(id,btn){
+  var navMap={papers:'nav-papers',practice:'nav-practice',saved:'nav-saved',plus:null};
+  if(id==='plus'){ showView('plus'); document.querySelectorAll('.li').forEach(i=>i.classList.remove('act')); }
+  else { showView(id, document.getElementById(navMap[id])); }
+}
+function mobileBack(){
+  // If on a Plus sub-page, go back to the Plus hub
+  var active=document.querySelector('.vw.act');
+  if(active && (active.id==='vw-heatmap'||active.id==='vw-predict'||active.id==='vw-mypaper')){
+    showView('plus');
+    document.querySelectorAll('.li').forEach(i=>i.classList.remove('act'));
+    return;
+  }
+  // Otherwise handle the practice steps
+  var step=document.querySelector('.prac-step.show');
+  if(!step) return;
+  if(step.id==='prac-run') practiceStep('prac-chapters');
+  else if(step.id==='prac-chapters') practiceStep('prac-subjects');
+}
+
+/* ─── PRACTICE 3-STEP FLOW (Stage 1: demo data) ───────────────────────────── */
+var PRAC_STRUCT = {
+  maths:{ label:'Maths', groups:[
+    {name:'Sets', icon:'⊂', chapters:['Sets']},
+    {name:'Arithmetic', icon:'💰', chapters:['Tax and Money Exchange','Compound Interest','Population Growth & Depreciation']},
+    {name:'Mensuration', icon:'📐', chapters:['Plane Surface (Area)','Cylinder and Sphere','Prism and Pyramid']},
+    {name:'Algebra', icon:'🔣', chapters:['HCF and LCM','Radical and Surd','Indices','Algebraic Fractions','Equations']},
+    {name:'Geometry', icon:'📏', chapters:['Area of Triangles & Quadrilaterals','Circle Theorems']},
+    {name:'Trigonometry', icon:'📐', chapters:['Trigonometry']},
+    {name:'Statistics', icon:'📊', chapters:['Statistics']},
+    {name:'Probability', icon:'🎲', chapters:['Probability']},
+  ]},
+  science:{ label:'Science', groups:[
+    {name:'Physics', icon:'⚡', chapters:['Force','Pressure','Energy','Heat','Light','Current Electricity and Magnetism']},
+    {name:'Chemistry', icon:'🧪', chapters:['Classification of Elements','Chemical Reaction','Acid, Base and Salt','Some Gases','Metals','Hydrocarbon and its Compounds','Materials Used in Daily Life']},
+    {name:'Biology', icon:'🌿', chapters:['Invertebrates','Human Nervous and Glandular Systems','Blood Circulation in Human Body','Chromosome and Sex Determination','Asexual and Sexual Reproduction','Artificial Vegetative Propagation','Heredity','Environmental Pollution and Management']},
+    {name:'Astronomy & Geology', icon:'🌍', chapters:['History of the Earth','Climate Change and Atmosphere','The Earth in the Universe']},
+  ]},
+};
+// Real formulas & common mistakes per chapter (from the live chapter-practice page)
+var CHAPTER_META = {
+  'Sets':{f:['n(A∪B) = n(A) + n(B) − n(A∩B)','n(A∪B∪C) = n(A)+n(B)+n(C)−n(A∩B)−n(B∩C)−n(A∩C)+n(A∩B∩C)','Neither = Total − n(A∪B)'],
+    m:['Always subtract the "both" group — students forget this and double count','Draw a Venn diagram first — it makes the problem much clearer','For percentage problems, treat the total as 100 not the actual number']},
+  'Tax and Money Exchange':{f:['Discount = Marked Price × Discount% / 100','Selling Price = Marked Price − Discount','VAT = Selling Price × VAT% / 100','Total Price = Selling Price + VAT'],
+    m:['VAT is always calculated on the price AFTER discount, not on the marked price','When finding the marked price, work backwards']},
+  'Compound Interest':{f:['CA = P(1 + R/100)ᵀ','CI = CA − P','SI = (P × R × T) / 100','Half-yearly: Rate = R/2, Time = 2T'],
+    m:['CI is the interest only — CA is the total amount. Do not confuse them','For half-yearly compounding, divide rate by 2 AND multiply periods by 2']},
+  'Population Growth & Depreciation':{f:['Growth: PT = P₀(1 + R/100)ᵀ','Past population: P₀ = PT / (1 + R/100)ᵀ','Depreciation: VT = V₀(1 − R/100)ᵀ'],
+    m:['Population growth uses (1 + R/100) — depreciation uses (1 − R/100)','To find past population, divide by the growth factor instead of multiplying']},
+  'Plane Surface (Area)':{f:['Equilateral triangle: Area = (√3/4) × side²','Heron: Area = √[s(s−a)(s−b)(s−c)], s = (a+b+c)/2','Trapezium: Area = ½ × (sum of parallel sides) × height','Rhombus: Area = ½ × d₁ × d₂'],
+    m:['For equilateral triangle, use the special formula','Rhombus area uses DIAGONALS not sides','Trapezium: add BOTH parallel sides']},
+  'Cylinder and Sphere':{f:['Cylinder CSA = 2πrh','Cylinder TSA = 2πr(r+h)','Cylinder Volume = πr²h','Sphere SA = 4πr²','Sphere Volume = (4/3)πr³','Hemisphere TSA = 3πr²'],
+    m:['TSA of cylinder includes TWO circular ends — CSA does not','Always use radius not diameter in formulas']},
+  'Prism and Pyramid':{f:['Prism LSA = Perimeter of base × height','Prism Volume = Base Area × height','Pyramid LSA = ½ × Perimeter × slant height','Pyramid Volume = ⅓ × Base Area × vertical height'],
+    m:['Pyramid uses SLANT height for surface area but VERTICAL height for volume','Always find the base area first']},
+  'HCF and LCM':{f:['HCF × LCM = Product of the two expressions','HCF: take COMMON factors with LOWEST power','LCM: take ALL factors with HIGHEST power'],
+    m:['Always factorise completely before finding HCF or LCM','HCF takes the LOWEST power — LCM takes the HIGHEST']},
+  'Radical and Surd':{f:['√(a×b) = √a × √b','Conjugate of (a+√b) is (a−√b)','(a+√b)(a−√b) = a² − b','Rationalise: multiply by the conjugate'],
+    m:['Only surds with the same number under the root can be added or subtracted','√4 + √9 ≠ √13']},
+  'Indices':{f:['aᵐ × aⁿ = aᵐ⁺ⁿ','aᵐ ÷ aⁿ = aᵐ⁻ⁿ','(aᵐ)ⁿ = aᵐⁿ','a⁰ = 1','a⁻ⁿ = 1/aⁿ','a^(m/n) = ⁿ√(aᵐ)'],
+    m:['aᵐ × aⁿ = aᵐ⁺ⁿ NOT aᵐⁿ — add the powers','a⁰ = 1 for any value of a (except 0)']},
+  'Algebraic Fractions':{f:['To simplify: factorise top and bottom, then cancel','To add/subtract: find common denominator first','To divide: flip the second fraction, then multiply'],
+    m:['Always factorise before cancelling','x/(x+1) cannot be simplified to 1/1']},
+  'Equations':{f:['Substitution: express one variable in terms of the other','Elimination: match coefficients, then add/subtract'],
+    m:['Always check your answer by substituting back into BOTH equations','When multiplying an equation, multiply EVERY term']},
+  'Area of Triangles & Quadrilaterals':{f:['Triangle = ½ × base × height','Parallelogram = base × height','Triangles on same base and between same parallels are equal in area'],
+    m:['Height must be PERPENDICULAR to the base','Equal area does not mean congruent']},
+  'Circle Theorems':{f:['Central angle = 2 × Inscribed angle (same arc)','Inscribed angles on same arc are equal','Angle in semicircle = 90°','Opposite angles of cyclic quadrilateral = 180°'],
+    m:['Central angle is at the CENTRE — inscribed at the CIRCUMFERENCE','Only applies when both angles stand on the SAME arc']},
+  'Trigonometry':{f:['sin θ = Opp/Hyp','cos θ = Adj/Hyp','tan θ = Opp/Adj','sin²θ + cos²θ = 1','sin30°=½, cos30°=√3/2, tan30°=1/√3','sin45°=cos45°=1/√2','sin60°=√3/2, cos60°=½'],
+    m:['Draw the triangle first','sin²θ means (sin θ)² not sin(θ²)']},
+  'Statistics':{f:['Mean = Σfx / Σf','Median = middle value (after sorting)','Mode = most frequent value'],
+    m:['Always SORT data before finding median','Mean uses ALL values — outliers affect it greatly']},
+  'Probability':{f:['P(Event) = Favourable / Total','P(A) + P(not A) = 1','P(A and B) = P(A) × P(B) for independent events','2 dice = 36 outcomes','2 coins = 4 outcomes'],
+    m:['List ALL outcomes before counting favourable ones','Probability is always between 0 and 1']},
+  // Science
+  'Force':{f:['F = ma','W = mg','p = mv','g = 10 m/s²'],m:['Mass is in kg, weight in Newtons','Find acceleration first']},
+  'Pressure':{f:['P = F/A','P = hρg','1 atm = 101,325 Pa'],m:['Smaller area = greater pressure','Liquid pressure depends on DEPTH','Atmospheric pressure DECREASES with altitude']},
+  'Energy':{f:['KE = ½mv²','PE = mgh','P = W/t','W = F × d'],m:['KE depends on v² — doubling speed quadruples KE','Power is in Watts = Joules per second']},
+  'Heat':{f:['Q = mcΔT','Specific heat of water = 4200 J/kg°C','K = °C + 273'],m:['Heat and temperature are different','Temperature stays CONSTANT during change of state']},
+  'Light':{f:['∠i = ∠r','n = sin i / sin r','Speed of light = 3 × 10⁸ m/s'],m:['Angles measured from the NORMAL','Real image can be projected — virtual cannot']},
+  'Current Electricity and Magnetism':{f:['V = IR','P = VI = I²R = V²/R','Series: R = R₁+R₂+R₃','Parallel: 1/R = 1/R₁+1/R₂+1/R₃'],m:['In parallel, total R is LESS than smallest resistor','In series current is same throughout']},
+  'Classification of Elements':{f:['Atomic number = protons','Mass number = protons + neutrons','Outer shell electrons = group number'],m:['Same GROUP = similar properties','Metals are on the LEFT']},
+  'Chemical Reaction':{f:['OIL RIG: Oxidation Is Loss, Reduction Is Gain','Exothermic releases heat; Endothermic absorbs heat'],m:['Oxidation and reduction happen TOGETHER','A catalyst is NOT used up']},
+  'Acid, Base and Salt':{f:['Acid + Base → Salt + Water','Acid + Metal → Salt + Hydrogen','pH<7 acidic, =7 neutral, >7 alkaline'],m:['Lower pH = stronger acid','Neutralisation makes SALT and WATER']},
+  'Some Gases':{f:['Oxygen: relights a glowing splint','Hydrogen: squeaky pop','CO₂: turns lime water milky','Ammonia: damp red litmus → blue'],m:['Each gas has ONE specific test','CO₂ does NOT support combustion']},
+  'Metals':{f:['Reactivity: K>Na>Ca>Mg>Al>Zn>Fe>Cu>Au','Rusting: Fe + O₂ + H₂O → Fe₂O₃'],m:['Rusting needs BOTH oxygen AND water','Reactive metals displace less reactive ones']},
+  'Hydrocarbon and its Compounds':{f:['Alkanes: CₙH₂ₙ₊₂ (single bonds)','Alkenes: CₙH₂ₙ (double bond)','Methane CH₄, Ethane C₂H₆'],m:['Alkanes saturated, alkenes unsaturated','Alkene decolourises bromine water']},
+  'Materials Used in Daily Life':{f:['Saponification: Fat + NaOH → Soap + Glycerol','Concrete = Cement + Sand + Gravel + Water'],m:['Thermoplastics can be remelted','Soap forms scum in hard water']},
+  'Invertebrates':{f:['Complete metamorphosis: Egg→Larva→Pupa→Adult','Incomplete: Egg→Nymph→Adult','Insects: 3 parts 6 legs; Spiders: 2 parts 8 legs'],m:['Earthworms are Annelida not Arthropoda','Complete = 4 stages, incomplete = 3']},
+  'Human Nervous and Glandular Systems':{f:['Reflex arc: Stimulus→Receptor→Sensory→Spinal cord→Motor→Effector','CNS = Brain + Spinal cord'],m:['Reflex actions processed in spinal cord, not brain','Endocrine glands are DUCTLESS']},
+  'Blood Circulation in Human Body':{f:['BP = 120/80 mmHg','Body→RA→RV→Lungs→LA→LV→Body'],m:['Left ventricle has thickest walls','Arteries carry blood AWAY; veins TOWARDS the heart']},
+  'Chromosome and Sex Determination':{f:['Body cells: 46 (23 pairs)','Gametes: 23','Female XX, Male XY'],m:['Sex determined by the FATHER','Gametes have HALF the chromosomes']},
+  'Asexual and Sexual Reproduction':{f:['Asexual: 1 parent, identical','Sexual: 2 parents, varied','Binary fission: 1 cell→2'],m:['Asexual = identical offspring','Variation matters for evolution']},
+  'Artificial Vegetative Propagation':{f:['Cutting, Grafting, Layering, Budding','Grafting: Scion + Rootstock'],m:['Grafting combines TWO plants','No seeds used']},
+  'Heredity':{f:['Dominant over recessive','Homozygous AA/aa; Heterozygous Aa','Tt × Tt → 3:1'],m:['Dominant ≠ more common','Aa × Aa gives 3:1']},
+  'Environmental Pollution and Management':{f:['Greenhouse gases: CO₂, CH₄, N₂O, CFCs','Acid rain pH < 5.6'],m:['Enhanced greenhouse effect causes climate change','CFCs destroy ozone, not CO₂']},
+  'History of the Earth':{f:['Earth ≈ 4.6 billion years','Igneous, Sedimentary, Metamorphic'],m:['Sedimentary rocks contain fossils','Metamorphic = changed existing rocks']},
+  'Climate Change and Atmosphere':{f:['Troposphere→Stratosphere→Mesosphere→Thermosphere→Exosphere','Ozone in Stratosphere'],m:['Weather in TROPOSPHERE','Ozone depletion ≠ greenhouse effect']},
+  'The Earth in the Universe':{f:['8 planets Mercury→Neptune','Rotation = 24h (day/night)','Revolution = 365.25 days'],m:['Seasons from AXIAL TILT','Day/night from ROTATION']},
+};
+
+// Per-session cache of fetched questions, keyed by subject
+var QCACHE = {};
+
+var pracState = {subject:'maths', chapter:null, idx:0, got:0, qs:[]};
+
+function practiceStep(id, silent){
+  document.querySelectorAll('.prac-step').forEach(s=>s.classList.remove('show'));
+  var el=document.getElementById(id); if(el) el.classList.add('show');
+  if(!silent){ document.getElementById('scroll').scrollTop=0; window.scrollTo(0,0); updateMobileHeader('practice'); }
+}
+
+function practiceChapters(subjCode){
+  pracState.subject=subjCode;
+  var st=PRAC_STRUCT[subjCode]; if(!st) return;
+  document.getElementById('pc-subj').textContent=st.label;
+  document.getElementById('pr-subj').textContent=st.label;
+  // Render chapter cards (counts filled once questions are fetched)
+  var html='';
+  st.groups.forEach(function(g){
+    html+='<div class="chap-grp"><div class="chap-grp-h"><span>'+g.icon+'</span><span class="chap-grp-nm">'+g.name+'</span><span class="chap-grp-line"></span></div><div class="chap-grid">';
+    g.chapters.forEach(function(ch){
+      var safe=ch.replace(/'/g,"\\'");
+      var idAttr='chapct-'+subjCode+'-'+ch.replace(/[^a-zA-Z0-9]/g,'_');
+      html+='<button class="chap-card" id="card-'+ch.replace(/[^a-zA-Z0-9]/g,'_')+'" onclick="practiceRun(\''+safe+'\')"><div><div class="chap-nm">'+ch+'</div><div class="chap-prog">Tap to practise</div></div><span class="chap-ct" id="'+idAttr+'">…</span></button>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('chap-groups').innerHTML=html;
+  practiceStep('prac-chapters');
+  // Step 2: fetch real question counts (cached per subject)
+  if(QCACHE[subjCode]) applyCounts(subjCode);
+  else fetchCounts(subjCode);
+}
+
+// Step 2: fetch all questions for a subject, group by chapter, show real counts
+function fetchCounts(subjCode){
+  fetch('/api/practice?action=get-all-questions&subject='+encodeURIComponent(subjCode))
+    .then(function(r){return r.json();})
+    .then(function(all){
+      if(!Array.isArray(all)) return;
+      var byChapter={};
+      all.forEach(function(q){
+        var ch=q.chapter_name; if(!ch) return;
+        if(!byChapter[ch]) byChapter[ch]=[];
+        byChapter[ch].push({id:q.id, q:q.question_text, a:q.answer_text, m:q.marks, topic:q.topic});
+      });
+      QCACHE[subjCode]=byChapter;
+      if(pracState.subject===subjCode) applyCounts(subjCode);
+    })
+    .catch(function(e){ console.error('count fetch failed', e); });
+}
+function applyCounts(subjCode){
+  var byChapter=QCACHE[subjCode]||{};
+  var st=PRAC_STRUCT[subjCode]; if(!st) return;
+  st.groups.forEach(function(g){
+    g.chapters.forEach(function(ch){
+      var el=document.getElementById('chapct-'+subjCode+'-'+ch.replace(/[^a-zA-Z0-9]/g,'_'));
+      if(!el) return;
+      var n=(byChapter[ch]||[]).length;
+      el.textContent = n>0 ? n+'q' : 'soon';
+      if(n===0){ el.style.opacity='.6'; }
+    });
+  });
+}
+
+function practiceRun(chapter){
+  pracState.chapter=chapter;
+  pracState.idx=0; pracState.got=0;
+  document.getElementById('pr-chap').textContent=chapter;
+  // Step 4: real tips from CHAPTER_META
+  var tips=CHAPTER_META[chapter];
+  var tipsWrap=document.getElementById('cp-tips');
+  if(tips && ((tips.f&&tips.f.length)||(tips.m&&tips.m.length))){
+    var b='';
+    if(tips.f&&tips.f.length){ b+='<div class="cp-tip-h" style="color:var(--blue)">📋 Key Formulas</div>'; tips.f.forEach(function(f){b+='<div class="cp-tip-f">'+f+'</div>';}); }
+    if(tips.m&&tips.m.length){ b+='<div class="cp-tip-h" style="color:#c25b2a">⚠️ Common Mistakes</div>'; tips.m.forEach(function(m){b+='<div class="cp-tip-m">'+m+'</div>';}); }
+    document.getElementById('cp-tips-body').innerHTML=b;
+    document.getElementById('cp-tips-tog').classList.remove('open');
+    document.getElementById('cp-tips-body').classList.remove('open');
+    tipsWrap.style.display='block';
+  } else { tipsWrap.style.display='none'; }
+  document.getElementById('cp-qblock').style.display='block';
+  document.getElementById('cp-doneblock').style.display='none';
+  practiceStep('prac-run');
+
+  // Step 3: load real questions (from cache if present, else fetch this chapter)
+  var cached = QCACHE[pracState.subject] && QCACHE[pracState.subject][chapter];
+  if(cached && cached.length){ pracState.qs=cached; cpLoad(); return; }
+  // show loading
+  cpShowLoading();
+  fetch('/api/practice?action=get-questions&subject='+encodeURIComponent(pracState.subject)+'&chapter='+encodeURIComponent(chapter))
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(Array.isArray(data) && data.length){
+        pracState.qs=data.map(function(q){return {id:q.id, q:q.question_text, a:q.answer_text, m:q.marks, topic:q.topic};});
+        cpLoad();
+      } else {
+        cpShowEmpty();
+      }
+    })
+    .catch(function(){ cpShowError(); });
+}
+
+function cpShowLoading(){
+  document.getElementById('cp-qblock').innerHTML='<div class="cp-qcard"><div class="cp-qtext" style="color:var(--faint)">Loading questions…</div></div>';
+}
+function cpShowEmpty(){
+  document.getElementById('cp-qblock').innerHTML='<div class="cp-qcard"><div class="cp-qtext">📝 Questions coming soon for this chapter.</div><div style="color:var(--faint);font-size:14px;margin-top:8px">We\u2019re adding questions here. Check back soon.</div></div>';
+  document.getElementById('cp-tips').style.display='none';
+}
+function cpShowError(){
+  document.getElementById('cp-qblock').innerHTML='<div class="cp-qcard"><div class="cp-qtext">⚠️ Could not load questions.</div><div style="color:var(--faint);font-size:14px;margin-top:8px">Please check your connection and try again.</div></div>';
+  document.getElementById('cp-tips').style.display='none';
+}
+
+function cpLoad(){
+  // Rebuild the question card shell (it may have been replaced by loading/empty state)
+  var block=document.getElementById('cp-qblock');
+  block.innerHTML =
+    '<div class="cp-qcard">'+
+      '<div class="cp-qmeta"><span class="cp-qnum" id="cp-qnum">Q1</span><span class="cp-qmarks" id="cp-qmarks">2 marks</span></div>'+
+      '<div class="cp-qtext" id="cp-qtext"></div>'+
+      '<textarea class="cp-qans" id="cp-qans" placeholder="Write your answer here…&#10;&#10;Show your working — just like the real SEE exam."></textarea>'+
+      '<div class="cp-qact"><button class="cp-bskip" onclick="cpSkip()">⤼ Skip</button><button class="cp-bcheck" onclick="cpCheck()">Check answer →</button></div>'+
+    '</div>'+
+    '<div class="cp-model" id="cp-model" style="display:none"><div class="cp-model-t">✓ Model answer</div><div class="cp-model-b" id="cp-model-b"></div></div>'+
+    '<div class="cp-assess" id="cp-assess" style="display:none"><p>How did you do?</p><div class="cp-assess-btns"><button class="cp-bgot" onclick="cpResult(\'got_it\')">✓ Got it</button><button class="cp-balmost" onclick="cpResult(\'almost\')">~ Almost</button><button class="cp-bmiss" onclick="cpResult(\'missed\')">✗ Didn\'t get it</button></div></div>';
+
+  var qs=pracState.qs, i=pracState.idx;
+  if(!qs.length){ cpShowEmpty(); return; }
+  var q=qs[i];
+  var marks=Number(q.m)||0;
+  document.getElementById('cp-qnum').textContent='Q'+(i+1)+' of '+qs.length;
+  document.getElementById('cp-qmarks').textContent=marks+(marks===1?' mark':' marks');
+  document.getElementById('cp-qtext').textContent=q.q||'';
+  document.getElementById('cp-model-b').textContent=q.a||'Model answer coming soon.';
+  document.getElementById('cp-pfill').style.width=(i/qs.length*100)+'%';
+  document.getElementById('cp-ptxt').textContent=i+' / '+qs.length;
+  window.scrollTo(0,0);
+}
+function cpCheck(){
+  var v=document.getElementById('cp-qans').value.trim();
+  if(!v){ document.getElementById('cp-qans').focus(); return; }
+  document.getElementById('cp-model').style.display='block';
+  document.getElementById('cp-assess').style.display='flex';
+  document.getElementById('cp-qans').disabled=true;
+}
+function cpResult(result){ if(result==='got_it') pracState.got++; logAttempt(result, true); cpAdvance(); }
+function cpSkip(){ logAttempt('skipped', false); cpAdvance(); }
+function cpAdvance(){ pracState.idx++; if(pracState.idx>=pracState.qs.length) cpComplete(); else cpLoad(); }
+function cpGot(){ cpResult('got_it'); }
+function cpNext(){ cpResult('missed'); }
+function logAttempt(result, revealed){
+  var token = localStorage.getItem('ujyalo_token');
+  if(!token) return;
+  var q = pracState.qs[pracState.idx] || {};
+  fetch('/api/practice?action=log-event', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body:JSON.stringify({
+      mode:'practice',
+      question_id: q.id || null,
+      subject: pracState.subject,
+      chapter_name: pracState.chapter,
+      topic: q.topic || null,
+      result: result,
+      revealed_answer: !!revealed
+    })
+  }).catch(function(e){ console.error('event log failed', e); });
+}
+function cpComplete(){
+  document.getElementById('cp-qblock').style.display='none';
+  document.getElementById('cp-tips').style.display='none';
+  document.getElementById('cp-pfill').style.width='100%';
+  var total=pracState.qs.length, got=pracState.got;
+  document.getElementById('cp-ptxt').textContent=total+' / '+total;
+  var pct=total?Math.round(got/total*100):0;
+  var ic=pct>=80?'🎉':pct>=50?'👍':'📖';
+  var t=pct>=80?'Excellent work!':pct>=50?'Good effort!':'Keep practising!';
+  var d=document.getElementById('cp-doneblock');
+  d.style.display='block';
+  var loggedIn = !!localStorage.getItem('ujyalo_token');
+  var nudge = loggedIn ? '' :
+    '<div style="margin-top:22px;padding:18px;background:var(--bg);border:1px dashed var(--blue);border-radius:14px;text-align:center">'+
+    '<div style="font-weight:700;color:var(--ink);font-size:15px;margin-bottom:4px">Save your progress</div>'+
+    '<div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5">Sign up free to keep this score, track every chapter, and see your dashboard.</div>'+
+    '<a href="/signup.html" style="display:inline-block;background:var(--blue);color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:10px;text-decoration:none">Sign up free →</a>'+
+    '<div style="margin-top:10px;font-size:12.5px;color:var(--muted)">Already have an account? <a href="/login.html" style="color:var(--blue);font-weight:600;text-decoration:none">Log in</a></div>'+
+    '</div>';
+  d.innerHTML='<div class="cp-done"><div class="cp-done-ic">'+ic+'</div><div class="cp-done-t">'+t+'</div>'+
+    '<div class="cp-done-s">You got '+got+' out of '+total+' correct — '+pct+'%</div>'+
+    '<div class="cp-done-scores"><div class="cp-done-box '+(pct>=50?'good':'')+'"><div class="cp-done-num">'+got+'/'+total+'</div><div class="cp-done-lbl">Got right</div></div>'+
+    '<div class="cp-done-box"><div class="cp-done-num">'+pct+'%</div><div class="cp-done-lbl">Score</div></div></div>'+
+    '<div class="cp-done-acts"><button class="cp-bretry" onclick="practiceRun(pracState.chapter)">↻ Try again</button>'+
+    '<button class="cp-bnextch" onclick="practiceStep(\'prac-chapters\')">Back to chapters →</button></div>'+nudge+'</div>';
+  window.scrollTo(0,0);
+  // Step 5: save progress if logged in (same contract as live chapter-practice page)
+  saveProgress(pracState.subject, pracState.chapter, got, total);
+}
+
+// Step 5: save chapter progress (logged-in users only); silent on failure
+function saveProgress(subject, chapter, score, total){
+  var token = localStorage.getItem('ujyalo_token');
+  if(!token) return;
+  var group = findGroupForChapter(subject, chapter);
+  fetch('/api/practice?action=save-progress', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body:JSON.stringify({subject:subject, group_name:group, chapter_name:chapter, score:score, total:total})
+  }).catch(function(e){ console.error('progress save failed', e); });
+}
+function findGroupForChapter(subject, chapter){
+  var st=PRAC_STRUCT[subject]; if(!st) return '';
+  for(var i=0;i<st.groups.length;i++){
+    if(st.groups[i].chapters.indexOf(chapter)>=0) return st.groups[i].name;
+  }
+  return '';
+}
+function cpToggleTips(){
+  document.getElementById('cp-tips-tog').classList.toggle('open');
+  document.getElementById('cp-tips-body').classList.toggle('open');
+}
+
+// ─── HEATMAP ─────────────────────────────────────────────────────────────────
+
+function hCol(p){return p>=90?'#ef4444':p>=70?'#f59c1a':p>=50?'#1a6fff':'#94a3b8';}
+
+function renderHeatPills(){
+  var _el = document.getElementById('h-spills');
+  if(!_el) return;
+  _el.innerHTML = Object.keys(HEAT).map((code,i)=>{
+    const s=subj(code);
+    return `<button class="spill${i===0?' act':''}"
+      style="${i===0?`background:${s.accent};color:#fff;border-color:${s.accent};`:''}"
+      onclick="heatSwitch('${code}',this)">${s.icon} ${s.name}</button>`;
+  }).join('');
+}
+function heatSwitch(code,el){
+  document.querySelectorAll('#h-spills .spill').forEach(p=>{p.classList.remove('act');p.style.cssText='';});
+  const s=subj(code); el.classList.add('act');
+  el.style.background=s.accent; el.style.color='#fff'; el.style.borderColor=s.accent;
+  renderHeat(code);
+}
+function renderHeat(code){
+  var _el = document.getElementById('h-list');
+  if(!_el) return;
+  const topics=HEAT[code]||[];
+  _el.innerHTML = topics.sort((a,b)=>b.f-a.f).map(t=>{
+    const pct=(t.f/10)*100, col=hCol(pct);
+    const lbl=pct>=90?'🔥 Almost certain':pct>=70?'📈 Very likely':pct>=50?'📊 Likely':'📉 Less common';
+    return `<div class="hcard">
+      <div class="hrow">
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:14px;font-weight:700;color:var(--ink);">${t.t}</span><span class="htag" style="background:${col}18;color:${col};">${t.f}/10 years</span></div>
+        <div style="display:flex;gap:6px;"><span class="htag" style="background:var(--bg);color:var(--muted);">~${t.m}m</span><span class="htag" style="background:${col}18;color:${col};">${t.l}% likely 2083</span></div>
+      </div>
+      <div class="hbar-t"><div class="hbar-f" style="width:${pct}%;background:${col};"></div></div>
+      <div class="hfoot"><span>Appeared ${t.f} of last 10 years</span><span style="color:${col};">${lbl}</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ─── PREDICT ─────────────────────────────────────────────────────────────────
+
+function renderPredPills(){
+  var _el = document.getElementById('p-spills');
+  if(!_el) return;
+  _el.innerHTML = Object.keys(HEAT).map((code,i)=>{
+    const s=subj(code);
+    return `<button class="spill${i===0?' act':''}"
+      style="${i===0?`background:${s.accent};color:#fff;border-color:${s.accent};`:''}"
+      onclick="predSwitch('${code}',this)">${s.icon} ${s.name}</button>`;
+  }).join('');
+}
+function predSwitch(code,el){
+  document.querySelectorAll('#p-spills .spill').forEach(p=>{p.classList.remove('act');p.style.cssText='';});
+  const s=subj(code); el.classList.add('act');
+  el.style.background=s.accent; el.style.color='#fff'; el.style.borderColor=s.accent;
+  renderPred(code);
+}
+function renderPred(code){
+  var _el = document.getElementById('p-list');
+  if(!_el) return;
+  const topics=HEAT[code]||[];
+  _el.innerHTML = topics.sort((a,b)=>b.l-a.l).map(t=>{
+    const col=hCol(t.l);
+    const emoji=t.l>=90?'🔥':t.l>=70?'⚡':t.l>=50?'📖':'💡';
+    return `<div class="hcard" style="border-color:${t.l>=80?col+'44':'var(--line)'};">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:${col}15;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">${emoji}</div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+            <span style="font-weight:700;font-size:14px;color:var(--ink);">${t.t}</span>
+            <span class="htag" style="background:${col}18;color:${col};">${t.l}% likely</span>
+            <span class="htag" style="background:var(--bg);color:var(--muted);">~${t.m}m</span>
+          </div>
+          <div style="height:6px;background:var(--bg);border-radius:99px;overflow:hidden;">
+            <div style="height:100%;width:${t.l}%;background:${col};border-radius:99px;transition:width .6s;"></div>
+          </div>
+        </div>
+        <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:${col};min-width:40px;text-align:right;">${t.f}<span style="font-size:12px;color:var(--faint);">/10</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── COMPARE ─────────────────────────────────────────────────────────────────
+
+function renderCompare(){
+  var _cs = document.getElementById('c-subj');
+  if(!_cs) return;
+  const code=_cs.value;
+  const y1=document.getElementById('c-y1').value;
+  const y2=document.getElementById('c-y2').value;
+  const s=subj(code), key=`${code}-${y1}-${y2}`;
+  const data=CMP_DATA[key];
+  const grid=document.getElementById('cgrid'), pat=document.getElementById('pat');
+  if(!data){
+    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);"><div style="font-size:32px;margin-bottom:12px;">📭</div><div style="font-weight:700;color:var(--ink);margin-bottom:6px;">Comparison coming soon</div><div style="font-size:13px;">We're building this comparison. Check back soon.</div></div>`;
+    pat.style.display='none'; return;
+  }
+  grid.innerHTML = [{year:y1,d:data.y1,col:s.accent},{year:y2,d:data.y2,col:'#7c3aed'}].map(({year,d,col})=>`
+    <div>
+      <div class="chead" style="background:${col};">
+        <div class="chead-y">SEE ${year}</div>
+        <div class="chead-s">${YEAR_AD[year]||''} AD · ${s.name}</div>
+      </div>
+      <div class="cbody">
+        <div style="font-size:11px;font-weight:700;color:${col};text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">${d.topic}</div>
+        <div class="cbody-q">${d.q}</div>
+        <div class="insight" style="background:${col}10;border:1px solid ${col}22;">
+          <div class="insight-l" style="color:${col};">What the examiner tests</div>
+          <div style="font-size:12px;color:var(--muted);">${d.insight}</div>
+        </div>
+      </div>
+    </div>`).join('');
+  if(data.pat){document.getElementById('pat-t').textContent=data.pat; pat.style.display='block';}
+  else pat.style.display='none';
+}
+
+// ─── BOOKMARKS ───────────────────────────────────────────────────────────────
+
+function getBK(){try{return JSON.parse(localStorage.getItem('ujyalo_bookmarks')||'[]');}catch{return[];}}
+
+function renderBookmarks(){
+  const bks=getBK(), el=document.getElementById('bk-list');
+  if(!bks.length){
+    el.innerHTML=`<div class="bk-empty"><div style="font-size:36px;margin-bottom:12px;">🔖</div><div style="font-weight:700;color:var(--ink);margin-bottom:6px;">No saved questions yet</div><div style="font-size:13px;color:var(--muted);">Bookmark questions while practising to review them here.</div></div>`;
+    return;
+  }
+  el.innerHTML=bks.map((bk,i)=>{
+    const s=subj(bk.subjectCode)||SUBJECTS[0];
+    return `<div class="bk-card" style="animation-delay:${i*.05}s;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;">
+        <span class="bk-src">${bk.paper||''} · ${bk.province||''}</span>
+        <div style="display:flex;gap:6px;">
+          ${bk.topic?`<span class="htag" style="background:${s.accent}18;color:${s.accent};">${bk.topic}</span>`:''}
+          ${bk.marks?`<span class="htag" style="background:var(--bg);color:var(--muted);">Q${bk.questionN} · ${bk.marks}m</span>`:''}
+        </div>
+      </div>
+      <div class="bk-qt">${bk.questionText||'Question text unavailable.'}</div>
+      <div class="bk-acts">
+        <button class="bk-see" style="background:${s.accent}12;border-color:${s.accent}22;color:${s.accent};"
+          onclick="openPaper('${bk.subjectCode}','${bk.year}','${bk.province}')">See answer →</button>
+        <button class="bk-del" onclick="delBK(${i},this)">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function delBK(i,btn){
+  const bks=getBK(); bks.splice(i,1);
+  localStorage.setItem('ujyalo_bookmarks',JSON.stringify(bks));
+  btn.closest('.bk-card').remove();
+  if(!getBK().length) renderBookmarks();
+}
+
+// ─── PROGRESS ────────────────────────────────────────────────────────────────
+
+function updateStartedCount(s) {
+  // Count how many papers have been started for current subject
+  try {
+    const all = JSON.parse(localStorage.getItem('ujyalo_progress')||'{}');
+    const started = Object.keys(all).filter(k => k.startsWith(s.code+'-') && all[k].started).length;
+    const el = document.getElementById('st-started');
+    if(el) el.textContent = started;
+  } catch(e) {}
+}
+function getProgress(key){
+  try{return (JSON.parse(localStorage.getItem('ujyalo_progress')||'{}')||{})[key]||null;}
+  catch{return null;}
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+
+function subj(code){return SUBJECTS.find(s=>s.code===code)||SUBJECTS[0];}
+</script>
+<div id="site-footer"></div>
+<script src="/scripts/components.js"></script>
+</body>
+</html>

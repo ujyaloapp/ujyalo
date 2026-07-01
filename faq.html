@@ -13,75 +13,82 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is Ujyalo free for students?","acceptedAnswer":{"@type":"Answer","text":"Yes. Ujyalo is completely free for all Grade 10 students preparing for SEE exam in Nepal. No credit card, no hidden fees, free forever."}},{"@type":"Question","name":"Which subjects does Ujyalo cover?","acceptedAnswer":{"@type":"Answer","text":"Maths and Science are fully live with all chapters. English is coming soon. More subjects are being added regularly."}},{"@type":"Question","name":"Does Ujyalo follow the Nepal SEE syllabus?","acceptedAnswer":{"@type":"Answer","text":"Yes. All questions are aligned with the NEB SEE syllabus and CDC curriculum for Grade 10 Nepal."}}]}</script>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,400;9..144,1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles/main.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    .page-dark-hero{position:relative;padding:100px 0 80px;background:#0a0f1e;overflow:hidden;text-align:center;}
-    .page-dark-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(37,99,235,.2) 0%,transparent 60%);pointer-events:none;}
-    .page-dark-hero-inner{position:relative;z-index:2;max-width:720px;margin:0 auto;padding:0 24px;}
-    .page-dark-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(37,99,235,.15);border:1px solid rgba(37,99,235,.3);color:#93c5fd;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:24px;}
-    .page-dark-title{font-family:'Fraunces',serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:700;line-height:1.1;color:white;letter-spacing:-.03em;margin-bottom:20px;}
-    .page-dark-title em{font-style:italic;background:linear-gradient(135deg,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-    .page-dark-sub{font-size:17px;color:rgba(255,255,255,.5);line-height:1.7;max-width:520px;margin:0 auto 32px;}
+    /* ===== Editorial Scholar — FAQ (content only; nav/footer via components.js) ===== */
+    :root{--forest:#1e1a15;--forest2:#1c4a40;--moss:#3f7d6e;--brass:#f59e0b;--brass-soft:#f6b652;--paper:#f4f0e6;--paper2:#ece6d6;--card:#fbf9f3;--ink:#1a2420;--muted:#5f6b64;--faint:#9aa49d;--line:#e0d9c8;}
+    html{scroll-behavior:smooth;}
+    .es *{margin:0;padding:0;box-sizing:border-box;}
+    .es{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--card);line-height:1.6;}
+    .es em{font-style:italic;} .es a{text-decoration:none;}
+    .wrap{max-width:880px;margin:0 auto;padding:0 28px;}
+
+    .phero{position:relative;overflow:hidden;padding:66px 0 40px;text-align:center;background:radial-gradient(at 50% 0%,rgba(245,158,11,.1) 0,transparent 55%),var(--card);}
+    .phero::before{content:'?';position:absolute;right:8%;top:50%;transform:translateY(-50%);font-family:'Fraunces';font-weight:900;font-size:300px;color:rgba(17,48,42,.03);line-height:1;pointer-events:none;}
+    .phero .wrap{position:relative;}
+    .phero-label{display:inline-block;background:rgba(63,125,110,.1);color:var(--moss);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:16px;}
+    .phero h1{font-family:'Fraunces';font-weight:900;font-size:clamp(34px,5.5vw,54px);line-height:1.05;letter-spacing:-1.5px;color:var(--forest);margin-bottom:14px;}
+    .phero h1 em{color:var(--brass);}
+    .phero p{font-size:18px;color:var(--muted);max-width:500px;margin:0 auto 22px;}
     .faq-jump-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
-    .faq-jump{font-size:13px;font-weight:600;color:rgba(255,255,255,.6);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:7px 16px;border-radius:999px;text-decoration:none;transition:all .2s;}
-    .faq-jump:hover{background:rgba(255,255,255,.14);color:white;}
-    .section-tiny-label{font-size:11px;font-weight:700;color:#2563EB;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;display:block;}
-    .section-fraunces-title{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#0f172a;letter-spacing:-.02em;line-height:1.15;margin-bottom:8px;}
-    .section-fraunces-title em{font-style:italic;color:#2563EB;}
+    .faq-jump{font-size:13px;font-weight:600;color:var(--muted);background:var(--card);border:1px solid var(--line);padding:7px 16px;border-radius:999px;transition:all .2s;}
+    .faq-jump:hover{border-color:var(--moss);color:var(--forest);}
 
-    /* FAQ layout */
-    .faq-main{padding:80px 0;background:white;}
-    .faq-inner{max-width:860px;margin:0 auto;padding:0 24px;}
-    .faq-group{margin-bottom:60px;}
-    .faq-group-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid #f1f5f9;}
-    .faq-group-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-    .faq-group-title{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:#0f172a;}
-    .faq-group-sub{font-size:13px;color:#94a3b8;margin-top:2px;}
-    .faq-list{display:flex;flex-direction:column;gap:4px;}
-    .faq-item{background:white;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;transition:box-shadow .2s;}
-    .faq-item:hover{box-shadow:0 4px 16px rgba(0,0,0,.06);}
-    .faq-item.open{box-shadow:0 4px 20px rgba(0,0,0,.08);}
-    .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;cursor:pointer;font-size:15px;font-weight:700;color:#0f172a;gap:14px;user-select:none;transition:color .2s;}
-    .faq-item.open .faq-q{color:#2563EB;}
-    .faq-icon{width:28px;height:28px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:18px;color:#64748b;flex-shrink:0;transition:all .25s;}
-    .faq-item.open .faq-icon{background:#2563EB;color:white;transform:rotate(45deg);}
-    .faq-a{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.16,1,.3,1);}
-    .faq-item.open .faq-a{max-height:600px;}
-    .faq-body{padding:0 22px 18px;font-size:14px;color:#475569;line-height:1.85;border-top:1px solid #f8fafc;padding-top:14px;}
-    .faq-body strong{color:#0f172a;}
-    .faq-body a{color:#2563EB;font-weight:600;}
-    .faq-highlight{background:#EFF6FF;border-left:3px solid #2563EB;border-radius:0 8px 8px 0;padding:10px 14px;margin-top:10px;font-size:13px;color:#1d4ed8;font-weight:600;}
+    .faq-main{padding:64px 0;}
+    .faq-group{margin-bottom:54px;}
+    .faq-group-header{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-bottom:18px;border-bottom:2px solid var(--line);}
+    .faq-group-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#2a2318,#1a160f);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+    .faq-group-title{font-family:'Fraunces';font-weight:700;font-size:1.4rem;color:var(--forest);}
+    .faq-group-sub{font-size:13px;color:var(--faint);margin-top:2px;}
+    .faq-list{display:flex;flex-direction:column;gap:8px;}
 
-    /* Alt section */
-    .faq-alt{background:#f8fafc;}
+    .faqx-item{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:box-shadow .2s,border-color .2s;}
+    .faqx-item:hover{box-shadow:0 4px 16px rgba(17,48,42,.06);}
+    .faqx-item.open{box-shadow:0 8px 24px -10px rgba(17,48,42,.2);border-color:var(--moss);}
+    .faqx-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;cursor:pointer;font-family:'Fraunces';font-weight:600;font-size:15.5px;color:var(--ink);gap:14px;user-select:none;transition:color .2s;}
+    .faqx-item.open .faqx-q{color:var(--forest);}
+    .faqx-icon{width:28px;height:28px;border-radius:50%;background:var(--paper2);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted);flex-shrink:0;transition:all .25s;}
+    .faqx-item.open .faqx-icon{background:var(--brass);color:#2a2110;transform:rotate(45deg);}
+    .faqx-a{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.16,1,.3,1);}
+    .faqx-item.open .faqx-a{max-height:640px;}
+    .faqx-body{padding:0 22px 18px;font-size:14px;color:var(--muted);line-height:1.85;border-top:1px solid var(--line);padding-top:14px;}
+    .faqx-body strong{color:var(--ink);}
+    .faqx-body a{color:var(--moss);font-weight:600;}
+    .faqx-hl{background:rgba(245,158,11,.12);border-left:3px solid var(--brass);border-radius:0 8px 8px 0;padding:10px 14px;margin-top:10px;font-size:13px;color:#7a5a1a;font-weight:600;}
 
-    /* Bottom CTA */
-    .faq-bottom{padding:80px 0;background:#0a0f1e;text-align:center;position:relative;overflow:hidden;}
-    .faq-bottom::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,rgba(37,99,235,.15) 0%,transparent 60%);pointer-events:none;}
-    .faq-bottom-inner{max-width:640px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
-    .faq-bottom-title{font-family:'Fraunces',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:white;letter-spacing:-.02em;margin-bottom:12px;}
-    .faq-bottom-title em{font-style:italic;background:linear-gradient(135deg,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-    .faq-bottom-sub{font-size:15px;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:32px;}
-    .faq-contact-cards{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-    .fcc{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px 24px;text-align:center;min-width:160px;text-decoration:none;transition:all .2s;}
+    .faqcta{background:linear-gradient(135deg,#2a2318,#1a160f);color:#fff;border-radius:24px;margin:0 28px 60px;padding:56px;text-align:center;position:relative;overflow:hidden;}
+    .faqcta::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:rgba(245,158,11,.12);}
+    .faqcta h2{font-family:'Fraunces';font-weight:900;font-size:clamp(26px,4vw,38px);margin-bottom:12px;position:relative;}
+    .faqcta h2 em{color:var(--brass-soft);}
+    .faqcta p{font-size:15px;color:#cbd8d1;max-width:480px;margin:0 auto 28px;position:relative;}
+    .faq-contact-cards{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;}
+    .fcc{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:20px 24px;text-align:center;min-width:160px;transition:all .2s;}
     .fcc:hover{background:rgba(255,255,255,.1);transform:translateY(-2px);}
     .fcc-icon{font-size:28px;margin-bottom:8px;}
-    .fcc-title{font-size:13px;font-weight:700;color:white;margin-bottom:4px;}
-    .fcc-sub{font-size:11px;color:rgba(255,255,255,.45);}
-    @media(max-width:640px){.page-dark-hero{padding:72px 0 56px;}}
+    .fcc-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+    .fcc-sub{font-size:11px;color:rgba(255,255,255,.5);}
+
+    @media (max-width:640px){
+      .phero{padding:52px 0 32px;}
+      .phero::before{font-size:200px;opacity:.7;}
+      .faqcta{padding:40px 24px;margin:0 16px 40px;}
+      .wrap{padding:0 18px;}
+    }
   </style>
+  <meta property="og:image" content="https://ujyalo.app/og-default.png" />
+  <meta name="twitter:image" content="https://ujyalo.app/og-default.png" />
 </head>
 <body>
 <div id="site-nav"></div>
 
-<!-- HERO -->
-<div class="page-dark-hero">
-  <div class="page-dark-hero-inner">
-    <div class="page-dark-badge">❓ FAQ</div>
-    <h1 class="page-dark-title">Every question<br><em>honestly answered.</em></h1>
-    <p class="page-dark-sub">No marketing speak. Just real answers about what Ujyalo is, what it is not, and where it is going.</p>
+<div class="es">
+
+  <!-- HERO -->
+  <section class="phero"><div class="wrap">
+    <div class="phero-label">FAQ</div>
+    <h1>Every question, <em>honestly answered.</em></h1>
+    <p>No marketing speak. Just real answers about what ujyalo is, what it is not, and where it is going.</p>
     <div class="faq-jump-row">
       <a class="faq-jump" href="#students">For students</a>
       <a class="faq-jump" href="#parents">For parents</a>
@@ -89,180 +96,93 @@
       <a class="faq-jump" href="#schools">For schools</a>
       <a class="faq-jump" href="#pricing">Pricing</a>
     </div>
-  </div>
-</div>
+  </div></section>
 
-<!-- FAQ CONTENT -->
-<div class="faq-main">
-  <div class="faq-inner">
+  <!-- CONTENT -->
+  <div class="faq-main"><div class="wrap">
 
     <!-- Students -->
     <div class="faq-group" id="students">
       <div class="faq-group-header">
-        <div class="faq-group-icon" style="background:#EFF6FF">🎓</div>
-        <div>
-          <div class="faq-group-title">For students</div>
-          <div class="faq-group-sub">The most common questions from Grade 10 students</div>
-        </div>
+        <div class="faq-group-icon">🎓</div>
+        <div><div class="faq-group-title">For students</div><div class="faq-group-sub">The most common questions from Grade 10 students</div></div>
       </div>
       <div class="faq-list">
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is Ujyalo really free? What is the catch?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">No catch. Ujyalo is completely free right now — no credit card, no trial period, no hidden fees. Chapter Practice for Maths and Science is open to everyone with no signup needed.<br><br>We are in beta and focused on building the best product for Nepali students first. We will introduce optional paid features in the future, but the core experience will always be free.<div class="faq-highlight">✓ Free today. Free tomorrow. No surprises.</div></div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What is available right now?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">Right now you can practice <strong>SEE Chapter Practice for Maths and Science</strong> — all chapters from the official CDC Grade 10 curriculum, with model answers explained in simple language.<br><br><strong>Coming soon:</strong> SEE Past Papers, English, Social Studies and Nepali, MCQ mode, timed mock exams.</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Do I need to create an account?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">No — you can start Chapter Practice immediately without signing up. Just open ujyalo.app and pick a chapter.<br><br>Creating a free account saves your progress so you can see which chapters you have completed and how you are improving over time. It takes less than a minute.</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Will Ujyalo help me pass SEE?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">Honest answer — Ujyalo gives you the tools. You have to do the work.<br><br>What we can say: students who regularly practice SEE-style questions and understand model answers perform better than students who only read textbooks. Answering questions is how real learning happens — not just reading.</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I use Ujyalo on my phone?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">Yes — Ujyalo is built for phones first. It works on any phone, tablet or computer. No app to download — just open ujyalo.app in your browser. It also works on slow internet connections.</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Are the questions from the real SEE syllabus?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">Yes. All chapter practice questions are based on the official <strong>CDC Nepal Grade 10 curriculum</strong> — the same textbooks your school uses. Past papers (coming soon) are the actual SEE exam papers from previous years.</div></div>
-        </div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">Is ujyalo really free? What is the catch?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">No catch. ujyalo is completely free right now — no credit card, no trial period, no hidden fees. Chapter Practice for Maths and Science is open to everyone with no signup needed.<br><br>We are in beta and focused on building the best product for Nepali students first. We will introduce optional paid features in the future, but the core experience will always be free.<div class="faqx-hl">✓ Free today. Free tomorrow. No surprises.</div></div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">What is available right now?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">Right now you can practise <strong>SEE Chapter Practice for Maths and Science</strong> — all chapters from the official CDC Grade 10 curriculum, with model answers explained in simple language.<br><br><strong>Coming soon:</strong> SEE Past Papers, English, Social Studies and Nepali, MCQ mode, timed mock exams.</div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">Do I need to create an account?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">No — you can start Chapter Practice immediately without signing up. Just open ujyalo.app and pick a chapter.<br><br>Creating a free account saves your progress so you can see which chapters you have completed and how you are improving over time. It takes less than a minute.</div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">Will ujyalo help me pass SEE?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">Honest answer — ujyalo gives you the tools. You have to do the work.<br><br>What we can say: students who regularly practise SEE-style questions and understand model answers perform better than students who only read textbooks. Answering questions is how real learning happens — not just reading.</div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">Can I use ujyalo on my phone?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">Yes — ujyalo is built for phones first. It works on any phone, tablet or computer. No app to download — just open ujyalo.app in your browser. It also works on slow internet connections.</div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">Are the questions from the real SEE syllabus?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">Yes. All chapter practice questions are based on the official <strong>CDC Nepal Grade 10 curriculum</strong> — the same textbooks your school uses. Past papers (coming soon) are the actual SEE exam papers from previous years.</div></div></div>
       </div>
     </div>
 
     <!-- Parents -->
     <div class="faq-group" id="parents">
       <div class="faq-group-header">
-        <div class="faq-group-icon" style="background:#F0FDF4">👨‍👩‍👧</div>
-        <div>
-          <div class="faq-group-title">For parents</div>
-          <div class="faq-group-sub">What parents want to know before trusting us with their child's education</div>
-        </div>
+        <div class="faq-group-icon">👨‍👩‍👧</div>
+        <div><div class="faq-group-title">For parents</div><div class="faq-group-sub">What parents want to know before trusting us with their child's education</div></div>
       </div>
       <div class="faq-list">
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How will I know if my child is actually studying?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">We are building weekly parent reports — a simple email every Sunday showing exactly what your child practised, which chapters they completed, and where they need more work.<div class="faq-highlight">⚙ Weekly parent reports — building now</div></div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is my child's data safe?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">Yes. We take privacy seriously. We never sell your child's data to anyone, never show advertisements, and data is stored securely and used only to improve your child's learning experience. Read our full <a href="/privacy.html">privacy policy</a> for complete details.</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How is Ujyalo different from hiring a tutor?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">A tutor is valuable — a good teacher makes a real difference. But most families in Nepal cannot afford daily tuition.<br><br>Ujyalo is available <strong>24 hours a day, 7 days a week, completely free</strong>. Your child can practice at 10pm before bed. No appointments, no travel, no cost. We are not replacing teachers — we are giving every student the tools to practice more.</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Does my child need a smartphone?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">Any phone with a browser and basic internet works — it does not need to be a new or expensive phone. Ujyalo is designed to be lightweight and fast even on older phones and slow connections.</div></div>
-        </div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">How will I know if my child is actually studying?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">We are building weekly parent reports — a simple email every Sunday showing exactly what your child practised, which chapters they completed, and where they need more work.<div class="faqx-hl">⚙ Weekly parent reports — building now</div></div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">Is my child's data safe?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">Yes. We take privacy seriously. We never sell your child's data to anyone, never show advertisements, and data is stored securely and used only to improve your child's learning experience. Read our full <a href="/privacy.html">privacy policy</a> for complete details.</div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">How is ujyalo different from hiring a tutor?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">A tutor is valuable — a good teacher makes a real difference. But most families in Nepal cannot afford daily tuition.<br><br>ujyalo is available <strong>24 hours a day, 7 days a week, completely free</strong>. Your child can practise at 10pm before bed. No appointments, no travel, no cost. We are not replacing teachers — we are giving every student the tools to practise more.</div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">Does my child need a smartphone?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">Any phone with a browser and basic internet works — it does not need to be a new or expensive phone. ujyalo is designed to be lightweight and fast even on older phones and slow connections.</div></div></div>
       </div>
     </div>
 
     <!-- Product -->
     <div class="faq-group" id="product">
       <div class="faq-group-header">
-        <div class="faq-group-icon" style="background:#FEF3C7">⚙️</div>
-        <div>
-          <div class="faq-group-title">About the product</div>
-          <div class="faq-group-sub">What Ujyalo is, how it works, and where it is going</div>
-        </div>
+        <div class="faq-group-icon">⚙️</div>
+        <div><div class="faq-group-title">About the product</div><div class="faq-group-sub">What ujyalo is, how it works, and where it is going</div></div>
       </div>
       <div class="faq-list">
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Who built Ujyalo?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">Ujyalo is built by three Nepali people based in Melbourne who care deeply about education back home. We are not a big company with investors. We saw a real problem — students preparing for the most important exam of their lives without proper resources — and decided to do something about it.</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What subjects does Ujyalo cover?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body"><strong>Live now:</strong> Compulsory Mathematics (17 chapters) and Compulsory Science (24 chapters) — all CDC Grade 10.<br><br><strong>Coming soon:</strong> English, Social Studies and Population Education, Nepali.</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">When will past papers be available?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">We are entering questions from real SEE past papers right now. This takes time to do properly — every question and answer is verified before it goes live. Sign up for a free account and we will notify you the moment past papers are available.<div class="faq-highlight">⏳ Past papers — coming soon</div></div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">I found a mistake in a question or answer. What do I do?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">Please tell us immediately — we take accuracy very seriously. Email <a href="mailto:hello@ujyalo.app">hello@ujyalo.app</a> with the chapter name and question and we will fix it as fast as possible. We appreciate every correction.</div></div>
-        </div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">Who built ujyalo?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">ujyalo is built by three Nepali people based in Melbourne who care deeply about education back home. We are not a big company with investors. We saw a real problem — students preparing for the most important exam of their lives without proper resources — and decided to do something about it.</div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">What subjects does ujyalo cover?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body"><strong>Live now:</strong> Compulsory Mathematics (17 chapters) and Compulsory Science (24 chapters) — all CDC Grade 10.<br><br><strong>Coming soon:</strong> English, Social Studies and Population Education, Nepali.</div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">When will past papers be available?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">We are entering questions from real SEE past papers right now. This takes time to do properly — every question and answer is verified before it goes live. Sign up for a free account and we will notify you the moment past papers are available.<div class="faqx-hl">⏳ Past papers — coming soon</div></div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">I found a mistake in a question or answer. What do I do?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">Please tell us immediately — we take accuracy very seriously. Email <a href="mailto:hello@ujyalo.app">hello@ujyalo.app</a> with the chapter name and question and we will fix it as fast as possible. We appreciate every correction.</div></div></div>
       </div>
     </div>
 
     <!-- Schools -->
     <div class="faq-group" id="schools">
       <div class="faq-group-header">
-        <div class="faq-group-icon" style="background:#FDF4FF">🏫</div>
-        <div>
-          <div class="faq-group-title">For schools</div>
-          <div class="faq-group-sub">How schools and teachers can use Ujyalo</div>
-        </div>
+        <div class="faq-group-icon">🏫</div>
+        <div><div class="faq-group-title">For schools</div><div class="faq-group-sub">How schools and teachers can use ujyalo</div></div>
       </div>
       <div class="faq-list">
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can our school use Ujyalo for all students?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">Yes — every student at your school can use Ujyalo for free right now. No setup required. Just share the link — <strong>ujyalo.app</strong> — and students can start practising immediately.<br><br>We are building school-specific features — class dashboards, teacher reports. Email <a href="mailto:hello@ujyalo.app">hello@ujyalo.app</a> to be involved early.</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can teachers use Ujyalo in class?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">Absolutely. Teachers can project Ujyalo on a screen and use it as a classroom activity — pick a chapter, show a question, and let students discuss before revealing the model answer. Requires no setup and works on any device.</div></div>
-        </div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">Can our school use ujyalo for all students?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">Yes — every student at your school can use ujyalo for free right now. No setup required. Just share the link — <strong>ujyalo.app</strong> — and students can start practising immediately.<br><br>We are building school-specific features — class dashboards, teacher reports. Email <a href="mailto:hello@ujyalo.app">hello@ujyalo.app</a> to be involved early.</div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">Can teachers use ujyalo in class?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">Absolutely. Teachers can project ujyalo on a screen and use it as a classroom activity — pick a chapter, show a question, and let students discuss before revealing the model answer. Requires no setup and works on any device.</div></div></div>
       </div>
     </div>
 
     <!-- Pricing -->
     <div class="faq-group" id="pricing">
       <div class="faq-group-header">
-        <div class="faq-group-icon" style="background:#F0FDF4">💰</div>
-        <div>
-          <div class="faq-group-title">Pricing and future</div>
-          <div class="faq-group-sub">Honest answers about money and sustainability</div>
-        </div>
+        <div class="faq-group-icon">💰</div>
+        <div><div class="faq-group-title">Pricing and future</div><div class="faq-group-sub">Honest answers about money and sustainability</div></div>
       </div>
       <div class="faq-list">
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How long will Ujyalo stay free?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">The core experience — chapter practice, past papers, model answers — will always be free. We believe every Nepali student deserves access to quality exam preparation regardless of their family's income.</div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How does Ujyalo make money?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">Right now — we do not. We are in beta and focused entirely on building something genuinely useful for students.<br><br>In the future we plan to offer optional paid features and school plans. We will never show advertisements. We will never sell your data.<div class="faq-highlight">🇳🇵 Ujyalo is ad-free. Always.</div></div></div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Do you offer help for students who cannot afford anything?<div class="faq-icon">+</div></div>
-          <div class="faq-a"><div class="faq-body">Everything on Ujyalo right now is free — no application needed, no questions asked. A student in a remote village with basic internet access gets exactly the same experience as anyone else. That is not a marketing line. It is the point of Ujyalo.</div></div>
-        </div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">How long will ujyalo stay free?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">The core experience — chapter practice, past papers, model answers — will always be free. We believe every Nepali student deserves access to quality exam preparation regardless of their family's income.</div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">How does ujyalo make money?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">Right now — we do not. We are in beta and focused entirely on building something genuinely useful for students.<br><br>In the future we plan to offer optional paid features and school plans. We will never show advertisements. We will never sell your data.<div class="faqx-hl">🇳🇵 ujyalo is ad-free. Always.</div></div></div></div>
+        <div class="faqx-item"><div class="faqx-q" onclick="this.parentElement.classList.toggle('open')">Do you offer help for students who cannot afford anything?<div class="faqx-icon">+</div></div><div class="faqx-a"><div class="faqx-body">Everything on ujyalo right now is free — no application needed, no questions asked. A student in a remote village with basic internet access gets exactly the same experience as anyone else. That is not a marketing line. It is the point of ujyalo.</div></div></div>
       </div>
     </div>
 
-  </div>
-</div>
+  </div></div>
 
-<!-- BOTTOM CTA -->
-<div class="faq-bottom">
-  <div class="faq-bottom-inner">
-    <h2 class="faq-bottom-title">Still have a <em>question?</em></h2>
-    <p class="faq-bottom-sub">We read every message and reply within 24 hours. A real person from the Ujyalo team — not a bot.</p>
+  <!-- BOTTOM CTA -->
+  <div class="faqcta">
+    <h2>Still have a <em>question?</em></h2>
+    <p>We read every message and reply within 24 hours. A real person from the ujyalo team — not a bot.</p>
     <div class="faq-contact-cards">
-      <a href="/contact.html" class="fcc">
-        <div class="fcc-icon">✉️</div>
-        <div class="fcc-title">Send a message</div>
-        <div class="fcc-sub">Reply within 24 hours</div>
-      </a>
-      <a href="mailto:hello@ujyalo.app" class="fcc">
-        <div class="fcc-icon">📧</div>
-        <div class="fcc-title">Email directly</div>
-        <div class="fcc-sub">hello@ujyalo.app</div>
-      </a>
-      <a href="/chapter-practice.html" class="fcc">
-        <div class="fcc-icon">📚</div>
-        <div class="fcc-title">Just start practising</div>
-        <div class="fcc-sub">No signup needed</div>
-      </a>
+      <a href="/contact.html" class="fcc"><div class="fcc-icon">✉️</div><div class="fcc-title">Send a message</div><div class="fcc-sub">Reply within 24 hours</div></a>
+      <a href="mailto:hello@ujyalo.app" class="fcc"><div class="fcc-icon">📧</div><div class="fcc-title">Email directly</div><div class="fcc-sub">hello@ujyalo.app</div></a>
+      <a href="/chapter-practice.html" class="fcc"><div class="fcc-icon">📚</div><div class="fcc-title">Just start practising</div><div class="fcc-sub">No signup needed</div></a>
     </div>
   </div>
+
 </div>
 
 <div id="site-footer"></div>

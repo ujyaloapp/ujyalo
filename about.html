@@ -19,661 +19,181 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,400;9..144,0,700;9..144,1,400;9..144,1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles/main.css" />
-
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    /* ── RESET & BASE ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ===== Editorial Scholar — About page (content only; nav/footer via components.js) ===== */
+    :root{
+      --forest:#1e1a15;--forest2:#1c4a40;--moss:#3f7d6e;
+      --brass:#f59e0b;--brass-soft:#f6b652;
+      --paper:#f4f0e6;--paper2:#ece6d6;--card:#fbf9f3;
+      --ink:#1a2420;--muted:#5f6b64;--faint:#9aa49d;--line:#e0d9c8;--green:#15803d;
+    }
+    html{scroll-behavior:smooth;}
+    .es *{margin:0;padding:0;box-sizing:border-box;}
+    .es{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--card);line-height:1.6;}
+    .es em{font-style:italic;}
+    .es a{text-decoration:none;}
+    .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
 
-    /* ── HERO ── */
-    .about-hero {
-      position: relative;
-      padding: 120px 0 100px;
-      background: #0a0f1e;
-      overflow: hidden;
-      text-align: center;
-    }
-    /* Animated gradient orbs */
-    .about-hero::before {
-      content: '';
-      position: absolute;
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(37,99,235,0.25) 0%, transparent 70%);
-      top: -100px; left: -100px;
-      animation: orb1 8s ease-in-out infinite alternate;
-      pointer-events: none;
-    }
-    .about-hero::after {
-      content: '';
-      position: absolute;
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(29,158,117,0.2) 0%, transparent 70%);
-      bottom: -80px; right: -80px;
-      animation: orb2 10s ease-in-out infinite alternate;
-      pointer-events: none;
-    }
-    @keyframes orb1 { from { transform: translate(0,0) scale(1); } to { transform: translate(80px,60px) scale(1.2); } }
-    @keyframes orb2 { from { transform: translate(0,0) scale(1); } to { transform: translate(-60px,-40px) scale(1.15); } }
+    /* HERO */
+    .ahero{position:relative;overflow:hidden;padding:70px 0 50px;background:radial-gradient(at 85% 10%,rgba(245,158,11,.1) 0,transparent 55%),var(--card);}
+    .ahero .wrap{position:relative;}
+    .ahero-label{display:inline-block;background:rgba(63,125,110,.1);color:var(--moss);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:20px;}
+    .ahero h1{font-family:'Fraunces';font-weight:900;font-size:clamp(38px,6.5vw,70px);line-height:1;letter-spacing:-2.5px;color:var(--forest);margin-bottom:22px;max-width:760px;}
+    .ahero h1 em{color:var(--brass);}
+    .ahero-lead{font-size:19px;color:var(--muted);max-width:520px;line-height:1.6;}
+    .ahero-light{position:absolute;right:4%;top:30px;font-family:'Fraunces';font-weight:900;font-size:230px;color:rgba(17,48,42,.04);line-height:1;pointer-events:none;}
 
-    .about-hero-inner {
-      position: relative; z-index: 2;
-      max-width: 780px; margin: 0 auto; padding: 0 24px;
-    }
-    .about-hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(37,99,235,0.15);
-      border: 1px solid rgba(37,99,235,0.3);
-      color: #93c5fd;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 6px 16px; border-radius: 999px;
-      margin-bottom: 32px;
-      animation: fade-up 0.6s ease both;
-    }
-    .about-hero-title {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2.8rem, 6vw, 5rem);
-      font-weight: 700;
-      line-height: 1.1;
-      color: white;
-      letter-spacing: -0.03em;
-      margin-bottom: 24px;
-      animation: fade-up 0.6s 0.1s ease both;
-    }
-    .about-hero-title em {
-      font-style: italic;
-      background: linear-gradient(135deg, #60a5fa, #34d399);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .about-hero-sub {
-      font-size: 18px;
-      color: rgba(255,255,255,0.55);
-      line-height: 1.7;
-      max-width: 520px;
-      margin: 0 auto;
-      animation: fade-up 0.6s 0.2s ease both;
-    }
+    /* STORY */
+    .story-sec{padding:60px 0;}
+    .story-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;}
+    .story-txt p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:16px;}
+    .story-txt p strong{color:var(--ink);font-weight:600;}
+    .story-quote{background:linear-gradient(135deg,#2a2318,#1a160f);color:#fff;border-radius:24px;padding:44px;position:relative;overflow:hidden;}
+    .story-quote::before{content:'"';position:absolute;left:24px;top:-10px;font-family:'Fraunces';font-size:140px;color:rgba(245,158,11,.18);line-height:1;}
+    .story-quote p{font-family:'Fraunces';font-style:italic;font-size:23px;line-height:1.45;position:relative;margin-top:20px;}
+    .story-quote .sig{font-family:'Outfit';font-style:normal;font-size:13px;color:var(--brass-soft);margin-top:18px;font-weight:600;letter-spacing:.5px;}
 
-    /* Stats bar */
-    .about-stats {
-      display: flex; justify-content: center; gap: 0;
-      margin-top: 64px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      animation: fade-up 0.6s 0.3s ease both;
-    }
-    .about-stat {
-      flex: 1; max-width: 200px;
-      padding: 32px 24px;
-      text-align: center;
-      border-right: 1px solid rgba(255,255,255,0.08);
-    }
-    .about-stat:last-child { border-right: none; }
-    .about-stat-num {
-      font-family: 'Fraunces', serif;
-      font-size: 2.8rem; font-weight: 700;
-      color: white; line-height: 1;
-      margin-bottom: 6px;
-    }
-    .about-stat-num span { color: #60a5fa; }
-    .about-stat-label { font-size: 12px; color: rgba(255,255,255,0.4); font-weight: 500; letter-spacing: 0.05em; }
+    /* MISSION / beliefs */
+    .miss{background:var(--paper);padding:64px 0;}
+    .miss-head{text-align:center;margin-bottom:40px;}
+    .miss-tag{font-family:'Fraunces';font-style:italic;font-size:17px;color:var(--brass);margin-bottom:8px;}
+    .miss-title{font-family:'Fraunces';font-weight:900;font-size:clamp(26px,4vw,40px);letter-spacing:-1px;color:var(--forest);}
+    .miss-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+    .miss-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:32px 26px;position:relative;overflow:hidden;transition:all .22s;}
+    .miss-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -16px rgba(17,48,42,.24);}
+    .miss-card:nth-child(2){margin-top:24px;}
+    .miss-bignum{font-family:'Fraunces';font-weight:900;font-size:60px;color:rgba(245,158,11,.16);line-height:1;position:absolute;right:18px;top:10px;}
+    .miss-ico{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,#2a2318,#1a160f);display:flex;align-items:center;justify-content:center;font-size:25px;margin-bottom:18px;}
+    .miss-card h3{font-family:'Fraunces';font-weight:600;font-size:20px;margin-bottom:9px;color:var(--ink);}
+    .miss-card p{font-size:14px;color:var(--muted);line-height:1.65;}
 
-    @keyframes fade-up {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    /* TEAM */
+    .team-sec{padding:64px 0;}
+    .team-head{text-align:center;margin-bottom:40px;}
+    .team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:880px;margin:0 auto;}
+    .tcard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:30px 24px;text-align:center;position:relative;overflow:hidden;transition:all .22s;}
+    .tcard:hover{transform:translateY(-4px);box-shadow:0 18px 40px -16px rgba(17,48,42,.22);border-color:var(--moss);}
+    .tcard::before{content:'';position:absolute;top:0;left:0;right:0;height:60px;background:linear-gradient(135deg,#2a2318,#1a160f);}
+    .tphoto{width:92px;height:92px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,var(--paper2),var(--brass-soft));border:4px solid var(--card);display:flex;align-items:center;justify-content:center;position:relative;margin-top:14px;font-family:'Fraunces';font-weight:900;font-size:30px;color:var(--forest);}
+    .tcard h3{font-family:'Fraunces';font-weight:600;font-size:18px;margin-bottom:3px;}
+    .trole{font-size:12.5px;color:var(--brass);font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;}
+    .tcard p{font-size:13px;color:var(--muted);line-height:1.6;}
 
-    /* ── MISSION ── */
-    .about-mission {
-      padding: 100px 0;
-      background: white;
-    }
-    .about-mission-inner {
-      max-width: 1100px; margin: 0 auto; padding: 0 24px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
-    }
-    .mission-left { }
-    .mission-label {
-      font-size: 11px; font-weight: 700; color: #2563EB;
-      text-transform: uppercase; letter-spacing: 0.1em;
-      margin-bottom: 16px; display: block;
-    }
-    .mission-title {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2rem, 3.5vw, 2.8rem);
-      font-weight: 700; line-height: 1.15;
-      color: #0f172a; letter-spacing: -0.02em;
-      margin-bottom: 24px;
-    }
-    .mission-title em { font-style: italic; color: #2563EB; }
-    .mission-body {
-      font-size: 16px; color: #64748b;
-      line-height: 1.85; margin-bottom: 16px;
-    }
-    .mission-quote {
-      margin: 32px 0;
-      padding: 24px 28px;
-      background: #f8fafc;
-      border-left: 4px solid #2563EB;
-      border-radius: 0 12px 12px 0;
-      font-family: 'Fraunces', serif;
-      font-size: 1.2rem; font-style: italic;
-      color: #0f172a; line-height: 1.6;
-    }
+    /* ROADMAP */
+    .road{background:#1e1a15;color:#fff;padding:64px 0;position:relative;overflow:hidden;}
+    .road::before{content:'→';position:absolute;right:-10px;bottom:-30px;font-size:200px;color:rgba(245,158,11,.06);font-family:'Fraunces';}
+    .road-head{text-align:center;margin-bottom:44px;position:relative;}
+    .road-tag{font-family:'Fraunces';font-style:italic;font-size:17px;color:var(--brass-soft);margin-bottom:8px;}
+    .road-title{font-family:'Fraunces';font-weight:900;font-size:clamp(26px,4vw,40px);letter-spacing:-1px;color:#fff;}
+    .road-track{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative;}
+    .rstep{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:24px 20px;position:relative;}
+    .rstep.live{border-color:rgba(63,125,110,.5);background:rgba(63,125,110,.12);}
+    .rstep.now{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.1);}
+    .rstep-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-weight:900;font-size:14px;margin-bottom:14px;}
+    .rstep.live .rstep-dot{background:var(--moss);color:#fff;}
+    .rstep.now .rstep-dot{background:linear-gradient(135deg,var(--brass-soft),var(--brass));color:var(--forest);}
+    .rstep.next .rstep-dot{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);}
+    .rstep-status{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+    .rstep.live .rstep-status{color:var(--moss);}
+    .rstep.now .rstep-status{color:var(--brass-soft);}
+    .rstep.next .rstep-status{color:rgba(255,255,255,.4);}
+    .rstep h4{font-family:'Fraunces';font-weight:600;font-size:17px;margin-bottom:7px;color:#fff;}
+    .rstep p{font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.55;}
 
-    .mission-right {
-      display: flex; flex-direction: column; gap: 16px;
-    }
-    .mission-value {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 24px;
-      display: flex; gap: 16px; align-items: flex-start;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .mission-value:hover {
-      transform: translateX(4px);
-      box-shadow: -4px 0 0 #2563EB, 0 8px 24px rgba(0,0,0,0.06);
-    }
-    .mv-icon {
-      width: 44px; height: 44px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; flex-shrink: 0;
-    }
-    .mv-title { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
-    .mv-body  { font-size: 13px; color: #64748b; line-height: 1.6; }
+    .band{background:var(--paper);text-align:center;padding:70px 28px;}
+    .band h2{font-family:'Fraunces';font-weight:900;font-size:clamp(26px,3.5vw,40px);margin-bottom:14px;color:var(--forest);letter-spacing:-1px;}
+    .band p{font-size:16px;color:var(--muted);max-width:480px;margin:0 auto 26px;}
+    .band-cta{display:inline-flex;align-items:center;background:#1e1a15;color:#fff;font-size:15px;font-weight:600;padding:15px 32px;border-radius:12px;border:none;cursor:pointer;box-shadow:0 10px 28px -10px rgba(17,48,42,.5);}
 
-    /* ── TEAM ── */
-    .about-team {
-      padding: 100px 0;
-      background: #0a0f1e;
-      position: relative; overflow: hidden;
+    /* ===== Mobile (added — mockup had none) ===== */
+    @media (max-width:860px){
+      .ahero{padding:54px 0 38px;}
+      .ahero-light{font-size:140px;right:0;top:8px;opacity:.6;}
+      .story-grid{grid-template-columns:1fr;gap:28px;}
+      .miss-grid{grid-template-columns:1fr;}
+      .miss-card:nth-child(2){margin-top:0;}
+      .team-grid{grid-template-columns:1fr;max-width:420px;}
+      .road-track{grid-template-columns:1fr 1fr;}
+      .band{padding:54px 20px;}
     }
-    .about-team::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 50% 0%, rgba(37,99,235,0.15) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .about-team-inner {
-      max-width: 1100px; margin: 0 auto; padding: 0 24px;
-      position: relative; z-index: 1;
-    }
-    .about-team-header {
-      text-align: center; margin-bottom: 64px;
-    }
-    .team-section-label {
-      font-size: 11px; font-weight: 700; color: #3b82f6;
-      text-transform: uppercase; letter-spacing: 0.1em;
-      margin-bottom: 16px; display: block;
-    }
-    .team-section-title {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 700; color: white;
-      letter-spacing: -0.02em; line-height: 1.15;
-    }
-    .team-section-title em {
-      font-style: italic;
-      background: linear-gradient(135deg, #60a5fa, #34d399);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
-    .team-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 20px;
-      padding: 32px 24px;
-      text-align: center;
-      transition: all 0.3s ease;
-      position: relative; overflow: hidden;
-    }
-    .team-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #2563EB, #1D9E75);
-      opacity: 0; transition: opacity 0.3s;
-    }
-    .team-card:hover {
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(255,255,255,0.14);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    }
-    .team-card:hover::before { opacity: 1; }
-
-    .team-avatar {
-      width: 80px; height: 80px;
-      border-radius: 50%;
-      margin: 0 auto 20px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px;
-      position: relative;
-    }
-    .team-avatar-initials {
-      width: 80px; height: 80px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Fraunces', serif;
-      font-size: 1.6rem; font-weight: 700; color: white;
-    }
-    .av-blue   { background: linear-gradient(135deg, #1d4ed8, #2563EB); }
-    .av-teal   { background: linear-gradient(135deg, #065f46, #1D9E75); }
-    .av-amber  { background: linear-gradient(135deg, #92400e, #f59e0b); }
-    .av-purple { background: linear-gradient(135deg, #4c1d95, #7c3aed); }
-
-    .team-name {
-      font-size: 17px; font-weight: 700; color: white;
-      margin-bottom: 4px;
-    }
-    .team-role-badge {
-      display: inline-block;
-      font-size: 11px; font-weight: 600;
-      padding: 3px 12px; border-radius: 999px;
-      margin-bottom: 16px;
-    }
-    .badge-blue   { background: rgba(37,99,235,0.2);  color: #93c5fd; }
-    .badge-teal   { background: rgba(29,158,117,0.2); color: #6ee7b7; }
-    .badge-amber  { background: rgba(245,158,11,0.2); color: #fcd34d; }
-    .badge-purple { background: rgba(124,58,237,0.2); color: #c4b5fd; }
-
-    .team-desc {
-      font-size: 13px; color: rgba(255,255,255,0.5);
-      line-height: 1.7;
-    }
-
-    /* ── JOURNEY ── */
-    .about-journey {
-      padding: 100px 0;
-      background: #f8fafc;
-    }
-    .about-journey-inner {
-      max-width: 900px; margin: 0 auto; padding: 0 24px;
-    }
-    .journey-header {
-      text-align: center; margin-bottom: 64px;
-    }
-    .journey-title {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2rem, 3.5vw, 2.8rem);
-      font-weight: 700; color: #0f172a;
-      letter-spacing: -0.02em;
-    }
-    .journey-title em { font-style: italic; color: #2563EB; }
-
-    .timeline {
-      position: relative;
-      padding-left: 40px;
-    }
-    .timeline::before {
-      content: '';
-      position: absolute; left: 12px; top: 8px; bottom: 8px;
-      width: 2px; background: linear-gradient(to bottom, #2563EB, #1D9E75, #f59e0b, #7c3aed);
-      border-radius: 1px;
-    }
-    .tl-item {
-      position: relative; margin-bottom: 40px;
-    }
-    .tl-dot {
-      position: absolute; left: -34px; top: 4px;
-      width: 14px; height: 14px; border-radius: 50%;
-      border: 2px solid white;
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
-    }
-    .tl-period {
-      font-size: 11px; font-weight: 700; color: #2563EB;
-      text-transform: uppercase; letter-spacing: 0.08em;
-      margin-bottom: 6px;
-    }
-    .tl-title { font-size: 17px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
-    .tl-body  { font-size: 14px; color: #64748b; line-height: 1.65; }
-
-    /* ── TESTIMONIALS ── */
-    .about-testimonials {
-      padding: 100px 0;
-      background: white;
-    }
-    .about-testimonials-inner {
-      max-width: 1100px; margin: 0 auto; padding: 0 24px;
-    }
-    .testimonials-header {
-      text-align: center; margin-bottom: 56px;
-    }
-    .testimonials-title {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2rem, 3.5vw, 2.8rem);
-      font-weight: 700; color: #0f172a;
-      letter-spacing: -0.02em;
-    }
-    .testimonials-title em { font-style: italic; color: #2563EB; }
-
-    .testimonials-grid {
-      display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
-    }
-    .tcard {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 20px; padding: 28px;
-      position: relative;
-    }
-    .tcard-quote {
-      font-size: 40px; line-height: 1;
-      font-family: 'Fraunces', serif;
-      color: #2563EB; opacity: 0.3;
-      margin-bottom: 12px;
-    }
-    .tcard-text {
-      font-size: 14px; color: #334155;
-      line-height: 1.75; margin-bottom: 20px;
-      font-style: italic;
-    }
-    .tcard-stars { color: #f59e0b; font-size: 13px; margin-bottom: 16px; }
-    .tcard-author {
-      display: flex; align-items: center; gap: 12px;
-      padding-top: 16px; border-top: 1px solid #e2e8f0;
-    }
-    .tcard-avatar {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: linear-gradient(135deg, #2563EB, #1D9E75);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; flex-shrink: 0;
-    }
-    .tcard-name  { font-size: 13px; font-weight: 700; color: #0f172a; }
-    .tcard-meta  { font-size: 12px; color: #94a3b8; }
-    .testimonials-note {
-      text-align: center; margin-top: 24px;
-      font-size: 12px; color: #94a3b8;
-    }
-
-    /* ── CTA ── */
-    .about-cta {
-      padding: 100px 0;
-      background: #0a0f1e;
-      text-align: center;
-      position: relative; overflow: hidden;
-    }
-    .about-cta::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 50% 100%, rgba(29,158,117,0.2) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .about-cta-inner {
-      max-width: 640px; margin: 0 auto; padding: 0 24px;
-      position: relative; z-index: 1;
-    }
-    .about-cta-title {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2.2rem, 4vw, 3.2rem);
-      font-weight: 700; color: white;
-      letter-spacing: -0.02em; margin-bottom: 16px;
-    }
-    .about-cta-title em {
-      font-style: italic;
-      background: linear-gradient(135deg, #60a5fa, #34d399);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .about-cta-sub {
-      font-size: 16px; color: rgba(255,255,255,0.5);
-      line-height: 1.7; margin-bottom: 36px;
-    }
-    .about-cta-btns {
-      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
-    }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-      .about-mission-inner { grid-template-columns: 1fr; gap: 48px; }
-      .team-grid { grid-template-columns: repeat(2,1fr); }
-      .testimonials-grid { grid-template-columns: 1fr; }
-      .about-stats { flex-wrap: wrap; }
-      .about-stat { min-width: 140px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
-    }
-    @media (max-width: 600px) {
-      .team-grid { grid-template-columns: 1fr; }
-      .about-hero { padding: 80px 0 60px; }
+    @media (max-width:480px){
+      .wrap{padding:0 18px;}
+      .road-track{grid-template-columns:1fr;}
+      .story-quote{padding:32px;}
     }
   </style>
+  <meta property="og:image" content="https://ujyalo.app/og-default.png" />
+  <meta name="twitter:image" content="https://ujyalo.app/og-default.png" />
 </head>
 <body>
 <div id="site-nav"></div>
 
-<!-- ══ HERO ══ -->
-<div class="about-hero">
-  <div class="about-hero-inner">
-    <div class="about-hero-badge">🇳🇵 Our story</div>
-    <h1 class="about-hero-title">
-      Built with purpose,<br>
-      <em>for every Nepali student.</em>
-    </h1>
-    <p class="about-hero-sub">
-      Why we started Ujyalo, what we believe in, and where we are going — one student at a time.
-    </p>
-  </div>
-  <div class="about-stats">
-    <div class="about-stat">
-      <div class="about-stat-num">500<span>k+</span></div>
-      <div class="about-stat-label">Students sit SEE yearly</div>
-    </div>
-    <div class="about-stat">
-      <div class="about-stat-num">Rs<span>0</span></div>
-      <div class="about-stat-label">Cost for students</div>
-    </div>
-    <div class="about-stat">
-      <div class="about-stat-num">41<span>+</span></div>
-      <div class="about-stat-label">Chapters covered</div>
-    </div>
-    <div class="about-stat">
-      <div class="about-stat-num">24<span>/7</span></div>
-      <div class="about-stat-label">Always available</div>
-    </div>
-  </div>
-</div>
+<div class="es">
 
-<!-- ══ MISSION ══ -->
-<section class="about-mission">
-  <div class="about-mission-inner">
-    <div class="mission-left">
-      <span class="mission-label">Why Ujyalo exists</span>
-      <h2 class="mission-title">The pressure is <em>real.</em><br>The tools haven't kept up.</h2>
-      <p class="mission-body">Every year, hundreds of thousands of Nepali students sit for the SEE exam carrying the weight of their entire family on their shoulders.</p>
-      <p class="mission-body">It is not just an exam. It is pride. It is honour. It is the thing parents talk about at family gatherings and dream about quietly at night.</p>
-      <p class="mission-body">Most families save money for tuition, buy thick guidebooks, make sacrifices. But even expensive coaching centres do not always deliver. And for families who cannot afford them? Their child faces Nepal's most important exam essentially alone.</p>
-      <div class="mission-quote">"Where you are born should not decide how far you go."</div>
-      <p class="mission-body">That is the problem Ujyalo was built to solve. A patient, always-available study companion that knows the SEE inside out. Free to start. Built for Nepal. Available 24 hours a day.</p>
+  <!-- HERO -->
+  <section class="ahero">
+    <div class="ahero-light">उ</div>
+    <div class="wrap">
+      <div class="ahero-label">Our story</div>
+      <h1>ujyalo means <em>light.</em><br>We're here to share it.</h1>
+      <p class="ahero-lead">A small team on a simple mission: give every Nepali student world-class exam preparation, free — no matter where they live or what they can afford.</p>
     </div>
+  </section>
 
-    <div class="mission-right">
-      <div class="mission-value">
-        <div class="mv-icon" style="background:#EFF6FF">🎯</div>
-        <div>
-          <div class="mv-title">Every student deserves a great teacher</div>
-          <div class="mv-body">Geography should not decide your future. Technology lets us bring quality teaching to every corner of Nepal — from Kathmandu to Mustang.</div>
-        </div>
-      </div>
-      <div class="mission-value">
-        <div class="mv-icon" style="background:#F0FDF4">💸</div>
-        <div>
-          <div class="mv-title">Free — no exceptions</div>
-          <div class="mv-body">Coaching centres cost Rs 5,000–15,000 per month. Ujyalo is free for students because good education should not depend on family wealth.</div>
-        </div>
-      </div>
-      <div class="mission-value">
-        <div class="mv-icon" style="background:#FFF7ED">🇳🇵</div>
-        <div>
-          <div class="mv-title">Built for Nepal, not adapted</div>
-          <div class="mv-body">Other tools are global products with Nepali stickers. Ujyalo is built from the ground up for the SEE syllabus — every chapter, every question, every mark.</div>
-        </div>
-      </div>
-      <div class="mission-value">
-        <div class="mv-icon" style="background:#FDF4FF">👨‍👩‍👧</div>
-        <div>
-          <div class="mv-title">Parents matter too</div>
-          <div class="mv-body">Most Nepali parents sacrifice everything for their child's education without knowing if it is working. Weekly reports keep them informed and proud.</div>
-        </div>
-      </div>
+  <!-- STORY -->
+  <section class="story-sec"><div class="wrap"><div class="story-grid">
+    <div class="story-txt">
+      <p>Across Nepal, students preparing for the SEE face the same struggle: <strong>scattered past papers, no clear answers, and the best help locked behind fees.</strong></p>
+      <p>Good preparation too often depends on where you live or what your family can afford. We didn't think that was fair.</p>
+      <p>So we set out to gather <strong>SEE papers, write honest model answers, and make it all free</strong> — in Nepali and English — in a space that feels calm and good to study in.</p>
     </div>
-  </div>
-</section>
-
-<!-- ══ TEAM ══ -->
-<section class="about-team">
-  <div class="about-team-inner">
-    <div class="about-team-header">
-      <span class="team-section-label">The people behind Ujyalo</span>
-      <h2 class="team-section-title">Made by people who <em>care.</em></h2>
+    <div class="story-quote">
+      <p>Where you are born should not decide how far you go.</p>
+      <div class="sig">— The ujyalo team</div>
     </div>
+  </div></div></section>
 
+  <!-- BELIEFS -->
+  <section class="miss"><div class="wrap">
+    <div class="miss-head"><div class="miss-tag">What drives us</div><div class="miss-title">Three beliefs</div></div>
+    <div class="miss-grid">
+      <div class="miss-card"><span class="miss-bignum">01</span><div class="miss-ico">🆓</div><h3>Free &amp; equal</h3><p>Exam preparation open to every student, with no paywall between them and their future.</p></div>
+      <div class="miss-card"><span class="miss-bignum">02</span><div class="miss-ico">✦</div><h3>World-class quality</h3><p>Bringing Nepal's exam prep to a standard students anywhere would be proud to use.</p></div>
+      <div class="miss-card"><span class="miss-bignum">03</span><div class="miss-ico">🧠</div><h3>Study smarter</h3><p>Helping students truly understand and improve — not just memorise and cram.</p></div>
+    </div>
+  </div></section>
+
+  <!-- TEAM (real founders) -->
+  <section class="team-sec"><div class="wrap">
+    <div class="team-head"><div class="miss-tag">The people</div><div class="miss-title">Made by three, for many</div></div>
     <div class="team-grid">
-
-      <div class="team-card">
-        <div class="team-avatar">
-          <div class="team-avatar-initials av-blue">DK</div>
-        </div>
-        <div class="team-name">Dipesh Karki</div>
-        <div class="team-role-badge badge-blue">Architect of the Experience</div>
-        <p class="team-desc">Dipesh works across both vision and technology to shape Ujyalo into a platform built around real student needs. Every feature is designed with one goal — making learning feel more understandable and less stressful for Nepali students.</p>
-      </div>
-
-      <div class="team-card">
-        <div class="team-avatar">
-          <div class="team-avatar-initials av-teal">JB</div>
-        </div>
-        <div class="team-name">Jyoti Baniya</div>
-        <div class="team-role-badge badge-teal">The Force Behind the Reach</div>
-        <p class="team-desc">Jyoti is the reason Ujyalo does not stay a secret. Deep connections across Nepal, a relentless drive to get Ujyalo into every school, every classroom, every student's hands. He understands the curriculum, verifies every piece of content, builds partnerships with schools and makes sure the mission actually lands where it matters most — Nepal.</p>
-      </div>
-
-      <div class="team-card">
-        <div class="team-avatar">
-          <div class="team-avatar-initials av-amber">RP</div>
-        </div>
-        <div class="team-name">Raaz Pandey</div>
-        <div class="team-role-badge badge-amber">The Standard Bearer</div>
-        <p class="team-desc">Behind every question on Ujyalo is Raaz. He is the reason students trust what they read here. Obsessed with accuracy, relentless about quality — he ensures that every answer, every explanation, every piece of content is worthy of the students whose futures depend on getting it right.</p>
-      </div>
-
-      <div class="team-card">
-        <div class="team-avatar">
-          <div class="team-avatar-initials av-purple" style="font-size:2rem;">🤖</div>
-        </div>
-        <div class="team-name">AI Tutor</div>
-        <div class="team-role-badge badge-purple">Always On</div>
-        <p class="team-desc">Available 24/7. Never impatient. Never tired. Always ready to explain again until it clicks. The tutor every Nepali student deserves — available the moment they need it, for free.</p>
-      </div>
-
+      <div class="tcard"><div class="tphoto">DK</div><h3>Dipesh Karki</h3><div class="trole">Architect of the Experience</div><p>Dipesh works across both vision and technology to shape ujyalo into a platform built around real student needs. Every feature is designed with one goal — making learning feel more understandable and less stressful for Nepali students.</p></div>
+      <div class="tcard"><div class="tphoto">JB</div><h3>Jyoti Baniya</h3><div class="trole">The Force Behind the Reach</div><p>Jyoti is the reason ujyalo doesn't stay a secret. Deep connections across Nepal and a relentless drive to get ujyalo into every school and every student's hands. He verifies content, builds school partnerships, and makes sure the mission lands where it matters most.</p></div>
+      <div class="tcard"><div class="tphoto">RP</div><h3>Raaz Pandey</h3><div class="trole">The Standard Bearer</div><p>Behind every question on ujyalo is Raaz. He's the reason students trust what they read here — obsessed with accuracy, relentless about quality, making sure every answer is worthy of the students whose futures depend on getting it right.</p></div>
     </div>
-  </div>
-</section>
+  </div></section>
 
-<!-- ══ JOURNEY / TIMELINE ══ -->
-<section class="about-journey">
-  <div class="about-journey-inner">
-    <div class="journey-header">
-      <span class="mission-label">Where we are going</span>
-      <h2 class="journey-title">One bright future <em>at a time.</em></h2>
+  <!-- ROADMAP -->
+  <section class="road"><div class="wrap">
+    <div class="road-head"><div class="road-tag">Where we're going</div><div class="road-title">The road ahead</div></div>
+    <div class="road-track">
+      <div class="rstep live"><div class="rstep-dot">✓</div><div class="rstep-status">Live now</div><h4>SEE past papers</h4><p>Papers with bilingual model answers — free, and growing week by week.</p></div>
+      <div class="rstep now"><div class="rstep-dot">●</div><div class="rstep-status">Building now</div><h4>Practice &amp; Plus</h4><p>Chapter practice, hot topics, predictions &amp; personalised papers.</p></div>
+      <div class="rstep next"><div class="rstep-dot">2</div><div class="rstep-status">Coming</div><h4>Class 12 (NEB)</h4><p>The same free, complete prep for +2 students, all streams.</p></div>
+      <div class="rstep next"><div class="rstep-dot">3</div><div class="rstep-status">Planned</div><h4>More exams</h4><p>Entrance exams and beyond — wherever students need us.</p></div>
     </div>
-    <div class="timeline">
-      <div class="tl-item">
-        <div class="tl-dot" style="background:#2563EB"></div>
-        <div class="tl-period">Now — 2026</div>
-        <div class="tl-title">SEE Grade 10 — Maths & Science</div>
-        <div class="tl-body">Chapter practice, past papers, progress tracking and AI-powered explanations. Free for every Nepali Grade 10 student preparing for SEE.</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot" style="background:#1D9E75"></div>
-        <div class="tl-period">Mid 2026</div>
-        <div class="tl-title">English, Social & Nepali — All SEE subjects</div>
-        <div class="tl-body">Complete SEE coverage. School features — teacher dashboards, class codes, weak chapter reports. The data teachers have never had before.</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot" style="background:#f59e0b"></div>
-        <div class="tl-period">2027</div>
-        <div class="tl-title">BLE Grade 8 & NEB Grade 11–12</div>
-        <div class="tl-body">Expanding to Grade 8 and Grade 11–12. More exams, more subjects, more students reached. The same mission — just bigger.</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot" style="background:#7c3aed"></div>
-        <div class="tl-period">Beyond</div>
-        <div class="tl-title">IOE, CMAT & Entrance Exams</div>
-        <div class="tl-body">Every major exam a Nepali student faces. One platform. One mission. Quality education for every family — regardless of where they live or what they can afford.</div>
-      </div>
-    </div>
-  </div>
-</section>
+  </div></section>
 
-<!-- ══ TESTIMONIALS ══ -->
-<section class="about-testimonials">
-  <div class="about-testimonials-inner">
-    <div class="testimonials-header">
-      <span class="mission-label">Student voices</span>
-      <h2 class="testimonials-title">What students <em>say.</em></h2>
-    </div>
-    <div class="testimonials-grid">
-      <div class="tcard">
-        <div class="tcard-quote">"</div>
-        <div class="tcard-stars">★★★★★</div>
-        <p class="tcard-text">Maths was my biggest fear. With Ujyalo I practise every night and I actually understand what I am doing now. It does not feel like studying anymore.</p>
-        <div class="tcard-author">
-          <div class="tcard-avatar">👧</div>
-          <div>
-            <div class="tcard-name">Sita Sharma</div>
-            <div class="tcard-meta">Grade 10 · Chitwan</div>
-          </div>
-        </div>
-      </div>
-      <div class="tcard">
-        <div class="tcard-quote">"</div>
-        <div class="tcard-stars">★★★★★</div>
-        <p class="tcard-text">My parents cannot help me study. But now they get a weekly report and feel involved. It means so much to our family that they can see I am working hard.</p>
-        <div class="tcard-author">
-          <div class="tcard-avatar">👦</div>
-          <div>
-            <div class="tcard-name">Rajan Thapa</div>
-            <div class="tcard-meta">Grade 10 · Pokhara</div>
-          </div>
-        </div>
-      </div>
-      <div class="tcard">
-        <div class="tcard-quote">"</div>
-        <div class="tcard-stars">★★★★★</div>
-        <p class="tcard-text">No good coaching centre near my village. Ujyalo feels like having a teacher available any time I open my phone. I do not feel behind anymore.</p>
-        <div class="tcard-author">
-          <div class="tcard-avatar">👧</div>
-          <div>
-            <div class="tcard-name">Priya Gurung</div>
-            <div class="tcard-meta">Grade 10 · Mustang</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p class="testimonials-note">✦ Early student feedback during beta. Verified reviews coming soon.</p>
-  </div>
-</section>
+  <!-- CLOSING -->
+  <section class="band">
+    <h2>Join us from the start</h2>
+    <p>Open your first past paper today — and help us build the study tool Nepal deserves.</p>
+    <a href="/see.html" class="band-cta">Explore past papers →</a>
+  </section>
 
-<!-- ══ CTA ══ -->
-<section class="about-cta">
-  <div class="about-cta-inner">
-    <h2 class="about-cta-title">Be part of <em>the mission.</em></h2>
-    <p class="about-cta-sub">Every student who uses Ujyalo is proof that quality education can be free, accessible and built for Nepal. Join them.</p>
-    <div class="about-cta-btns">
-      <a href="/signup.html" class="btn btn-primary btn-large">Start for free →</a>
-      <a href="/for-schools.html" class="btn btn-secondary btn-large">For schools →</a>
-    </div>
-  </div>
-</section>
+</div>
 
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>

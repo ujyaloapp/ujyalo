@@ -18,231 +18,190 @@
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,700;9..144,1,400;9..144,1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles/main.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    .page-dark-hero{position:relative;padding:100px 0 80px;background:#0a0f1e;overflow:hidden;text-align:center;}
-    .page-dark-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(37,99,235,0.2) 0%,transparent 60%);pointer-events:none;}
-    .page-dark-hero-inner{position:relative;z-index:2;max-width:720px;margin:0 auto;padding:0 24px;}
-    .page-dark-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.3);color:#93c5fd;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:24px;}
-    .page-dark-title{font-family:'Fraunces',serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:700;line-height:1.1;color:white;letter-spacing:-.03em;margin-bottom:20px;}
-    .page-dark-title em{font-style:italic;background:linear-gradient(135deg,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-    .page-dark-sub{font-size:17px;color:rgba(255,255,255,.5);line-height:1.7;max-width:540px;margin:0 auto 32px;}
-    .section-tiny-label{font-size:11px;font-weight:700;color:#2563EB;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;display:block;}
-    .section-fraunces-title{font-family:'Fraunces',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;color:#0f172a;letter-spacing:-.02em;line-height:1.15;margin-bottom:16px;}
-    .section-fraunces-title em{font-style:italic;color:#2563EB;}
+    /* ===== Editorial Scholar — Features page (content only; nav/footer via components.js) ===== */
+    :root{
+      --forest:#1e1a15;--forest2:#1c4a40;--moss:#3f7d6e;
+      --brass:#f59e0b;--brass-soft:#f6b652;
+      --paper:#f4f0e6;--paper2:#ece6d6;--card:#fbf9f3;
+      --ink:#1a2420;--muted:#5f6b64;--faint:#9aa49d;--line:#e0d9c8;--blue:#1a6fc4;--green:#15803d;
+    }
+    html{scroll-behavior:smooth;}
+    .es *{margin:0;padding:0;box-sizing:border-box;}
+    .es{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--card);line-height:1.6;}
+    .es em{font-style:italic;}
+    .es a{text-decoration:none;}
+    .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
 
-    /* Feature grid */
-    .feat-section{padding:80px 0;background:white;}
-    .feat-section-alt{padding:80px 0;background:#f8fafc;}
-    .feat-inner{max-width:1100px;margin:0 auto;padding:0 24px;}
-    .feat-header{text-align:center;margin-bottom:52px;}
-    .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
-    .feat-card{background:white;border:1px solid #e2e8f0;border-radius:20px;padding:28px;transition:all .25s;position:relative;overflow:hidden;}
-    .feat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#2563EB,#1D9E75);opacity:0;transition:opacity .25s;}
-    .feat-card:hover{box-shadow:0 12px 40px rgba(0,0,0,.08);transform:translateY(-3px);}
-    .feat-card:hover::after{opacity:1;}
-    .feat-card-alt{background:#f8fafc;}
-    .fc-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;}
-    .fc-title{font-size:16px;font-weight:700;color:#0f172a;margin-bottom:8px;}
-    .fc-body{font-size:14px;color:#64748b;line-height:1.65;margin-bottom:10px;}
-    .fc-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;}
-    .badge-live{background:#E1F5EE;color:#085041;}
-    .badge-soon{background:#EFF6FF;color:#1d4ed8;}
-    .badge-hot{background:#FEF3C7;color:#92400e;}
+    /* HERO */
+    .phero{position:relative;overflow:hidden;padding:74px 0 60px;background:radial-gradient(at 80% 0%,rgba(245,158,11,.1) 0,transparent 55%),var(--card);}
+    .phero::before{content:'✦';position:absolute;left:-30px;top:40px;font-size:200px;color:rgba(17,48,42,.03);font-family:'Fraunces';}
+    .phero .wrap{position:relative;}
+    .phero-label{display:inline-block;background:rgba(63,125,110,.1);color:var(--moss);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:18px;}
+    .phero h1{font-family:'Fraunces';font-weight:900;font-size:clamp(36px,6vw,62px);line-height:1.02;letter-spacing:-2px;margin-bottom:18px;color:var(--forest);max-width:680px;}
+    .phero h1 em{color:var(--brass);}
+    .phero p{font-size:19px;color:var(--muted);max-width:500px;line-height:1.6;}
+    .phero-cta{display:inline-flex;align-items:center;margin-top:26px;background:#1e1a15;color:#fff;font-size:15px;font-weight:600;padding:14px 28px;border-radius:12px;box-shadow:0 10px 28px -10px rgba(17,48,42,.5);}
 
-    /* Highlight row */
-    .feat-highlight{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding:60px 0;max-width:1100px;margin:0 auto;}
-    .fh-text{}
-    .fh-text h2{font-family:'Fraunces',serif;font-size:clamp(1.8rem,3vw,2.4rem);font-weight:700;color:#0f172a;line-height:1.2;margin-bottom:16px;}
-    .fh-text h2 em{font-style:italic;color:#2563EB;}
-    .fh-text p{font-size:15px;color:#64748b;line-height:1.8;margin-bottom:12px;}
-    .fh-cards{display:flex;flex-direction:column;gap:12px;}
-    .fh-card{background:white;border:1px solid #e2e8f0;border-radius:16px;padding:20px;display:flex;gap:14px;align-items:flex-start;}
-    .fhc-icon{font-size:22px;flex-shrink:0;}
-    .fhc-title{font-size:14px;font-weight:700;color:#0f172a;margin-bottom:4px;}
-    .fhc-body{font-size:13px;color:#64748b;line-height:1.6;}
+    /* big asymmetric feature with product preview */
+    .bigfeat{display:grid;grid-template-columns:1.05fr .95fr;gap:0;background:linear-gradient(135deg,#2a2318,#1a160f);border-radius:26px;overflow:hidden;margin:50px 0;position:relative;}
+    .bigfeat-txt{padding:48px;color:#fff;align-self:center;}
+    .bigfeat-kick{font-family:'Fraunces';font-style:italic;font-size:16px;color:var(--brass-soft);margin-bottom:12px;}
+    .bigfeat-txt h2{font-family:'Fraunces';font-weight:900;font-size:34px;line-height:1.1;margin-bottom:14px;letter-spacing:-.5px;}
+    .bigfeat-txt p{font-size:15.5px;color:#cbd8d1;line-height:1.65;margin-bottom:20px;}
+    .bigfeat-meta{display:flex;gap:24px;}
+    .bfm-n{font-family:'Fraunces';font-weight:900;font-size:26px;color:var(--brass-soft);}
+    .bfm-l{font-size:11px;color:var(--moss);text-transform:uppercase;letter-spacing:1px;}
+    .bigfeat-vis{background:rgba(0,0,0,.15);padding:38px 38px 0;display:flex;align-items:flex-end;justify-content:center;position:relative;overflow:hidden;}
+    .mini-paper{background:var(--card);border-radius:14px 14px 0 0;padding:18px;width:100%;max-width:300px;box-shadow:0 -10px 40px rgba(0,0,0,.3);}
+    .mp-head{display:flex;gap:7px;align-items:center;margin-bottom:12px;}
+    .mp-q{width:24px;height:24px;border-radius:6px;background:#1e1a15;color:#fff;font-family:'Fraunces';font-weight:900;font-size:11px;display:flex;align-items:center;justify-content:center;}
+    .mp-tag{font-size:9px;font-weight:700;color:var(--moss);background:rgba(63,125,110,.12);padding:2px 7px;border-radius:99px;}
+    .mp-marks{margin-left:auto;font-size:10px;color:var(--brass);font-weight:700;}
+    .mp-text{font-size:11.5px;color:var(--ink);line-height:1.5;margin-bottom:12px;}
+    .mp-sub{border-top:1px solid var(--line);padding-top:9px;display:flex;gap:7px;align-items:flex-start;}
+    .mp-ltr{width:17px;height:17px;border-radius:4px;background:#1e1a15;color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .mp-stxt{font-size:10.5px;color:var(--muted);line-height:1.4;}
+    .mp-ans{margin-top:8px;background:#f1f8f3;border-left:3px solid var(--green);border-radius:0 6px 6px 0;padding:7px 9px;font-size:10px;color:#1d3a26;}
 
-    /* Coming soon */
-    .coming-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;}
-    .coming-card{background:white;border:1.5px dashed #e2e8f0;border-radius:16px;padding:24px;text-align:center;}
-    .coming-icon{font-size:36px;margin-bottom:12px;}
-    .coming-title{font-size:15px;font-weight:700;color:#0f172a;margin-bottom:6px;}
-    .coming-body{font-size:13px;color:#64748b;line-height:1.6;margin-bottom:12px;}
-    .coming-tag{font-size:11px;font-weight:700;color:#2563EB;background:#EFF6FF;padding:3px 10px;border-radius:999px;}
+    /* section header */
+    .sline{display:flex;align-items:baseline;gap:14px;margin:0 0 26px;}
+    .sline-n{font-family:'Fraunces';font-weight:900;font-size:13px;color:var(--brass);}
+    .sline-t{font-family:'Fraunces';font-weight:600;font-size:24px;color:var(--forest);}
+    .sline-pill{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:4px 11px;border-radius:99px;}
+    .pill-free{background:rgba(63,125,110,.12);color:var(--moss);}
+    .pill-plus{background:rgba(245,158,11,.15);color:var(--brass);}
+    .sline-rule{flex:1;height:1px;background:var(--line);}
 
-    /* CTA */
-    .page-dark-cta{padding:100px 0;background:#0a0f1e;text-align:center;position:relative;overflow:hidden;}
-    .page-dark-cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,rgba(29,158,117,.15) 0%,transparent 60%);pointer-events:none;}
-    .page-dark-cta-inner{max-width:560px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
-    .page-dark-cta-title{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;color:white;letter-spacing:-.02em;margin-bottom:14px;}
-    .page-dark-cta-title em{font-style:italic;background:linear-gradient(135deg,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-    .page-dark-cta-sub{font-size:16px;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:32px;}
-    .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    /* asymmetric bento */
+    .bento{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(150px,auto);gap:16px;}
+    .bcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;transition:all .22s;position:relative;overflow:hidden;}
+    .bcard:hover{transform:translateY(-4px);box-shadow:0 18px 40px -16px rgba(17,48,42,.26);border-color:var(--moss);}
+    .bcard.wide{grid-column:span 2;display:flex;align-items:center;gap:26px;}
+    .bico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:16px;background:rgba(63,125,110,.12);}
+    .bcard h3{font-family:'Fraunces';font-weight:600;font-size:18px;margin-bottom:7px;position:relative;}
+    .bcard p{font-size:13.5px;color:var(--muted);line-height:1.6;position:relative;}
+    .bcard.accent{background:linear-gradient(135deg,var(--moss),var(--forest2));color:#fff;border:none;}
+    .bcard.accent h3{color:#fff;} .bcard.accent p{color:#dfe9e3;}
+    .bcard.accent .bico{background:rgba(255,255,255,.15);}
+    .bcard.wide .bico{margin-bottom:0;flex-shrink:0;width:60px;height:60px;font-size:27px;}
 
-    @media(max-width:768px){.feat-highlight{grid-template-columns:1fr;}.page-dark-hero{padding:72px 0 56px;}}
+    /* Plus showcase */
+    .plusband{background:linear-gradient(135deg,#241b0c,#3a2c12);border-radius:26px;padding:46px;margin-top:24px;position:relative;overflow:hidden;}
+    .plusband::before{content:'✦';position:absolute;right:-20px;top:-40px;font-size:220px;color:rgba(245,158,11,.07);font-family:'Fraunces';}
+    .plusband-top{display:flex;align-items:center;gap:12px;margin-bottom:8px;position:relative;}
+    .plusband-badge{font-family:'Fraunces';font-weight:900;font-size:13px;color:var(--brass-soft);letter-spacing:1px;}
+    .plusband-soon{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--brass);background:rgba(245,158,11,.15);padding:3px 10px;border-radius:99px;}
+    .plusband h2{font-family:'Fraunces';font-weight:900;font-size:30px;color:#fff;margin-bottom:24px;position:relative;max-width:440px;}
+    .plus-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;position:relative;}
+    .pcard{background:rgba(255,255,255,.04);border:1px solid rgba(245,158,11,.2);border-radius:14px;padding:20px;}
+    .pcard-ico{font-size:24px;margin-bottom:12px;}
+    .pcard h4{font-family:'Fraunces';font-weight:600;font-size:15px;color:#fff;margin-bottom:6px;}
+    .pcard p{font-size:12px;color:#bcae90;line-height:1.5;}
+
+    .sec{padding:56px 0;}
+    .section-soft{background:var(--paper);}
+    .band{background:linear-gradient(135deg,#2a2318,#1a160f);color:#fff;border-radius:24px;padding:54px;text-align:center;position:relative;overflow:hidden;margin:56px 28px;}
+    .band::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:rgba(245,158,11,.12);}
+    .band h2{font-family:'Fraunces';font-weight:900;font-size:clamp(26px,3.5vw,36px);margin-bottom:14px;position:relative;}
+    .band p{font-size:16px;color:#cbd8d1;max-width:520px;margin:0 auto 26px;position:relative;}
+    .band-cta{display:inline-flex;align-items:center;background:linear-gradient(135deg,var(--brass-soft),var(--brass));color:var(--forest);font-size:15px;font-weight:700;padding:14px 30px;border-radius:12px;border:none;cursor:pointer;position:relative;}
+
+    /* ===== Mobile (added — mockup had none) ===== */
+    @media (max-width:860px){
+      .phero{padding:56px 0 44px;}
+      .bigfeat{grid-template-columns:1fr;margin:36px 0;}
+      .bigfeat-txt{padding:36px;}
+      .bigfeat-vis{padding:28px 28px 0;}
+      .bento{grid-template-columns:1fr;}
+      .bcard.wide{grid-column:auto;flex-direction:column;align-items:flex-start;gap:0;}
+      .bcard.wide .bico{margin-bottom:16px;}
+      .plus-row{grid-template-columns:1fr 1fr;}
+      .plusband{padding:36px;}
+      .band{padding:40px 24px;margin:40px 16px;}
+    }
+    @media (max-width:480px){
+      .wrap{padding:0 18px;}
+      .plus-row{grid-template-columns:1fr;}
+      .bigfeat-txt{padding:28px;}
+    }
   </style>
+  <meta property="og:image" content="https://ujyalo.app/og-default.png" />
+  <meta name="twitter:image" content="https://ujyalo.app/og-default.png" />
 </head>
 <body>
 <div id="site-nav"></div>
 
-<!-- HERO -->
-<div class="page-dark-hero">
-  <div class="page-dark-hero-inner">
-    <div class="page-dark-badge">✨ Features</div>
-    <h1 class="page-dark-title">Everything you need<br><em>to pass SEE.</em></h1>
-    <p class="page-dark-sub">Built specifically for Nepali students. Every feature designed with one goal — help you understand and pass.</p>
-    <a href="/chapter-practice.html" class="btn btn-primary btn-large">Start practising free →</a>
-  </div>
-</div>
+<div class="es">
 
-<!-- LIVE NOW -->
-<section class="feat-section">
-  <div class="feat-inner">
-    <div class="feat-header">
-      <span class="section-tiny-label">Available right now</span>
-      <h2 class="section-fraunces-title">Live <em>today.</em></h2>
-      <p style="font-size:15px;color:#64748b;max-width:480px;margin:0 auto;">No waiting. Start practising any of these features right now — no signup needed.</p>
-    </div>
-    <div class="feat-grid">
-      <div class="feat-card">
-        <div class="fc-icon" style="background:#EFF6FF">📚</div>
-        <div class="fc-title">Chapter-by-chapter practice</div>
-        <div class="fc-body">Focus on exactly what you are studying in school. Algebra today. Electricity tomorrow. All 41 chapters covered — Maths and Science.</div>
-        <span class="fc-badge badge-live">✓ Live now</span>
-      </div>
-      <div class="feat-card">
-        <div class="fc-icon" style="background:#F0FDF4">✅</div>
-        <div class="fc-title">Full model answers</div>
-        <div class="fc-body">Every question has a complete model answer with working steps explained in simple language. Like a teacher sitting next to you.</div>
-        <span class="fc-badge badge-live">✓ Live now</span>
-      </div>
-      <div class="feat-card">
-        <div class="fc-icon" style="background:#EFF6FF">📈</div>
-        <div class="fc-title">Progress tracking</div>
-        <div class="fc-body">Every question you answer is saved. See which chapters you have covered, your scores, and where you need more work.</div>
-        <span class="fc-badge badge-live">✓ Free account</span>
-      </div>
-      <div class="feat-card">
-        <div class="fc-icon" style="background:#FEF3C7">🔥</div>
-        <div class="fc-title">Daily streaks</div>
-        <div class="fc-body">Stay motivated. Practice every day and build the consistency that actually leads to passing SEE. Your streak is your best motivation.</div>
-        <span class="fc-badge badge-live">✓ Live now</span>
-      </div>
-      <div class="feat-card">
-        <div class="fc-icon" style="background:#F0FDF4">🇳🇵</div>
-        <div class="fc-title">Built for Nepal SEE</div>
-        <div class="fc-body">CDC curriculum. Real SEE marking patterns. Nepali names and context. Built by people who understand SEE — not a global tool adapted.</div>
-        <span class="fc-badge badge-live">✓ 100% SEE aligned</span>
-      </div>
-      <div class="feat-card">
-        <div class="fc-icon" style="background:#EFF6FF">📱</div>
-        <div class="fc-title">Works on any phone</div>
-        <div class="fc-body">No app to download. Just open ujyalo.app in your browser. Works on any phone, tablet or computer — even on slow internet connections.</div>
-        <span class="fc-badge badge-live">✓ Mobile first</span>
-      </div>
-    </div>
-  </div>
-</section>
+  <!-- HERO -->
+  <section class="phero"><div class="wrap">
+    <div class="phero-label">Features</div>
+    <h1>Built to make you <em>actually</em> better at the SEE</h1>
+    <p>Not just a pile of papers — a complete, thoughtful study companion.</p>
+    <a href="/chapter-practice.html" class="phero-cta">Start practising free →</a>
+  </div></section>
 
-<!-- HIGHLIGHT — Parent reports -->
-<section class="feat-section-alt">
-  <div style="max-width:1100px;margin:0 auto;padding:0 24px;">
-    <div class="feat-highlight">
-      <div class="fh-text">
-        <span class="section-tiny-label">For parents</span>
-        <h2>Parents see everything.<br><em>Every week.</em></h2>
-        <p>Most Nepali parents sacrifice everything for their child's education without ever knowing if it's actually working. Ujyalo changes that.</p>
-        <p>Every Sunday, parents get a clear email showing exactly what their child practised, which subjects improved, and what needs more work. No guessing. No hoping. Just honest progress.</p>
-        <span class="fc-badge badge-soon" style="margin-top:8px;">⚙ Building now</span>
+  <!-- BIG asymmetric feature with product preview -->
+  <div class="wrap">
+    <div class="bigfeat">
+      <div class="bigfeat-txt">
+        <div class="bigfeat-kick">The heart of ujyalo</div>
+        <h2>SEE papers, with answers that teach</h2>
+        <p>A growing SEE collection — paired with model answers written to show you the method, in English and Nepali. Open to all, no signup.</p>
+        <div class="bigfeat-meta">
+          <div><div class="bfm-n">Free</div><div class="bfm-l">For students</div></div>
+          <div><div class="bfm-n">EN+NP</div><div class="bfm-l">Bilingual</div></div>
+          <div><div class="bfm-n">Weekly</div><div class="bfm-l">New papers</div></div>
+        </div>
       </div>
-      <div class="fh-cards">
-        <div class="fh-card">
-          <div class="fhc-icon">📊</div>
-          <div>
-            <div class="fhc-title">Weekly progress email</div>
-            <div class="fhc-body">Simple, clear email every Sunday. Which chapters done, scores, study time. Parents feel involved without needing to understand technology.</div>
-          </div>
-        </div>
-        <div class="fh-card">
-          <div class="fhc-icon">⚠️</div>
-          <div>
-            <div class="fhc-title">Weak chapter alerts</div>
-            <div class="fhc-body">If your child scores below 60% on a chapter, parents are notified so they can encourage more practice in that area.</div>
-          </div>
-        </div>
-        <div class="fh-card">
-          <div class="fhc-icon">🎯</div>
-          <div>
-            <div class="fhc-title">Exam countdown</div>
-            <div class="fhc-body">Always visible — how many days until SEE, how much of the syllabus is covered, whether the pace is on track.</div>
-          </div>
+      <div class="bigfeat-vis">
+        <div class="mini-paper">
+          <div class="mp-head"><span class="mp-q">Q1</span><span class="mp-tag">Sets</span><span class="mp-marks">6 marks</span></div>
+          <div class="mp-text">In a survey of 120 households, 70 do homestay and 50 do agriculture…</div>
+          <div class="mp-sub"><span class="mp-ltr">a</span><span class="mp-stxt">Write the cardinality notation of households doing neither.</span></div>
+          <div class="mp-ans"><strong>Answer:</strong> n(H∪A)′ = 30 — the complement of H union A.</div>
         </div>
       </div>
     </div>
   </div>
-</section>
 
-<!-- COMING SOON -->
-<section class="feat-section">
-  <div class="feat-inner">
-    <div class="feat-header">
-      <span class="section-tiny-label">Coming soon</span>
-      <h2 class="section-fraunces-title">More on <em>the way.</em></h2>
-      <p style="font-size:15px;color:#64748b;max-width:480px;margin:0 auto;">Being built right now. Sign up to be the first to know when each feature goes live.</p>
+  <!-- Study features bento -->
+  <section class="sec section-soft"><div class="wrap">
+    <div class="sline"><span class="sline-n">№ 02</span><span class="sline-t">Made to help you study</span><span class="sline-pill pill-free">Free</span><span class="sline-rule"></span></div>
+    <div class="bento">
+      <div class="bcard accent wide"><div class="bico">✎</div><div><h3>Practice that builds mastery</h3><p>Solve real questions chapter by chapter, check against model answers, and watch your confidence grow one topic at a time.</p></div></div>
+      <div class="bcard"><div class="bico">📊</div><h3>Progress tracking</h3><p>See what you've mastered and where to focus next.</p></div>
+      <div class="bcard"><div class="bico">☆</div><h3>Save &amp; bookmark</h3><p>Star tricky questions for last-minute revision.</p></div>
+      <div class="bcard"><div class="bico">📱</div><h3>Works on any phone</h3><p>No app to download — study from any phone, even on slow internet.</p></div>
+      <div class="bcard"><div class="bico">🎯</div><h3>Topic organisation</h3><p>Papers grouped by topic, so you focus where it matters.</p></div>
     </div>
-    <div class="coming-grid">
-      <div class="coming-card">
-        <div class="coming-icon">📜</div>
-        <div class="coming-title">SEE Past Papers</div>
-        <div class="coming-body">Full past papers from SEE 2082, 2081, 2080 and earlier. Practice under real exam conditions.</div>
-        <span class="coming-tag">Coming soon</span>
-      </div>
-      <div class="coming-card">
-        <div class="coming-icon">⏱️</div>
-        <div class="coming-title">Timed Mock Exams</div>
-        <div class="coming-body">Full 3-hour SEE simulation. Timer, real format, score report. Build confidence before the big day.</div>
-        <span class="coming-tag">Coming soon</span>
-      </div>
-      <div class="coming-card">
-        <div class="coming-icon">🔤</div>
-        <div class="coming-title">MCQ Practice Mode</div>
-        <div class="coming-body">Multiple choice A B C D. Instant feedback. Faster practice. Perfect for revision before the exam.</div>
-        <span class="coming-tag">Coming soon</span>
-      </div>
-      <div class="coming-card">
-        <div class="coming-icon">🏫</div>
-        <div class="coming-title">School Dashboard</div>
-        <div class="coming-body">Teachers see every student's progress. Class analytics. Weak chapter reports. The data teachers have never had before.</div>
-        <span class="coming-tag">Coming soon</span>
-      </div>
-      <div class="coming-card">
-        <div class="coming-icon">🗺️</div>
-        <div class="coming-title">Personalised Study Path</div>
-        <div class="coming-body">Ujyalo tells you exactly which chapter to study today based on your exam date and progress. No more guessing what to do next.</div>
-        <span class="coming-tag">Building now</span>
-      </div>
-      <div class="coming-card">
-        <div class="coming-icon">📖</div>
-        <div class="coming-title">English, Social & Nepali</div>
-        <div class="coming-body">All five SEE subjects. Being added subject by subject. Maths and Science are live — the rest follow soon.</div>
-        <span class="coming-tag">Coming soon</span>
-      </div>
-    </div>
-  </div>
-</section>
+  </div></section>
 
-<!-- CTA -->
-<div class="page-dark-cta">
-  <div class="page-dark-cta-inner">
-    <h2 class="page-dark-cta-title">Ready to try it?<br><em>Free to start.</em></h2>
-    <p class="page-dark-cta-sub">No credit card. No commitment. Just open your phone and start practising.</p>
-    <div class="cta-btns">
-      <a href="/chapter-practice.html" class="btn btn-primary btn-large">Start practising →</a>
-      <a href="/signup.html" class="btn btn-secondary btn-large">Create free account</a>
+  <!-- Plus dramatic showcase -->
+  <section class="sec"><div class="wrap">
+    <div class="sline"><span class="sline-n">№ 03</span><span class="sline-t">ujyalo Plus</span><span class="sline-pill pill-plus">Coming soon</span><span class="sline-rule"></span></div>
+    <div class="plusband">
+      <div class="plusband-top"><span class="plusband-badge">✦ UJYALO PLUS</span><span class="plusband-soon">Coming soon</span></div>
+      <h2>For when you want every edge</h2>
+      <div class="plus-row">
+        <div class="pcard"><div class="pcard-ico">🔥</div><h4>Hot Topics</h4><p>The topics examiners repeat every year.</p></div>
+        <div class="pcard"><div class="pcard-ico">◎</div><h4>Predictions</h4><p>What's likely to appear next exam.</p></div>
+        <div class="pcard"><div class="pcard-ico">✦</div><h4>My Paper</h4><p>A paper built from your weak spots.</p></div>
+        <div class="pcard"><div class="pcard-ico">📈</div><h4>Insights</h4><p>Deep analysis of your strengths &amp; gaps.</p></div>
+      </div>
     </div>
-  </div>
+  </div></section>
+
+  <!-- Closing band -->
+  <section class="sec"><div class="band">
+    <h2>All the essentials, free forever</h2>
+    <p>Start with everything you need today — no account, no payment.</p>
+    <a href="/see.html" class="band-cta">Explore past papers →</a>
+  </div></section>
+
 </div>
 
 <div id="site-footer"></div>
