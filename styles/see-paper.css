@@ -24,6 +24,7 @@
   --qfont:  16px;
   --brass: #C0913F;
   --brass-soft: #E7C986;
+  --pin-h:  100px;   /* pinned strip = paper-hero (52) + chap-bar (~48) */
 }
 
 [data-theme="dark"] {
@@ -80,7 +81,7 @@ body {
 
 .paper-hero {
   background: linear-gradient(135deg, var(--navy), var(--navy2));
-  position: relative;
+  position: sticky; top: 0; z-index: 50;
   overflow: hidden;
   padding: 0 20px;
   height: 52px;
@@ -165,6 +166,7 @@ body {
 .chap-bar {
   background: var(--navy2);
   border-bottom: 1px solid rgba(255,255,255,.07);
+  position: sticky; top: 52px; z-index: 49;
   padding: 9px 16px;
   display: flex; align-items: center;
   gap: 7px; overflow-x: auto;
@@ -198,8 +200,8 @@ body {
   background: var(--card);
   border-right: 1px solid var(--line);
   align-self: stretch;
-  position: sticky; top: 0;
-  max-height: 100vh; overflow: hidden;
+  position: sticky; top: var(--pin-h);
+  max-height: calc(100vh - var(--pin-h)); overflow: hidden;
   display: flex; flex-direction: column;
 }
 .sb-head { padding: 14px 16px 12px; border-bottom: 1px solid var(--line); }
@@ -668,6 +670,7 @@ body {
 
 @media (max-width: 767px) {
   .paper-hero { padding: 0 12px; height: 48px; }
+  .chap-bar { top: 48px; }   /* sit right under the shorter mobile hero */
   .hero-sub-text { display: none; }
   .hero-badge { font-size: 12px; }
   .sidebar { display: none; }

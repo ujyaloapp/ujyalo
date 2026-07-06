@@ -126,9 +126,13 @@ function init() {
     if (strip) strip.style.display = 'none';
     var stripWrap = document.getElementById('chapter-bar');
     if (stripWrap) stripWrap.style.display = 'none';
+    // No chapter bar on this paper — only the hero is pinned, so shrink the
+    // offset the sticky sidebar drops by (otherwise it leaves a gap under the hero).
+    document.documentElement.style.setProperty('--pin-h', '52px');
     buildSidebarPlain();
   }
   buildQuestions();
+  buildScrollSpy();
 }
 
 // ── CHAPTER GROUPING ──
@@ -409,6 +413,67 @@ function buildChapterBar() {
     })(chap);
     strip.appendChild(pill);
   });
+}
+
+// ── SCROLL-SPY (highlight the topic pill for the question at the top) ──
+// As you scroll, the pinned pill bar shows which topic you're currently in, and
+// scrolls that pill into view. Rebuilt whenever the cards/pills are rebuilt.
+var _spyCards = [];   // [{ el, idx }] in DOM order, idx = CHAPTERS index
+var _spyPills = [];   // pill element per CHAPTERS index
+var _spyCurrent = -1;
+var _spyBound = false;
+
+function pinnedHeight() {
+  var h = document.getElementById('paper-hero');
+  var c = document.getElementById('prog-strip');
+  return (h ? h.offsetHeight : 0) + (c && c.style.display !== 'none' ? c.offsetHeight : 0);
+}
+
+function buildScrollSpy() {
+  _spyCards = [];
+  _spyPills = [];
+  _spyCurrent = -1;
+  if (!paperUsesTopics()) return;
+
+  var topicIdx = {};
+  CHAPTERS.forEach(function(c, i) {
+    topicIdx[c.topic] = i;
+    _spyPills[i] = document.getElementById('chappill-' + i);
+  });
+  DATA.groups.forEach(function(g) {
+    var el = document.getElementById('qcard-' + g.num);
+    if (el) _spyCards.push({ el: el, idx: topicIdx[g._chapterTopic] });
+  });
+
+  if (!_spyBound) {
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function() { ticking = false; spyUpdate(); });
+    }, { passive: true });
+    _spyBound = true;
+  }
+  spyUpdate();
+}
+
+function spyUpdate() {
+  if (!_spyCards.length) return;
+  var line = pinnedHeight() + 8;   // a card counts as "current" once its top passes this
+  var active = _spyCards[0].idx;
+  for (var i = 0; i < _spyCards.length; i++) {
+    if (_spyCards[i].el.getBoundingClientRect().top - line <= 0) active = _spyCards[i].idx;
+    else break;
+  }
+  if (active === _spyCurrent) return;
+  _spyCurrent = active;
+  _spyPills.forEach(function(p, i) { if (p) p.classList.toggle('active', i === active); });
+
+  var ap = _spyPills[active];
+  var bar = document.getElementById('prog-strip');
+  if (ap && bar) {
+    bar.scrollLeft = ap.offsetLeft - (bar.clientWidth - ap.offsetWidth) / 2;
+  }
 }
 
 function updateProgress() {
@@ -1189,6 +1254,7 @@ function resetPaper() {
     buildSidebarPlain();
   }
   buildQuestions();
+  buildScrollSpy();
   updateProgress();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
