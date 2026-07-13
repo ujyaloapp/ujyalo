@@ -24,6 +24,25 @@
 
   .paperbar{background:var(--parch-2);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:48px;z-index:15;}
   .vtabs{display:flex;gap:4px;background:#eef2f0;border-radius:9px;padding:3px;}
+  /* Daily Question tab */
+  .dq-sub{color:#52606d;font-size:14px;margin:4px 0 22px;max-width:60ch;}
+  .dq-cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;}
+  .dq-h{font-weight:700;font-size:14px;margin-bottom:12px;color:#1f2933;}
+  .dq-count{color:#52606d;font-weight:500;}
+  .dq-select{width:100%;padding:9px 11px;border:1px solid #e6eae8;border-radius:8px;font-size:13px;margin-bottom:14px;background:#fff;color:#1f2933;font-family:inherit;}
+  .dq-cand{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:11px 13px;border:1px solid #e6eae8;border-radius:10px;margin-bottom:8px;background:#fff;}
+  .dq-cand-n{font-weight:700;font-size:12.5px;color:#1f2933;}
+  .dq-cand-p{font-size:12px;color:#52606d;margin-top:3px;line-height:1.4;}
+  .dq-add-btn{flex-shrink:0;background:#0f766e;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:12.5px;font-weight:700;cursor:pointer;}
+  .dq-add-btn:hover{background:#0b5c55;}
+  .dq-added{flex-shrink:0;font-size:12px;font-weight:700;color:#16a34a;}
+  .dq-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;border:1px solid #e6eae8;border-radius:10px;margin-bottom:8px;background:#fff;}
+  .dq-item-t{font-weight:700;font-size:13px;color:#1f2933;}
+  .dq-item-s{font-size:11px;color:#52606d;text-transform:uppercase;letter-spacing:.04em;margin-top:2px;}
+  .dq-rm{flex-shrink:0;background:#fff;border:1px solid #e6eae8;color:#e11d48;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;}
+  .dq-rm:hover{border-color:#e11d48;}
+  .dq-empty,.dq-loading{color:#52606d;font-size:13px;padding:16px;text-align:center;border:1px dashed #e6eae8;border-radius:10px;}
+  @media(max-width:760px){.dq-cols{grid-template-columns:1fr;}}
   .pb-paper{font-family:'Fraunces',serif;font-weight:600;color:var(--forest);font-size:14px;padding-left:12px;margin-left:4px;border-left:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .vt{font-family:'Outfit';font-size:13px;font-weight:600;border:none;background:transparent;color:var(--muted);padding:6px 12px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:6px;}
   .vt.on{background:var(--card);color:var(--forest);box-shadow:0 1px 3px #0000001a;}
@@ -312,6 +331,7 @@
       <button class="vt on" id="tab-papers">Papers</button>
       <button class="vt" id="tab-flags">⚑ Flags <span class="flagn" id="flagn"></span></button>
       <button class="vt" id="tab-board">◳ Board</button>
+      <button class="vt" id="tab-daily">◉ Daily Q</button>
     </div>
     <span class="pb-paper hidden" id="pb-paper"></span>
   </div>
@@ -349,6 +369,25 @@
 
   <div id="boardview" class="hidden">
     <div class="bwrap"><div id="board-body"></div></div>
+  </div>
+
+  <div id="dailyview" class="hidden">
+    <div class="bwrap">
+      <div class="eyebrow">Daily Question</div>
+      <h1 class="bd-h1">Curate the daily pool</h1>
+      <p class="dq-sub">Only fully-verified questions can be added. Students see one question from this pool each day.</p>
+      <div class="dq-cols">
+        <div>
+          <div class="dq-h">Add from a paper</div>
+          <select id="dq-paper" class="dq-select"><option>Loading…</option></select>
+          <div id="dq-candidates"></div>
+        </div>
+        <div>
+          <div class="dq-h">Daily pool <span id="dq-count" class="dq-count"></span></div>
+          <div id="dq-poollist"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <div id="toast"></div>
@@ -404,11 +443,23 @@
   $('tab-papers').addEventListener('click',function(){ setTab('papers'); if(DATA) showEditor(); else showPicker(); });
   $('tab-flags').addEventListener('click',function(){ setTab('flags'); loadFlags(); });
   $('tab-board').addEventListener('click',function(){ setTab('board'); loadBoard(); });
-  function setTab(v){ var p=v==='papers',f=v==='flags',b=v==='board';
-    $('tab-papers').classList.toggle('on',p); $('tab-flags').classList.toggle('on',f); $('tab-board').classList.toggle('on',b);
+  $('tab-daily').addEventListener('click',function(){ setTab('daily'); loadDaily(); });
+  function setTab(v){ var p=v==='papers',f=v==='flags',b=v==='board',d=v==='daily';
+    $('tab-papers').classList.toggle('on',p); $('tab-flags').classList.toggle('on',f); $('tab-board').classList.toggle('on',b); $('tab-daily').classList.toggle('on',d);
     $('paperview').classList.toggle('hidden',!p); $('flagsview').classList.toggle('hidden',!f);
-    $('main-wrap').classList.toggle('hidden',b); $('boardview').classList.toggle('hidden',!b);
+    $('main-wrap').classList.toggle('hidden',b||d); $('boardview').classList.toggle('hidden',!b); $('dailyview').classList.toggle('hidden',!d);
     updatePbPaper(); }
+
+  // ── Daily Question curation ──
+  var DAILY_API='/api/daily', DQ_PAPERS=[], DQ_POOL=[];
+  async function dailyGet(action,params){var qs='?action='+action+(params?('&'+params):'');var r=await fetch(DAILY_API+qs,{headers:authHeaders()});if(r.status===403){localStorage.removeItem('ujyalo_token');location.replace('/login.html?expired=1');throw new Error('forbidden');}if(!r.ok)throw new Error((await r.json().catch(function(){return{};})).error||('HTTP '+r.status));return r.json();}
+  async function dailyPost(action,body){body=body||{};body.action=action;var r=await fetch(DAILY_API+'?action='+action,{method:'POST',headers:authHeaders(),body:JSON.stringify(body)});if(r.status===403){localStorage.removeItem('ujyalo_token');location.replace('/login.html?expired=1');throw new Error('forbidden');}if(!r.ok)throw new Error((await r.json().catch(function(){return{};})).error||('HTTP '+r.status));return r.json();}
+  async function loadDaily(){ try{ if(!DQ_PAPERS.length){ var pp=await dailyGet('papers'); DQ_PAPERS=pp.papers||[]; $('dq-paper').innerHTML=DQ_PAPERS.length?DQ_PAPERS.map(function(p){return '<option value="'+p.id+'">'+esc(p.label)+'</option>';}).join(''):'<option value="">No papers</option>'; } await loadDailyPool(); if($('dq-paper').value) loadCandidates($('dq-paper').value); }catch(e){ toast('Could not load daily'); } }
+  async function loadDailyPool(){ var d=await dailyGet('pool'); DQ_POOL=d.pool||[]; $('dq-count').textContent=DQ_POOL.length?('· '+DQ_POOL.length):''; $('dq-poollist').innerHTML=DQ_POOL.length?DQ_POOL.map(function(r){return '<div class="dq-item"><div><div class="dq-item-t">'+esc(r.source_label||('Q'+r.question_number))+'</div><div class="dq-item-s">'+esc(r.subject_code||'')+'</div></div><button class="dq-rm" data-rm="'+r.id+'">Remove</button></div>';}).join(''):'<div class="dq-empty">No daily questions yet. Add some from a paper →</div>'; }
+  async function loadCandidates(pid){ $('dq-candidates').innerHTML='<div class="dq-loading">Loading questions…</div>'; try{ var d=await dailyGet('candidates','paper_id='+encodeURIComponent(pid)); var qs=(d.questions||[]).filter(function(q){return q.all_verified;}); $('dq-candidates').innerHTML=qs.length?qs.map(function(q){return '<div class="dq-cand"><div><div class="dq-cand-n">Q'+q.question_number+' · '+q.marks+' marks</div><div class="dq-cand-p">'+esc(q.preview||'')+'</div></div>'+(q.in_pool?'<span class="dq-added">✓ Added</span>':'<button class="dq-add-btn" data-add="'+q.question_number+'">+ Add</button>')+'</div>';}).join(''):'<div class="dq-empty">No fully-verified questions in this paper yet.</div>'; }catch(e){ $('dq-candidates').innerHTML='<div class="dq-empty">Could not load.</div>'; } }
+  async function dqAdd(qnum){ var pid=$('dq-paper').value; if(!pid)return; try{ await dailyPost('add',{paper_id:pid,question_number:+qnum}); toast('Added to daily pool'); await loadDailyPool(); loadCandidates(pid); }catch(e){ toast(e.message||'Could not add'); } }
+  async function dqRemove(id){ try{ await dailyPost('remove',{id:id}); toast('Removed from pool'); await loadDailyPool(); if($('dq-paper').value) loadCandidates($('dq-paper').value); }catch(e){ toast('Could not remove'); } }
+  (function(){ var s=$('dq-paper'); if(s) s.addEventListener('change',function(){ loadCandidates(this.value); }); var v=$('dailyview'); if(v) v.addEventListener('click',function(e){ var a=e.target.closest('[data-add]'); if(a){ dqAdd(a.getAttribute('data-add')); return; } var rm=e.target.closest('[data-rm]'); if(rm){ dqRemove(rm.getAttribute('data-rm')); return; } }); })();
   function updatePbPaper(){ var show=!!DATA && !$('paperview').classList.contains('hidden') && !$('editor').classList.contains('hidden'); $('pb-paper').classList.toggle('hidden',!show); }
 
   // ── picker (subject → year → province) ──
