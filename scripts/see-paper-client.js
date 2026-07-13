@@ -50,7 +50,12 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
 
-  fetch('/api/see-paper?year=' + encodeURIComponent(year) + '&province=' + encodeURIComponent(province) + '&subject=' + encodeURIComponent(subject))
+  // Send the login token (if any) so the API can unlock the full paper.
+  // Signed-out visitors get a short preview + a signup gate.
+  var _tok = '';
+  try { _tok = localStorage.getItem('ujyalo_token') || ''; } catch (e) {}
+  fetch('/api/see-paper?year=' + encodeURIComponent(year) + '&province=' + encodeURIComponent(province) + '&subject=' + encodeURIComponent(subject),
+        _tok ? { headers: { 'Authorization': 'Bearer ' + _tok } } : undefined)
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.error) { showError(data.error); return; }
@@ -126,9 +131,13 @@ function init() {
     if (strip) strip.style.display = 'none';
     var stripWrap = document.getElementById('chapter-bar');
     if (stripWrap) stripWrap.style.display = 'none';
+    // No chapter bar on this paper — only the hero is pinned, so shrink the
+    // offset the sticky sidebar drops by (otherwise it leaves a gap under the hero).
+    document.documentElement.style.setProperty('--pin-h', '52px');
     buildSidebarPlain();
   }
   buildQuestions();
+  buildScrollSpy();
 }
 
 // ── CHAPTER GROUPING ──
@@ -411,6 +420,67 @@ function buildChapterBar() {
   });
 }
 
+// ── SCROLL-SPY (highlight the topic pill for the question at the top) ──
+// As you scroll, the pinned pill bar shows which topic you're currently in, and
+// scrolls that pill into view. Rebuilt whenever the cards/pills are rebuilt.
+var _spyCards = [];   // [{ el, idx }] in DOM order, idx = CHAPTERS index
+var _spyPills = [];   // pill element per CHAPTERS index
+var _spyCurrent = -1;
+var _spyBound = false;
+
+function pinnedHeight() {
+  var h = document.getElementById('paper-hero');
+  var c = document.getElementById('prog-strip');
+  return (h ? h.offsetHeight : 0) + (c && c.style.display !== 'none' ? c.offsetHeight : 0);
+}
+
+function buildScrollSpy() {
+  _spyCards = [];
+  _spyPills = [];
+  _spyCurrent = -1;
+  if (!paperUsesTopics()) return;
+
+  var topicIdx = {};
+  CHAPTERS.forEach(function(c, i) {
+    topicIdx[c.topic] = i;
+    _spyPills[i] = document.getElementById('chappill-' + i);
+  });
+  DATA.groups.forEach(function(g) {
+    var el = document.getElementById('qcard-' + g.num);
+    if (el) _spyCards.push({ el: el, idx: topicIdx[g._chapterTopic] });
+  });
+
+  if (!_spyBound) {
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function() { ticking = false; spyUpdate(); });
+    }, { passive: true });
+    _spyBound = true;
+  }
+  spyUpdate();
+}
+
+function spyUpdate() {
+  if (!_spyCards.length) return;
+  var line = pinnedHeight() + 8;   // a card counts as "current" once its top passes this
+  var active = _spyCards[0].idx;
+  for (var i = 0; i < _spyCards.length; i++) {
+    if (_spyCards[i].el.getBoundingClientRect().top - line <= 0) active = _spyCards[i].idx;
+    else break;
+  }
+  if (active === _spyCurrent) return;
+  _spyCurrent = active;
+  _spyPills.forEach(function(p, i) { if (p) p.classList.toggle('active', i === active); });
+
+  var ap = _spyPills[active];
+  var bar = document.getElementById('prog-strip');
+  if (ap && bar) {
+    bar.scrollLeft = ap.offsetLeft - (bar.clientWidth - ap.offsetWidth) / 2;
+  }
+}
+
 function updateProgress() {
   var done = Object.keys(confMap).length;
   var total = DATA.meta.totalQuestions;
@@ -552,7 +622,8 @@ function buildQuestions() {
   var pProv = safeStr(DATA.paper.province) || '';
   var pMarks = safeStr(DATA.paper.marks) || '—';
   var pDur = safeStr(DATA.paper.duration) || '—';
-  var pQ = safeStr(DATA.meta && DATA.meta.totalQuestions) || String(DATA.groups.length);
+  // Show the paper's true length here, even when only a preview is unlocked.
+  var pQ = safeStr(DATA.meta && (DATA.meta.fullTotal || DATA.meta.totalQuestions)) || String(DATA.groups.length);
   cover.innerHTML =
     '<div class="pc-exam">Secondary Education Examination ' + escapeHTML(pYear) + '</div>' +
     '<div class="pc-title">SEE ' + escapeHTML(pYear) + ' BS' + (pProv ? ' · ' + escapeHTML(pProv) + ' Province' : '') + '</div>' +
@@ -728,6 +799,27 @@ function buildQuestions() {
      console.error('Skipped rendering issue on Q' + (g && g.num), err);
    }
   });
+
+  // Free-account gate: after the preview questions, invite signed-out visitors
+  // to create a free account to open the rest of the paper.
+  if (DATA.meta && DATA.meta.locked) {
+    var moreN = safeNum(DATA.meta.lockedCount);
+    var back  = encodeURIComponent(location.pathname + location.search);
+    var gate = document.createElement('div');
+    gate.className = 'paper-gate';
+    gate.innerHTML =
+      '<div class="pg-lock" aria-hidden="true">' +
+        '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>' +
+      '</div>' +
+      '<div class="pg-title">' + moreN + ' more question' + (moreN === 1 ? '' : 's') + ' — free with an account</div>' +
+      '<div class="pg-sub">Create a free ujyalo account to open the full paper. No payment — just sign up and keep practising on any phone.</div>' +
+      '<div class="pg-actions">' +
+        '<a class="pg-btn" href="/signup.html?next=' + back + '">Sign up free →</a>' +
+        '<a class="pg-login" href="/login.html?next=' + back + '">Already have an account? Log in</a>' +
+      '</div>';
+    area.appendChild(gate);
+  }
 }
 
 function buildSubItem(s, qNum, accent, isParent, view) {
@@ -1189,6 +1281,7 @@ function resetPaper() {
     buildSidebarPlain();
   }
   buildQuestions();
+  buildScrollSpy();
   updateProgress();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }

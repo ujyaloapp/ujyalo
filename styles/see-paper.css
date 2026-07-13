@@ -24,6 +24,7 @@
   --qfont:  16px;
   --brass: #C0913F;
   --brass-soft: #E7C986;
+  --pin-h:  100px;   /* pinned strip = paper-hero (52) + chap-bar (~48) */
 }
 
 [data-theme="dark"] {
@@ -80,7 +81,7 @@ body {
 
 .paper-hero {
   background: linear-gradient(135deg, var(--navy), var(--navy2));
-  position: relative;
+  position: sticky; top: 0; z-index: 50;
   overflow: hidden;
   padding: 0 20px;
   height: 52px;
@@ -165,6 +166,7 @@ body {
 .chap-bar {
   background: var(--navy2);
   border-bottom: 1px solid rgba(255,255,255,.07);
+  position: sticky; top: 52px; z-index: 49;
   padding: 9px 16px;
   display: flex; align-items: center;
   gap: 7px; overflow-x: auto;
@@ -198,8 +200,8 @@ body {
   background: var(--card);
   border-right: 1px solid var(--line);
   align-self: stretch;
-  position: sticky; top: 0;
-  max-height: 100vh; overflow: hidden;
+  position: sticky; top: var(--pin-h);
+  max-height: calc(100vh - var(--pin-h)); overflow: hidden;
   display: flex; flex-direction: column;
 }
 .sb-head { padding: 14px 16px 12px; border-bottom: 1px solid var(--line); }
@@ -668,6 +670,7 @@ body {
 
 @media (max-width: 767px) {
   .paper-hero { padding: 0 12px; height: 48px; }
+  .chap-bar { top: 48px; }   /* sit right under the shorter mobile hero */
   .hero-sub-text { display: none; }
   .hero-badge { font-size: 12px; }
   .sidebar { display: none; }
@@ -717,3 +720,32 @@ body {
   margin-top: 2px; text-align: left;
 }
 .sub-ltr::after { content: '.'; }
+
+/* ── Free-account gate (signup wall shown after the preview questions) ── */
+.paper-gate{
+  max-width: 640px; margin: 22px auto 8px; padding: 30px 26px;
+  text-align: center; border-radius: 18px;
+  background: #fbf7ef; border: 1px solid #efe4cf;
+  box-shadow: 0 10px 30px rgba(30,26,21,.06);
+}
+.pg-lock{
+  width: 54px; height: 54px; margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: #fff; color: #f59e0b;
+  border: 1px solid #f0e2c6; box-shadow: 0 4px 12px rgba(245,158,11,.18);
+}
+.pg-title{ font-size: 1.2rem; font-weight: 800; color: #1e1a15; letter-spacing: -.01em; }
+.pg-sub{ margin: 8px auto 0; max-width: 460px; color: #6b6154; font-size: .95rem; line-height: 1.5; }
+.pg-actions{ margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; }
+.pg-btn{
+  display: inline-block; padding: 12px 22px; border-radius: 999px;
+  background: #f59e0b; color: #1e1a15; font-weight: 800; text-decoration: none;
+  box-shadow: 0 6px 16px rgba(245,158,11,.28); transition: transform .12s ease, box-shadow .12s ease;
+}
+.pg-btn:hover{ transform: translateY(-1px); box-shadow: 0 8px 20px rgba(245,158,11,.34); }
+.pg-login{ color: #6b6154; font-weight: 600; text-decoration: none; }
+.pg-login:hover{ color: #1e1a15; text-decoration: underline; }
+@media (max-width: 520px){
+  .paper-gate{ padding: 24px 18px; }
+  .pg-actions{ gap: 12px; }
+}

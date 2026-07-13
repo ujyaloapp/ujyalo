@@ -16,6 +16,25 @@ async function fetchFromSupabase(path) {
   return res.json();
 }
 
+// Resolve the signed-in Supabase user from the request's Bearer token, or null
+// if the caller isn't logged in (or the token is invalid/expired). Used to gate
+// the paper: anonymous visitors get a short preview, signed-in users get it all.
+async function getUser(req) {
+  const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim();
+  if (!token) return null;
+  try {
+    const r = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
+      headers: { apikey: process.env.SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` }
+    });
+    if (!r.ok) return null;
+    const u = await r.json();
+    return (u && u.id) ? u : null;
+  } catch (e) { return null; }
+}
+
+// How many questions an anonymous visitor may preview before the signup gate.
+const PREVIEW_COUNT = 3;
+
 const SUBJECT_CONFIG = {
   maths:   { accent:'#1a6fff', light:'#e8f0ff', icon:'∫',  np:'गणित' },
   science: { accent:'#38c9b0', light:'#e0f7f2', icon:'⚗',  np:'विज्ञान' },
@@ -38,6 +57,9 @@ const PROV_CONFIG = {
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 'no-cache');
+  // Response content depends on the caller's login state — never let a shared
+  // cache serve a logged-in (full) response to an anonymous visitor or vice versa.
+  res.setHeader('Vary', 'Authorization');
 
   try {
     let { year, province, subject } = req.query;
@@ -129,6 +151,16 @@ export default async function handler(req, res) {
         })),
       }));
 
+    // ── Free-account gate ────────────────────────────────────────────────
+    // Anonymous visitors can preview the first PREVIEW_COUNT questions of any
+    // paper; the rest needs a (free) login. Enforced here so locked questions
+    // never reach the browser — a client-only hide would be trivially bypassed.
+    const user = await getUser(req);
+    const locked = !user;
+    const fullTotal = groupEntries.length;
+    const visibleGroups = locked ? groupEntries.slice(0, PREVIEW_COUNT) : groupEntries;
+    const visibleSubs = visibleGroups.reduce((n, g) => n + (g.subs ? g.subs.length : 0), 0);
+
     return res.status(200).json({
       paper: {
         id:     papers[0].id,
@@ -149,10 +181,14 @@ export default async function handler(req, res) {
         np:     cfg.np,
       },
       province: { np: provCfg.np, num: provCfg.num },
-      groups:   groupEntries,
+      groups:   visibleGroups,
       meta: {
-        totalQuestions: groupEntries.length,
-        totalSubs:      questions.filter(q => q.sub_part).length,
+        totalQuestions: visibleGroups.length,             // answerable now (progress counter)
+        totalSubs:      visibleSubs,
+        fullTotal:      fullTotal,                         // true length of the paper
+        locked:         locked,                            // anonymous visitor?
+        lockedCount:    locked ? Math.max(0, fullTotal - visibleGroups.length) : 0,
+        previewCount:   PREVIEW_COUNT,
         yearAD:         parseInt(year) - 56,
         isEnglish:      subjectCode === 'english',
         canonicalUrl:   `https://ujyalo.app/see/past-papers/${year}/${provNorm}/${subjectCode}`,

@@ -16,6 +16,24 @@ async function fetchFromSupabase(path) {
   return res.json();
 }
 
+// Same free-account gate as /api/see-paper. A top-level print navigation can't
+// carry an Authorization header (and we never put tokens in a URL), so in
+// practice this returns the preview — which is exactly what closes the
+// "read the whole paper via the print URL" bypass.
+async function getUser(req) {
+  const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim();
+  if (!token) return null;
+  try {
+    const r = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
+      headers: { apikey: process.env.SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` }
+    });
+    if (!r.ok) return null;
+    const u = await r.json();
+    return (u && u.id) ? u : null;
+  } catch (e) { return null; }
+}
+const PREVIEW_COUNT = 3;
+
 function escape(str) {
   if (!str) return '';
   return str
@@ -368,10 +386,23 @@ export default async function handler(req, res) {
       `/past_paper_questions?paper_id=eq.${paper.id}&order=question_number.asc,sub_part.asc&select=*`
     );
 
-    const html = buildPrintHTML({ paper, subject: subjectData, questions, lang });
+    // Gate: signed-out callers only get the first PREVIEW_COUNT questions.
+    const user = await getUser(req);
+    let visibleQuestions = questions;
+    if (!user) {
+      const previewNums = new Set(
+        [...new Set(questions.map(q => q.question_number))]
+          .sort((a, b) => a - b)
+          .slice(0, PREVIEW_COUNT)
+      );
+      visibleQuestions = questions.filter(q => previewNums.has(q.question_number));
+    }
+
+    const html = buildPrintHTML({ paper, subject: subjectData, questions: visibleQuestions, lang });
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Vary', 'Authorization');
     return res.status(200).send(html);
 
   } catch (err) {
