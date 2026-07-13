@@ -65,7 +65,7 @@
     .miss-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -16px rgba(31,41,51,.24);}
     .miss-card:nth-child(2){margin-top:24px;}
     .miss-bignum{font-family:'Fraunces';font-weight:900;font-size:60px;color:rgba(15,118,110,.16);line-height:1;position:absolute;right:18px;top:10px;}
-    .miss-ico{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,#1f2933,#141b21);display:flex;align-items:center;justify-content:center;font-size:25px;margin-bottom:18px;}
+    .miss-ico{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,#d3f0ec,#a7f3e6);color:#0b5c55;display:flex;align-items:center;justify-content:center;font-size:25px;margin-bottom:18px;}
     .miss-card h3{font-family:'Fraunces';font-weight:600;font-size:20px;margin-bottom:9px;color:var(--ink);}
     .miss-card p{font-size:14px;color:var(--muted);line-height:1.65;}
 
@@ -73,34 +73,34 @@
     .team-sec{padding:64px 0;}
     .team-head{text-align:center;margin-bottom:40px;}
     .team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:880px;margin:0 auto;}
-    .tcard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:30px 24px;text-align:center;position:relative;overflow:hidden;transition:all .22s;}
-    .tcard:hover{transform:translateY(-4px);box-shadow:0 18px 40px -16px rgba(31,41,51,.22);border-color:var(--moss);}
-    .tcard::before{content:'';position:absolute;top:0;left:0;right:0;height:60px;background:linear-gradient(135deg,#1f2933,#141b21);}
-    .tphoto{width:92px;height:92px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,var(--paper2),var(--brass-soft));border:4px solid var(--card);display:flex;align-items:center;justify-content:center;position:relative;margin-top:14px;font-family:'Fraunces';font-weight:900;font-size:30px;color:var(--forest);}
+    .tcard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:34px 24px 30px;text-align:center;position:relative;overflow:hidden;transition:all .22s;}
+    .tcard:hover{transform:translateY(-4px);box-shadow:0 18px 40px -16px rgba(15,118,110,.20);border-color:var(--brand);}
+    .tcard::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#0f766e,#2dd4bf);}
+    .tphoto{width:88px;height:88px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(140deg,#0f766e,#2dd4bf);display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-weight:700;font-size:28px;color:#fff;box-shadow:0 10px 22px -6px rgba(15,118,110,.5);}
     .tcard h3{font-family:'Fraunces';font-weight:600;font-size:18px;margin-bottom:3px;}
     .trole{font-size:12.5px;color:var(--brass);font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;}
     .tcard p{font-size:13px;color:var(--muted);line-height:1.6;}
 
     /* ROADMAP */
-    .road{background:#1f2933;color:#fff;padding:64px 0;position:relative;overflow:hidden;}
-    .road::before{content:'→';position:absolute;right:-10px;bottom:-30px;font-size:200px;color:rgba(15,118,110,.1);font-family:'Fraunces';}
+    .road{background:linear-gradient(180deg,#f0faf8,#e3f4f0);color:var(--ink);padding:64px 0;position:relative;overflow:hidden;}
+    .road::before{content:'→';position:absolute;right:-10px;bottom:-30px;font-size:200px;color:rgba(15,118,110,.08);font-family:'Fraunces';}
     .road-head{text-align:center;margin-bottom:44px;position:relative;}
-    .road-tag{font-family:'Fraunces';font-style:italic;font-size:17px;color:var(--brass-soft);margin-bottom:8px;}
-    .road-title{font-family:'Fraunces';font-weight:900;font-size:clamp(26px,4vw,40px);letter-spacing:-1px;color:#fff;}
+    .road-tag{font-family:'Fraunces';font-style:italic;font-size:17px;color:var(--brand);margin-bottom:8px;}
+    .road-title{font-family:'Fraunces';font-weight:900;font-size:clamp(26px,4vw,40px);letter-spacing:-1px;color:var(--ink);}
     .road-track{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative;}
-    .rstep{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:24px 20px;position:relative;}
-    .rstep.live{border-color:rgba(22,163,74,.5);background:rgba(22,163,74,.12);}
-    .rstep.now{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.1);}
+    .rstep{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 20px;position:relative;box-shadow:0 6px 20px -12px rgba(15,118,110,.28);}
+    .rstep.live{border-color:rgba(22,163,74,.45);background:#f2fdf5;}
+    .rstep.now{border-color:rgba(245,158,11,.5);background:#fffbeb;}
     .rstep-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-weight:900;font-size:14px;margin-bottom:14px;}
     .rstep.live .rstep-dot{background:#16a34a;color:#fff;}
-    .rstep.now .rstep-dot{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:var(--forest);}
-    .rstep.next .rstep-dot{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);}
+    .rstep.now .rstep-dot{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff;}
+    .rstep.next .rstep-dot{background:#eef2f0;color:#8b93a0;}
     .rstep-status{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
-    .rstep.live .rstep-status{color:#22c55e;}
-    .rstep.now .rstep-status{color:#f59e0b;}
-    .rstep.next .rstep-status{color:rgba(255,255,255,.4);}
-    .rstep h4{font-family:'Fraunces';font-weight:600;font-size:17px;margin-bottom:7px;color:#fff;}
-    .rstep p{font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.55;}
+    .rstep.live .rstep-status{color:#16a34a;}
+    .rstep.now .rstep-status{color:#b45309;}
+    .rstep.next .rstep-status{color:var(--faint);}
+    .rstep h4{font-family:'Fraunces';font-weight:600;font-size:17px;margin-bottom:7px;color:var(--ink);}
+    .rstep p{font-size:12.5px;color:var(--muted);line-height:1.55;}
 
     .band{background:var(--paper);text-align:center;padding:70px 28px;}
     .band h2{font-family:'Fraunces';font-weight:900;font-size:clamp(26px,3.5vw,40px);margin-bottom:14px;color:var(--forest);letter-spacing:-1px;}

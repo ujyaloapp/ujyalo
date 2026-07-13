@@ -47,7 +47,6 @@ const NAV_PUBLIC = `
     <div class="ujyalo-nav-links" id="nav-links">
       <a href="/see.html">SEE</a>
       <a href="/features.html">Features</a>
-      <a href="/pricing.html">Pricing</a>
       <a href="/about.html">About</a>
     </div>
     <div class="ujyalo-nav-actions" id="nav-actions">
@@ -61,7 +60,6 @@ const NAV_PUBLIC = `
   <div class="ujyalo-mobile-menu" id="nav-mobile-menu">
     <a href="/see.html">SEE</a>
     <a href="/features.html">Features</a>
-    <a href="/pricing.html">Pricing</a>
     <a href="/about.html">About</a>
     <div class="ujyalo-mobile-divider"></div>
     <a href="/login.html" class="ujyalo-mobile-login">Log in</a>

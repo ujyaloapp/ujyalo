@@ -518,7 +518,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
     <nav class="lsb-nav">
       <button class="li act" onclick="showView('papers',this)" id="nav-papers"><span class="li-icon">📄</span><span class="li-lbl">Past Papers</span></button>
       <button class="li" onclick="showView('practice',this)" id="nav-practice"><span class="li-icon">📖</span><span class="li-lbl">Practice</span></button>
-      <button class="li" onclick="showView('saved',this)" id="nav-saved"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
+      <button class="li" onclick="showView('saved',this)" id="nav-saved" style="display:none"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
 
       <div class="lsb-plus-label"><span class="plus-star">⭐</span> PLUS</div>
       <button class="li li-plus" onclick="showView('heatmap',this)" id="nav-heatmap"><span class="li-icon">🔥</span><span class="li-lbl">Hot Topics</span><span class="li-lock">⭐</span></button>
@@ -770,7 +770,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
   <nav class="mbtm">
     <button class="mbtm-i" id="mb-papers" onclick="mobileNav('papers',this)"><span class="mbtm-ic">📄</span><span class="mbtm-tx">Papers</span></button>
     <button class="mbtm-i" id="mb-practice" onclick="mobileNav('practice',this)"><span class="mbtm-ic">📖</span><span class="mbtm-tx">Practice</span></button>
-    <button class="mbtm-i" id="mb-saved" onclick="mobileNav('saved',this)"><span class="mbtm-ic">🔖</span><span class="mbtm-tx">Saved</span></button>
+    <button class="mbtm-i" id="mb-saved" onclick="mobileNav('saved',this)" style="display:none"><span class="mbtm-ic">🔖</span><span class="mbtm-tx">Saved</span></button>
     <button class="mbtm-i mbtm-plus" id="mb-plus" onclick="mobileNav('plus',this)"><span class="mbtm-ic">⭐</span><span class="mbtm-tx">Plus</span></button>
   </nav>
 </div><!-- /app -->
