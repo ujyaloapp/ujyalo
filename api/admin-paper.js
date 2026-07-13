@@ -63,6 +63,21 @@ async function getEditor(req) {
   return null;
 }
 
+// Build a human label for a paper + question, e.g. "SEE 2082 · Koshi · Q7".
+function labelFor(paper, questionNumber) {
+  const prov = paper.province ? String(paper.province).charAt(0).toUpperCase() + String(paper.province).slice(1) : '';
+  return `SEE ${paper.year}${prov ? ' · ' + prov : ''} · Q${questionNumber}`;
+}
+async function paperMeta(paperId) {
+  const papers = await sbGet(`/past_papers?id=eq.${paperId}&select=id,year,province,subject_id`);
+  const paper = papers[0];
+  if (!paper) return null;
+  const subs = await sbGet(`/exam_subjects?id=eq.${paper.subject_id}&select=code,name`);
+  paper.subject_code = (subs[0] && subs[0].code) || '';
+  paper.subject_name = (subs[0] && subs[0].name) || '';
+  return paper;
+}
+
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   const action = req.query.action || (req.body && req.body.action);
@@ -188,6 +203,53 @@ export default async function handler(req, res) {
       return res.status(200).json({ flags: out });
     }
 
+    // ── Daily Question curation (editor) ──
+    if (action === 'daily-papers') {
+      const papers = await sbGet('/past_papers?select=id,year,province,subject_id&order=year.desc,province.asc');
+      const subs = await sbGet('/exam_subjects?select=id,code,name');
+      const subMap = {}; subs.forEach(s => (subMap[s.id] = s));
+      const out = papers.map(p => ({
+        id: p.id, year: p.year, province: p.province,
+        subject_code: (subMap[p.subject_id] && subMap[p.subject_id].code) || '',
+        label: `${(subMap[p.subject_id] && subMap[p.subject_id].name) || 'Subject'} · SEE ${p.year} · ${p.province || ''}`.trim(),
+      }));
+      return res.status(200).json({ papers: out });
+    }
+    if (action === 'daily-candidates') {
+      const pid = req.query.paper_id;
+      if (!pid) return res.status(400).json({ error: 'Missing paper_id' });
+      const paper = await paperMeta(pid);
+      if (!paper) return res.status(404).json({ error: 'Paper not found' });
+      const qs = await sbGet(
+        `/past_paper_questions?paper_id=eq.${pid}&order=question_number.asc,sub_part.asc` +
+        `&select=question_number,sub_part,question_text_english,marks,verified`
+      );
+      const byNum = {};
+      qs.forEach(q => {
+        const n = q.question_number;
+        const g = byNum[n] || (byNum[n] = { question_number: n, parts: 0, verified: 0, marks: 0, preview: '' });
+        g.parts++;
+        if (q.verified) g.verified++;
+        g.marks += (q.marks || 0);
+        if (!g.preview && q.question_text_english) g.preview = String(q.question_text_english).replace(/\s+/g, ' ').slice(0, 130);
+      });
+      const inPool = await sbGet(`/daily_questions?paper_id=eq.${pid}&select=question_number`);
+      const poolSet = {}; inPool.forEach(r => (poolSet[r.question_number] = true));
+      const questions = Object.values(byNum).map(g => ({
+        question_number: g.question_number, parts: g.parts,
+        all_verified: g.verified === g.parts && g.parts > 0, marks: g.marks,
+        preview: g.preview, in_pool: !!poolSet[g.question_number],
+      }));
+      return res.status(200).json({
+        paper: { id: paper.id, year: paper.year, province: paper.province, subject_code: paper.subject_code, subject_name: paper.subject_name },
+        questions,
+      });
+    }
+    if (action === 'daily-pool') {
+      const rows = await sbGet('/daily_questions?order=added_at.desc&select=*');
+      return res.status(200).json({ pool: rows });
+    }
+
     // ── writes (POST only) ──
     if (req.method !== 'POST') return res.status(405).json({ error: 'POST required' });
     const body = req.body || {};
@@ -252,6 +314,30 @@ export default async function handler(req, res) {
         const lbl = (labels[i] != null) ? labels[i] : String.fromCharCode(97 + i);
         await sbPatch(`/past_paper_questions?id=eq.${encodeURIComponent(order[i])}`, { sub_part: lbl }, false);
       }
+      return res.status(200).json({ ok: true });
+    }
+
+    if (action === 'daily-add') {
+      const paper_id = body.paper_id;
+      const question_number = body.question_number;
+      if (!paper_id || question_number == null) return res.status(400).json({ error: 'Missing paper/question' });
+      const paper = await paperMeta(paper_id);
+      if (!paper) return res.status(404).json({ error: 'Paper not found' });
+      const parts = await sbGet(`/past_paper_questions?paper_id=eq.${paper_id}&question_number=eq.${question_number}&select=verified`);
+      if (!parts.length) return res.status(404).json({ error: 'Question not found' });
+      if (!parts.every(p => p.verified)) return res.status(400).json({ error: 'All parts must be verified before adding to Daily.' });
+      const exists = await sbGet(`/daily_questions?paper_id=eq.${paper_id}&question_number=eq.${question_number}&select=id`);
+      if (exists.length) return res.status(200).json({ ok: true, row: exists[0], already: true });
+      const rows = await sbPost('/daily_questions', {
+        paper_id, question_number, subject_code: paper.subject_code,
+        source_label: labelFor(paper, question_number), status: 'approved', added_by: editor,
+      });
+      return res.status(200).json({ ok: true, row: rows[0] || null });
+    }
+    if (action === 'daily-remove') {
+      const id = body.id;
+      if (!id) return res.status(400).json({ error: 'Missing id' });
+      await sbDelete(`/daily_questions?id=eq.${id}`);
       return res.status(200).json({ ok: true });
     }
 
