@@ -18,10 +18,10 @@
   <style>
     /* ===== Editorial Scholar — Pricing page (content only; nav/footer via components.js) ===== */
     :root{
-      --forest:#1e1a15;--forest2:#1c4a40;--moss:#3f7d6e;
-      --brass:#f59e0b;--brass-soft:#f6b652;
-      --paper:#f4f0e6;--paper2:#ece6d6;--card:#fbf9f3;
-      --ink:#1a2420;--muted:#5f6b64;--faint:#9aa49d;--line:#e0d9c8;--green:#15803d;
+      --forest:#1f2933;--forest2:#0b5c55;--moss:#0b5c55;
+      --brass:#0f766e;--brass-soft:#99f6e4;
+      --paper:#f7faf8;--paper2:#eef2f0;--card:#ffffff;
+      --ink:#1f2933;--muted:#52606d;--faint:#8b93a0;--line:#e6eae8;--green:#16a34a;
     }
     .es *{margin:0;padding:0;box-sizing:border-box;}
     .es{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--card);line-height:1.6;}
@@ -29,8 +29,8 @@
     .es a{text-decoration:none;}
     .wrap{max-width:1060px;margin:0 auto;padding:0 28px;}
 
-    .phero{position:relative;overflow:hidden;padding:66px 0 40px;text-align:center;background:radial-gradient(at 50% 0%,rgba(245,158,11,.1) 0,transparent 55%),var(--card);}
-    .phero-label{display:inline-block;background:rgba(63,125,110,.1);color:var(--moss);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:16px;}
+    .phero{position:relative;overflow:hidden;padding:66px 0 40px;text-align:center;background:radial-gradient(at 50% 0%,rgba(15,118,110,.1) 0,transparent 55%),var(--card);}
+    .phero-label{display:inline-block;background:rgba(15,118,110,.1);color:var(--moss);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:16px;}
     .phero h1{font-family:'Fraunces';font-weight:900;font-size:clamp(34px,5.5vw,56px);line-height:1.05;letter-spacing:-1.5px;color:var(--forest);margin-bottom:14px;}
     .phero h1 em{color:var(--brass);}
     .phero p{font-size:18px;color:var(--muted);max-width:480px;margin:0 auto;}
@@ -39,9 +39,9 @@
     .price-wrap{padding:30px 0 50px;}
     .price-grid{display:grid;grid-template-columns:1.15fr .92fr;gap:20px;align-items:stretch;}
     .pcard{border-radius:24px;padding:38px;position:relative;overflow:hidden;}
-    .pcard-free{background:linear-gradient(140deg,#2a2318,#1a160f);color:#fff;}
-    .pcard-free::before{content:'';position:absolute;top:-70px;right:-70px;width:260px;height:260px;border-radius:50%;background:rgba(245,158,11,.13);}
-    .pc-ribbon{display:inline-block;background:var(--brass);color:#2a2110;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:5px 13px;border-radius:99px;margin-bottom:18px;}
+    .pcard-free{background:linear-gradient(140deg,#0f766e,#0b5c55);color:#fff;}
+    .pcard-free::before{content:'';position:absolute;top:-70px;right:-70px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.13);}
+    .pc-ribbon{display:inline-block;background:var(--brass-soft);color:#06403a;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:5px 13px;border-radius:99px;margin-bottom:18px;}
     .pc-name{font-family:'Fraunces';font-style:italic;font-size:18px;color:var(--brass-soft);margin-bottom:6px;position:relative;}
     .pc-price{font-family:'Fraunces';font-weight:900;font-size:64px;line-height:1;position:relative;}
     .pc-price small{font-size:18px;font-weight:400;color:#bcc8c1;}
@@ -53,7 +53,7 @@
     .pcard-plus{background:var(--card);border:1.5px solid var(--line);display:flex;flex-direction:column;}
     .pcard-plus .pc-name{color:var(--brass);}
     .pcard-plus .pc-price{color:var(--ink);}
-    .pc-soon-badge{position:absolute;top:24px;right:24px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--brass);background:rgba(245,158,11,.13);padding:4px 11px;border-radius:99px;}
+    .pc-soon-badge{position:absolute;top:24px;right:24px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--brass);background:rgba(15,118,110,.13);padding:4px 11px;border-radius:99px;}
     .pc-list-plus{list-style:none;margin-bottom:24px;}
     .pc-list-plus li{font-size:14px;padding:8px 0;display:flex;gap:10px;align-items:flex-start;color:var(--muted);border-bottom:1px solid var(--line);}
     .pc-list-plus li::before{content:'✦';color:var(--brass);flex-shrink:0;}
@@ -66,7 +66,7 @@
     .sc-tag{font-family:'Fraunces';font-style:italic;font-size:16px;color:var(--brass);margin-bottom:8px;}
     .schools-card h2{font-family:'Fraunces';font-weight:900;font-size:28px;color:var(--forest);margin-bottom:12px;letter-spacing:-.5px;}
     .schools-card p{font-size:15px;color:var(--muted);line-height:1.65;margin-bottom:18px;}
-    .sc-cta{display:inline-flex;align-items:center;background:#1e1a15;color:#fff;font-size:14px;font-weight:600;padding:13px 26px;border-radius:11px;border:none;cursor:pointer;}
+    .sc-cta{display:inline-flex;align-items:center;background:#1f2933;color:#fff;font-size:14px;font-weight:600;padding:13px 26px;border-radius:11px;border:none;cursor:pointer;}
     .sc-visual{text-align:center;}
     .sc-big{font-family:'Fraunces';font-weight:900;font-size:62px;color:var(--moss);line-height:1;}
     .sc-big-l{font-size:13px;color:var(--muted);margin-top:6px;}
@@ -81,8 +81,8 @@
     .faq-q{font-family:'Fraunces';font-weight:600;font-size:16px;color:var(--ink);margin-bottom:6px;}
     .faq-a{font-size:14px;color:var(--muted);line-height:1.6;}
 
-    .band{background:linear-gradient(135deg,#2a2318,#1a160f);color:#fff;border-radius:24px;padding:54px;text-align:center;position:relative;overflow:hidden;margin:0 28px 56px;}
-    .band::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:rgba(245,158,11,.12);}
+    .band{background:linear-gradient(135deg,#0f766e,#0b5c55);color:#fff;border-radius:24px;padding:54px;text-align:center;position:relative;overflow:hidden;margin:0 28px 56px;}
+    .band::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.12);}
     .band h2{font-family:'Fraunces';font-weight:900;font-size:clamp(26px,3.5vw,36px);margin-bottom:14px;position:relative;}
     .band p{font-size:16px;color:#cbd8d1;max-width:480px;margin:0 auto 24px;position:relative;}
     .band-cta{display:inline-flex;align-items:center;background:linear-gradient(135deg,var(--brass-soft),var(--brass));color:var(--forest);font-size:15px;font-weight:700;padding:14px 30px;border-radius:12px;border:none;cursor:pointer;position:relative;}

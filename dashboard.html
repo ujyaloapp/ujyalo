@@ -11,14 +11,14 @@
 <link rel="stylesheet" href="/styles/main.css">
 <style>
 :root{
-  --brand:#1e1a15; --brand-dark:#0C241F; --brand-light:#DCE6E1; --brand-50:#EBF1EE;
-  --sun:#f59e0b; --sun-soft:#f6b652; --sun-light:#F2E6CC; --sun-50:#FAF4E8;
-  --ink-50:#F4F0E6; --ink-100:#ECE6D6; --ink-200:#E0D9C8; --ink-300:#C3BBA6;
-  --ink-500:#5F6B64; --ink-700:#2B3A33; --ink-900:#1A2420;
-  --green:#15803D; --green-light:#D1FAE5; --red:#B5532E; --red-light:#F6E2D8;
-  --card:#FBF9F3;
+  --brand:#0f766e; --brand-dark:#0b5c55; --brand-light:#d3f0ec; --brand-50:#f0faf8;
+  --sun:#f59e0b; --sun-soft:#f6b652; --sun-light:#fff3da; --sun-50:#fff8ec;
+  --ink-50:#f7faf8; --ink-100:#eef2f0; --ink-200:#e6eae8; --ink-300:#8b93a0;
+  --ink-500:#52606d; --ink-700:#3a4652; --ink-900:#1f2933;
+  --green:#16a34a; --green-light:#dcfce7; --red:#e11d48; --red-light:#ffe4e6;
+  --card:#ffffff;
   --serif:'Fraunces',Georgia,serif; --sans:'Outfit',system-ui,sans-serif;
-  --sh:0 1px 2px rgba(26,36,32,.04),0 8px 24px rgba(26,36,32,.06);
+  --sh:0 1px 2px rgba(31,41,51,.04),0 8px 24px rgba(31,41,51,.06);
 }
 .db,.db *{box-sizing:border-box}
 .db{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);padding:34px 0 70px;min-height:72vh;-webkit-font-smoothing:antialiased}
@@ -31,11 +31,11 @@
 .db .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-300);margin-bottom:13px;display:flex;align-items:center;gap:10px}
 .db .eyebrow::after{content:"";flex:1;height:1px;background:var(--ink-200)}
 
-.db .hero{background:linear-gradient(150deg,#2a2318 0%,#1a160f 100%);border-radius:22px;padding:34px 36px;color:#eef3f0;position:relative;overflow:hidden;box-shadow:var(--sh);margin-bottom:30px}
-.db .hero::after{content:"";position:absolute;right:-90px;top:-90px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.22),transparent 68%)}
+.db .hero{background:linear-gradient(150deg,#0f766e 0%,#0b5c55 100%);border-radius:22px;padding:34px 36px;color:#eef3f0;position:relative;overflow:hidden;box-shadow:var(--sh);margin-bottom:30px}
+.db .hero::after{content:"";position:absolute;right:-90px;top:-90px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(153,246,228,.18),transparent 68%)}
 .db .hero-top{display:flex;align-items:center;justify-content:space-between;gap:28px;position:relative;z-index:1;flex-wrap:wrap}
 .db .hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(28px,3.6vw,40px);line-height:1.05;letter-spacing:-.01em;color:#fff}
-.db .hero h1 em{font-style:italic;font-weight:600;color:var(--sun-soft)}
+.db .hero h1 em{font-style:italic;font-weight:600;color:#99f6e4}
 .db .hero .sub{margin-top:10px;font-size:15.5px;color:#b9cabf;max-width:40ch;line-height:1.5}
 .db .hero .sub b{color:#fff;font-weight:600}
 .db .ring{position:relative;width:132px;height:132px;flex-shrink:0}
@@ -45,7 +45,7 @@
 .db .ring .cap{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#9fb3a8;margin-top:3px}
 .db .hero-stats{display:flex;gap:30px;margin-top:26px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);position:relative;z-index:1;flex-wrap:wrap}
 .db .hstat .n{font-family:var(--serif);font-weight:600;font-size:25px;color:#fff;line-height:1}
-.db .hstat .n .u{font-size:14px;color:var(--sun-soft);font-weight:500}
+.db .hstat .n .u{font-size:14px;color:var(--ink-500);font-weight:500}
 .db .hstat .l{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#9fb3a8;margin-top:5px;font-weight:600}
 
 .db .cols{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:30px}
@@ -53,11 +53,11 @@
 .db .card h3{font-family:var(--serif);font-weight:600;font-size:18px;color:var(--ink-900);letter-spacing:-.01em}
 .db .card .csub{font-size:12.5px;color:var(--ink-500);margin-top:2px}
 
-.db .mission{background:linear-gradient(135deg,var(--sun-50),var(--sun-light));border-color:var(--sun-light)}
-.db .mission .tag{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9a7223}
+.db .mission{background:linear-gradient(135deg,var(--brand-50),var(--brand-light));border-color:var(--brand-light)}
+.db .mission .tag{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0f766e}
 .db .mission .mt{font-family:var(--serif);font-weight:600;font-size:23px;color:var(--brand);margin:9px 0 6px;line-height:1.12}
 .db .mission .ms{font-size:14px;color:var(--ink-700);line-height:1.55;margin-bottom:18px}
-.db .mbtn{display:inline-flex;align-items:center;gap:8px;background:#1e1a15;color:#fff;font-family:var(--sans);font-weight:600;font-size:14.5px;padding:12px 22px;border-radius:11px;transition:.18s}
+.db .mbtn{display:inline-flex;align-items:center;gap:8px;background:#0f766e;color:#fff;font-family:var(--sans);font-weight:600;font-size:14.5px;padding:12px 22px;border-radius:11px;transition:.18s}
 .db .mbtn:hover{background:var(--brand-dark)}
 .db .entries{display:flex;flex-direction:column;gap:12px}
 .db .entry{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--ink-200);border-radius:14px;padding:15px 16px;transition:.18s}
@@ -71,8 +71,8 @@
 
 .db .week-row{display:flex;gap:7px;margin-top:14px}
 .db .day{flex:1;aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--ink-100);color:var(--ink-300)}
-.db .day.on{background:#1e1a15;color:#fff}
-.db .day.today{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--sun)}
+.db .day.on{background:#0f766e;color:#fff}
+.db .day.today{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--brand)}
 .db .week-note{font-size:12.5px;color:var(--ink-500);margin-top:13px}
 
 .db .subj{margin-top:16px}.db .subj:first-child{margin-top:6px}
@@ -80,13 +80,13 @@
 .db .subj-top .nm{font-weight:600;color:var(--ink-900)}
 .db .subj-top .vs{color:var(--ink-500);font-size:12.5px}
 .db .bar{height:8px;background:var(--ink-100);border-radius:999px;overflow:hidden}
-.db .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--brand),var(--sun))}
+.db .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--brand-dark),var(--brand))}
 
 .db .sw{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:30px}
 .db .chiprow{display:flex;flex-direction:column;gap:9px;margin-top:14px}
 .db .chip{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-radius:11px;font-size:14px;font-weight:500}
 .db .chip.good{background:var(--brand-50);color:var(--brand)}
-.db .chip.bad{background:var(--red-light);color:#8a3a1d}
+.db .chip.bad{background:var(--sun-light);color:#92610a}
 .db .chip .sc{font-family:var(--serif);font-weight:600;font-size:15px}
 .db .empty-mini{font-size:13.5px;color:var(--ink-300);margin-top:14px;padding:10px 0}
 
@@ -104,8 +104,8 @@
 .db .tile .mk{font-size:11px;font-weight:600;align-self:flex-start;margin-top:8px}
 .db .tile.todo{border-style:dashed;border-color:var(--ink-300)}
 .db .tile.todo .nm{color:var(--ink-500)}.db .tile.todo .mk{color:var(--ink-300)}
-.db .tile.strong{background:#1e1a15;border-color:var(--brand)}
-.db .tile.strong .nm{color:#fff}.db .tile.strong .mk{color:var(--sun-soft)}
+.db .tile.strong{background:#1f2933;border-color:var(--brand)}
+.db .tile.strong .nm{color:#fff}.db .tile.strong .mk{color:#99f6e4}
 .db .tile.weak{background:var(--sun-light);border-color:var(--sun-soft)}
 .db .tile.weak .nm{color:#6b4e16}.db .tile.weak .mk{color:#8a6620}
 
@@ -146,7 +146,7 @@
       <div class="ring">
         <svg width="132" height="132" viewBox="0 0 132 132">
           <circle cx="66" cy="66" r="58" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="11"/>
-          <circle id="ring-fill" cx="66" cy="66" r="58" fill="none" stroke="#f59e0b" stroke-width="11" stroke-linecap="round"
+          <circle id="ring-fill" cx="66" cy="66" r="58" fill="none" stroke="#0f766e" stroke-width="11" stroke-linecap="round"
                   stroke-dasharray="364.4" stroke-dashoffset="364.4" style="transition:stroke-dashoffset 1s cubic-bezier(.16,1,.3,1)"/>
         </svg>
         <div class="mid"><div class="pct" id="ring-pct">—</div><div class="cap">got it</div></div>
@@ -176,7 +176,7 @@
           <span><span class="et">Chapter practice <span class="live">Live</span></span><span class="es" id="entry-prac">Practise by chapter and topic</span></span>
         </a>
         <a class="entry" href="/see.html">
-          <span class="ic" style="background:var(--sun-50)">📄</span>
+          <span class="ic" style="background:var(--brand-50)">📄</span>
           <span><span class="et">Past papers <span class="live">Live</span></span><span class="es">Real SEE papers with model answers</span></span>
         </a>
       </div>

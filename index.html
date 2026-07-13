@@ -42,9 +42,9 @@
        subject colours used only as small signals. Page-scoped (.es).
        Nav + footer are injected by /scripts/components.js. */
     :root{
-      --ink:#1e1a15;--ink2:#27433a;--muted:#5b6b62;--faint:#94a08f;
-      --cream:#fbf6ea;--paper:#fbf8f1;--white:#ffffff;--line:#ece6d6;
-      --gold:#f59e0b;--gold-ink:#5c3a00;--gold-deep:#b06d00;--gold-soft:#fff3da;
+      --ink:#1f2933;--ink2:#1f2933;--muted:#52606d;--faint:#8b93a0;
+      --cream:#f0faf8;--paper:#f7faf8;--white:#ffffff;--line:#e6eae8;
+      --gold:#0f766e;--gold-ink:#ffffff;--gold-deep:#0b5c55;--gold-soft:#d3f0ec;
       --green:#16a34a;--green-soft:#dcfce7;--blue:#2563eb;--blue-soft:#e7f0ff;
       --amber:#d97706;--amber-soft:#fff1d6;--pink:#db2777;--pink-soft:#fce7f3;
       --purple:#7c3aed;--purple-soft:#ede9fe;--red:#e11d48;--red-soft:#ffe4e6;
@@ -108,10 +108,11 @@
     .step p{font-size:14px;color:var(--muted);}
 
     /* band */
-    .band{background:#1e1a15;color:#fff;border-radius:22px;padding:48px;text-align:center;position:relative;overflow:hidden;}
-    .band .eyebrow{color:var(--gold);}
+    .band{background:linear-gradient(135deg,#0f766e,#0b5c55);color:#fff;border-radius:22px;padding:48px;text-align:center;position:relative;overflow:hidden;}
+    .band .eyebrow{color:#8de0d3;}
     .band h2{font-family:'Fraunces',serif;font-weight:800;font-size:clamp(24px,3.2vw,34px);letter-spacing:-.5px;color:#fff;margin-bottom:12px;}
-    .band p{font-size:16px;color:#cdd8d2;max-width:520px;margin:0 auto 22px;}
+    .band p{font-size:16px;color:#d1faf3;max-width:520px;margin:0 auto 22px;}
+    .band .btn-gold{background:#fff;color:#0b5c55;}
 
     /* final */
     .final{text-align:center;padding:78px 0;background:var(--cream);}
@@ -182,7 +183,6 @@
       <a class="subj" href="/see.html"><span class="ic" style="background:var(--green-soft);color:var(--green);"><i class="ti ti-flask" aria-hidden="true"></i></span><div class="nm">Science</div><div class="mt">Past papers</div></a>
       <a class="subj" href="/see.html"><span class="ic" style="background:var(--amber-soft);color:var(--amber);"><i class="ti ti-abc" aria-hidden="true"></i></span><div class="nm">English</div><div class="mt">Past papers</div></a>
       <a class="subj" href="/see.html"><span class="ic" style="background:var(--pink-soft);color:var(--pink);"><i class="ti ti-book" aria-hidden="true"></i></span><div class="nm">Nepali</div><div class="mt">Past papers</div></a>
-      <a class="subj" href="/see.html"><span class="ic" style="background:var(--purple-soft);color:var(--purple);"><i class="ti ti-world" aria-hidden="true"></i></span><div class="nm">Social</div><div class="mt">Past papers</div></a>
       <a class="subj" href="/see.html"><span class="ic" style="background:var(--red-soft);color:var(--red);"><i class="ti ti-heart" aria-hidden="true"></i></span><div class="nm">Health</div><div class="mt">Past papers</div></a>
     </div>
   </section>

@@ -1102,7 +1102,7 @@ function pickMCQ(btn, grid, correct, chosen, itemEl, s, qNum) {
 
 // ── CONFIDENCE ──
 function confColor(v) {
-  return (v === 'got') ? '#15803D' : (v === 'almost') ? '#C0913F' : '#B5532E';
+  return (v === 'got') ? '#16a34a' : (v === 'almost') ? '#f59e0b' : '#e11d48';
 }
 
 // Show only this question's rating buttons; hide any other question's.
