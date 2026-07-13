@@ -397,9 +397,10 @@ body {
   display: block; font-weight: 700; color: var(--ink);
   line-height: 1.45; margin-bottom: 8px;
 }
-.q-diagram { margin: 10px 0; overflow-x: auto; }
-/* Small brand watermark above every diagram — layout-only, never touches the SVG */
-.q-diagram::before { content:"ujyalo.app"; display:block; text-align:center; font-family:'Outfit',sans-serif; font-size:9px; font-weight:700; letter-spacing:.05em; color:#0f766e; opacity:.4; margin-bottom:3px; }
+.q-diagram { margin: 10px 0; overflow-x: auto; position: relative; }
+/* Brand watermark overlaid INSIDE the diagram (top) so it can't be cropped off.
+   pointer-events:none + absolute → never affects the SVG geometry or interaction. */
+.q-diagram::before { content:"ujyalo.app"; position:absolute; top:6px; left:50%; transform:translateX(-50%); z-index:2; font-family:'Outfit',sans-serif; font-size:9px; font-weight:700; letter-spacing:.05em; color:#0f766e; opacity:.32; pointer-events:none; }
 .q-diagram svg { max-width: 360px; width: 100%; height: auto; display: block; margin: 0 auto; }
 .social-proof {
   font-size: 11px; color: var(--muted);
