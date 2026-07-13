@@ -331,7 +331,6 @@
       <button class="vt on" id="tab-papers">Papers</button>
       <button class="vt" id="tab-flags">⚑ Flags <span class="flagn" id="flagn"></span></button>
       <button class="vt" id="tab-board">◳ Board</button>
-      <button class="vt" id="tab-daily">◉ Daily Q</button>
     </div>
     <span class="pb-paper hidden" id="pb-paper"></span>
   </div>
@@ -341,13 +340,33 @@
       <!-- landing / verification board -->
       <div id="picker" class="board">
         <div class="modeseg" id="bd-modes"></div>
-        <div class="eyebrow">Verification workspace</div>
-        <h1 class="bd-h1">What's left to verify</h1>
-        <div id="bd-overview"></div>
-        <div id="bd-continue"></div>
-        <div class="bd-cols">
-          <div class="bd-main"><div id="bd-list"></div></div>
-          <aside class="bd-side"><div id="bd-team"></div></aside>
+
+        <div id="picker-papers">
+          <div class="eyebrow">Verification workspace</div>
+          <h1 class="bd-h1">What's left to verify</h1>
+          <div id="bd-overview"></div>
+          <div id="bd-continue"></div>
+          <div class="bd-cols">
+            <div class="bd-main"><div id="bd-list"></div></div>
+            <aside class="bd-side"><div id="bd-team"></div></aside>
+          </div>
+        </div>
+
+        <div id="picker-daily" class="hidden">
+          <div class="eyebrow">Daily Question</div>
+          <h1 class="bd-h1">Curate the daily pool</h1>
+          <p class="dq-sub">Only fully-verified questions can be added. Students see one question from this pool each day.</p>
+          <div class="dq-cols">
+            <div>
+              <div class="dq-h">Add from a paper</div>
+              <select id="dq-paper" class="dq-select"><option>Loading…</option></select>
+              <div id="dq-candidates"></div>
+            </div>
+            <div>
+              <div class="dq-h">Daily pool <span id="dq-count" class="dq-count"></span></div>
+              <div id="dq-poollist"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -369,25 +388,6 @@
 
   <div id="boardview" class="hidden">
     <div class="bwrap"><div id="board-body"></div></div>
-  </div>
-
-  <div id="dailyview" class="hidden">
-    <div class="bwrap">
-      <div class="eyebrow">Daily Question</div>
-      <h1 class="bd-h1">Curate the daily pool</h1>
-      <p class="dq-sub">Only fully-verified questions can be added. Students see one question from this pool each day.</p>
-      <div class="dq-cols">
-        <div>
-          <div class="dq-h">Add from a paper</div>
-          <select id="dq-paper" class="dq-select"><option>Loading…</option></select>
-          <div id="dq-candidates"></div>
-        </div>
-        <div>
-          <div class="dq-h">Daily pool <span id="dq-count" class="dq-count"></span></div>
-          <div id="dq-poollist"></div>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 <div id="toast"></div>
@@ -443,11 +443,10 @@
   $('tab-papers').addEventListener('click',function(){ setTab('papers'); if(DATA) showEditor(); else showPicker(); });
   $('tab-flags').addEventListener('click',function(){ setTab('flags'); loadFlags(); });
   $('tab-board').addEventListener('click',function(){ setTab('board'); loadBoard(); });
-  $('tab-daily').addEventListener('click',function(){ setTab('daily'); loadDaily(); });
-  function setTab(v){ var p=v==='papers',f=v==='flags',b=v==='board',d=v==='daily';
-    $('tab-papers').classList.toggle('on',p); $('tab-flags').classList.toggle('on',f); $('tab-board').classList.toggle('on',b); $('tab-daily').classList.toggle('on',d);
+  function setTab(v){ var p=v==='papers',f=v==='flags',b=v==='board';
+    $('tab-papers').classList.toggle('on',p); $('tab-flags').classList.toggle('on',f); $('tab-board').classList.toggle('on',b);
     $('paperview').classList.toggle('hidden',!p); $('flagsview').classList.toggle('hidden',!f);
-    $('main-wrap').classList.toggle('hidden',b||d); $('boardview').classList.toggle('hidden',!b); $('dailyview').classList.toggle('hidden',!d);
+    $('main-wrap').classList.toggle('hidden',b); $('boardview').classList.toggle('hidden',!b);
     updatePbPaper(); }
 
   // ── Daily Question curation ──
@@ -459,7 +458,7 @@
   async function loadCandidates(pid){ $('dq-candidates').innerHTML='<div class="dq-loading">Loading questions…</div>'; try{ var d=await dailyGet('daily-candidates','paper_id='+encodeURIComponent(pid)); var qs=(d.questions||[]).filter(function(q){return q.all_verified;}); $('dq-candidates').innerHTML=qs.length?qs.map(function(q){return '<div class="dq-cand"><div><div class="dq-cand-n">Q'+q.question_number+' · '+q.marks+' marks</div><div class="dq-cand-p">'+esc(q.preview||'')+'</div></div>'+(q.in_pool?'<span class="dq-added">✓ Added</span>':'<button class="dq-add-btn" data-add="'+q.question_number+'">+ Add</button>')+'</div>';}).join(''):'<div class="dq-empty">No fully-verified questions in this paper yet.</div>'; }catch(e){ $('dq-candidates').innerHTML='<div class="dq-empty">Could not load.</div>'; } }
   async function dqAdd(qnum){ var pid=$('dq-paper').value; if(!pid)return; try{ await dailyPost('daily-add',{paper_id:pid,question_number:+qnum}); toast('Added to daily pool'); await loadDailyPool(); loadCandidates(pid); }catch(e){ toast(e.message||'Could not add'); } }
   async function dqRemove(id){ try{ await dailyPost('daily-remove',{id:id}); toast('Removed from pool'); await loadDailyPool(); if($('dq-paper').value) loadCandidates($('dq-paper').value); }catch(e){ toast('Could not remove'); } }
-  (function(){ var s=$('dq-paper'); if(s) s.addEventListener('change',function(){ loadCandidates(this.value); }); var v=$('dailyview'); if(v) v.addEventListener('click',function(e){ var a=e.target.closest('[data-add]'); if(a){ dqAdd(a.getAttribute('data-add')); return; } var rm=e.target.closest('[data-rm]'); if(rm){ dqRemove(rm.getAttribute('data-rm')); return; } }); })();
+  (function(){ var s=$('dq-paper'); if(s) s.addEventListener('change',function(){ loadCandidates(this.value); }); var v=$('picker-daily'); if(v) v.addEventListener('click',function(e){ var a=e.target.closest('[data-add]'); if(a){ dqAdd(a.getAttribute('data-add')); return; } var rm=e.target.closest('[data-rm]'); if(rm){ dqRemove(rm.getAttribute('data-rm')); return; } }); })();
   function updatePbPaper(){ var show=!!DATA && !$('paperview').classList.contains('hidden') && !$('editor').classList.contains('hidden'); $('pb-paper').classList.toggle('hidden',!show); }
 
   // ── picker (subject → year → province) ──
@@ -467,13 +466,15 @@
   $('changepaper').addEventListener('click',showPicker);
   function statusOf(p){ if(!p.total||p.verified===0) return 'todo'; if(p.verified>=p.total) return 'done'; return 'prog'; }
   // verification "modes" — config-driven so future modes (e.g. chapter practice) drop in here
-  var MODES=[{key:'papers',label:'Past papers',on:true},{key:'chapters',label:'Chapter practice',soon:true}];
+  var MODES=[{key:'papers',label:'Past papers'},{key:'chapters',label:'Chapter practice',soon:true},{key:'daily',label:'Daily Questions'}];
+  var CUR_MODE='papers';
+  function setMode(k){ CUR_MODE=k; renderModes(); var isDaily=(k==='daily'); var pp=$('picker-papers'), pd=$('picker-daily'); if(pp) pp.classList.toggle('hidden',isDaily); if(pd) pd.classList.toggle('hidden',!isDaily); if(isDaily) loadDaily(); }
   var SUBJ_COL={maths:{bg:'#e8eef6',fg:'#2a5b9c'},science:{bg:'#e0f2ee',fg:'#1f7a68'},english:{bg:'#fbeede',fg:'#a4701a'},social:{bg:'#efe9f6',fg:'#6b4ba0'},nepali:{bg:'#fdeef0',fg:'#a83a5b'},hpe:{bg:'#fdeaea',fg:'#b3433f'}};
   function subjCol(code){ return SUBJ_COL[code]||{bg:'#eef2f0',fg:'#52606d'}; }
   function renderModes(){
     var el=$('bd-modes'); if(!el) return;
     el.innerHTML=MODES.map(function(m){
-      return '<button class="ms'+(m.on?' on':'')+(m.soon?' soon':'')+'" data-mode="'+esc(m.key)+'">'+esc(m.label)+(m.soon?' · soon':'')+'</button>';
+      return '<button class="ms'+(m.key===CUR_MODE?' on':'')+(m.soon?' soon':'')+'" data-mode="'+esc(m.key)+'">'+esc(m.label)+(m.soon?' · soon':'')+'</button>';
     }).join('');
   }
   // in-progress paper card (Continue verifying)
@@ -604,7 +605,7 @@
   }
   $('picker').addEventListener('click',function(e){
     var row=e.target.closest('[data-open]'); if(row){ loadPaper(row.getAttribute('data-open')); return; }
-    var md=e.target.closest('[data-mode]'); if(md){ if(md.classList.contains('soon')) toast('Chapter-practice verification is coming soon'); return; }
+    var md=e.target.closest('[data-mode]'); if(md){ if(md.classList.contains('soon')){ toast('Chapter-practice verification is coming soon'); return; } setMode(md.getAttribute('data-mode')); return; }
     if(e.target.closest('[data-gotoflags]')){ setTab('flags'); loadFlags(); return; }
     var vf=e.target.closest('[data-vfilter]'); if(vf){ VER_FILTER=vf.getAttribute('data-vfilter'); renderPicker(); return; }
     if(e.target.closest('[data-done]')){ DONE_OPEN=!DONE_OPEN; renderPicker(); return; }
