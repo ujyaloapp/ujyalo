@@ -63,14 +63,30 @@
 <script src="/scripts/ujyalo-auth.js"></script>
 <script src="/scripts/components.js"></script>
 <script>
-  // If already logged in — redirect based on role
+  // Where to send the user after login. Honour a ?next= path (e.g. the paper
+  // they were reading behind the signup gate) — but only same-origin absolute
+  // paths, so it can't be abused as an open redirect.
+  function nextDest() {
+    try {
+      var m = /[?&]next=([^&]+)/.exec(location.search);
+      if (!m) return null;
+      var n = decodeURIComponent(m[1]);
+      if (/^\/(?!\/)/.test(n)) return n;
+    } catch (e) {}
+    return null;
+  }
+
+  // If already logged in — go to ?next= if present, else land by role.
   const user  = ujyaloGetUser();
   const token = ujyaloGetToken();
   if (user && token) {
     const role = user.role || 'student';
-    let dest = '/dashboard.html';
-    if (role === 'admin')   dest = '/admin.html';
-    if (role === 'editor')  dest = '/verify.html';
+    let dest = nextDest();
+    if (!dest) {
+      dest = '/dashboard.html';
+      if (role === 'admin')   dest = '/admin.html';
+      if (role === 'editor')  dest = '/verify.html';
+    }
     window.location.href = dest;
   }
   // Arrived here because a saved session expired — explain why.
@@ -99,7 +115,7 @@ async function submitLogin() {
     if (data.success) {
       localStorage.setItem('ujyalo_token', data.access_token);
       localStorage.setItem('ujyalo_user', JSON.stringify(data.user));
-      window.location.href = data.redirectTo || '/dashboard.html';
+      window.location.href = nextDest() || data.redirectTo || '/dashboard.html';
     } else {
       showError(data.error || 'Something went wrong. Please try again.');
       btn.disabled = false;

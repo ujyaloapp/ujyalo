@@ -50,7 +50,12 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
 
-  fetch('/api/see-paper?year=' + encodeURIComponent(year) + '&province=' + encodeURIComponent(province) + '&subject=' + encodeURIComponent(subject))
+  // Send the login token (if any) so the API can unlock the full paper.
+  // Signed-out visitors get a short preview + a signup gate.
+  var _tok = '';
+  try { _tok = localStorage.getItem('ujyalo_token') || ''; } catch (e) {}
+  fetch('/api/see-paper?year=' + encodeURIComponent(year) + '&province=' + encodeURIComponent(province) + '&subject=' + encodeURIComponent(subject),
+        _tok ? { headers: { 'Authorization': 'Bearer ' + _tok } } : undefined)
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.error) { showError(data.error); return; }
@@ -617,7 +622,8 @@ function buildQuestions() {
   var pProv = safeStr(DATA.paper.province) || '';
   var pMarks = safeStr(DATA.paper.marks) || '—';
   var pDur = safeStr(DATA.paper.duration) || '—';
-  var pQ = safeStr(DATA.meta && DATA.meta.totalQuestions) || String(DATA.groups.length);
+  // Show the paper's true length here, even when only a preview is unlocked.
+  var pQ = safeStr(DATA.meta && (DATA.meta.fullTotal || DATA.meta.totalQuestions)) || String(DATA.groups.length);
   cover.innerHTML =
     '<div class="pc-exam">Secondary Education Examination ' + escapeHTML(pYear) + '</div>' +
     '<div class="pc-title">SEE ' + escapeHTML(pYear) + ' BS' + (pProv ? ' · ' + escapeHTML(pProv) + ' Province' : '') + '</div>' +
@@ -793,6 +799,27 @@ function buildQuestions() {
      console.error('Skipped rendering issue on Q' + (g && g.num), err);
    }
   });
+
+  // Free-account gate: after the preview questions, invite signed-out visitors
+  // to create a free account to open the rest of the paper.
+  if (DATA.meta && DATA.meta.locked) {
+    var moreN = safeNum(DATA.meta.lockedCount);
+    var back  = encodeURIComponent(location.pathname + location.search);
+    var gate = document.createElement('div');
+    gate.className = 'paper-gate';
+    gate.innerHTML =
+      '<div class="pg-lock" aria-hidden="true">' +
+        '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>' +
+      '</div>' +
+      '<div class="pg-title">' + moreN + ' more question' + (moreN === 1 ? '' : 's') + ' — free with an account</div>' +
+      '<div class="pg-sub">Create a free ujyalo account to open the full paper. No payment — just sign up and keep practising on any phone.</div>' +
+      '<div class="pg-actions">' +
+        '<a class="pg-btn" href="/signup.html?next=' + back + '">Sign up free →</a>' +
+        '<a class="pg-login" href="/login.html?next=' + back + '">Already have an account? Log in</a>' +
+      '</div>';
+    area.appendChild(gate);
+  }
 }
 
 function buildSubItem(s, qNum, accent, isParent, view) {
