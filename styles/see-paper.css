@@ -398,9 +398,10 @@ body {
   line-height: 1.45; margin-bottom: 8px;
 }
 .q-diagram { margin: 10px 0; overflow-x: auto; position: relative; }
-/* Brand watermark overlaid INSIDE the diagram (top) so it can't be cropped off.
-   pointer-events:none + absolute → never affects the SVG geometry or interaction. */
-.q-diagram::before { content:"ujyalo.app"; position:absolute; top:6px; left:50%; transform:translateX(-50%); z-index:2; font-family:'Outfit',sans-serif; font-size:9px; font-weight:700; letter-spacing:.05em; color:#0f766e; opacity:.32; pointer-events:none; }
+/* Brand watermark overlaid in the CENTRE of the diagram so it can't be cropped
+   out (you'd have to crop away the figure itself). Faint + pointer-events:none →
+   never affects the SVG geometry or interaction; figure stays readable through it. */
+.q-diagram::before { content:"ujyalo.app"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-18deg); z-index:2; font-family:'Outfit',sans-serif; font-size:13px; font-weight:800; letter-spacing:.08em; color:#0f766e; opacity:.2; pointer-events:none; white-space:nowrap; }
 .q-diagram svg { max-width: 360px; width: 100%; height: auto; display: block; margin: 0 auto; }
 .social-proof {
   font-size: 11px; color: var(--muted);
