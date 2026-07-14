@@ -482,6 +482,43 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .pp.avail{background:var(--brand-soft);color:var(--brand-deep)}.pp.soon{background:var(--paper2);color:var(--faint)}
 @media(max-width:860px){.paplayout{grid-template-columns:1fr}}
 @media(max-width:640px){.psub{display:none}.mh-legend{display:none}.plabel{font-size:13px}.ppl-pad{padding:22px 18px 36px}}
+/* ─── DAILY QUESTION ─── */
+.dq-pad{padding:26px 30px 60px;max-width:760px}
+.dq-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px}
+.dq-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#0f766e;margin-bottom:8px}
+.dq-h1{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(26px,4vw,36px);line-height:1.06;color:#1f2933}
+.dq-h1 em{font-style:italic;color:#0f766e}
+.dq-streak{display:none;align-items:center;gap:6px;background:#ffe7e2;color:#c2402f;border-radius:99px;padding:8px 14px;font-size:13px;font-weight:700;flex-shrink:0}
+.dq-streak b{font-size:16px}.dq-streak span{font-weight:600;opacity:.85}
+.dq-loading,.dq-empty{padding:44px 20px;text-align:center;color:#52606d;font-size:15px}
+.dq-empty-ic{font-size:40px;margin-bottom:10px}
+.dq-srcrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.dq-src{font-size:12px;font-weight:700;color:#52606d;text-transform:uppercase;letter-spacing:.04em}
+.dq-lang{background:#fff;border:1px solid #e6eae8;color:#1f2933;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer}
+.dq-qbox{background:#fff;border:1px solid #e6eae8;border-radius:16px;padding:22px;box-shadow:0 2px 16px rgba(15,118,110,.05)}
+.dq-part{margin-bottom:16px}.dq-part:last-child{margin-bottom:0}
+.dq-ptext{font-size:16px;line-height:1.7;color:#1f2933;white-space:pre-wrap}
+.dq-plabel{font-weight:700}
+.dq-marks{float:right;font-size:11px;font-weight:700;background:#fff3da;color:#92640a;padding:3px 10px;border-radius:99px;margin-left:8px}
+.dq-opts{list-style:none;margin:8px 0 0;padding:0}.dq-opts li{font-size:15px;padding:5px 0;color:#1f2933}
+.dq-actions{margin-top:18px}
+.dq-reveal{background:#0f766e;color:#fff;border:none;border-radius:12px;padding:13px 24px;font-size:14px;font-weight:700;cursor:pointer}
+.dq-reveal:hover{background:#0b5c55}
+.dq-ans{background:#f2fdf5;border:1px solid #bbf7d0;border-radius:14px;padding:16px 18px;margin-top:14px}
+.dq-ans-h{font-size:11px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.dq-ans-b{font-size:15px;line-height:1.8;color:#334155;white-space:pre-wrap}
+.dq-assess{margin-top:20px}.dq-assess p{font-size:14px;font-weight:600;color:#1f2933;margin-bottom:10px}
+.dq-assess-btns{display:flex;gap:8px;flex-wrap:wrap}
+.dq-assess-btns button{border:1.5px solid #e6eae8;background:#fff;border-radius:99px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer}
+.dq-bgot{color:#16a34a;border-color:#86efac!important}.dq-balmost{color:#b45309;border-color:#fcd34d!important}.dq-bmiss{color:#e11d48;border-color:#fda4af!important}
+.dq-done{margin-top:18px;text-align:center;padding:22px;background:#f7faf8;border-radius:14px}
+.dq-done-ic{width:40px;height:40px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin:0 auto 10px}
+.dq-done-t{font-weight:700;color:#1f2933;margin-bottom:4px}.dq-done-s{font-size:13px;color:#52606d}
+.dq-signin{display:inline-block;background:#fb6f5c;color:#fff;padding:11px 20px;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none}
+.q-diagram{margin:10px 0;overflow-x:auto;position:relative}
+.q-diagram svg{max-width:360px;width:100%;height:auto;display:block;margin:8px auto}
+.q-diagram::before{content:"ujyalo.app";position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:2;font-family:'Outfit',sans-serif;font-size:9px;font-weight:700;letter-spacing:.05em;color:#0f766e;opacity:.32;pointer-events:none}
+@media(max-width:900px){.dq-pad{padding:18px 16px 80px}}
 </style>
   <meta property="og:image" content="https://ujyalo.app/og-default.png" />
   <meta name="twitter:image" content="https://ujyalo.app/og-default.png" />
@@ -518,6 +555,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
     <nav class="lsb-nav">
       <button class="li act" onclick="showView('papers',this)" id="nav-papers"><span class="li-icon">📄</span><span class="li-lbl">Past Papers</span></button>
       <button class="li" onclick="showView('practice',this)" id="nav-practice"><span class="li-icon">📖</span><span class="li-lbl">Practice</span></button>
+      <button class="li" onclick="showView('daily',this)" id="nav-daily"><span class="li-icon">📅</span><span class="li-lbl">Daily Question</span></button>
       <button class="li" onclick="showView('saved',this)" id="nav-saved" style="display:none"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
 
       <div class="lsb-plus-label"><span class="plus-star">⭐</span> PLUS</div>
@@ -635,6 +673,31 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
           </div>
         </div>
 
+      </div>
+
+      <!-- DAILY QUESTION VIEW -->
+      <div class="vw" id="vw-daily">
+        <div class="dq-pad">
+          <div class="dq-top">
+            <div>
+              <div class="dq-eyebrow">Daily Question<span id="dq-date"></span></div>
+              <div class="dq-h1">Today's <em>question</em></div>
+            </div>
+            <div class="dq-streak" id="dq-streak" style="display:none">🔥 <b id="dq-streak-n">0</b><span>day streak</span></div>
+          </div>
+          <div id="dq-state" class="dq-loading">Loading today's question…</div>
+          <div id="dq-card" style="display:none">
+            <div class="dq-srcrow"><span class="dq-src" id="dq-src"></span><button class="dq-lang" id="dq-lang" onclick="dqToggleLang()" style="display:none">नेपाली</button></div>
+            <div class="dq-qbox" id="dq-question"></div>
+            <div class="dq-actions" id="dq-actions"><button class="dq-reveal" id="dq-reveal" onclick="dqReveal()">Reveal model answer →</button></div>
+            <div id="dq-answers" style="display:none"></div>
+            <div class="dq-assess" id="dq-assess" style="display:none">
+              <p>How did you do?</p>
+              <div class="dq-assess-btns"><button class="dq-bgot" onclick="dqSubmit('got')">✓ Got it</button><button class="dq-balmost" onclick="dqSubmit('almost')">~ Almost</button><button class="dq-bmiss" onclick="dqSubmit('missed')">✗ Didn't get it</button></div>
+            </div>
+            <div class="dq-done" id="dq-done" style="display:none"></div>
+          </div>
+        </div>
       </div>
 
       <!-- PAPERS VIEW (default) -->
@@ -770,6 +833,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
   <nav class="mbtm">
     <button class="mbtm-i" id="mb-papers" onclick="mobileNav('papers',this)"><span class="mbtm-ic">📄</span><span class="mbtm-tx">Papers</span></button>
     <button class="mbtm-i" id="mb-practice" onclick="mobileNav('practice',this)"><span class="mbtm-ic">📖</span><span class="mbtm-tx">Practice</span></button>
+    <button class="mbtm-i" id="mb-daily" onclick="mobileNav('daily',this)"><span class="mbtm-ic">📅</span><span class="mbtm-tx">Daily</span></button>
     <button class="mbtm-i" id="mb-saved" onclick="mobileNav('saved',this)" style="display:none"><span class="mbtm-ic">🔖</span><span class="mbtm-tx">Saved</span></button>
     <button class="mbtm-i mbtm-plus" id="mb-plus" onclick="mobileNav('plus',this)"><span class="mbtm-ic">⭐</span><span class="mbtm-tx">Plus</span></button>
   </nav>
@@ -1016,12 +1080,13 @@ function goView(id){
   if(stabs) stabs.style.display = (id==='papers') ? '' : 'none';
   // When leaving practice, reset to step 1 so it's clean on return
   if(id!=='practice') practiceStep('prac-subjects', true);
+  if(id==='daily') loadDailyQuestion();
 }
 
 /* ─── MOBILE CHROME (top header + bottom nav sync) ─────────────────────────── */
 function syncMobileChrome(viewId){
   // bottom nav highlight
-  var map={papers:'mb-papers',practice:'mb-practice',saved:'mb-saved',plus:'mb-plus',
+  var map={papers:'mb-papers',practice:'mb-practice',daily:'mb-daily',saved:'mb-saved',plus:'mb-plus',
            heatmap:'mb-plus',predict:'mb-plus',mypaper:'mb-plus'};
   document.querySelectorAll('.mbtm-i').forEach(b=>b.classList.remove('act'));
   var mbId=map[viewId]; if(mbId) document.getElementById(mbId)?.classList.add('act');
@@ -1030,7 +1095,7 @@ function syncMobileChrome(viewId){
 function updateMobileHeader(viewId){
   var t=document.getElementById('mtop-title');
   var back=document.getElementById('mtop-back');
-  var titles={papers:'Past Papers',practice:'Practice',saved:'Saved',plus:'ujyalo Plus',
+  var titles={papers:'Past Papers',practice:'Practice',daily:'Daily Question',saved:'Saved',plus:'ujyalo Plus',
               heatmap:'Hot Topics',predict:'Predict 2083',mypaper:'My Paper'};
   if(!t) return;
   // On practice, header reflects the step
@@ -1047,10 +1112,109 @@ function updateMobileHeader(viewId){
   else { back.style.display='none'; }
 }
 function mobileNav(id,btn){
-  var navMap={papers:'nav-papers',practice:'nav-practice',saved:'nav-saved',plus:null};
+  var navMap={papers:'nav-papers',practice:'nav-practice',daily:'nav-daily',saved:'nav-saved',plus:null};
   if(id==='plus'){ showView('plus'); document.querySelectorAll('.li').forEach(i=>i.classList.remove('act')); }
   else { showView(id, document.getElementById(navMap[id])); }
 }
+
+/* ─── DAILY QUESTION ───────────────────────────────────────────────────────────
+   Renders a real past-paper question faithfully: parent + every sub-part, every
+   diagram (own, mid-question [[diagram]] marker, and answer diagrams), MCQ options,
+   bilingual. Leaf logic ported from the paper viewer so nothing is missed.        */
+var DQ={loaded:false,data:null,lang:'en'};
+function dqEsc(s){var d=document.createElement('div');d.textContent=String(s==null?'':s);return d.innerHTML;}
+function dqSafeSvg(v){if(!v||typeof v!=='string')return '';var s=v.trim();if(s.slice(0,4).toLowerCase()!=='<svg')return '';if(s.toLowerCase().indexOf('</svg>')===-1)return '';try{var doc=new DOMParser().parseFromString(s,'image/svg+xml');if(doc.getElementsByTagName('parsererror').length)return '';return s;}catch(e){return '';}}
+function dqFig(svg){var safe=dqSafeSvg(svg);return safe?'<div class="q-diagram">'+safe+'</div>':'';}
+function dqTxt(row){var en=(row.en||''),np=(row.np||'');return DQ.lang==='np'?(np||en):(en||np);}
+function dqOpts(row){if(!row.opts||!row.opts.length)return '';return '<ul class="dq-opts">'+row.opts.map(function(o,i){return '<li>'+String.fromCharCode(65+i)+'. '+dqEsc(o)+'</li>';}).join('')+'</ul>';}
+function dqPartHtml(row,label,marks){
+  var t=dqTxt(row);
+  var head=(label?'<span class="dq-plabel">('+dqEsc(label)+') </span>':'');
+  var marksHtml=(marks?'<span class="dq-marks">'+marks+' mark'+(marks>1?'s':'')+'</span>':'');
+  var i=t.indexOf('[[diagram]]'), inner;
+  if(i>=0){
+    var before=t.slice(0,i).replace(/\s+$/,''), after=t.slice(i+11).replace(/^\s+/,'');
+    inner='<div class="dq-ptext">'+head+dqEsc(before)+'</div>'+dqFig(row.diagram)+(after?'<div class="dq-ptext">'+dqEsc(after)+'</div>':'');
+  } else {
+    inner='<div class="dq-ptext">'+head+dqEsc(t)+'</div>'+dqFig(row.diagram);
+  }
+  return '<div class="dq-part">'+marksHtml+inner+dqOpts(row)+'</div>';
+}
+function renderDailyQuestion(g){
+  var html='';
+  if(g.parent){ html+=dqPartHtml(g.parent,'', g.subs.length?0:g.parent.marks); }
+  g.subs.forEach(function(s){ html+=dqPartHtml(s, s.sub, s.marks); });
+  return html;
+}
+function dqAnswerHtml(answer,label){
+  var a=String(answer||'').trim(); if(!a) return '';
+  var lo=a.toLowerCase(), si=lo.indexOf('<svg'), se=lo.indexOf('</svg>'), body='';
+  if(si!==-1 && se>si){
+    var safe=dqSafeSvg(a.slice(si,se+6));
+    if(safe){ var before=a.slice(0,si).trim(), after=a.slice(se+6).trim();
+      if(before) body+=dqEsc(before);
+      body+='<div class="q-diagram">'+safe+'</div>';
+      if(after) body+='<div style="margin-top:8px">'+dqEsc(after)+'</div>';
+    }
+  }
+  if(!body) body=dqEsc(a);
+  return '<div class="dq-ans"><div class="dq-ans-h">'+(label?'('+dqEsc(label)+') ':'')+'Model answer</div><div class="dq-ans-b">'+body+'</div></div>';
+}
+function renderDailyAnswers(g){
+  var html='';
+  if(g.parent && g.parent.answer) html+=dqAnswerHtml(g.parent.answer,'');
+  g.subs.forEach(function(s){ if(s.answer) html+=dqAnswerHtml(s.answer, s.sub); });
+  return html||'<div class="dq-ans"><div class="dq-ans-b">Model answer coming soon.</div></div>';
+}
+function dqNiceDate(iso){ try{ var p=iso.split('-'),m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return m[parseInt(p[1],10)-1]+' '+parseInt(p[2],10); }catch(e){ return iso; } }
+function loadDailyQuestion(){
+  if(DQ.loaded) return; DQ.loaded=true;
+  var token=localStorage.getItem('ujyalo_token'), headers={'Content-Type':'application/json'};
+  if(token) headers['Authorization']='Bearer '+token;
+  fetch('/api/practice?action=daily-today',{headers:headers})
+    .then(function(r){return r.json();}).then(dqRender)
+    .catch(function(){ DQ.loaded=false; document.getElementById('dq-state').className='dq-empty'; document.getElementById('dq-state').textContent='Could not load today’s question. Please refresh.'; });
+}
+function dqRender(d){
+  var state=document.getElementById('dq-state'), card=document.getElementById('dq-card');
+  document.getElementById('dq-date').textContent = d.date? ' · '+dqNiceDate(d.date):'';
+  if(d.empty || !d.group){ state.style.display='block'; state.className='dq-empty'; state.innerHTML='<div class="dq-empty-ic">📅</div><div>No daily question is set yet — check back soon!</div>'; card.style.display='none'; return; }
+  DQ.data=d;
+  if(d.streak){ document.getElementById('dq-streak').style.display='flex'; document.getElementById('dq-streak-n').textContent=d.streak; }
+  document.getElementById('dq-src').textContent=d.source_label||'';
+  var hasNp=!!(d.group.parent&&d.group.parent.np); d.group.subs.forEach(function(s){if(s.np)hasNp=true;});
+  document.getElementById('dq-lang').style.display=(hasNp && !d.subject.isEnglish)?'inline-flex':'none';
+  document.getElementById('dq-question').innerHTML=renderDailyQuestion(d.group);
+  state.style.display='none'; card.style.display='block';
+  if(d.done){ dqShowAnswered(d.done); }
+  else { document.getElementById('dq-actions').style.display='block'; document.getElementById('dq-answers').style.display='none'; document.getElementById('dq-assess').style.display='none'; document.getElementById('dq-done').style.display='none'; }
+}
+function dqReveal(){
+  document.getElementById('dq-answers').innerHTML=renderDailyAnswers(DQ.data.group);
+  document.getElementById('dq-answers').style.display='block';
+  document.getElementById('dq-actions').style.display='none';
+  if(localStorage.getItem('ujyalo_token')){ document.getElementById('dq-assess').style.display='block'; }
+  else { var done=document.getElementById('dq-done'); done.style.display='block'; done.innerHTML='<a href="/signup.html" class="dq-signin">Sign up free to build your 🔥 streak →</a>'; }
+}
+function dqSubmit(result){
+  var token=localStorage.getItem('ujyalo_token');
+  if(!token){ location.href='/signup.html'; return; }
+  document.getElementById('dq-assess').style.display='none';
+  fetch('/api/practice?action=daily-submit',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({self_assessment:result,daily_question_id:DQ.data.daily_question_id})})
+    .then(function(r){return r.json();}).then(function(d){ if(d&&d.streak){ document.getElementById('dq-streak').style.display='flex'; document.getElementById('dq-streak-n').textContent=d.streak; } dqShowAnswered(result); })
+    .catch(function(){ dqShowAnswered(result); });
+}
+function dqShowAnswered(result){
+  var ans=document.getElementById('dq-answers');
+  if(!ans.innerHTML){ ans.innerHTML=renderDailyAnswers(DQ.data.group); }
+  ans.style.display='block';
+  document.getElementById('dq-actions').style.display='none';
+  document.getElementById('dq-assess').style.display='none';
+  var msg=({got:'Nice — you got today’s question! 🎉',almost:'Close! Review the model answer above.',missed:'No worries — the model answer is above.'})[result]||'Done for today!';
+  var done=document.getElementById('dq-done'); done.style.display='block';
+  done.innerHTML='<div class="dq-done-ic">✓</div><div class="dq-done-t">'+msg+'</div><div class="dq-done-s">A fresh question every day — see you tomorrow.</div>';
+}
+function dqToggleLang(){ DQ.lang=(DQ.lang==='en')?'np':'en'; document.getElementById('dq-lang').textContent=(DQ.lang==='en')?'नेपाली':'English'; if(DQ.data) document.getElementById('dq-question').innerHTML=renderDailyQuestion(DQ.data.group); }
 function mobileBack(){
   // If on a Plus sub-page, go back to the Plus hub
   var active=document.querySelector('.vw.act');
