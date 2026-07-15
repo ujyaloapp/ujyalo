@@ -155,7 +155,7 @@ const FOOTER = `
   <div class="ujyalo-footer-inner">
     <div class="ujyalo-footer-brand">
       <a href="/index.html" class="ujyalo-logo ujyalo-logo-white"><img src="/mark.png" class="ujyalo-logo-mark" alt=""/><span class="ujyalo-logo-text">ujy<span class="ujyalo-logo-a">a</span>lo</span></a>
-      <p>AI-powered exam preparation made with care, in Nepal. Helping students brighten their future, one question at a time.</p>
+      <p>SEE exam preparation, made with care for students across Nepal. Helping them brighten their future, one question at a time.</p>
     </div>
     <div class="ujyalo-footer-col">
       <h4>Product</h4>
