@@ -332,11 +332,7 @@
     <div class="tb-right"><a class="tb-admin hidden" id="tb-admin" href="/admin.html">← Admin</a><span class="who">Signed in · <b id="who-email">—</b></span><span class="signout" id="signout">Sign out</span></div>
   </div>
   <div class="paperbar">
-    <div class="vtabs">
-      <button class="vt on" id="tab-papers">Papers</button>
-      <button class="vt" id="tab-flags">⚑ Flags <span class="flagn" id="flagn"></span></button>
-      <button class="vt" id="tab-board">◳ Board</button>
-    </div>
+    <div class="vtabs" id="vtabs"></div>
     <span class="pb-paper hidden" id="pb-paper"></span>
   </div>
 
@@ -438,21 +434,39 @@
     $('app').classList.remove('hidden'); $('who-email').textContent=user.email||'';
     if(user.role==='admin') $('tb-admin').classList.remove('hidden');
     try{ var d=await apiGet('overview'); OVERVIEW=d.papers||[]; TEAM=d.team||[]; }catch(e){ toast('Could not load papers'); }
-    try{ var f=await apiGet('flags'); FLAGS_N=(f.flags||[]).length; $('flagn').textContent=FLAGS_N||''; }catch(e){}
+    try{ var f=await apiGet('flags'); setFlagCount((f.flags||[]).length); }catch(e){}
     showPicker();
-    if(/[?&#]tab=flags/.test(location.search+location.hash)){ setTab('flags'); loadFlags(); }
+    if(/[?&#]tab=flags/.test(location.search+location.hash)){ setMode('flags'); }
   }
   $('signout').addEventListener('click',function(){ localStorage.removeItem('ujyalo_token'); localStorage.removeItem('ujyalo_user'); location.href='/index.html'; });
 
-  // ── tabs ──
-  $('tab-papers').addEventListener('click',function(){ setTab('papers'); if(DATA) showEditor(); else showPicker(); });
-  $('tab-flags').addEventListener('click',function(){ setTab('flags'); loadFlags(); });
-  $('tab-board').addEventListener('click',function(){ setTab('board'); loadBoard(); });
-  function setTab(v){ var p=v==='papers',f=v==='flags',b=v==='board';
-    $('tab-papers').classList.toggle('on',p); $('tab-flags').classList.toggle('on',f); $('tab-board').classList.toggle('on',b);
-    $('paperview').classList.toggle('hidden',!p); $('flagsview').classList.toggle('hidden',!f);
-    $('main-wrap').classList.toggle('hidden',b); $('boardview').classList.toggle('hidden',!b);
+  // ── tabs — one per exam, then Board. Add an exam to EXAMS and its tab appears
+  //    between the other exams and Board. Everything under a tab (papers, flags,
+  //    daily) belongs to that exam. Turn this into a dropdown once it outgrows a bar.
+  var EXAMS=[{key:'see',label:'SEE'}];
+  var CUR_EXAM='see', CUR_TAB='exam';
+  function renderTabs(){
+    var el=$('vtabs'); if(!el) return;
+    el.innerHTML=EXAMS.map(function(x){
+      return '<button class="vt'+(CUR_TAB==='exam'&&x.key===CUR_EXAM?' on':'')+'" data-exam="'+esc(x.key)+'">'+esc(x.label)+'</button>';
+    }).join('')+'<button class="vt'+(CUR_TAB==='board'?' on':'')+'" data-tab="board">◳ Board</button>';
+  }
+  $('vtabs').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    if(b.getAttribute('data-tab')==='board'){ setTab('board'); loadBoard(); return; }
+    var k=b.getAttribute('data-exam');
+    if(k){ CUR_EXAM=k; setTab('exam'); if(DATA) showEditor(); else showPicker(); }
+  });
+  function setTab(v){
+    CUR_TAB=(v==='board')?'board':'exam';
+    renderTabs();
+    $('main-wrap').classList.toggle('hidden',CUR_TAB==='board');
+    $('boardview').classList.toggle('hidden',CUR_TAB!=='board');
+    if(CUR_TAB==='exam') $('paperview').classList.remove('hidden');
     updatePbPaper(); }
+  // The count lives on the Flags sub-tab, which is re-rendered — so keep it in a
+  // variable and guard the element, which may not exist yet on first load.
+  function setFlagCount(n){ FLAGS_N=n; var el=$('flagn'); if(el) el.textContent=FLAGS_N||''; }
 
   // ── Daily Question curation ──
   var DAILY_API='/api/admin-paper', DQ_PAPERS=[], DQ_POOL=[];
@@ -470,19 +484,29 @@
   function updatePbPaper(){ var show=!!DATA && !$('paperview').classList.contains('hidden') && !$('editor').classList.contains('hidden'); $('pb-paper').classList.toggle('hidden',!show); }
 
   // ── picker (subject → year → province) ──
-  function showPicker(){ setTab('papers'); $('editor').classList.add('hidden'); $('picker').classList.remove('hidden'); renderPicker(); updatePbPaper(); }
+  function showPicker(){ setTab('papers'); $('editor').classList.add('hidden'); $('picker').classList.remove('hidden'); renderPicker(); setMode(CUR_MODE); updatePbPaper(); }
   $('changepaper').addEventListener('click',showPicker);
   function statusOf(p){ if(!p.total||p.verified===0) return 'todo'; if(p.verified>=p.total) return 'done'; return 'prog'; }
   // verification "modes" — config-driven so future modes (e.g. chapter practice) drop in here
-  var MODES=[{key:'papers',label:'Past papers'},{key:'chapters',label:'Chapter practice',soon:true},{key:'daily',label:'Daily Questions'}];
+  var MODES=[{key:'papers',label:'Past papers'},{key:'flags',label:'⚑ Flags',flag:true},{key:'chapters',label:'Chapter practice',soon:true},{key:'daily',label:'Daily Questions'}];
   var CUR_MODE='papers';
-  function setMode(k){ CUR_MODE=k; renderModes(); var isDaily=(k==='daily'); var pp=$('picker-papers'), pd=$('picker-daily'); if(pp) pp.classList.toggle('hidden',isDaily); if(pd) pd.classList.toggle('hidden',!isDaily); if(isDaily) loadDaily(); }
+  function setMode(k){
+    CUR_MODE=k; renderModes();
+    var isDaily=(k==='daily'), isFlags=(k==='flags');
+    var pp=$('picker-papers'), pd=$('picker-daily'), fv=$('flagsview');
+    if(pp) pp.classList.toggle('hidden',isDaily||isFlags);
+    if(pd) pd.classList.toggle('hidden',!isDaily);
+    if(fv) fv.classList.toggle('hidden',!isFlags);
+    if(isDaily) loadDaily();
+    if(isFlags) loadFlags();
+  }
   var SUBJ_COL={maths:{bg:'#e8eef6',fg:'#2a5b9c'},science:{bg:'#e0f2ee',fg:'#1f7a68'},english:{bg:'#fbeede',fg:'#a4701a'},social:{bg:'#efe9f6',fg:'#6b4ba0'},nepali:{bg:'#fdeef0',fg:'#a83a5b'},hpe:{bg:'#fdeaea',fg:'#b3433f'}};
   function subjCol(code){ return SUBJ_COL[code]||{bg:'#eef2f0',fg:'#52606d'}; }
   function renderModes(){
     var el=$('bd-modes'); if(!el) return;
     el.innerHTML=MODES.map(function(m){
-      return '<button class="ms'+(m.key===CUR_MODE?' on':'')+(m.soon?' soon':'')+'" data-mode="'+esc(m.key)+'">'+esc(m.label)+(m.soon?' · soon':'')+'</button>';
+      var badge=m.flag?' <span class="flagn" id="flagn">'+esc(FLAGS_N||'')+'</span>':'';
+      return '<button class="ms'+(m.key===CUR_MODE?' on':'')+(m.soon?' soon':'')+'" data-mode="'+esc(m.key)+'">'+esc(m.label)+badge+(m.soon?' · soon':'')+'</button>';
     }).join('');
   }
   // in-progress paper card (Continue verifying)
@@ -709,7 +733,7 @@
   $('boardview').addEventListener('keydown',function(e){ if(e.key!=='Enter')return; var t=e.target; if(t.id&&t.id.indexOf('ti-')===0){ e.preventDefault(); var b=document.querySelector('[data-addtask="'+t.id.slice(3)+'"]'); if(b)b.click(); } else if(t.id==='gi-input'){ e.preventDefault(); var g=document.querySelector('[data-addgoal]'); if(g)g.click(); } });
 
   // ── editor ──
-  function showEditor(){ setTab('papers'); $('picker').classList.add('hidden'); $('editor').classList.remove('hidden'); updatePbPaper(); }
+  function showEditor(){ setTab('papers'); $('picker').classList.add('hidden'); $('editor').classList.remove('hidden'); var fv=$('flagsview'); if(fv) fv.classList.add('hidden'); updatePbPaper(); }
   async function loadPaper(id,scrollTo){
     PENDING_SCROLL=(scrollTo!=null)?scrollTo:null; showEditor();
     $('questions').innerHTML='<div class="empty-state">Loading…</div>';
@@ -835,10 +859,10 @@
     }
   }
 
-  async function refreshFlagCount(){ try{ var d=await apiGet('flags'); FLAGS_N=(d.flags||[]).length; $('flagn').textContent=FLAGS_N||''; }catch(e){} }
+  async function refreshFlagCount(){ try{ var d=await apiGet('flags'); setFlagCount((d.flags||[]).length); }catch(e){} }
   async function loadFlags(){
     $('flagslist').innerHTML='<div class="empty-state">Loading…</div>';
-    try{ var d=await apiGet('flags'); var f=d.flags||[]; FLAGS_N=f.length; $('flagn').textContent=FLAGS_N||'';
+    try{ var d=await apiGet('flags'); var f=d.flags||[]; setFlagCount(f.length);
       if(!f.length){ $('flagslist').innerHTML='<div class="flags-clean">✓ <b>No flags</b> — everything checked is clean.</div>'; return; }
       $('flagslist').innerHTML=f.map(function(x){ return '<div class="flagcard"><div class="fmeta">SEE '+x.year+' · '+x.province+' · '+(x.subjectName||x.subject)+' — Q'+x.question_number+'</div>'+(x.note?'<div class="fnote">⚑ '+esc(x.note)+'</div>':'<div class="fnote">⚑ (no note)</div>')+'<button class="fopen" data-pid="'+x.paper_id+'" data-qn="'+x.question_number+'">Open this question ▸</button></div>'; }).join('');
     }catch(e){ $('flagslist').innerHTML='<div class="empty-state">Could not load flags.</div>'; }
