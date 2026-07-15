@@ -57,7 +57,8 @@
     .display{font-family:'Fraunces',serif;font-weight:800;letter-spacing:-1px;line-height:1.08;color:var(--ink);}
 
     /* buttons */
-    .btn-gold{display:inline-flex;align-items:center;gap:7px;background:var(--gold);color:var(--gold-ink);font-size:15px;font-weight:700;padding:13px 24px;border-radius:12px;border:none;cursor:pointer;}
+    .es .btn-gold{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#12a48f,#0c8074);color:#fff;font-size:15px;font-weight:700;padding:13px 24px;border-radius:12px;border:none;cursor:pointer;box-shadow:0 10px 24px -10px rgba(13,148,136,.55);transition:transform .15s,box-shadow .15s;}
+    .es .btn-gold:hover{transform:translateY(-1px);box-shadow:0 14px 30px -10px rgba(13,148,136,.6);}
     .btn-ghost{display:inline-flex;align-items:center;gap:7px;background:var(--white);color:var(--ink);font-size:15px;font-weight:600;padding:13px 22px;border-radius:12px;border:1.5px solid var(--line);cursor:pointer;}
 
     /* hero */
@@ -146,13 +147,13 @@
     <div class="wrap hero-in">
       <div>
         <span class="pill">✦ Built for Nepal's SEE students</span>
-        <h1 class="display">SEE past papers &amp; model answers.<br><span class="u">Free, forever.</span></h1>
+        <h1 class="display">SEE past papers &amp; model answers.<br><span class="u">Free to start.</span></h1>
         <p class="hero-lead">Real exam papers, step-by-step answers in Nepali &amp; English, and practice that keeps you going — all in one bright place.</p>
         <div class="hero-actions">
           <a href="/see.html" class="btn-gold">Start practising →</a>
           <a href="#how" class="btn-ghost">See how it works</a>
         </div>
-        <div class="hero-note">FREE FOREVER&nbsp;&nbsp;·&nbsp;&nbsp;NO ADS&nbsp;&nbsp;·&nbsp;&nbsp;ENGLISH &amp; नेपाली</div>
+        <div class="hero-note">FREE TO START&nbsp;&nbsp;·&nbsp;&nbsp;NO ADS&nbsp;&nbsp;·&nbsp;&nbsp;ENGLISH &amp; नेपाली</div>
       </div>
       <div class="hero-art">
         <svg viewBox="0 0 220 220" width="220" height="220" role="img" aria-label="Ujyalo sun — bright and encouraging">
@@ -215,22 +216,13 @@
     </div>
   </section>
 
-  <!-- ══ PARENTS & TEACHERS BAND ══ -->
-  <section class="sec wrap">
-    <div class="band">
-      <div class="eyebrow">For parents &amp; teachers</div>
-      <h2>A study tool you can trust</h2>
-      <p>Ujyalo gives students real exam papers and honest model answers in a safe, ad-free, distraction-free space — free for every learner.</p>
-      <a href="/for-schools.html" class="btn-gold">Learn more for schools →</a>
-    </div>
-  </section>
-
-  <!-- ══ FINAL INVITE ══ -->
+  <!-- ══ FINAL — for parents & teachers (light) ══ -->
   <section class="final">
     <div class="wrap">
-      <h2 class="display">Ready to start?</h2>
-      <p>Open your first SEE paper right now — no signup needed.</p>
-      <a href="/see.html" class="btn-gold">Start practising →</a>
+      <div class="eyebrow">For parents &amp; teachers</div>
+      <h2 class="display">A study tool you can trust</h2>
+      <p>Ujyalo gives students real exam papers and honest model answers in a safe, ad-free, distraction-free space — made with care for every learner.</p>
+      <a href="/for-schools.html" class="btn-gold">Learn more for schools →</a>
     </div>
   </section>
 
