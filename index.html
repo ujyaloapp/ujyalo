@@ -92,6 +92,9 @@
     .subj .ic{width:42px;height:42px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:9px;}
     .subj .nm{font-size:13.5px;font-weight:700;color:var(--ink);}
     .subj .mt{font-size:11px;color:var(--faint);margin-top:1px;}
+    .subj.soon{position:relative;opacity:.6;cursor:default;pointer-events:none;}
+    .subj.soon:hover{transform:none;border-color:var(--line);}
+    .subj .soon-badge{position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--paper);border:1px solid var(--line);padding:2px 7px;border-radius:99px;}
 
     /* feature row */
     .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px;}
@@ -179,11 +182,11 @@
       <div class="lead">Pick a subject and open real past papers — colour-coded so it's easy to find your way.</div>
     </div>
     <div class="subj-grid">
-      <a class="subj" href="/see.html"><span class="ic" style="background:var(--blue-soft);color:var(--blue);"><i class="ti ti-calculator" aria-hidden="true"></i></span><div class="nm">Maths</div><div class="mt">Past papers</div></a>
-      <a class="subj" href="/see.html"><span class="ic" style="background:var(--green-soft);color:var(--green);"><i class="ti ti-flask" aria-hidden="true"></i></span><div class="nm">Science</div><div class="mt">Past papers</div></a>
-      <a class="subj" href="/see.html"><span class="ic" style="background:var(--amber-soft);color:var(--amber);"><i class="ti ti-abc" aria-hidden="true"></i></span><div class="nm">English</div><div class="mt">Past papers</div></a>
-      <a class="subj" href="/see.html"><span class="ic" style="background:var(--pink-soft);color:var(--pink);"><i class="ti ti-book" aria-hidden="true"></i></span><div class="nm">Nepali</div><div class="mt">Past papers</div></a>
-      <a class="subj" href="/see.html"><span class="ic" style="background:var(--red-soft);color:var(--red);"><i class="ti ti-heart" aria-hidden="true"></i></span><div class="nm">Health</div><div class="mt">Past papers</div></a>
+      <a class="subj" href="/see.html?subject=maths"><span class="ic" style="background:var(--blue-soft);color:var(--blue);"><i class="ti ti-calculator" aria-hidden="true"></i></span><div class="nm">Maths</div><div class="mt">Past papers</div></a>
+      <a class="subj" href="/see.html?subject=science"><span class="ic" style="background:var(--green-soft);color:var(--green);"><i class="ti ti-flask" aria-hidden="true"></i></span><div class="nm">Science</div><div class="mt">Past papers</div></a>
+      <a class="subj" href="/see.html?subject=english"><span class="ic" style="background:var(--amber-soft);color:var(--amber);"><i class="ti ti-abc" aria-hidden="true"></i></span><div class="nm">English</div><div class="mt">Past papers</div></a>
+      <div class="subj soon"><span class="soon-badge">Coming soon</span><span class="ic" style="background:var(--pink-soft);color:var(--pink);"><i class="ti ti-book" aria-hidden="true"></i></span><div class="nm">Nepali</div><div class="mt">Coming soon</div></div>
+      <div class="subj soon"><span class="soon-badge">Coming soon</span><span class="ic" style="background:var(--red-soft);color:var(--red);"><i class="ti ti-heart" aria-hidden="true"></i></span><div class="nm">Health</div><div class="mt">Coming soon</div></div>
     </div>
   </section>
 

@@ -928,6 +928,9 @@ const S = {subj:'maths', year:'all', data:null};
   // Papers is the default view, so the subject tabs are visible on load.
   syncMobileChrome('papers');
   await loadPapers();
+  // Homepage deep-link: /see?subject=science → open that subject if it has papers.
+  var _sp=new URLSearchParams(location.search).get('subject');
+  if(_sp){ var _sc=_sp.toLowerCase(); var _sg=(S.data&&S.data.grouped)||{}; if(_sg[_sc]&&Object.keys(_sg[_sc]).length>0){ switchSubj(_sc); } }
   // Deep-link support: #practice, #saved, #papers — and #practice/<subject>/<chapter>
   var _deep=(location.hash||'').replace('#','');
   var _parts=_deep.split('/');

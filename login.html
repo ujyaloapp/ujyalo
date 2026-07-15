@@ -26,6 +26,9 @@
   .auth-resend b{color:#1f2933;}
   .auth-linkbtn{background:none;border:none;color:#0f766e;font-weight:700;cursor:pointer;text-decoration:underline;font-size:13.5px;padding:0;font-family:inherit;}
   .auth-resend-msg{margin-top:7px;font-weight:600;color:#0b5c55;}
+  .auth-pass-wrap{position:relative;}
+  .auth-pass-wrap .auth-input{padding-right:64px;}
+  .auth-pass-toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:12.5px;font-weight:700;color:#0f766e;padding:6px 8px;font-family:inherit;}
   .auth-field{margin-bottom:16px;}
   .auth-label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px;}
   .required{color:#e11d48;margin-left:2px;}
@@ -55,14 +58,17 @@
     </div>
     <div class="auth-field">
       <label class="auth-label">Email <span class="required">*</span></label>
-      <input type="email" class="auth-input" id="input-email" placeholder="rajan@example.com">
+      <input type="email" class="auth-input" id="input-email" placeholder="rajan@example.com" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('input-password').focus();}">
     </div>
     <div class="auth-field">
       <div class="auth-row">
         <label class="auth-label" style="margin-bottom:0;">Password <span class="required">*</span></label>
         <a href="/forgot-password.html" class="auth-link">Forgot password?</a>
       </div>
-      <input type="password" class="auth-input" id="input-password" placeholder="Your password">
+      <div class="auth-pass-wrap">
+        <input type="password" class="auth-input" id="input-password" placeholder="Your password" onkeydown="if(event.key==='Enter'){event.preventDefault();submitLogin();}">
+        <button type="button" class="auth-pass-toggle" id="pass-toggle" onclick="togglePass()">Show</button>
+      </div>
     </div>
     <button class="auth-btn" id="submit-btn" onclick="submitLogin()">Log in →</button>
     <p class="auth-foot">Don't have an account? <a href="/signup.html">Sign up free →</a></p>
@@ -160,6 +166,12 @@ async function resendConfirm() {
     msg.classList.remove('hidden');
   }
   btn.disabled = false; btn.textContent = 'resend the link';
+}
+function togglePass() {
+  const i = document.getElementById('input-password');
+  const b = document.getElementById('pass-toggle');
+  if (i.type === 'password') { i.type = 'text'; b.textContent = 'Hide'; }
+  else { i.type = 'password'; b.textContent = 'Show'; }
 }
 function showError(msg) { const e = document.getElementById('error-msg'); e.textContent = msg; e.classList.remove('hidden'); }
 function hideError() { document.getElementById('error-msg').classList.add('hidden'); var rb = document.getElementById('resend-box'); if (rb) rb.classList.add('hidden'); }
