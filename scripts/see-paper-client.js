@@ -10,7 +10,6 @@ var LANG       = 'en';
 // table/diagram can sit mid-question. No marker → figure renders after the text.
 var FIG_MARK   = '[[diagram]]';
 var PAPER_KEY  = '';
-var PRINT_BASE = '';
 var confMap    = {};
 var openSubId  = null;
 
@@ -61,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (data.error) { showError(data.error); return; }
       DATA = data;
       PAPER_KEY  = data.meta.paperKey;
-      PRINT_BASE = data.meta.printBase;
       init();
     })
     .catch(function(err) {
@@ -1307,41 +1305,6 @@ function setLang(l) {
   });
 }
 
-// ── DOWNLOAD ──
-function openDownload() {
-  var overlay = document.getElementById('dl-overlay');
-  var sub = document.getElementById('dl-modal-sub');
-  if (sub) sub.textContent = 'SEE ' + DATA.paper.year + ' · ' + DATA.paper.province + ' · ' + DATA.subject.name;
-  var opts = document.getElementById('dl-opts');
-  if (!opts) return;
-  opts.innerHTML = '';
-  var options = DATA.meta.isEnglish
-    ? [{ lang: 'en', flag: '🇬🇧', name: 'English PDF', sub: 'Questions in English only' }]
-    : [
-        { lang: 'np',   flag: '🇳🇵', name: 'Nepali PDF',    sub: 'Original script' },
-        { lang: 'en',   flag: '🇬🇧', name: 'English PDF',   sub: 'Translated version' },
-        { lang: 'both', flag: '📄',  name: 'Both languages', sub: 'Nepali then English' }
-      ];
-  options.forEach(function(o) {
-    var btn = document.createElement('button');
-    btn.className = 'dl-opt';
-    btn.innerHTML = '<span class="dl-flag">' + o.flag + '</span>'
-      + '<div><div class="dl-opt-name">' + o.name + '</div><div class="dl-opt-sub">' + o.sub + '</div></div>';
-    btn.onclick = function() { downloadPDF(o.lang, btn); };
-    opts.appendChild(btn);
-  });
-  overlay.style.display = 'flex';
-}
-function closeDownload() {
-  var o = document.getElementById('dl-overlay');
-  if (o) o.style.display = 'none';
-}
-function downloadPDF(lang, btn) {
-  setTimeout(function() {
-    window.open(PRINT_BASE + '&lang=' + lang, '_blank');
-    closeDownload();
-  }, 300);
-}
 
 function closeDrawer() {
   var d = document.getElementById('drawer');

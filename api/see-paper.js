@@ -193,7 +193,6 @@ export default async function handler(req, res) {
         isEnglish:      subjectCode === 'english',
         canonicalUrl:   `https://ujyalo.app/see/past-papers/${year}/${provNorm}/${subjectCode}`,
         paperKey:       `SEE-${year}-${provNorm}-${subjectCode}`,
-        printBase:      `/api/see-paper-print?year=${year}&province=${provNorm}&subject=${subjectCode}`,
       }
     });
 

@@ -51,9 +51,6 @@
           <button class="lt-btn act" id="lt-en" onclick="setLang('en')">EN</button>
           <button class="lt-btn off" id="lt-np" onclick="setLang('np')">NP</button>
         </div>
-        <!-- PDF download hidden for launch — re-enable by uncommenting this button (modal + code are still in place):
-        <button class="hero-btn" onclick="openDownload()">⬇ PDF</button>
-        -->
         <button class="finish-btn" id="finish-btn" onclick="finishPaper()" style="display:none;">Finish →</button>
       </div>
     </div>
@@ -100,20 +97,6 @@
 </div><!-- /app-body -->
 
 <!-- Download modal -->
-<div class="dl-overlay" id="dl-overlay" onclick="if(event.target===this)closeDownload()" style="display:none;">
-  <div class="dl-modal">
-    <div class="dl-modal-head">
-      <div>
-        <div class="dl-modal-title">Download PDF</div>
-        <div class="dl-modal-sub" id="dl-modal-sub"></div>
-      </div>
-      <button class="dl-close" onclick="closeDownload()">✕</button>
-    </div>
-    <div class="dl-opts" id="dl-opts"></div>
-    <div class="dl-note">🔒 Invisible watermark included for copyright protection.</div>
-  </div>
-</div>
-
 <!-- Mobile answer drawer -->
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
 <div id="drawer" class="drawer">

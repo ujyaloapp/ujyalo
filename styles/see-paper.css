@@ -615,37 +615,6 @@ body {
   font-family: 'Outfit', sans-serif;
 }
 
-.dl-overlay {
-  position: fixed; inset: 0;
-  background: rgba(31,41,51,.6); backdrop-filter: blur(4px);
-  z-index: 400; display: flex;
-  align-items: center; justify-content: center;
-}
-.dl-modal {
-  background: var(--card); border-radius: 20px; padding: 24px;
-  max-width: 420px; width: calc(100% - 32px);
-}
-.dl-modal-head {
-  display: flex; align-items: flex-start;
-  justify-content: space-between; gap: 10px; margin-bottom: 18px;
-}
-.dl-modal-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 900; color: var(--ink); }
-.dl-modal-sub   { font-size: 12px; color: var(--faint); margin-top: 3px; }
-.dl-close { background: var(--bg); border: none; border-radius: 8px; width: 32px; height: 32px; font-size: 16px; cursor: pointer; }
-.dl-opts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
-.dl-opt {
-  background: var(--bg); border: 1.5px solid var(--line);
-  border-radius: 14px; padding: 14px 16px;
-  display: flex; align-items: center; gap: 14px;
-  cursor: pointer; width: 100%; text-align: left;
-  font-family: 'Outfit', sans-serif; transition: all .15s;
-}
-.dl-opt:hover { border-color: var(--accent); background: var(--card); }
-.dl-flag { font-size: 22px; flex-shrink: 0; }
-.dl-opt-name { font-size: 14px; font-weight: 700; color: var(--ink); }
-.dl-opt-sub  { font-size: 12px; color: var(--muted); margin-top: 1px; }
-.dl-note { background: var(--bg); border-radius: 10px; padding: 10px 12px; font-size: 11px; color: var(--muted); }
-
 .drawer-overlay {
   position: fixed; inset: 0;
   background: rgba(31,41,51,.55); backdrop-filter: blur(4px);
