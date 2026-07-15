@@ -21,6 +21,10 @@
   .auth-h{font-family:'Fraunces';font-weight:600;font-size:24px;color:var(--forest);margin-bottom:6px;}
   .auth-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
   .auth-err{background:#ffe4e6;border:1px solid #fecdd3;border-radius:10px;padding:11px 14px;margin-bottom:16px;font-size:14px;color:#e11d48;}
+  .auth-resend{background:#f0faf8;border:1px solid #cdeee7;border-radius:10px;padding:11px 14px;margin-bottom:16px;font-size:13.5px;color:#52606d;line-height:1.55;}
+  .auth-resend b{color:#1f2933;}
+  .auth-linkbtn{background:none;border:none;color:#0f766e;font-weight:700;cursor:pointer;text-decoration:underline;font-size:13.5px;padding:0;font-family:inherit;}
+  .auth-resend-msg{margin-top:7px;font-weight:600;color:#0b5c55;}
   .auth-field{margin-bottom:16px;}
   .auth-label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px;}
   .required{color:#e11d48;margin-left:2px;}
@@ -43,6 +47,11 @@
     <h1 class="auth-h">Welcome back 👋</h1>
     <p class="auth-sub">Log in to continue your practice.</p>
     <div id="error-msg" class="auth-err hidden"></div>
+    <div id="resend-box" class="auth-resend hidden">
+      Didn't get the confirmation email? Check your <b>spam / junk</b> folder — or
+      <button type="button" id="resend-btn" class="auth-linkbtn" onclick="resendConfirm()">resend the link</button>.
+      <div id="resend-msg" class="auth-resend-msg hidden"></div>
+    </div>
     <div class="auth-field">
       <label class="auth-label">Email <span class="required">*</span></label>
       <input type="email" class="auth-input" id="input-email" placeholder="rajan@example.com">
@@ -118,6 +127,10 @@ async function submitLogin() {
       window.location.href = nextDest() || data.redirectTo || '/dashboard.html';
     } else {
       showError(data.error || 'Something went wrong. Please try again.');
+      if (data.needsVerification) {
+        window._pendingEmail = data.email || email;
+        document.getElementById('resend-box').classList.remove('hidden');
+      }
       btn.disabled = false;
       btn.textContent = 'Log in →';
     }
@@ -127,8 +140,28 @@ async function submitLogin() {
     btn.textContent = 'Log in →';
   }
 }
+async function resendConfirm() {
+  const email = window._pendingEmail || document.getElementById('input-email').value.trim();
+  if (!email) return;
+  const btn = document.getElementById('resend-btn');
+  const msg = document.getElementById('resend-msg');
+  btn.disabled = true; btn.textContent = 'sending…';
+  try {
+    const res = await fetch('/api/auth?action=resend-confirmation', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    msg.textContent = data.message || (data.success ? 'Sent! Check your inbox and spam folder.' : (data.error || 'Could not resend.'));
+    msg.classList.remove('hidden');
+  } catch (e) {
+    msg.textContent = 'Could not resend right now. Please try again.';
+    msg.classList.remove('hidden');
+  }
+  btn.disabled = false; btn.textContent = 'resend the link';
+}
 function showError(msg) { const e = document.getElementById('error-msg'); e.textContent = msg; e.classList.remove('hidden'); }
-function hideError() { document.getElementById('error-msg').classList.add('hidden'); }
+function hideError() { document.getElementById('error-msg').classList.add('hidden'); var rb = document.getElementById('resend-box'); if (rb) rb.classList.add('hidden'); }
 </script>
 </body>
 </html>

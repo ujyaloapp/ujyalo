@@ -53,7 +53,9 @@ export default async function handler(req, res) {
 
       if (!data.user?.email_confirmed_at) {
         return res.status(401).json({
-          error: 'Please verify your email first. Check your inbox for a confirmation link.'
+          error: 'Please verify your email first — check your inbox and your spam/junk folder for the confirmation link.',
+          needsVerification: true,
+          email: data.user.email || email,
         });
       }
 
@@ -139,12 +141,38 @@ export default async function handler(req, res) {
 
       return res.status(200).json({
         success: true,
-        message: 'Account created! Please check your email to verify your account.'
+        message: 'Account created! Check your email — including your spam or junk folder — for the confirmation link.'
       });
 
     } catch (error) {
       console.error('Signup error:', error);
       return res.status(500).json({ error: 'Something went wrong. Please try again.' });
+    }
+  }
+
+  // ── Resend the signup confirmation email ──────────────────
+  if (action === 'resend-confirmation') {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'Please enter your email.' });
+    try {
+      const r = await fetch(`${process.env.SUPABASE_URL}/auth/v1/resend`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': process.env.SUPABASE_ANON_KEY },
+        body: JSON.stringify({ type: 'signup', email: email.trim().toLowerCase() }),
+      });
+      if (!r.ok) {
+        const d = await r.json().catch(() => ({}));
+        const msg = (d.msg || d.error_description || d.error?.message || '').toLowerCase();
+        if (msg.includes('already') || msg.includes('confirmed')) {
+          return res.status(200).json({ success: true, message: 'This email is already verified — you can log in.' });
+        }
+        // Don't reveal whether the account exists — always look successful.
+        return res.status(200).json({ success: true, message: 'If that account needs confirming, we just sent a fresh link. Check your inbox and spam folder.' });
+      }
+      return res.status(200).json({ success: true, message: 'Confirmation email sent! Check your inbox and your spam/junk folder.' });
+    } catch (error) {
+      console.error('Resend error:', error);
+      return res.status(500).json({ error: 'Could not resend right now. Please try again.' });
     }
   }
 
