@@ -253,6 +253,10 @@ function buildPrintHTML({ paper, subject, questions, lang }) {
     }
     .q-parent-text { flex: 1; }
     .q-diagram { margin: 6pt 0 6pt 26pt; }
+    /* Figures carry a viewBox but usually no width/height, so they need a
+       definite width here or they render at the browser default instead of
+       their own aspect ratio. Matches the web renderers. */
+    .q-diagram svg { max-width: 340px; width: 100%; height: auto; display: block; }
     .q-subs { padding-left: 14pt; }
     .q-sub {
       display: flex;

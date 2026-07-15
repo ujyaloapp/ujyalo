@@ -78,3 +78,47 @@ Only URL rewrites, no build/env config. It maps `/sitemap.xml → /api/sitemap`,
 - **Palette discipline (Direction A):** teal-emerald brand `#0f766e` + charcoal ink `#1f2933` + cool near-white surfaces. Coral `#fb6f5c` is the accent — use it *sparingly* (streaks/goals/hot-new-free), never on ordinary links/buttons (those are teal). Keep feedback colours reserved and distinct from brand: green success, crimson error, amber warning/in-progress. Don't reintroduce marigold-as-brand, forest-green, brass, or warm creams. Per-subject signal colours (maths blue, science green, etc.) and the logo stay as-is.
 - **No fabricated content:** the site is pre-launch — never add fake stats, user counts, or testimonials. Use honest copy until real data exists.
 - **Admin counts come from the server:** the browser only sees a capped/RLS-filtered slice of tables, so compute dashboard counts via `api/admin-users?action=stats` (service key, `count=exact`), not client-side `.length`.
+
+## Figure standard (`diagram_svg`) — every figure must follow this
+
+Figures are hand-authored SVG stored in `past_paper_questions.diagram_svg` (and rendered
+by three places: `styles/see-paper.css`, `see.html` daily, `api/see-paper-print.js`).
+Renderers **silently drop** any SVG that fails to parse, so a broken figure disappears
+with no error. Follow these rules exactly when drawing or editing one.
+
+**Canvas — the most important rule.** Always `viewBox="0 0 320 H"` (H free). Every renderer
+caps figures at ~340–360px wide, so 320 units ≈ 1 unit per pixel: what you draw is what is
+seen. Drawing wider does **not** buy space — it only shrinks the text (a 640-wide canvas
+renders its labels at ~7px, unreadable). A figure that needs more room grows **taller**,
+never wider.
+
+- `font-size` ≥ 12, `stroke-width` ~1.5 — safe because the canvas is fixed.
+- **Always set `width` and `height` on the root `<svg>` to match the viewBox** (e.g.
+  `<svg width="320" height="180" viewBox="0 0 320 180">`). CSS still overrides it, but the
+  figure then survives anywhere CSS doesn't reach. Omitting them is what made 2082 Bagmati
+  Q11 collapse into an empty box.
+- Root must carry `xmlns="http://www.w3.org/2000/svg"`, `role="img"`, and
+  `font-family="Outfit, Noto Sans Devanagari, system-ui, sans-serif"` (the Devanagari
+  fallback is what makes Nepali labels render), plus a `<title>` and `<desc>`.
+
+**Palette — match the site, not the old one.** Ink/strokes `#1f2933`, muted `#52606d`,
+teal `#0f766e`, soft fill `#d3f0ec`, white `#ffffff`. Never `#11302a`, `#1a1208`, `#5d685f`,
+warm creams (`#e5e0d5`, `#fbf9f3`) or slate (`#334155`, `#475569`) — those are the retired
+palette and still appear in older figures.
+
+**No IDs, no `<defs>`, no `<marker>`.** SVG IDs are page-global and many figures render on
+one paper, so `url(#x)` can resolve to another figure's element. Draw arrowheads as plain
+`<polyline>` (2082 Bagmati Q11 does this). If an ID is truly unavoidable, prefix it with the
+question (`q11-...`).
+
+**Must parse as XML** — escape `&` as `&amp;`; no HTML entities like `&nbsp;`. No `<script>`,
+no `<foreignObject>`, no external images/fonts/URLs (the CSP blocks them anyway).
+
+**Never reveal the answer.** `diagram_svg` shows only what the question *gives*. Any figure
+that contains the result (a completed Punnett square, a solved value, a drawn conclusion)
+belongs in `answer_text`, not the question. This is a recurring bug — check it every time.
+
+**Placement.** A figure renders after the question text by default; put `[[diagram]]` in the
+question text to render it at that point instead.
+
+Check a figure with `python3 tools/check-figures.py <file.sql|->` before applying it.
