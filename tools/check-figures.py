@@ -66,9 +66,9 @@ def check(svg):
         errs.append('missing xmlns')
     if 'role="img"' not in open_tag:
         errs.append('missing role="img"')
-    if 'Noto Sans Devanagari' not in open_tag:
-        errs.append('font-family missing the Noto Sans Devanagari fallback '
-                    '(Nepali labels will not render)')
+    # Only matters if the figure actually has Devanagari in it.
+    if re.search(r'[ऀ-ॿ]', svg) and 'Noto Sans Devanagari' not in open_tag:
+        errs.append('has Nepali labels but font-family omits Noto Sans Devanagari')
     if '<title>' not in svg:
         errs.append('missing <title>')
     if '<desc>' not in svg:
