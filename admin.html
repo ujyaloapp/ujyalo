@@ -448,13 +448,8 @@ function renderGrid(){
   $('cov-grid').innerHTML = head+body+'</tbody></table>'+legend;
 }
 function renderReady(){
-  // Fully verified papers (publishable) AND anything already live — a live paper
-  // that drops below 100% after a flag must still be reachable so it can be taken down.
-  var done = (OV && OV.papers ? OV.papers : []).filter(function(p){ return p.fully || p.status==='live'; });
-  if(!done.length){ $('ready-list').innerHTML='<div class="empty">Nothing here yet — finished papers from the verify desk will land here.</div>'; return; }
-  // Group fully-verified papers by subject so the list stays scannable.
-  var groups = {};
-  done.forEach(function(p){ var s=p.subjectName||p.subject||'Other'; (groups[s]=groups[s]||[]).push(p); });
+  var all = (OV && OV.papers ? OV.papers : []);
+  if(!all.length){ $('ready-list').innerHTML='<div class="empty">No papers yet.</div>'; return; }
   function rowHtml(p){
     var live = p.status==='live';
     var meta = 'Verified by '+esc(p.verifiedBy||'team')+(p.verifiedAt?(' · '+fmtDate(p.verifiedAt)):'')+' · '+p.verified+'/'+p.total+' questions';
@@ -465,22 +460,38 @@ function renderReady(){
     // Live -> can always be taken down. Not live -> only a fully verified paper may go up.
     var btn = live ? '<button class="btn unpub" data-unpub="'+p.id+'">Unpublish</button>'
                    : (p.fully ? '<button class="btn pub" data-pub="'+p.id+'">Publish →</button>' : '');
-    return '<div class="prow"><div class="pt">SEE '+p.year+' '+esc(p.province)+
+    return '<div class="prow"><div class="pt">SEE '+p.year+' '+esc(p.province)+' <span>· '+esc(p.subjectName||p.subject||'')+'</span>'+
       '<div style="font-size:11.5px;color:var(--faint);font-weight:500;margin-top:3px;">'+meta+'</div></div>'+
       verBadge+liveBadge+btn+'</div>';
   }
-  $('ready-list').innerHTML = Object.keys(groups).sort().map(function(subj){
-    var papers = groups[subj];
-    papers.sort(function(a,b){ return (a.status==='live'?1:0)-(b.status==='live'?1:0) || (b.year-a.year) || String(a.province).localeCompare(String(b.province)); });
-    var liveN = papers.filter(function(p){return p.status==='live';}).length;
-    var header = '<button type="button" onclick="toggleRgrp(this)" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px;cursor:pointer;margin-top:10px;font-family:inherit;">'+
-      '<i class="ti ti-chevron-right" style="font-size:16px;color:var(--brass-deep);transition:transform .15s;"></i>'+
-      '<span style="font-family:\'Fraunces\',serif;font-size:16px;font-weight:600;color:var(--forest);">'+esc(subj)+'</span>'+
-      '<span style="font-size:11px;font-weight:700;color:var(--brass-deep);background:var(--parch-2);border-radius:99px;padding:2px 9px;">'+papers.length+'</span>'+
-      '<span style="margin-left:auto;font-size:12px;color:var(--faint);">'+liveN+' live</span></button>';
-    var body = '<div class="rgrp-body" style="display:none;padding:6px 0 4px;">'+papers.map(rowHtml).join('')+'</div>';
-    return '<div style="margin-bottom:2px;">'+header+body+'</div>';
-  }).join('');
+  // Grouped by what needs you, most urgent first — not by subject. A paper lands in
+  // exactly one group (first match wins). Note a fully verified paper never has flags:
+  // flagging a question clears its verified mark.
+  var GROUPS=[
+    {t:'Needs attention', s:'A partner flagged something. Any that are live are public right now.',
+     f:function(p){ return (p.flagged||0)>0; }, open:true},
+    {t:'Ready to publish', s:'Every question checked. One click takes it live.',
+     f:function(p){ return p.status!=='live' && p.fully; }, open:true},
+    {t:'Being verified', s:'Entered, waiting on a partner to check it.',
+     f:function(p){ return p.status!=='live' && !p.fully; }, open:true},
+    {t:'Published', s:'Live and clean — nothing to do.',
+     f:function(p){ return p.status==='live'; }, open:false}
+  ];
+  var taken={}, html='';
+  GROUPS.forEach(function(g){
+    var list=all.filter(function(p){ return !taken[p.id] && g.f(p); });
+    if(!list.length) return;
+    list.forEach(function(p){ taken[p.id]=1; });
+    list.sort(function(a,b){ return (b.flagged||0)-(a.flagged||0) || (b.year-a.year) || String(a.province).localeCompare(String(b.province)); });
+    var header='<button type="button" onclick="toggleRgrp(this)" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px;cursor:pointer;margin-top:10px;font-family:inherit;">'+
+      '<i class="ti ti-chevron-right" style="font-size:16px;color:var(--brass-deep);transition:transform .15s;'+(g.open?'transform:rotate(90deg);':'')+'"></i>'+
+      '<span style="font-family:\'Fraunces\',serif;font-size:16px;font-weight:600;color:var(--forest);">'+esc(g.t)+'</span>'+
+      '<span style="font-size:11px;font-weight:700;color:var(--brass-deep);background:var(--parch-2);border-radius:99px;padding:2px 9px;">'+list.length+'</span>'+
+      '<span style="margin-left:auto;font-size:12px;color:var(--faint);">'+esc(g.s)+'</span></button>';
+    html+='<div style="margin-bottom:2px;">'+header+
+      '<div class="rgrp-body" style="display:'+(g.open?'block':'none')+';padding:6px 0 4px;">'+list.map(rowHtml).join('')+'</div></div>';
+  });
+  $('ready-list').innerHTML = html || '<div class="empty">No papers yet.</div>';
 }
 window.toggleRgrp = function(btn){
   var body = btn.parentNode.querySelector('.rgrp-body');
