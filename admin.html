@@ -112,6 +112,7 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
 .pill.ready{background:#fff3da;color:#92600a;}.pill.live{background:var(--green-bg);color:#15803d;}.pill.draft{background:var(--parch-2);color:var(--muted);}
 .btn{font-size:13px;font-weight:600;border-radius:9px;padding:8px 15px;border:none;cursor:pointer;font-family:inherit;}
 .btn.pub{background:var(--brass);color:#fff;}.btn.pub:hover{background:var(--brass-deep);}
+.btn.unpub{background:var(--card);color:#e11d48;border:1px solid var(--line);}.btn.unpub:hover{border-color:#e11d48;}
 .btn.ghost{background:var(--card);border:1px solid var(--line);color:var(--forest);}.btn.ghost:hover{border-color:var(--brass);}
 /* tables */
 .seg-h{font-family:'Fraunces',serif;font-size:14px;color:var(--forest);font-weight:600;margin:4px 0 12px;display:flex;align-items:center;gap:8px;}
@@ -227,8 +228,8 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
       <div class="yrtabs" id="cov-years"></div>
       <div class="cov" id="cov-grid"><div class="loading">Loading coverage…</div></div>
       <div class="card">
-        <div class="card-h">Fully verified papers</div>
-        <div class="card-hs">Every question checked and clean. Publish a verified paper to take it live.</div>
+        <div class="card-h">Publish &amp; unpublish</div>
+        <div class="card-hs">A paper only reaches students once you publish it. Verified papers can go live; anything live can be taken down again at any time.</div>
         <div id="ready-list"><div class="loading">Loading…</div></div>
       </div>
     </section>
@@ -447,19 +448,26 @@ function renderGrid(){
   $('cov-grid').innerHTML = head+body+'</tbody></table>'+legend;
 }
 function renderReady(){
-  var done = (OV && OV.papers ? OV.papers : []).filter(function(p){ return p.fully; });
-  if(!done.length){ $('ready-list').innerHTML='<div class="empty">No papers fully verified yet — finished papers from the verify desk will land here.</div>'; return; }
+  // Fully verified papers (publishable) AND anything already live — a live paper
+  // that drops below 100% after a flag must still be reachable so it can be taken down.
+  var done = (OV && OV.papers ? OV.papers : []).filter(function(p){ return p.fully || p.status==='live'; });
+  if(!done.length){ $('ready-list').innerHTML='<div class="empty">Nothing here yet — finished papers from the verify desk will land here.</div>'; return; }
   // Group fully-verified papers by subject so the list stays scannable.
   var groups = {};
   done.forEach(function(p){ var s=p.subjectName||p.subject||'Other'; (groups[s]=groups[s]||[]).push(p); });
   function rowHtml(p){
     var live = p.status==='live';
     var meta = 'Verified by '+esc(p.verifiedBy||'team')+(p.verifiedAt?(' · '+fmtDate(p.verifiedAt)):'')+' · '+p.verified+'/'+p.total+' questions';
+    var left = Math.max(0,(p.total||0)-(p.verified||0));
+    var verBadge = p.fully ? '<span class="pill live">✓ Verified</span>'
+                           : '<span class="pill ready">⚑ '+left+' to check</span>';
     var liveBadge = live ? '<span class="pill live">● Live</span>' : '<span class="pill draft">Not live</span>';
-    var pubBtn = live ? '' : '<button class="btn pub" data-pub="'+p.id+'">Publish →</button>';
+    // Live -> can always be taken down. Not live -> only a fully verified paper may go up.
+    var btn = live ? '<button class="btn unpub" data-unpub="'+p.id+'">Unpublish</button>'
+                   : (p.fully ? '<button class="btn pub" data-pub="'+p.id+'">Publish →</button>' : '');
     return '<div class="prow"><div class="pt">SEE '+p.year+' '+esc(p.province)+
       '<div style="font-size:11.5px;color:var(--faint);font-weight:500;margin-top:3px;">'+meta+'</div></div>'+
-      '<span class="pill live">✓ Verified</span>'+liveBadge+pubBtn+'</div>';
+      verBadge+liveBadge+btn+'</div>';
   }
   $('ready-list').innerHTML = Object.keys(groups).sort().map(function(subj){
     var papers = groups[subj];
@@ -482,12 +490,30 @@ window.toggleRgrp = function(btn){
   body.style.display = open ? 'none' : 'block';
   if(chev) chev.style.transform = open ? '' : 'rotate(90deg)';
 };
-$('ready-list').addEventListener('click', async function(e){
-  var b=e.target.closest('[data-pub]'); if(!b) return;
-  if(!confirm('Publish this paper? It will go live on ujyalo.app.')) return;
-  b.disabled=true; b.textContent='Publishing…';
-  try{ var r=await sbPatch('past_papers', b.getAttribute('data-pub'), {status:'live'}); if(!r.ok) throw new Error('patch'); var p=PAPERS.filter(function(x){return x.id===b.getAttribute('data-pub');})[0]; if(p)p.status='live'; var ov=OVMAP[b.getAttribute('data-pub')]; if(ov)ov.status='live'; renderGrid(); renderReady(); loadHome(); }
-  catch(err){ alert('Could not publish. Try again.'); b.disabled=false; b.textContent='Publish →'; }
+// Publish / unpublish a paper. Both just move past_papers.status — the whole site
+// shows a paper only when it is 'live', so this is the on/off switch for students.
+async function setPaperLive(id, live, btn, busyText, failText){
+  btn.disabled=true; var was=btn.textContent; btn.textContent=busyText;
+  try{
+    var r=await sbPatch('past_papers', id, {status: live ? 'live' : 'draft'});
+    if(!r.ok) throw new Error('patch');
+    var p=PAPERS.filter(function(x){return x.id===id;})[0]; if(p)p.status=live?'live':'draft';
+    var ov=OVMAP[id]; if(ov)ov.status=live?'live':'draft';
+    renderGrid(); renderReady(); loadHome();
+  }catch(err){ alert(failText); btn.disabled=false; btn.textContent=was; }
+}
+$('ready-list').addEventListener('click', function(e){
+  var b=e.target.closest('[data-pub]');
+  if(b){
+    if(!confirm('Publish this paper? It will go live on ujyalo.app.')) return;
+    setPaperLive(b.getAttribute('data-pub'), true, b, 'Publishing…', 'Could not publish. Try again.');
+    return;
+  }
+  var u=e.target.closest('[data-unpub]');
+  if(u){
+    if(!confirm('Unpublish this paper? Students will no longer see it on ujyalo.app until you publish it again.')) return;
+    setPaperLive(u.getAttribute('data-unpub'), false, u, 'Unpublishing…', 'Could not unpublish. Try again.');
+  }
 });
 
 /* ── TEAM + STUDENTS ── */
