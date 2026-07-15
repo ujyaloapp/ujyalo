@@ -499,6 +499,8 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .dq-qhead-r{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .dq-totalmarks{font-size:11px;font-weight:700;background:#0f766e;color:#fff;padding:4px 12px;border-radius:99px;white-space:nowrap}
 .dq-body{padding:20px 22px}
+.dq-source{padding:11px 22px 13px;border-top:1px solid #eef2f0;background:#fbfdfc;font-size:12px;color:#52606d}
+.dq-source:empty{display:none}
 .dq-part{padding:16px 0;border-top:1px dashed #e9efec}
 .dq-part:first-child{border-top:none;padding-top:2px}
 .dq-part-sub{display:flex;gap:12px;align-items:flex-start}
@@ -699,6 +701,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
                 <div class="dq-qhead-r"><span class="dq-totalmarks" id="dq-totalmarks"></span><button class="dq-lang" id="dq-lang" onclick="dqToggleLang()" style="display:none">नेपाली</button></div>
               </div>
               <div class="dq-body" id="dq-question"></div>
+              <div class="dq-source" id="dq-source"></div>
             </div>
             <div class="dq-actions" id="dq-actions"><button class="dq-reveal" id="dq-reveal" onclick="dqReveal()">Reveal model answer →</button></div>
             <div id="dq-answers" style="display:none"></div>
@@ -1204,6 +1207,7 @@ function dqRender(d){
   var hasNp=!!(d.group.parent&&d.group.parent.np); d.group.subs.forEach(function(s){if(s.np)hasNp=true;});
   document.getElementById('dq-lang').style.display=(hasNp && !d.subject.isEnglish)?'inline-flex':'none';
   document.getElementById('dq-question').innerHTML=renderDailyQuestion(d.group);
+  document.getElementById('dq-source').textContent=d.source_label?('From '+d.source_label):'';
   state.style.display='none'; card.style.display='block';
   if(d.done){ dqShowAnswered(d.done); }
   else { document.getElementById('dq-actions').style.display='block'; document.getElementById('dq-answers').style.display='none'; document.getElementById('dq-assess').style.display='none'; document.getElementById('dq-done').style.display='none'; }

@@ -222,23 +222,26 @@ export default async function handler(req, res) {
       if (!paper) return res.status(404).json({ error: 'Paper not found' });
       const qs = await sbGet(
         `/past_paper_questions?paper_id=eq.${pid}&order=question_number.asc,sub_part.asc` +
-        `&select=question_number,sub_part,question_text_english,marks,verified`
+        `&select=question_number,sub_part,question_text_english,marks,verified,diagram_svg`
       );
       const byNum = {};
       qs.forEach(q => {
         const n = q.question_number;
-        const g = byNum[n] || (byNum[n] = { question_number: n, parts: 0, verified: 0, marks: 0, preview: '' });
+        const g = byNum[n] || (byNum[n] = { question_number: n, parts: 0, verified: 0, marks: 0, preview: '', diagrams: [] });
         g.parts++;
         if (q.verified) g.verified++;
         g.marks += (q.marks || 0);
         if (!g.preview && q.question_text_english) g.preview = String(q.question_text_english).replace(/\s+/g, ' ').slice(0, 130);
+        // Every figure attached to this question, so the editor can check it belongs
+        // to the question and doesn't give the answer away before adding it.
+        if (q.diagram_svg) g.diagrams.push({ sub: q.sub_part || null, svg: q.diagram_svg });
       });
       const inPool = await sbGet(`/daily_questions?paper_id=eq.${pid}&select=question_number`);
       const poolSet = {}; inPool.forEach(r => (poolSet[r.question_number] = true));
       const questions = Object.values(byNum).map(g => ({
         question_number: g.question_number, parts: g.parts,
         all_verified: g.verified === g.parts && g.parts > 0, marks: g.marks,
-        preview: g.preview, in_pool: !!poolSet[g.question_number],
+        preview: g.preview, in_pool: !!poolSet[g.question_number], diagrams: g.diagrams,
       }));
       return res.status(200).json({
         paper: { id: paper.id, year: paper.year, province: paper.province, subject_code: paper.subject_code, subject_name: paper.subject_name },
