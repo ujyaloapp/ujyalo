@@ -548,6 +548,52 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
     '--brand-light':'#d3f0ec','--ink-900':'#1f2933','--ink-700':'#3a342a','--ink-500':'#52606d','--ink-100':'#e6eae8','--ink-50':'#eef2f0'
   };for(var k in t)s.setProperty(k,t[k]);})();
   </script>
+<style>
+/* ===== Mock Test (Plus) ===== */
+.mock-pad{padding:24px 20px 44px;max-width:720px;margin:0 auto}
+.mock-hero{background:linear-gradient(135deg,#fff6e0,#ffe9c2);border:1.5px solid #ffdd9e;border-radius:18px;padding:22px 24px;margin-bottom:20px}
+.mock-hero-badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#3a2a05;background:linear-gradient(135deg,#ffd86b,#f5a623);padding:4px 12px;border-radius:99px;margin-bottom:10px}
+.mock-hero-title{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--ink)}
+.mock-hero-sub{font-size:14px;color:#7a5a1a;margin-top:4px}
+.mock-grid{display:grid;gap:12px}
+.mock-card{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:16px 18px;text-align:left;width:100%;cursor:pointer;font-family:inherit;transition:transform .15s,box-shadow .15s,border-color .15s}
+.mock-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(13,27,62,.08);border-color:#ffd98a}
+.mock-card-ico{width:46px;height:46px;border-radius:13px;background:#fff6e0;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.mock-card-body{flex:1}
+.mock-card-nm{font-size:16px;font-weight:700;color:var(--ink)}
+.mock-card-ds{font-size:12.5px;color:var(--muted);margin-top:2px}
+.mock-card-cta{font-size:12.5px;font-weight:700;color:var(--brand);white-space:nowrap}
+.mock-card.locked{cursor:pointer;opacity:.8}
+.mock-card.locked .mock-card-cta{color:var(--muted)}
+.mock-loading{padding:20px;color:var(--muted);font-size:14px}
+.mock-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;background:var(--card);border-bottom:1px solid var(--line);padding:12px 18px}
+.mock-back{background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.mock-bar-title{flex:1;font-weight:700;color:var(--ink);font-size:14px}
+.mock-clock{font-variant-numeric:tabular-nums;font-weight:800;font-size:16px;color:var(--brand-deep);background:var(--brand-soft);padding:5px 12px;border-radius:10px}
+.mock-clock.low{color:#e11d48;background:rgba(225,29,72,.10)}
+.mock-start{padding:30px 20px;max-width:560px;margin:0 auto}
+.mock-start-card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:26px}
+.mock-start-h{font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--ink)}
+.mock-start-meta{font-size:13px;color:var(--muted);margin-top:4px}
+.mock-start-rules{margin:16px 0 20px;padding-left:18px;font-size:13.5px;color:var(--ink);line-height:1.7}
+.mock-start-btn{background:var(--brand);color:#fff;border:none;border-radius:12px;padding:13px 22px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;width:100%}
+.mock-start-btn:hover{background:var(--brand-deep)}
+.mock-paper{padding:20px 20px 60px;max-width:720px;margin:0 auto}
+.mock-paper table{border-collapse:collapse;margin:8px 0;font-size:14px}
+.mock-paper th,.mock-paper td{border:1px solid var(--ink);padding:4px 10px;text-align:center}
+.mkq{margin:0 0 22px;padding-left:30px;position:relative}
+.mkq-n{position:absolute;left:0;top:0;font-weight:800;color:var(--ink)}
+.mkq-stem{margin-bottom:6px;color:var(--ink)}
+.mkq-fig{text-align:center;margin:10px 0}
+.mkq-fig svg{max-width:100%;height:auto}
+.mkq-parts{list-style:none;padding:0;margin:0}
+.mkq-parts li{margin:4px 0;padding-left:28px;position:relative;color:var(--ink)}
+.mkq-parts .pl{position:absolute;left:0;font-weight:700}
+.mkq-m{float:right;color:var(--muted);font-weight:600}
+.mock-lock-msg{background:var(--card);border:1.5px dashed var(--line);border-radius:16px;padding:26px;text-align:center;color:var(--muted);max-width:480px;margin:30px auto}
+.mock-lock-msg .ico{font-size:34px}
+.mock-lock-msg .btn{display:inline-block;margin-top:14px;background:var(--brand);color:#fff;border:none;border-radius:10px;padding:10px 20px;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:none}
+</style>
 </head>
 <body>
 
@@ -570,6 +616,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
       <button class="li li-plus" onclick="showView('heatmap',this)" id="nav-heatmap"><span class="li-icon">🔥</span><span class="li-lbl">Hot Topics</span><span class="li-lock">⭐</span></button>
       <button class="li li-plus" onclick="showView('predict',this)" id="nav-predict"><span class="li-icon">🎯</span><span class="li-lbl">Predict 2083</span><span class="li-lock">⭐</span></button>
       <button class="li li-plus" onclick="showView('mypaper',this)" id="nav-mypaper"><span class="li-icon">⚡</span><span class="li-lbl">My Paper</span><span class="li-lock">⭐</span></button>
+      <button class="li li-plus" onclick="showView('mock',this)" id="nav-mock"><span class="li-icon">⏱️</span><span class="li-lbl">Mock Test</span><span class="li-lock">⭐</span></button>
     </nav>
     <div class="lsb-plus-card">
       <div class="lsb-plus-art">🎓</div>
@@ -804,6 +851,27 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
       </div>
 
       <!-- SAVED VIEW -->
+      <!-- MOCK TEST VIEW (Plus) -->
+      <div class="vw" id="vw-mock">
+        <div class="mock-pad" id="mock-cards">
+          <div class="mock-hero">
+            <div class="mock-hero-badge">⭐ ujyalo Plus</div>
+            <div class="mock-hero-title">Mock Tests</div>
+            <div class="mock-hero-sub">Full 3-hour SEE simulations — timed, just like exam day.</div>
+          </div>
+          <div class="mock-grid" id="mock-grid"><div class="mock-loading">Loading mock tests…</div></div>
+        </div>
+        <div id="mock-run" style="display:none">
+          <div class="mock-bar">
+            <button class="mock-back" onclick="mockClose()">← Tests</button>
+            <div class="mock-bar-title" id="mock-run-title">Mock Test</div>
+            <div class="mock-clock" id="mock-clock" style="visibility:hidden">3:00:00</div>
+          </div>
+          <div class="mock-start" id="mock-start"></div>
+          <div class="mock-paper" id="mock-paper" style="display:none"></div>
+        </div>
+      </div>
+
       <div class="vw" id="vw-saved">
         <div class="vpad">
           <div class="bk-t">Bookmarked <em>Questions</em></div>
@@ -1098,13 +1166,14 @@ function goView(id){
   // When leaving practice, reset to step 1 so it's clean on return
   if(id!=='practice') practiceStep('prac-subjects', true);
   if(id==='daily') loadDailyQuestion();
+  if(id==='mock') loadMockList();
 }
 
 /* ─── MOBILE CHROME (top header + bottom nav sync) ─────────────────────────── */
 function syncMobileChrome(viewId){
   // bottom nav highlight
   var map={papers:'mb-papers',practice:'mb-practice',daily:'mb-daily',saved:'mb-saved',plus:'mb-plus',
-           heatmap:'mb-plus',predict:'mb-plus',mypaper:'mb-plus'};
+           heatmap:'mb-plus',predict:'mb-plus',mypaper:'mb-plus',mock:'mb-plus'};
   document.querySelectorAll('.mbtm-i').forEach(b=>b.classList.remove('act'));
   var mbId=map[viewId]; if(mbId) document.getElementById(mbId)?.classList.add('act');
   updateMobileHeader(viewId);
@@ -1733,5 +1802,90 @@ function subj(code){return SUBJECTS.find(s=>s.code===code)||SUBJECTS[0];}
 </script>
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
+<script>
+/* ===== Mock Tests (Plus) ===== */
+var MOCK={loaded:false,timer:null};
+function mockEsc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function loadMockList(){
+  if(MOCK.loaded) return; MOCK.loaded=true;
+  var grid=document.getElementById('mock-grid');
+  fetch('/api/mock?action=list').then(function(r){return r.json();}).then(function(d){
+    var mocks=(d&&d.mocks)||[];
+    if(!mocks.length){grid.innerHTML='<div class="mock-loading">No mock tests yet.</div>';return;}
+    grid.innerHTML=mocks.map(function(m){
+      var hrs=Math.round((m.duration_minutes||180)/60);
+      var meta=m.total_marks+' marks · '+hrs+' hours';
+      var ico=m.is_free?'⏱️':'🔒', cta=m.is_free?'Start →':'⭐ Plus', lock=m.is_free?'':' locked';
+      return '<button class="mock-card'+lock+'" onclick="openMock(\''+m.slug+'\')">'+
+        '<div class="mock-card-ico">'+ico+'</div>'+
+        '<div class="mock-card-body"><div class="mock-card-nm">'+mockEsc(m.title)+'</div>'+
+        '<div class="mock-card-ds">'+meta+'</div></div>'+
+        '<div class="mock-card-cta">'+cta+'</div></button>';
+    }).join('');
+  }).catch(function(){grid.innerHTML='<div class="mock-loading">Could not load mock tests.</div>';MOCK.loaded=false;});
+}
+function mockClose(){
+  if(MOCK.timer){clearInterval(MOCK.timer);MOCK.timer=null;}
+  document.getElementById('mock-run').style.display='none';
+  document.getElementById('mock-cards').style.display='';
+}
+function openMock(slug){
+  var run=document.getElementById('mock-run'),cards=document.getElementById('mock-cards');
+  var startBox=document.getElementById('mock-start'),paper=document.getElementById('mock-paper');
+  cards.style.display='none'; run.style.display='';
+  startBox.style.display=''; startBox.innerHTML='<div class="mock-loading">Loading…</div>';
+  paper.style.display='none'; paper.innerHTML='';
+  document.getElementById('mock-clock').style.visibility='hidden';
+  var headers={}, tok=localStorage.getItem('ujyalo_token'); if(tok) headers.Authorization='Bearer '+tok;
+  fetch('/api/mock?action=load&slug='+encodeURIComponent(slug),{headers:headers})
+   .then(function(r){return r.json();}).then(function(d){
+    document.getElementById('mock-run-title').textContent=(d.mock&&d.mock.set_label)||'Mock Test';
+    if(d.locked){
+      startBox.innerHTML = d.reason==='login'
+        ? '<div class="mock-lock-msg"><div class="ico">🔑</div><p>Please log in to open this mock test.</p><a class="btn" href="/login.html">Log in →</a></div>'
+        : '<div class="mock-lock-msg"><div class="ico">⭐</div><p>This mock test unlocks with <b>ujyalo Plus</b> — coming soon.</p></div>';
+      return;
+    }
+    MOCK.questions=d.questions; MOCK.duration=(d.mock&&d.mock.duration_minutes)||180;
+    var hrs=Math.round(MOCK.duration/60);
+    startBox.innerHTML=
+      '<div class="mock-start-card"><div class="mock-start-h">'+mockEsc(d.mock.title)+'</div>'+
+      '<div class="mock-start-meta">'+d.mock.total_marks+' marks · '+hrs+' hours · '+d.questions.length+' questions</div>'+
+      '<ul class="mock-start-rules"><li>The timer starts when you press <b>Start</b> and runs for '+hrs+' hours.</li>'+
+      '<li>Attempt every question on paper, exactly like the real exam.</li>'+
+      '<li>You can leave any time — this is practice.</li></ul>'+
+      '<button class="mock-start-btn" onclick="mockBegin()">Start Test →</button></div>';
+   }).catch(function(){startBox.innerHTML='<div class="mock-lock-msg"><div class="ico">⚠️</div><p>Could not load this mock test.</p></div>';});
+}
+function mockBegin(){
+  document.getElementById('mock-start').style.display='none';
+  var paper=document.getElementById('mock-paper'); paper.style.display='';
+  paper.innerHTML=(MOCK.questions||[]).map(mockQ).join('');
+  document.getElementById('mock-clock').style.visibility='';
+  mockTimer(MOCK.duration||180);
+}
+function mockQ(q){
+  var fig=q.diagram_svg?'<div class="mkq-fig">'+q.diagram_svg+'</div>':'';
+  var parts=(q.parts||[]).map(function(p){
+    var m=(p.marks!=null)?'<span class="mkq-m">['+p.marks+']</span>':'';
+    return '<li><span class="pl">('+mockEsc(p.sub)+')</span>'+p.text+m+'</li>';
+  }).join('');
+  return '<div class="mkq"><span class="mkq-n">'+q.number+'.</span>'+
+    '<div class="mkq-stem">'+q.stem+'</div>'+fig+
+    (parts?'<ul class="mkq-parts">'+parts+'</ul>':'')+'</div>';
+}
+function mockTimer(mins){
+  if(MOCK.timer) clearInterval(MOCK.timer);
+  var left=mins*60, clk=document.getElementById('mock-clock');
+  function tick(){
+    if(left<0){clearInterval(MOCK.timer);MOCK.timer=null;clk.textContent="Time's up";clk.classList.add('low');return;}
+    var h=Math.floor(left/3600),m=Math.floor((left%3600)/60),s=left%60;
+    clk.textContent=h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    clk.classList.toggle('low',left<=300);
+    left--;
+  }
+  tick(); MOCK.timer=setInterval(tick,1000);
+}
+</script>
 </body>
 </html>
