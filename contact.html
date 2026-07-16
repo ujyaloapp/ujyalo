@@ -117,7 +117,7 @@
         <div class="cf-sub">We will get back to you within 24 hours.</div>
         <div id="cf-error" class="cf-error"></div>
         <div class="cf-field"><label class="cf-label">Your name <span class="cf-required">*</span></label><input type="text" class="cf-input" id="inp-name" placeholder="Rajan Thapa" /></div>
-        <div class="cf-field"><label class="cf-label">Email <span class="cf-required">*</span></label><input type="email" class="cf-input" id="inp-email" placeholder="rajan@email.com" /></div>
+        <div class="cf-field"><label class="cf-label">Email <span class="cf-required">*</span></label><input type="email" class="cf-input" id="inp-email" placeholder="rajan@email.com" /><div id="email-hint" style="display:none"></div></div>
         <div class="cf-field"><label class="cf-label">I am a... <span class="cf-required">*</span></label>
           <select class="cf-select" id="inp-role">
             <option value="Student">Student</option>
@@ -139,6 +139,11 @@
 
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
+<script src="/scripts/email-hint.js"></script>
+<script>
+  // A typo'd email means our reply bounces and they think we ignored them.
+  ujyaloEmailHintAttach(document.getElementById('inp-email'), document.getElementById('email-hint'));
+</script>
 <script>
 async function submitForm() {
   const name = document.getElementById('inp-name').value.trim();

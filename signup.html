@@ -81,7 +81,7 @@
     <div class="auth-card">
       <div id="error-msg" class="auth-err hidden"></div>
       <div class="auth-field"><label class="auth-label">Your full name <span class="required">*</span></label><input type="text" class="auth-input" id="input-name" placeholder="Rajan Sharma"></div>
-      <div class="auth-field"><label class="auth-label">Email <span class="required">*</span></label><input type="email" class="auth-input" id="input-email" placeholder="rajan@example.com"></div>
+      <div class="auth-field"><label class="auth-label">Email <span class="required">*</span></label><input type="email" class="auth-input" id="input-email" placeholder="rajan@example.com"><div id="email-hint" style="display:none"></div></div>
       <div class="auth-field"><label class="auth-label">Password <span class="required">*</span></label><input type="password" class="auth-input" id="input-password" placeholder="Create a password"><div class="pw-hint">Minimum 8 characters · Must include a letter and a number</div></div>
       <p style="font-size:11px;color:var(--faint);margin-bottom:16px;"><span class="required">*</span> Required fields</p>
       <button class="auth-btn" id="submit-btn" onclick="submitSignup()">Create free account →</button>
@@ -97,6 +97,12 @@
 
 <div id="site-footer"></div>
 <script src="/scripts/components.js"></script>
+<script src="/scripts/email-hint.js"></script>
+<script>
+  // A typo here is worse than on the contact form: the confirmation link never
+  // arrives, so the account can never be activated and the student is lost silently.
+  ujyaloEmailHintAttach(document.getElementById('input-email'), document.getElementById('email-hint'));
+</script>
 <script>
 async function submitSignup() {
   const name     = document.getElementById('input-name').value.trim();
