@@ -230,36 +230,64 @@
   #picker .sec-h .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
   #picker .sec-hint{margin-left:auto;font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--faint);}
 
-  /* ── energetic cockpit ── */
-  #picker .hero{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin:4px 0 12px;flex-wrap:wrap;}
-  #picker .hero-ring{flex-shrink:0;}
-  #picker .hr-n{font-family:'Fraunces',serif;font-size:20px;font-weight:600;fill:var(--forest);}
+  /* ── dashboard header + hero ── */
+  #picker .bd-h1{font-size:30px;font-weight:600;margin:2px 0 1px;}
+  #picker .bd-sub{color:var(--muted);font-size:14px;margin-bottom:20px;}
+  #picker .hero{position:relative;overflow:hidden;display:flex;gap:20px;align-items:center;background:linear-gradient(120deg,#d9f0e9,#eaf6f1 55%,#f5faf8);border:1px solid #cfe9e1;border-radius:18px;padding:20px 24px;margin:6px 0 14px;flex-wrap:wrap;}
+  #picker .hero-ring{flex-shrink:0;position:relative;z-index:1;}
+  #picker .hr-n{font-family:'Fraunces',serif;font-size:21px;font-weight:600;fill:var(--forest);}
   #picker .hr-l{font-size:10px;fill:var(--muted);}
-  #picker .hero-txt{flex:1;min-width:190px;}
-  #picker .hero-t{font-family:'Fraunces',serif;font-size:20px;color:var(--forest);font-weight:600;}
-  #picker .hero-s{font-size:13.5px;color:var(--muted);margin-top:3px;line-height:1.5;}
-  #picker .vstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
-  #picker .vstat{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--brass);border-radius:12px;padding:13px 15px;}
-  #picker .vstat-ic{width:34px;height:34px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:9px;}
-  #picker .vstat-l{font-size:11.5px;color:var(--muted);}
-  #picker .vstat-n{font-family:'Fraunces',serif;font-size:26px;font-weight:600;color:var(--forest);margin-top:2px;line-height:1.1;}
+  #picker .hero-txt{flex:1;min-width:230px;position:relative;z-index:1;}
+  #picker .hero-badge{display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:99px;padding:5px 13px;font-size:12.5px;font-weight:600;color:var(--brass-deep);box-shadow:0 1px 3px #0000000f;}
+  #picker .hero-msg{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--forest);margin:11px 0;line-height:1.3;}
+  #picker .hero-cta{display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:99px;padding:7px 15px;font-size:13px;font-weight:600;color:var(--forest);box-shadow:0 1px 3px #0000000f;}
+  #picker .hero-spark{position:absolute;right:28px;top:50%;transform:translateY(-50%);font-size:100px;color:#bfe6db;opacity:.5;z-index:0;line-height:1;pointer-events:none;}
+  /* stat cards — icon + label on top, big number below */
+  #picker .vstats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;}
+  #picker .vstat{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--brass);border-radius:14px;padding:15px 16px;}
+  #picker .vstat-top{display:flex;align-items:center;gap:9px;margin-bottom:11px;}
+  #picker .vstat-ic{width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+  #picker .vstat-l{font-size:12.5px;color:var(--muted);font-weight:500;}
+  #picker .vstat-n{font-family:'Fraunces',serif;font-size:29px;font-weight:600;color:var(--forest);line-height:1;}
   @media(max-width:620px){#picker .vstats{grid-template-columns:repeat(2,1fr);}}
-  #picker .rail-l{display:flex;align-items:center;gap:6px;}
-  #picker .rail-l i{font-size:15px;}
-  #picker .pbar-r{min-width:88px;text-align:right;font-size:12px;color:var(--muted);flex-shrink:0;}
-  #picker .pbar-r b{font-family:'Fraunces',serif;font-size:14px;color:var(--forest);}
-  #picker .pc.flg{border-left-color:var(--flag);}
-  #picker .badge.flg{background:var(--flag-bg);color:#9f1239;}
+  /* stage rail */
+  #picker .rail-seg{padding:12px 15px;}
+  #picker .rail-l{display:flex;align-items:center;gap:6px;font-size:12.5px;}
+  #picker .rail-l i{font-size:16px;}
+  #picker .rail-n{font-size:24px;}
+  #picker .rail-sub{font-size:11px;color:var(--faint);}
+  /* full-width pipeline rows */
+  #picker .prows{display:flex;flex-direction:column;gap:8px;}
+  #picker .prow{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;cursor:pointer;transition:.12s;}
+  #picker .prow:hover{border-color:var(--brass);box-shadow:0 3px 12px #0000000a;}
+  #picker .prow.flg{border-left:3px solid var(--flag);}
+  #picker .pr-sbj{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:6px;padding:4px 9px;white-space:nowrap;flex-shrink:0;}
+  #picker .pr-t{flex:1;font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--forest);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #picker .pr-t span{color:var(--muted);font-weight:500;font-family:'Outfit';}
+  #picker .pr-bar{width:96px;height:6px;background:var(--parch-2);border-radius:99px;overflow:hidden;flex-shrink:0;}
+  #picker .pr-bar i{display:block;height:100%;background:var(--green);}
+  #picker .pr-st{font-size:11.5px;font-weight:700;border-radius:99px;padding:3px 11px;white-space:nowrap;flex-shrink:0;}
+  #picker .pr-st.flag{background:var(--flag-bg);color:#9f1239;}
+  #picker .pr-st.todo{background:var(--parch-2);color:var(--muted);}
+  #picker .pr-st.prog{background:#fbeede;color:#a4701a;}
+  #picker .pr-st.done{background:var(--green-bg);color:#166534;}
+  #picker .pr-go{font-size:12.5px;font-weight:600;color:var(--brass-deep);flex-shrink:0;}
+  #picker .prow:hover .pr-go{color:var(--brass);}
+  @media(max-width:560px){#picker .pr-bar{display:none;}}
   #picker .sec-link{margin-left:auto;font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--flag);cursor:pointer;}
+  #picker .pipe-clear{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:16px 18px;color:var(--muted);font-size:13.5px;text-align:center;}
+  #picker .pipe-clear b{color:var(--forest);font-weight:600;}
+  /* search results reuse a compact row */
   #picker .att-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);cursor:pointer;}
   #picker .att-row:hover .att-go{color:var(--brass);}
   #picker .att-sbj{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:6px;padding:3px 7px;white-space:nowrap;flex-shrink:0;}
   #picker .att-t{flex:1;font-size:13.5px;font-weight:600;color:var(--forest);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   #picker .att-t span{color:var(--muted);font-weight:500;}
   #picker .att-go{font-size:12.5px;font-weight:600;color:var(--brass-deep);flex-shrink:0;}
-  #picker .pipe-clear{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:16px 18px;color:var(--muted);font-size:13.5px;text-align:center;}
-  #picker .pipe-clear b{color:var(--forest);font-weight:600;}
-  #picker .pub{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px;margin-top:16px;}
+  /* bottom row: coverage + team side by side */
+  #picker .bd-bottom{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start;margin-top:18px;}
+  @media(max-width:760px){#picker .bd-bottom{grid-template-columns:1fr;}}
+  #picker .pub{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px;}
   #picker .pub-t{font-family:'Fraunces',serif;font-size:16px;color:var(--forest);font-weight:600;}
   #picker .pub-s{font-size:11.5px;color:var(--muted);margin:2px 0 13px;}
   #picker .pbars{display:flex;flex-direction:column;gap:9px;}
@@ -267,7 +295,8 @@
   #picker .pbar-l{width:62px;font-size:12px;color:var(--muted);flex-shrink:0;}
   #picker .pbar-tr{flex:1;height:16px;background:var(--parch-2);border-radius:5px;overflow:hidden;}
   #picker .pbar-f{height:100%;border-radius:5px;}
-  #picker .pbar-n{width:22px;text-align:right;font-family:'Fraunces',serif;font-size:14px;font-weight:600;color:var(--forest);flex-shrink:0;}
+  #picker .pbar-r{min-width:88px;text-align:right;font-size:12px;color:var(--muted);flex-shrink:0;}
+  #picker .pbar-r b{font-family:'Fraunces',serif;font-size:14px;color:var(--forest);}
   #picker .pub-search{display:flex;align-items:center;gap:8px;margin-top:15px;border:1px solid var(--line);border-radius:9px;padding:0 11px;}
   #picker .pub-search:focus-within{border-color:var(--brass);}
   #picker .pub-si{color:var(--faint);font-size:16px;font-style:normal;}
@@ -344,13 +373,13 @@
         <div class="modeseg" id="bd-modes"></div>
 
         <div id="picker-papers">
-          <div class="eyebrow">Verification workspace</div>
-          <h1 class="bd-h1">What's left to verify</h1>
+          <h1 class="bd-h1">Verification Dashboard</h1>
+          <div class="bd-sub">Track verification progress, fix flags, and publish quality papers.</div>
           <div id="bd-overview"></div>
-          <div id="bd-continue"></div>
-          <div class="bd-cols">
-            <div class="bd-main"><div id="bd-list"></div></div>
-            <aside class="bd-side"><div id="bd-team"></div></aside>
+          <div id="bd-list"></div>
+          <div class="bd-bottom">
+            <div id="bd-cov"></div>
+            <aside id="bd-team"></aside>
           </div>
         </div>
 
@@ -555,39 +584,46 @@
   function stageRailHtml(counts){
     return '<div class="rail">'+STAGE_DEFS.map(function(d,i){
       var arrow=i<STAGE_DEFS.length-1?'<span class="rail-arr">›</span>':'';
-      return '<button class="rail-seg" data-stage="'+d.k+'" style="border-top-color:'+d.col+'"><span class="rail-l"><i class="ti ti-'+d.ic+'" style="color:'+d.col+'"></i>'+d.t+'</span><span class="rail-n">'+(counts[d.k]||0)+'</span></button>'+arrow;
+      return '<button class="rail-seg" data-stage="'+d.k+'" style="border-top-color:'+d.col+'"><span class="rail-l"><i class="ti ti-'+d.ic+'" style="color:'+d.col+'"></i>'+d.t+'</span><span class="rail-n">'+(counts[d.k]||0)+'</span><span class="rail-sub">Papers</span></button>'+arrow;
     }).join('')+'</div>';
   }
-  function paperCard(p){
+  // a full-width row (spans the whole width) — used in every pipeline section
+  function paperRow(p){
     var st=stageOf(p), c=subjCol(p.subject), nm=(SUBJ_CFG[p.subject]||{}).name||p.subject;
     var pct=p.total?Math.round(p.verified/p.total*100):0;
     var flg=(p.flagged||0)>0;
-    var badge, meta, go;
-    if(flg){ badge='<span class="badge flg">⚑ '+p.flagged+' flagged</span>'; meta='needs a fix'; go='Open →'; }
-    else if(st==='pending'){ badge='<span class="badge todo">Not started</span>'; meta=(p.total||0)+' questions'; go='Start →'; }
-    else if(st==='review'){ badge='<span class="badge prog">'+p.verified+'/'+p.total+'</span>'; meta=pct+'% checked'; go='Continue →'; }
-    else { badge='<span class="badge done">✓ Verified</span>'; meta='by '+esc(p.verifiedBy||'team'); go='Open →'; }
-    return '<div class="pc'+(flg?' flg':'')+'" data-open="'+p.id+'" style="--ac:'+(flg?'var(--flag)':c.fg)+'">'+
-      '<div class="pc-top"><span class="sbj" style="background:'+c.bg+';color:'+c.fg+'">'+esc(nm)+'</span><span>'+badge+'</span></div>'+
-      '<div class="pc-t">SEE '+p.year+' <span>· '+esc(p.province)+'</span></div>'+
-      (st==='review'&&!flg?'<div class="pbar"><b style="width:'+pct+'%"></b></div>':'')+
-      '<div class="pc-b"><span>'+meta+'</span><span class="go">'+go+'</span></div></div>';
+    var status, go;
+    if(flg){ status='<span class="pr-st flag">⚑ '+p.flagged+' flagged</span>'; go='Fix →'; }
+    else if(st==='pending'){ status='<span class="pr-st todo">Not started · '+(p.total||0)+' Qs</span>'; go='Start →'; }
+    else if(st==='review'){ status='<span class="pr-bar"><i style="width:'+pct+'%"></i></span><span class="pr-st prog">'+p.verified+'/'+p.total+'</span>'; go='Continue →'; }
+    else { status='<span class="pr-st done">✓ Verified</span>'; go='Open →'; }
+    return '<div class="prow'+(flg?' flg':'')+'" data-open="'+p.id+'">'+
+      '<span class="pr-sbj" style="background:'+c.bg+';color:'+c.fg+'">'+esc(nm)+'</span>'+
+      '<div class="pr-t">SEE '+p.year+' <span>· '+esc(p.province)+'</span></div>'+
+      status+
+      '<span class="pr-go">'+go+'</span></div>';
   }
-  // energetic top: a "% clean" ring + a one-line mood + four stat tiles
+  // energetic top: a "% clean" ring + an encouraging headline + two pills
   function heroHtml(s){
-    var mood = s.cleanPct>=100?'Spotless — everything checked' : s.cleanPct>=95?'Almost spotless' : s.cleanPct>=75?'Looking strong' : s.cleanPct>=40?'Good momentum' : 'Let’s get going';
-    var sub = s.flaggedQ>0
-      ? (s.flaggedQ+' question'+(s.flaggedQ!==1?'s':'')+' across '+s.attnPapers+' paper'+(s.attnPapers!==1?'s':'')+' need a quick fix. You’ve got this.')
-      : (s.pendingQ>0 ? (s.pendingQ+' question'+(s.pendingQ!==1?'s':'')+' waiting to be checked. Let’s clear them.') : 'Nothing flagged, nothing waiting — your library is clean. Nice work.');
+    var mood = s.cleanPct>=100?'Spotless':s.cleanPct>=95?'Almost spotless':s.cleanPct>=75?'Looking strong':s.cleanPct>=40?'Good momentum':'Let’s get going';
+    var emoji = s.cleanPct>=95?'🎉':s.cleanPct>=75?'💪':'🚀';
+    var msg = s.flaggedQ>0
+      ? (s.flaggedQ+' question'+(s.flaggedQ!==1?'s':'')+' across '+s.attnPapers+' paper'+(s.attnPapers!==1?'s':'')+' need a quick fix.')
+      : (s.pendingQ>0 ? (s.pendingQ+' question'+(s.pendingQ!==1?'s':'')+' waiting to be checked.') : 'Nothing flagged, nothing waiting — your library is clean.');
     var circ=263.9, dash=Math.round(circ*s.cleanPct)/100;
     return '<div class="hero">'+
-      '<svg class="hero-ring" viewBox="0 0 100 100" width="90" height="90" aria-hidden="true">'+
-        '<circle cx="50" cy="50" r="42" fill="none" stroke="var(--parch-2)" stroke-width="9"/>'+
+      '<svg class="hero-ring" viewBox="0 0 100 100" width="96" height="96" aria-hidden="true">'+
+        '<circle cx="50" cy="50" r="42" fill="none" stroke="#ffffff" stroke-width="9"/>'+
         '<circle cx="50" cy="50" r="42" fill="none" stroke="var(--brass)" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+dash+' '+circ+'" transform="rotate(-90 50 50)"/>'+
         '<text x="50" y="47" text-anchor="middle" class="hr-n">'+s.cleanPct+'%</text>'+
         '<text x="50" y="61" text-anchor="middle" class="hr-l">clean</text>'+
       '</svg>'+
-      '<div class="hero-txt"><div class="hero-t">'+mood+'</div><div class="hero-s">'+sub+'</div></div>'+
+      '<div class="hero-txt">'+
+        '<span class="hero-badge">'+emoji+' '+mood+'</span>'+
+        '<div class="hero-msg">'+msg+'</div>'+
+        '<span class="hero-cta">You’ve got this! 🚀</span>'+
+      '</div>'+
+      '<span class="hero-spark">✦</span>'+
     '</div>';
   }
   function statsHtml(s){
@@ -598,26 +634,26 @@
       {l:'Reviewers',          n:s.reviewers,                ic:'users',        col:'#6b4ba0', bg:'#efe9f6'}
     ];
     return '<div class="vstats">'+cards.map(function(c){
-      return '<div class="vstat" style="border-top-color:'+c.col+'"><span class="vstat-ic" style="background:'+c.bg+';color:'+c.col+'"><i class="ti ti-'+c.ic+'"></i></span><div class="vstat-l">'+c.l+'</div><div class="vstat-n">'+c.n+'</div></div>';
+      return '<div class="vstat" style="border-top-color:'+c.col+'"><div class="vstat-top"><span class="vstat-ic" style="background:'+c.bg+';color:'+c.col+'"><i class="ti ti-'+c.ic+'"></i></span><span class="vstat-l">'+c.l+'</span></div><div class="vstat-n">'+c.n+'</div></div>';
     }).join('')+'</div>';
   }
   function pipelineHtml(buckets){
     var active=buckets.pending.length+buckets.review.length+buckets.verified.length;
     if(!active) return '<div class="pipe-clear"><b>Pipeline’s clear.</b> Every paper is published. New papers will land in <b>Pending</b> here.</div>';
     var defs=[
-      {k:'pending', t:'Pending', hint:'new papers waiting', col:'#8b93a0', empty:'No new papers waiting.'},
-      {k:'review', t:'In review', hint:'flagged or being checked — fix these first', col:'#f59e0b', empty:'Nothing in review.'},
-      {k:'verified', t:'Verified', hint:'ready — admin can publish', col:'#16a34a', empty:null}
+      {k:'pending', t:'Pending', hint:'new papers waiting', col:'#8b93a0'},
+      {k:'review', t:'In review', hint:'flagged or being checked — fix these first', col:'#f59e0b'},
+      {k:'verified', t:'Verified', hint:'ready — admin can publish', col:'#16a34a'}
     ];
     return defs.map(function(d){
       var list=(buckets[d.k]||[]).slice();
+      if(!list.length) return '';   // an empty stage is hidden entirely, not shown as a placeholder
       if(d.k==='review') list.sort(function(a,b){ return (b.flagged||0)-(a.flagged||0) || ((b.total?b.verified/b.total:0)-(a.total?a.verified/a.total:0)); });
       else list.sort(function(a,b){return (b.year-a.year)||(((SUBJ_CFG[a.subject]||{}).order||9)-((SUBJ_CFG[b.subject]||{}).order||9));});
       var flags=list.reduce(function(a,p){return a+(p.flagged||0);},0);
       var right=(d.k==='review'&&flags>0)?'<span class="sec-link" data-gotoflags="1">See all '+flags+' flags →</span>':'<span class="sec-hint">'+d.hint+'</span>';
       var head='<div class="sec-h"><span class="dot" style="background:'+d.col+'"></span>'+d.t+' <span class="c">'+list.length+'</span>'+right+'</div>';
-      if(!list.length){ if(d.empty==null) return ''; return '<div id="stage-'+d.k+'">'+head+'<div class="empty">'+d.empty+'</div></div>'; }
-      return '<div id="stage-'+d.k+'">'+head+'<div class="cont">'+list.map(paperCard).join('')+'</div></div>';
+      return '<div id="stage-'+d.k+'">'+head+'<div class="prows">'+list.map(paperRow).join('')+'</div></div>';
     }).join('');
   }
   // Published as a compact by-subject coverage chart + a search — not a long list.
@@ -642,7 +678,7 @@
     renderTeam();
     renderModes();
     var ov=OVERVIEW||[];
-    if(!ov.length){ $('bd-overview').innerHTML=''; $('bd-continue').innerHTML=''; $('bd-list').innerHTML='<div class="empty">No papers yet.</div>'; return; }
+    if(!ov.length){ $('bd-overview').innerHTML=''; $('bd-list').innerHTML='<div class="empty">No papers yet.</div>'; $('bd-cov').innerHTML=''; return; }
     var buckets={pending:[],review:[],verified:[],published:[]};
     var totalQ=0, verifiedQ=0, flaggedQ=0, pendingQ=0, flaggedPapers=0;
     ov.forEach(function(p){
@@ -659,8 +695,8 @@
     // "Papers live" = the clean Published count, so it always matches the rail
     var stats={ cleanPct: totalQ?Math.round(verifiedQ/totalQ*100):100, live:buckets.published.length, verifiedQ:verifiedQ, flaggedQ:flaggedQ, reviewers:(TEAM||[]).length, attnPapers:flaggedPapers, pendingQ:pendingQ };
     $('bd-overview').innerHTML = heroHtml(stats)+statsHtml(stats)+stageRailHtml(counts);
-    $('bd-continue').innerHTML = '';
-    $('bd-list').innerHTML = pipelineHtml(buckets)+publishedHtml(buckets.published, denom);
+    $('bd-list').innerHTML = pipelineHtml(buckets);
+    $('bd-cov').innerHTML = publishedHtml(buckets.published, denom);
   }
   $('picker').addEventListener('click',function(e){
     var row=e.target.closest('[data-open]'); if(row){ loadPaper(row.getAttribute('data-open')); return; }
