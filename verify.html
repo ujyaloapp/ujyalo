@@ -134,6 +134,12 @@
   .flagcard .fmeta{font-size:12px;color:var(--brass-deep);font-weight:600;} .flagcard .fnote{font-size:13.5px;color:#9f1239;background:var(--flag-bg);border-radius:7px;padding:8px 11px;margin:7px 0;}
   .fopen{font-size:12.5px;font-weight:600;color:var(--forest);background:#fff;border:1px solid var(--line);border-radius:7px;padding:6px 13px;cursor:pointer;}
   .flags-clean{text-align:center;color:var(--muted);padding:50px 0;}.flags-clean b{color:var(--green);}
+  .flags-head{margin-bottom:16px;}
+  .flags-back{font-family:'Outfit';font-size:13px;font-weight:600;color:var(--forest);background:var(--card);border:1px solid var(--line);border-radius:9px;padding:8px 14px;cursor:pointer;}
+  .flags-back:hover{border-color:var(--brass);}
+  .flags-title{font-family:'Fraunces',serif;font-size:24px;font-weight:600;color:var(--forest);margin:14px 0 2px;}
+  .flags-title span{font-size:14px;font-weight:700;color:#9f1239;background:var(--flag-bg);border-radius:99px;padding:2px 11px;vertical-align:3px;margin-left:6px;font-family:'Outfit';}
+  .flags-sub{font-size:13.5px;color:var(--muted);}
   #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);background:#1f2933;color:#fff;padding:10px 20px;border-radius:99px;font-size:13.5px;font-weight:500;opacity:0;transition:all .25s;z-index:50;} #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   /* ── verification board (landing) ── */
   .board{max-width:880px;margin:0 auto;}
@@ -245,12 +251,6 @@
   #picker .dash-n.sm{font-size:22px;}
   #picker .dash-sub{font-size:11px;color:var(--faint);margin-top:3px;}
   @media(max-width:760px){#picker .dash{grid-template-columns:1fr 1fr;} #picker .dash-ring{grid-row:auto;grid-column:1 / 3;}}
-
-  /* ── subject / year filter chips ── */
-  #picker .fbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 16px;}
-  #picker .fbar-l{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-right:2px;}
-  #picker .fchip{font-size:12px;font-weight:600;border-radius:99px;padding:5px 12px;background:var(--card);border:1px solid var(--line);color:var(--muted);cursor:pointer;}
-  #picker .fchip.on{background:#1f2933;color:#fff;border-color:var(--forest);}
 
   /* ── show-all toggle under a capped section ── */
   #picker .showall{margin-top:10px;text-align:center;font-size:12.5px;font-weight:600;color:var(--brass-deep);cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px;}
@@ -500,7 +500,8 @@
   function updatePbPaper(){ var show=!!DATA && !$('paperview').classList.contains('hidden') && !$('editor').classList.contains('hidden'); $('pb-paper').classList.toggle('hidden',!show); }
 
   // ── picker (subject → year → province) ──
-  function showPicker(){ setTab('papers'); $('editor').classList.add('hidden'); $('picker').classList.remove('hidden'); renderPicker(); setMode(CUR_MODE); updatePbPaper(); }
+  // Always land back on the papers dashboard (never the flags list you came from).
+  function showPicker(){ setTab('papers'); $('editor').classList.add('hidden'); $('picker').classList.remove('hidden'); renderPicker(); setMode('papers'); updatePbPaper(); }
   $('changepaper').addEventListener('click',showPicker);
   // verification "modes" — config-driven so future modes (e.g. chapter practice) drop in here
   // Flags is no longer a top-level mode — a flag belongs to a paper, so it now
@@ -568,7 +569,6 @@
   ];
   var PUBLISHED=[];
   var EXPANDED={};                         // which stage sections are showing all cards
-  var FILTER={subject:'all', year:'all'};  // dashboard subject/year filter
   // The combined header: a tall "% clean" ring (spans both rows) on the left,
   // 4 stat boxes on the top row, 4 clickable pipeline boxes on the bottom row.
   function dashHeaderHtml(s, counts){
@@ -592,18 +592,6 @@
       return '<button class="dash-box stage" data-stage="'+d.k+'" style="border-top-color:'+d.col+'"><div class="dash-top"><i class="ti ti-'+d.ic+'" style="color:'+d.col+'"></i><span class="dash-l">'+d.t+'</span></div><div class="dash-n sm">'+(counts[d.k]||0)+'</div><div class="dash-sub">Papers</div></button>';
     }).join('');
     return '<div class="dash">'+ring+stats+stages+'</div>';
-  }
-  // subject + year chips, so a long dashboard can be narrowed to e.g. Maths 2082
-  function filterBarHtml(ov){
-    var subs=[], yrs=[];
-    ov.forEach(function(p){ if(p.subject && subs.indexOf(p.subject)<0) subs.push(p.subject); if(p.year && yrs.indexOf(p.year)<0) yrs.push(p.year); });
-    subs.sort(function(a,b){ return ((SUBJ_CFG[a]||{}).order||9)-((SUBJ_CFG[b]||{}).order||9); });
-    yrs.sort(function(a,b){ return b-a; });
-    if(subs.length<2 && yrs.length<2) return '';   // nothing worth filtering yet
-    function chip(kind,val,label,on){ return '<span class="fchip'+(on?' on':'')+'" data-'+kind+'="'+esc(val)+'">'+esc(label)+'</span>'; }
-    var out='<span class="fbar-l">Subject</span>'+chip('fsub','all','All',FILTER.subject==='all')+subs.map(function(c){ return chip('fsub',c,(SUBJ_CFG[c]||{}).name||c,FILTER.subject===c); }).join('');
-    if(yrs.length>1){ out+='<span class="fbar-l" style="margin-left:12px;">Year</span>'+chip('fyear','all','All',FILTER.year==='all')+yrs.map(function(v){ return chip('fyear',String(v),String(v),String(FILTER.year)===String(v)); }).join(''); }
-    return '<div class="fbar">'+out+'</div>';
   }
   // a paper card — several sit side by side (3–4 per row) in each pipeline section
   function paperCard(p){
@@ -667,11 +655,9 @@
     renderModes();
     var ov=OVERVIEW||[];
     if(!ov.length){ $('bd-overview').innerHTML=''; $('bd-list').innerHTML='<div class="empty">No papers yet.</div>'; $('bd-cov').innerHTML=''; return; }
-    // the subject/year filter narrows everything below the header controls
-    var view=ov.filter(function(p){ return (FILTER.subject==='all'||p.subject===FILTER.subject) && (FILTER.year==='all'||String(p.year)===String(FILTER.year)); });
     var buckets={pending:[],review:[],verified:[],published:[]};
     var totalQ=0, verifiedQ=0, flaggedQ=0, pendingQ=0, flaggedPapers=0;
-    view.forEach(function(p){
+    ov.forEach(function(p){
       totalQ+=(p.total||0); verifiedQ+=(p.verified||0); flaggedQ+=(p.flagged||0);
       if((p.flagged||0)>0) flaggedPapers++;
       var st=stageOf(p); (buckets[st]||buckets.pending).push(p);   // flagged → 'review', so it never lands in Published
@@ -681,7 +667,7 @@
     var counts={pending:buckets.pending.length,review:buckets.review.length,verified:buckets.verified.length,published:buckets.published.length};
     // "Papers live" = the clean Published count, so it always matches the pipeline box
     var stats={ cleanPct: totalQ?Math.round(verifiedQ/totalQ*100):100, live:buckets.published.length, verifiedQ:verifiedQ, flaggedQ:flaggedQ, reviewers:(TEAM||[]).length, attnPapers:flaggedPapers, pendingQ:pendingQ };
-    $('bd-overview').innerHTML = dashHeaderHtml(stats, counts) + filterBarHtml(ov);
+    $('bd-overview').innerHTML = dashHeaderHtml(stats, counts);
     $('bd-list').innerHTML = pipelineHtml(buckets);
     $('bd-cov').innerHTML = publishedHtml(buckets.published);
   }
@@ -691,8 +677,6 @@
     var md=e.target.closest('[data-mode]'); if(md){ if(md.classList.contains('soon')){ toast('Chapter-practice verification is coming soon'); return; } setMode(md.getAttribute('data-mode')); return; }
     if(e.target.closest('[data-gotoflags]')){ setMode('flags'); return; }
     var sa=e.target.closest('[data-showall]'); if(sa){ var k=sa.getAttribute('data-showall'); EXPANDED[k]=!EXPANDED[k]; renderPicker(); return; }
-    var fs=e.target.closest('[data-fsub]'); if(fs){ FILTER.subject=fs.getAttribute('data-fsub'); EXPANDED={}; renderPicker(); return; }
-    var fy=e.target.closest('[data-fyear]'); if(fy){ FILTER.year=fy.getAttribute('data-fyear'); EXPANDED={}; renderPicker(); return; }
   });
   // Published search — filter the (hidden) published list; empty box shows nothing.
   $('picker').addEventListener('input',function(e){
@@ -921,14 +905,20 @@
   }
 
   async function refreshFlagCount(){ try{ var d=await apiGet('flags'); setFlagCount((d.flags||[]).length); }catch(e){} }
+  function flagsHeadHtml(n){
+    return '<div class="flags-head">'+
+      '<button class="flags-back" data-flagsback>← Back to dashboard</button>'+
+      '<div class="flags-title">Flags to fix <span>'+n+'</span></div>'+
+      '<div class="flags-sub">Each is a question a partner marked for a fix. Open it, correct it, and re-verify.</div></div>';
+  }
   async function loadFlags(){
     $('flagslist').innerHTML='<div class="empty-state">Loading…</div>';
     try{ var d=await apiGet('flags'); var f=d.flags||[]; setFlagCount(f.length);
-      if(!f.length){ $('flagslist').innerHTML='<div class="flags-clean">✓ <b>No flags</b> — everything checked is clean.</div>'; return; }
-      $('flagslist').innerHTML=f.map(function(x){ return '<div class="flagcard"><div class="fmeta">SEE '+x.year+' · '+x.province+' · '+(x.subjectName||x.subject)+' — Q'+x.question_number+'</div>'+(x.note?'<div class="fnote">⚑ '+esc(x.note)+'</div>':'<div class="fnote">⚑ (no note)</div>')+'<button class="fopen" data-pid="'+x.paper_id+'" data-qn="'+x.question_number+'">Open this question ▸</button></div>'; }).join('');
-    }catch(e){ $('flagslist').innerHTML='<div class="empty-state">Could not load flags.</div>'; }
+      if(!f.length){ $('flagslist').innerHTML=flagsHeadHtml(0)+'<div class="flags-clean">✓ <b>No flags</b> — everything checked is clean.</div>'; return; }
+      $('flagslist').innerHTML=flagsHeadHtml(f.length)+f.map(function(x){ return '<div class="flagcard"><div class="fmeta">SEE '+x.year+' · '+x.province+' · '+(x.subjectName||x.subject)+' — Q'+x.question_number+'</div>'+(x.note?'<div class="fnote">⚑ '+esc(x.note)+'</div>':'<div class="fnote">⚑ (no note)</div>')+'<button class="fopen" data-pid="'+x.paper_id+'" data-qn="'+x.question_number+'">Open this question ▸</button></div>'; }).join('');
+    }catch(e){ $('flagslist').innerHTML=flagsHeadHtml(0)+'<div class="empty-state">Could not load flags.</div>'; }
   }
-  $('flagslist').addEventListener('click',function(e){ var b=e.target.closest('.fopen'); if(!b)return; loadPaper(b.getAttribute('data-pid'),parseInt(b.getAttribute('data-qn'),10)); });
+  $('flagslist').addEventListener('click',function(e){ if(e.target.closest('[data-flagsback]')){ setMode('papers'); return; } var b=e.target.closest('.fopen'); if(!b)return; loadPaper(b.getAttribute('data-pid'),parseInt(b.getAttribute('data-qn'),10)); });
 
   boot();
 })();
