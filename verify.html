@@ -222,42 +222,39 @@
   #picker .badge.done{background:var(--green-bg);color:#166534;}
   #picker .empty{text-align:center;color:var(--muted);padding:28px 0;font-size:13px;}
 
-  /* ── stage pipeline (pending → review → verified → published) ── */
-  #picker .rail{display:flex;align-items:stretch;gap:6px;margin:6px 0 10px;flex-wrap:wrap;}
-  #picker .rail-seg{flex:1;min-width:112px;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--faint);border-radius:0 0 11px 11px;padding:11px 13px;cursor:pointer;text-align:left;font-family:inherit;display:flex;flex-direction:column;gap:3px;}
-  #picker .rail-seg:hover{border-color:var(--brass);}
-  #picker .rail-l{font-size:12px;color:var(--muted);font-weight:600;}
-  #picker .rail-n{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--forest);line-height:1;}
-  #picker .rail-arr{align-self:center;color:var(--faint);font-size:18px;}
+  /* ── section headers (each pipeline stage) ── */
   #picker .sec-h .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
   #picker .sec-hint{margin-left:auto;font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--faint);}
 
-  /* ── dashboard header + hero ── */
+  /* ── dashboard header: title + combined ring / stat / stage grid ── */
   #picker .bd-h1{font-size:30px;font-weight:600;margin:2px 0 1px;}
-  #picker .bd-sub{color:var(--muted);font-size:14px;margin-bottom:20px;}
-  #picker .hero{position:relative;overflow:hidden;display:flex;gap:20px;align-items:center;background:linear-gradient(120deg,#d9f0e9,#eaf6f1 55%,#f5faf8);border:1px solid #cfe9e1;border-radius:18px;padding:20px 24px;margin:6px 0 14px;flex-wrap:wrap;}
-  #picker .hero-ring{flex-shrink:0;position:relative;z-index:1;}
-  #picker .hr-n{font-family:'Fraunces',serif;font-size:21px;font-weight:600;fill:var(--forest);}
+  #picker .bd-sub{color:var(--muted);font-size:14px;margin-bottom:18px;}
+  #picker .hr-n{font-family:'Fraunces',serif;font-size:22px;font-weight:600;fill:var(--forest);}
   #picker .hr-l{font-size:10px;fill:var(--muted);}
-  #picker .hero-txt{flex:1;min-width:230px;position:relative;z-index:1;}
-  #picker .hero-badge{display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:99px;padding:5px 13px;font-size:12.5px;font-weight:600;color:var(--brass-deep);box-shadow:0 1px 3px #0000000f;}
-  #picker .hero-msg{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--forest);margin:11px 0;line-height:1.3;}
-  #picker .hero-cta{display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:99px;padding:7px 15px;font-size:13px;font-weight:600;color:var(--forest);box-shadow:0 1px 3px #0000000f;}
-  #picker .hero-spark{position:absolute;right:28px;top:50%;transform:translateY(-50%);font-size:100px;color:#bfe6db;opacity:.5;z-index:0;line-height:1;pointer-events:none;}
-  /* stat cards — icon + label on top, big number below */
-  #picker .vstats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;}
-  #picker .vstat{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--brass);border-radius:14px;padding:15px 16px;}
-  #picker .vstat-top{display:flex;align-items:center;gap:9px;margin-bottom:11px;}
-  #picker .vstat-ic{width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-  #picker .vstat-l{font-size:12.5px;color:var(--muted);font-weight:500;}
-  #picker .vstat-n{font-family:'Fraunces',serif;font-size:29px;font-weight:600;color:var(--forest);line-height:1;}
-  @media(max-width:620px){#picker .vstats{grid-template-columns:repeat(2,1fr);}}
-  /* stage rail */
-  #picker .rail-seg{padding:12px 15px;}
-  #picker .rail-l{display:flex;align-items:center;gap:6px;font-size:12.5px;}
-  #picker .rail-l i{font-size:16px;}
-  #picker .rail-n{font-size:24px;}
-  #picker .rail-sub{font-size:11px;color:var(--faint);}
+  #picker .dash{display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr 1fr;grid-template-rows:auto auto;gap:10px;margin:4px 0 14px;}
+  #picker .dash-ring{grid-row:1 / 3;background:#eefaf6;border:1px solid #cfe9e1;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;}
+  #picker .dash-ring-s{font-size:11.5px;color:var(--muted);margin-top:8px;text-align:center;}
+  #picker .dash-box{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--brass);border-radius:13px;padding:12px 14px;text-align:left;font-family:inherit;}
+  #picker .dash-box.stage{cursor:pointer;transition:.12s;}
+  #picker .dash-box.stage:hover{border-color:var(--brass);}
+  #picker .dash-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  #picker .dash-top i{font-size:16px;}
+  #picker .dash-ic{width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  #picker .dash-l{font-size:12px;color:var(--muted);font-weight:500;}
+  #picker .dash-n{font-family:'Fraunces',serif;font-size:26px;font-weight:600;color:var(--forest);line-height:1;}
+  #picker .dash-n.sm{font-size:22px;}
+  #picker .dash-sub{font-size:11px;color:var(--faint);margin-top:3px;}
+  @media(max-width:760px){#picker .dash{grid-template-columns:1fr 1fr;} #picker .dash-ring{grid-row:auto;grid-column:1 / 3;}}
+
+  /* ── subject / year filter chips ── */
+  #picker .fbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 16px;}
+  #picker .fbar-l{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-right:2px;}
+  #picker .fchip{font-size:12px;font-weight:600;border-radius:99px;padding:5px 12px;background:var(--card);border:1px solid var(--line);color:var(--muted);cursor:pointer;}
+  #picker .fchip.on{background:#1f2933;color:#fff;border-color:var(--forest);}
+
+  /* ── show-all toggle under a capped section ── */
+  #picker .showall{margin-top:10px;text-align:center;font-size:12.5px;font-weight:600;color:var(--brass-deep);cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px;}
+  #picker .showall:hover{border-color:var(--brass);}
   /* flagged card accent */
   #picker .pc.flg{border-left-color:var(--flag);}
   #picker .badge.flg{background:var(--flag-bg);color:#9f1239;}
@@ -570,11 +567,43 @@
     {k:'published', t:'Published', col:'#0f766e', ic:'rocket'}
   ];
   var PUBLISHED=[];
-  function stageRailHtml(counts){
-    return '<div class="rail">'+STAGE_DEFS.map(function(d,i){
-      var arrow=i<STAGE_DEFS.length-1?'<span class="rail-arr">›</span>':'';
-      return '<button class="rail-seg" data-stage="'+d.k+'" style="border-top-color:'+d.col+'"><span class="rail-l"><i class="ti ti-'+d.ic+'" style="color:'+d.col+'"></i>'+d.t+'</span><span class="rail-n">'+(counts[d.k]||0)+'</span><span class="rail-sub">Papers</span></button>'+arrow;
-    }).join('')+'</div>';
+  var EXPANDED={};                         // which stage sections are showing all cards
+  var FILTER={subject:'all', year:'all'};  // dashboard subject/year filter
+  // The combined header: a tall "% clean" ring (spans both rows) on the left,
+  // 4 stat boxes on the top row, 4 clickable pipeline boxes on the bottom row.
+  function dashHeaderHtml(s, counts){
+    var circ=263.9, dash=Math.round(circ*s.cleanPct)/100;
+    var ring='<div class="dash-ring"><svg viewBox="0 0 100 100" width="116" height="116" aria-hidden="true">'+
+      '<circle cx="50" cy="50" r="42" fill="none" stroke="#ffffff" stroke-width="9"/>'+
+      '<circle cx="50" cy="50" r="42" fill="none" stroke="var(--brass)" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+dash+' '+circ+'" transform="rotate(-90 50 50)"/>'+
+      '<text x="50" y="48" text-anchor="middle" class="hr-n">'+s.cleanPct+'%</text>'+
+      '<text x="50" y="64" text-anchor="middle" class="hr-l">clean</text></svg>'+
+      '<div class="dash-ring-s">verified &amp; unflagged</div></div>';
+    var STATS=[
+      {l:'Papers live',        n:s.live,                      ic:'file-text',    col:'#0f766e', bg:'#d3f0ec'},
+      {l:'Questions verified', n:s.verifiedQ.toLocaleString(),ic:'circle-check', col:'#2a5b9c', bg:'#e8eef6'},
+      {l:'Flags to fix',       n:s.flaggedQ,                  ic:'flag',         col:'#e11d48', bg:'#ffe4e6'},
+      {l:'Reviewers',          n:s.reviewers,                 ic:'users',        col:'#6b4ba0', bg:'#efe9f6'}
+    ];
+    var stats=STATS.map(function(c){
+      return '<div class="dash-box" style="border-top-color:'+c.col+'"><div class="dash-top"><span class="dash-ic" style="background:'+c.bg+';color:'+c.col+'"><i class="ti ti-'+c.ic+'"></i></span><span class="dash-l">'+c.l+'</span></div><div class="dash-n">'+c.n+'</div></div>';
+    }).join('');
+    var stages=STAGE_DEFS.map(function(d){
+      return '<button class="dash-box stage" data-stage="'+d.k+'" style="border-top-color:'+d.col+'"><div class="dash-top"><i class="ti ti-'+d.ic+'" style="color:'+d.col+'"></i><span class="dash-l">'+d.t+'</span></div><div class="dash-n sm">'+(counts[d.k]||0)+'</div><div class="dash-sub">Papers</div></button>';
+    }).join('');
+    return '<div class="dash">'+ring+stats+stages+'</div>';
+  }
+  // subject + year chips, so a long dashboard can be narrowed to e.g. Maths 2082
+  function filterBarHtml(ov){
+    var subs=[], yrs=[];
+    ov.forEach(function(p){ if(p.subject && subs.indexOf(p.subject)<0) subs.push(p.subject); if(p.year && yrs.indexOf(p.year)<0) yrs.push(p.year); });
+    subs.sort(function(a,b){ return ((SUBJ_CFG[a]||{}).order||9)-((SUBJ_CFG[b]||{}).order||9); });
+    yrs.sort(function(a,b){ return b-a; });
+    if(subs.length<2 && yrs.length<2) return '';   // nothing worth filtering yet
+    function chip(kind,val,label,on){ return '<span class="fchip'+(on?' on':'')+'" data-'+kind+'="'+esc(val)+'">'+esc(label)+'</span>'; }
+    var out='<span class="fbar-l">Subject</span>'+chip('fsub','all','All',FILTER.subject==='all')+subs.map(function(c){ return chip('fsub',c,(SUBJ_CFG[c]||{}).name||c,FILTER.subject===c); }).join('');
+    if(yrs.length>1){ out+='<span class="fbar-l" style="margin-left:12px;">Year</span>'+chip('fyear','all','All',FILTER.year==='all')+yrs.map(function(v){ return chip('fyear',String(v),String(v),String(FILTER.year)===String(v)); }).join(''); }
+    return '<div class="fbar">'+out+'</div>';
   }
   // a paper card — several sit side by side (3–4 per row) in each pipeline section
   function paperCard(p){
@@ -582,7 +611,7 @@
     var pct=p.total?Math.round(p.verified/p.total*100):0;
     var flg=(p.flagged||0)>0;
     var badge, meta, go;
-    if(flg){ badge='<span class="badge flg">⚑ '+p.flagged+' flagged</span>'; meta='needs a fix'; go='Fix →'; }
+    if(flg){ badge='<span class="badge flg">⚑ '+p.flagged+' flagged</span>'; meta=''; go='Fix →'; }
     else if(st==='pending'){ badge='<span class="badge todo">Not started</span>'; meta=(p.total||0)+' questions'; go='Start →'; }
     else if(st==='review'){ badge='<span class="badge prog">'+p.verified+'/'+p.total+'</span>'; meta=pct+'% checked'; go='Continue →'; }
     else { badge='<span class="badge done">✓ Verified</span>'; meta='by '+esc(p.verifiedBy||'team'); go='Open →'; }
@@ -591,40 +620,6 @@
       '<div class="pc-t">SEE '+p.year+' <span>· '+esc(p.province)+'</span></div>'+
       (st==='review'&&!flg?'<div class="pbar"><b style="width:'+pct+'%"></b></div>':'')+
       '<div class="pc-b"><span>'+meta+'</span><span class="go">'+go+'</span></div></div>';
-  }
-  // energetic top: a "% clean" ring + an encouraging headline + two pills
-  function heroHtml(s){
-    var mood = s.cleanPct>=100?'Spotless':s.cleanPct>=95?'Almost spotless':s.cleanPct>=75?'Looking strong':s.cleanPct>=40?'Good momentum':'Let’s get going';
-    var emoji = s.cleanPct>=95?'🎉':s.cleanPct>=75?'💪':'🚀';
-    var msg = s.flaggedQ>0
-      ? (s.flaggedQ+' question'+(s.flaggedQ!==1?'s':'')+' across '+s.attnPapers+' paper'+(s.attnPapers!==1?'s':'')+' need a quick fix.')
-      : (s.pendingQ>0 ? (s.pendingQ+' question'+(s.pendingQ!==1?'s':'')+' waiting to be checked.') : 'Nothing flagged, nothing waiting — your library is clean.');
-    var circ=263.9, dash=Math.round(circ*s.cleanPct)/100;
-    return '<div class="hero">'+
-      '<svg class="hero-ring" viewBox="0 0 100 100" width="96" height="96" aria-hidden="true">'+
-        '<circle cx="50" cy="50" r="42" fill="none" stroke="#ffffff" stroke-width="9"/>'+
-        '<circle cx="50" cy="50" r="42" fill="none" stroke="var(--brass)" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+dash+' '+circ+'" transform="rotate(-90 50 50)"/>'+
-        '<text x="50" y="47" text-anchor="middle" class="hr-n">'+s.cleanPct+'%</text>'+
-        '<text x="50" y="61" text-anchor="middle" class="hr-l">clean</text>'+
-      '</svg>'+
-      '<div class="hero-txt">'+
-        '<span class="hero-badge">'+emoji+' '+mood+'</span>'+
-        '<div class="hero-msg">'+msg+'</div>'+
-        '<span class="hero-cta">You’ve got this! 🚀</span>'+
-      '</div>'+
-      '<span class="hero-spark">✦</span>'+
-    '</div>';
-  }
-  function statsHtml(s){
-    var cards=[
-      {l:'Papers live',        n:s.live,                     ic:'file-text',    col:'#0f766e', bg:'#d3f0ec'},
-      {l:'Questions verified', n:s.verifiedQ.toLocaleString(),ic:'circle-check', col:'#2a5b9c', bg:'#e8eef6'},
-      {l:'Flags to fix',       n:s.flaggedQ,                 ic:'flag',         col:'#e11d48', bg:'#ffe4e6'},
-      {l:'Reviewers',          n:s.reviewers,                ic:'users',        col:'#6b4ba0', bg:'#efe9f6'}
-    ];
-    return '<div class="vstats">'+cards.map(function(c){
-      return '<div class="vstat" style="border-top-color:'+c.col+'"><div class="vstat-top"><span class="vstat-ic" style="background:'+c.bg+';color:'+c.col+'"><i class="ti ti-'+c.ic+'"></i></span><span class="vstat-l">'+c.l+'</span></div><div class="vstat-n">'+c.n+'</div></div>';
-    }).join('')+'</div>';
   }
   function pipelineHtml(buckets){
     var active=buckets.pending.length+buckets.review.length+buckets.verified.length;
@@ -642,7 +637,12 @@
       var flags=list.reduce(function(a,p){return a+(p.flagged||0);},0);
       var right=(d.k==='review'&&flags>0)?'<span class="sec-link" data-gotoflags="1">See all '+flags+' flags →</span>':'<span class="sec-hint">'+d.hint+'</span>';
       var head='<div class="sec-h"><span class="dot" style="background:'+d.col+'"></span>'+d.t+' <span class="c">'+list.length+'</span>'+right+'</div>';
-      return '<div id="stage-'+d.k+'">'+head+'<div class="cont">'+list.map(paperCard).join('')+'</div></div>';
+      // Cap each section to 2 rows; a "Show all" toggle reveals the rest so a big
+      // stage never turns the dashboard into an endless scroll.
+      var CAP=8, expanded=!!EXPANDED[d.k];
+      var shown=expanded?list:list.slice(0,CAP);
+      var more=list.length>CAP ? '<div class="showall" data-showall="'+d.k+'">'+(expanded?'Show fewer ▴':'Show all '+list.length+' →')+'</div>' : '';
+      return '<div id="stage-'+d.k+'">'+head+'<div class="cont">'+shown.map(paperCard).join('')+'</div>'+more+'</div>';
     }).join('');
   }
   // Published as a compact by-subject chart + a search — not a long list.
@@ -667,9 +667,11 @@
     renderModes();
     var ov=OVERVIEW||[];
     if(!ov.length){ $('bd-overview').innerHTML=''; $('bd-list').innerHTML='<div class="empty">No papers yet.</div>'; $('bd-cov').innerHTML=''; return; }
+    // the subject/year filter narrows everything below the header controls
+    var view=ov.filter(function(p){ return (FILTER.subject==='all'||p.subject===FILTER.subject) && (FILTER.year==='all'||String(p.year)===String(FILTER.year)); });
     var buckets={pending:[],review:[],verified:[],published:[]};
     var totalQ=0, verifiedQ=0, flaggedQ=0, pendingQ=0, flaggedPapers=0;
-    ov.forEach(function(p){
+    view.forEach(function(p){
       totalQ+=(p.total||0); verifiedQ+=(p.verified||0); flaggedQ+=(p.flagged||0);
       if((p.flagged||0)>0) flaggedPapers++;
       var st=stageOf(p); (buckets[st]||buckets.pending).push(p);   // flagged → 'review', so it never lands in Published
@@ -677,9 +679,9 @@
     });
     PUBLISHED=buckets.published.slice();
     var counts={pending:buckets.pending.length,review:buckets.review.length,verified:buckets.verified.length,published:buckets.published.length};
-    // "Papers live" = the clean Published count, so it always matches the rail
+    // "Papers live" = the clean Published count, so it always matches the pipeline box
     var stats={ cleanPct: totalQ?Math.round(verifiedQ/totalQ*100):100, live:buckets.published.length, verifiedQ:verifiedQ, flaggedQ:flaggedQ, reviewers:(TEAM||[]).length, attnPapers:flaggedPapers, pendingQ:pendingQ };
-    $('bd-overview').innerHTML = heroHtml(stats)+statsHtml(stats)+stageRailHtml(counts);
+    $('bd-overview').innerHTML = dashHeaderHtml(stats, counts) + filterBarHtml(ov);
     $('bd-list').innerHTML = pipelineHtml(buckets);
     $('bd-cov').innerHTML = publishedHtml(buckets.published);
   }
@@ -688,6 +690,9 @@
     var rs=e.target.closest('[data-stage]'); if(rs){ var sec=$('stage-'+rs.getAttribute('data-stage')); if(sec){ if(sec.tagName==='DETAILS') sec.open=true; sec.scrollIntoView({behavior:'smooth',block:'start'}); } return; }
     var md=e.target.closest('[data-mode]'); if(md){ if(md.classList.contains('soon')){ toast('Chapter-practice verification is coming soon'); return; } setMode(md.getAttribute('data-mode')); return; }
     if(e.target.closest('[data-gotoflags]')){ setMode('flags'); return; }
+    var sa=e.target.closest('[data-showall]'); if(sa){ var k=sa.getAttribute('data-showall'); EXPANDED[k]=!EXPANDED[k]; renderPicker(); return; }
+    var fs=e.target.closest('[data-fsub]'); if(fs){ FILTER.subject=fs.getAttribute('data-fsub'); EXPANDED={}; renderPicker(); return; }
+    var fy=e.target.closest('[data-fyear]'); if(fy){ FILTER.year=fy.getAttribute('data-fyear'); EXPANDED={}; renderPicker(); return; }
   });
   // Published search — filter the (hidden) published list; empty box shows nothing.
   $('picker').addEventListener('input',function(e){
