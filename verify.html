@@ -241,21 +241,15 @@
   #picker .vstat.flag{background:var(--flag-bg);border-color:#fecdd3;}
   #picker .vstat.flag .l,#picker .vstat.flag .n{color:#9f1239;}
   @media(max-width:620px){#picker .vstats{grid-template-columns:repeat(2,1fr);}}
-  #picker .attn{background:var(--card);border:1px solid #fecdd3;border-left:3px solid var(--flag);border-radius:14px;padding:14px 16px;margin-bottom:16px;}
-  #picker .attn-h{display:flex;align-items:center;gap:9px;margin-bottom:4px;flex-wrap:wrap;}
-  #picker .attn-ic{color:var(--flag);font-size:14px;}
-  #picker .attn-t{font-family:'Fraunces',serif;font-size:16px;color:var(--forest);font-weight:600;}
-  #picker .attn-b{font-size:11.5px;font-weight:700;color:#9f1239;background:var(--flag-bg);border-radius:99px;padding:2px 10px;}
-  #picker .attn-note{margin-left:auto;font-size:11.5px;color:var(--faint);}
+  #picker .pc.flg{border-left-color:var(--flag);}
+  #picker .badge.flg{background:var(--flag-bg);color:#9f1239;}
+  #picker .sec-link{margin-left:auto;font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--flag);cursor:pointer;}
   #picker .att-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);cursor:pointer;}
   #picker .att-row:hover .att-go{color:var(--brass);}
   #picker .att-sbj{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:6px;padding:3px 7px;white-space:nowrap;flex-shrink:0;}
   #picker .att-t{flex:1;font-size:13.5px;font-weight:600;color:var(--forest);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   #picker .att-t span{color:var(--muted);font-weight:500;}
-  #picker .att-fl{font-size:11px;font-weight:700;color:#9f1239;background:var(--flag-bg);border-radius:99px;padding:2px 9px;flex-shrink:0;}
   #picker .att-go{font-size:12.5px;font-weight:600;color:var(--brass-deep);flex-shrink:0;}
-  #picker .att-more{font-size:12px;color:var(--muted);padding:8px 0 0;}
-  #picker .attn-all{text-align:center;margin-top:11px;padding-top:11px;border-top:1px solid var(--line);font-size:13px;font-weight:600;color:var(--brass-deep);cursor:pointer;}
   #picker .pipe-clear{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:16px 18px;color:var(--muted);font-size:13.5px;text-align:center;}
   #picker .pipe-clear b{color:var(--forest);font-weight:600;}
   #picker .pub{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px;margin-top:16px;}
@@ -536,10 +530,11 @@
   // ── the pipeline the desk is organised around (stage from server) ──
   function stageOf(p){
     if(p.stage) return p.stage;
+    if((p.flagged||0)>0) return 'review';   // a flag means it's being fixed — never cleanly published
     if(p.status==='live') return 'published';
-    var total=p.total||0, ver=p.verified||0, flg=p.flagged||0;
+    var total=p.total||0, ver=p.verified||0;
     if(total>0 && ver>=total) return 'verified';
-    if(ver>0 || flg>0) return 'review';
+    if(ver>0) return 'review';
     return 'pending';
   }
   var STAGE_DEFS=[
@@ -558,14 +553,16 @@
   function paperCard(p){
     var st=stageOf(p), c=subjCol(p.subject), nm=(SUBJ_CFG[p.subject]||{}).name||p.subject;
     var pct=p.total?Math.round(p.verified/p.total*100):0;
+    var flg=(p.flagged||0)>0;
     var badge, meta, go;
-    if(st==='pending'){ badge='<span class="badge todo">Not started</span>'; meta=(p.total||0)+' questions'; go='Start →'; }
+    if(flg){ badge='<span class="badge flg">⚑ '+p.flagged+' flagged</span>'; meta='needs a fix'; go='Open →'; }
+    else if(st==='pending'){ badge='<span class="badge todo">Not started</span>'; meta=(p.total||0)+' questions'; go='Start →'; }
     else if(st==='review'){ badge='<span class="badge prog">'+p.verified+'/'+p.total+'</span>'; meta=pct+'% checked'; go='Continue →'; }
     else { badge='<span class="badge done">✓ Verified</span>'; meta='by '+esc(p.verifiedBy||'team'); go='Open →'; }
-    return '<div class="pc" data-open="'+p.id+'" style="--ac:'+c.fg+'">'+
+    return '<div class="pc'+(flg?' flg':'')+'" data-open="'+p.id+'" style="--ac:'+(flg?'var(--flag)':c.fg)+'">'+
       '<div class="pc-top"><span class="sbj" style="background:'+c.bg+';color:'+c.fg+'">'+esc(nm)+'</span><span>'+badge+'</span></div>'+
       '<div class="pc-t">SEE '+p.year+' <span>· '+esc(p.province)+'</span></div>'+
-      (st==='review'?'<div class="pbar"><b style="width:'+pct+'%"></b></div>':'')+
+      (st==='review'&&!flg?'<div class="pbar"><b style="width:'+pct+'%"></b></div>':'')+
       '<div class="pc-b"><span>'+meta+'</span><span class="go">'+go+'</span></div></div>';
   }
   // energetic top: a "% clean" ring + a one-line mood + four stat tiles
@@ -593,35 +590,21 @@
       '<div class="vstat"><div class="l">Reviewers</div><div class="n">'+s.reviewers+'</div></div>'+
     '</div>';
   }
-  // flags live here now (not a top-level mode) — flagged papers pulled out of Published
-  function attentionHtml(list){
-    if(!list.length) return '';
-    var totalFlags=list.reduce(function(a,p){return a+(p.flagged||0);},0);
-    var rows=list.slice().sort(function(a,b){return (b.flagged||0)-(a.flagged||0);}).slice(0,6).map(function(p){
-      var c=subjCol(p.subject), nm=(SUBJ_CFG[p.subject]||{}).name||p.subject;
-      return '<div class="att-row" data-open="'+p.id+'"><span class="att-sbj" style="background:'+c.bg+';color:'+c.fg+'">'+esc(nm)+'</span>'+
-        '<span class="att-t">SEE '+p.year+' <span>· '+esc(p.province)+'</span></span>'+
-        '<span class="att-fl">⚑ '+p.flagged+'</span><span class="att-go">Open →</span></div>';
-    }).join('');
-    var more=list.length>6?'<div class="att-more">+'+(list.length-6)+' more paper'+(list.length-6!==1?'s':'')+'</div>':'';
-    return '<div class="attn"><div class="attn-h"><span class="attn-ic">⚑</span><span class="attn-t">Needs attention</span>'+
-      '<span class="attn-b">'+list.length+' paper'+(list.length!==1?'s':'')+' · '+totalFlags+' flags</span>'+
-      '<span class="attn-note">live now — pulled out of published</span></div>'+
-      rows+more+'<div class="attn-all" data-gotoflags="1">See all '+totalFlags+' flagged questions →</div></div>';
-  }
   function pipelineHtml(buckets){
     var active=buckets.pending.length+buckets.review.length+buckets.verified.length;
     if(!active) return '<div class="pipe-clear"><b>Pipeline’s clear.</b> Every paper is published. New papers will land in <b>Pending</b> here.</div>';
     var defs=[
       {k:'pending', t:'Pending', hint:'new papers waiting', col:'#8b93a0', empty:'No new papers waiting.'},
-      {k:'review', t:'In review', hint:'being checked now', col:'#f59e0b', empty:'Nothing in review.'},
+      {k:'review', t:'In review', hint:'flagged or being checked — fix these first', col:'#f59e0b', empty:'Nothing in review.'},
       {k:'verified', t:'Verified', hint:'ready — admin can publish', col:'#16a34a', empty:null}
     ];
     return defs.map(function(d){
       var list=(buckets[d.k]||[]).slice();
-      if(d.k==='review') list.sort(function(a,b){var pa=a.total?a.verified/a.total:0,pb=b.total?b.verified/b.total:0;return pb-pa;});
+      if(d.k==='review') list.sort(function(a,b){ return (b.flagged||0)-(a.flagged||0) || ((b.total?b.verified/b.total:0)-(a.total?a.verified/a.total:0)); });
       else list.sort(function(a,b){return (b.year-a.year)||(((SUBJ_CFG[a.subject]||{}).order||9)-((SUBJ_CFG[b.subject]||{}).order||9));});
-      var head='<div class="sec-h"><span class="dot" style="background:'+d.col+'"></span>'+d.t+' <span class="c">'+list.length+'</span><span class="sec-hint">'+d.hint+'</span></div>';
+      var flags=list.reduce(function(a,p){return a+(p.flagged||0);},0);
+      var right=(d.k==='review'&&flags>0)?'<span class="sec-link" data-gotoflags="1">See all '+flags+' flags →</span>':'<span class="sec-hint">'+d.hint+'</span>';
+      var head='<div class="sec-h"><span class="dot" style="background:'+d.col+'"></span>'+d.t+' <span class="c">'+list.length+'</span>'+right+'</div>';
       if(!list.length){ if(d.empty==null) return ''; return '<div id="stage-'+d.k+'">'+head+'<div class="empty">'+d.empty+'</div></div>'; }
       return '<div id="stage-'+d.k+'">'+head+'<div class="cont">'+list.map(paperCard).join('')+'</div></div>';
     }).join('');
@@ -643,18 +626,19 @@
     renderModes();
     var ov=OVERVIEW||[];
     if(!ov.length){ $('bd-overview').innerHTML=''; $('bd-continue').innerHTML=''; $('bd-list').innerHTML='<div class="empty">No papers yet.</div>'; return; }
-    var buckets={pending:[],review:[],verified:[],published:[]}, attn=[];
-    var totalQ=0, verifiedQ=0, flaggedQ=0, pendingQ=0, live=0;
+    var buckets={pending:[],review:[],verified:[],published:[]};
+    var totalQ=0, verifiedQ=0, flaggedQ=0, pendingQ=0, flaggedPapers=0;
     ov.forEach(function(p){
       totalQ+=(p.total||0); verifiedQ+=(p.verified||0); flaggedQ+=(p.flagged||0);
-      if(p.status==='live') live++;
-      if((p.flagged||0)>0){ attn.push(p); }           // flagged papers surface as "Needs attention", out of their stage
-      else { var st=stageOf(p); (buckets[st]||buckets.pending).push(p); if(st==='pending') pendingQ+=(p.total||0); }
+      if((p.flagged||0)>0) flaggedPapers++;
+      var st=stageOf(p); (buckets[st]||buckets.pending).push(p);   // flagged → 'review', so it never lands in Published
+      if(st==='pending') pendingQ+=(p.total||0);
     });
     PUBLISHED=buckets.published.slice();
     var counts={pending:buckets.pending.length,review:buckets.review.length,verified:buckets.verified.length,published:buckets.published.length};
-    var stats={ cleanPct: totalQ?Math.round(verifiedQ/totalQ*100):100, live:live, verifiedQ:verifiedQ, flaggedQ:flaggedQ, reviewers:(TEAM||[]).length, attnPapers:attn.length, pendingQ:pendingQ };
-    $('bd-overview').innerHTML = heroHtml(stats)+statsHtml(stats)+attentionHtml(attn)+stageRailHtml(counts);
+    // "Papers live" = the clean Published count, so it always matches the rail
+    var stats={ cleanPct: totalQ?Math.round(verifiedQ/totalQ*100):100, live:buckets.published.length, verifiedQ:verifiedQ, flaggedQ:flaggedQ, reviewers:(TEAM||[]).length, attnPapers:flaggedPapers, pendingQ:pendingQ };
+    $('bd-overview').innerHTML = heroHtml(stats)+statsHtml(stats)+stageRailHtml(counts);
     $('bd-continue').innerHTML = '';
     $('bd-list').innerHTML = pipelineHtml(buckets)+publishedHtml(buckets.published);
   }

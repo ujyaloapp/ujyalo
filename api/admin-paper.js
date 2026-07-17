@@ -157,10 +157,13 @@ export default async function handler(req, res) {
         for (const e in by) { if (by[e] > topN) { topN = by[e]; topBy = e; } }
         if (fully && topBy && team[topBy]) { team[topBy].papers++; }
         // Pipeline stage — the one place the ladder is defined; both the verify
-        // desk and admin read this instead of each deriving their own.
-        const stage = (p.status || '') === 'live' ? 'published'
-                    : fully                        ? 'verified'
-                    : (verified > 0 || flagged > 0) ? 'review'
+        // desk and admin read this instead of each deriving their own. A flagged
+        // paper is "In review" (being fixed) even if still live, so it never sits
+        // in Published — that keeps the four stages summing to the total.
+        const stage = flagged > 0                   ? 'review'
+                    : (p.status || '') === 'live'   ? 'published'
+                    : fully                         ? 'verified'
+                    : verified > 0                  ? 'review'
                     :                                 'pending';
         return {
           id: p.id, year: p.year, province: p.province, status: p.status || '',

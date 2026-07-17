@@ -109,7 +109,7 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
 .prow .pt{flex:1;font-weight:600;font-size:14px;color:var(--forest);min-width:150px;}
 .prow .pt span{color:var(--muted);font-weight:500;}
 .pill{font-size:11px;font-weight:700;border-radius:99px;padding:4px 11px;}
-.pill.ready{background:#fff3da;color:#92600a;}.pill.live{background:var(--green-bg);color:#15803d;}.pill.draft{background:var(--parch-2);color:var(--muted);}
+.pill.ready{background:#fff3da;color:#92600a;}.pill.live{background:var(--green-bg);color:#15803d;}.pill.draft{background:var(--parch-2);color:var(--muted);}.pill.flag{background:var(--rust-bg);color:#9f1239;}
 .btn{font-size:13px;font-weight:600;border-radius:9px;padding:8px 15px;border:none;cursor:pointer;font-family:inherit;}
 .btn.pub{background:var(--brass);color:#fff;}.btn.pub:hover{background:var(--brass-deep);}
 .btn.unpub{background:var(--card);color:#e11d48;border:1px solid var(--line);}.btn.unpub:hover{border-color:#e11d48;}
@@ -454,8 +454,9 @@ function renderReady(){
     var live = p.status==='live';
     var meta = 'Verified by '+esc(p.verifiedBy||'team')+(p.verifiedAt?(' · '+fmtDate(p.verifiedAt)):'')+' · '+p.verified+'/'+p.total+' questions';
     var left = Math.max(0,(p.total||0)-(p.verified||0));
-    var verBadge = p.fully ? '<span class="pill live">✓ Verified</span>'
-                           : '<span class="pill ready">⚑ '+left+' to check</span>';
+    var verBadge = (p.flagged||0)>0 ? '<span class="pill flag">⚑ '+p.flagged+' flagged</span>'
+                 : p.fully           ? '<span class="pill live">✓ Verified</span>'
+                 :                     '<span class="pill ready">⚑ '+left+' to check</span>';
     var liveBadge = live ? '<span class="pill live">● Live</span>' : '<span class="pill draft">Not live</span>';
     // Live -> can always be taken down. Not live -> only a fully verified paper may go up.
     var btn = live ? '<button class="btn unpub" data-unpub="'+p.id+'">Unpublish</button>'
@@ -468,11 +469,9 @@ function renderReady(){
   // exactly one group (first match wins). Note a fully verified paper never has flags:
   // flagging a question clears its verified mark.
   var GROUPS=[
-    {t:'Needs attention', s:'A partner flagged something. Anything live has been pulled back for a fix.',
-     f:function(p){ return (p.flagged||0)>0; }, open:true},
     {t:'Pending', s:'Entered and waiting for a partner to start checking.',
      f:function(p){ return p.stage==='pending'; }, open:true},
-    {t:'In review', s:'A partner has started — being checked now.',
+    {t:'In review', s:'Flagged or being checked — fix these first.',
      f:function(p){ return p.stage==='review'; }, open:true},
     {t:'Ready to publish', s:'Every question checked. One click takes it live.',
      f:function(p){ return p.stage==='verified'; }, open:true},
