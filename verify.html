@@ -525,7 +525,9 @@
     var el=$('bd-modes'); if(!el) return;
     el.innerHTML=MODES.map(function(m){
       var badge=m.flag?' <span class="flagn" id="flagn">'+esc(FLAGS_N||'')+'</span>':'';
-      return '<button class="ms'+(m.key===CUR_MODE?' on':'')+(m.soon?' soon':'')+'" data-mode="'+esc(m.key)+'">'+esc(m.label)+badge+(m.soon?' · soon':'')+'</button>';
+      // Flags is a sub-view of Past papers, so keep "Past papers" active there too.
+      var on=(m.key===CUR_MODE)||(m.key==='papers' && CUR_MODE==='flags');
+      return '<button class="ms'+(on?' on':'')+(m.soon?' soon':'')+'" data-mode="'+esc(m.key)+'">'+esc(m.label)+badge+(m.soon?' · soon':'')+'</button>';
     }).join('');
   }
   function renderTeam(){
