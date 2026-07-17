@@ -512,6 +512,51 @@
 }
 
 .cp-model-ans-body { font-size: 15px; color: var(--ink-700); line-height: 1.9; white-space: pre-line; }
+.cp-model-ans-body svg { max-width: 100%; height: auto; display: block; margin: 8px 0; }
+
+/* ─── Real-paper extras: figure, parts, MCQ, language ── */
+.cp-lang-toggle {
+  font-size: 12px; font-weight: 600; color: var(--brand);
+  background: #d3f0ec; border: none;
+  padding: 4px 12px; border-radius: 999px; cursor: pointer; font-family: inherit;
+}
+.cp-lang-toggle:hover { background: #bfe8e2; }
+
+.cp-q-figure { display: flex; justify-content: center; margin: 4px 0 18px; }
+.cp-q-figure svg { max-width: 100%; height: auto; }
+
+.cp-q-parts { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.cp-part { display: flex; gap: 10px; align-items: baseline; font-size: 16px; line-height: 1.55; color: var(--ink-900); }
+.cp-part-lbl { font-weight: 700; color: var(--brand); flex-shrink: 0; }
+.cp-part-q { flex: 1; }
+.cp-part-q sub, .cp-part-q sup { line-height: 0; }
+.cp-part-mk { font-size: 12px; color: var(--ink-300); flex-shrink: 0; white-space: nowrap; font-weight: 600; }
+
+.cp-mcq { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.cp-opt {
+  text-align: left; border: 1.5px solid var(--ink-100); background: white;
+  border-radius: 12px; padding: 12px 16px; font-family: inherit; font-size: 15px;
+  color: var(--ink-900); cursor: pointer; transition: all 0.15s; display: flex;
+  justify-content: space-between; align-items: center; gap: 8px;
+}
+.cp-opt:hover:not(.locked) { border-color: var(--brand); background: var(--ink-50); }
+.cp-opt.correct { border-color: #86efac; background: var(--green-light); color: #166534; }
+.cp-opt.wrong { border-color: #fca5a5; background: #fef2f2; color: #b91c1c; }
+.cp-opt.locked { cursor: default; }
+.cp-opt-tick { font-weight: 700; }
+
+.cp-btn-almost {
+  background: #fefce8; color: #a16207; border: 1.5px solid #fde68a;
+  padding: 10px 18px; border-radius: 999px; font-family: inherit; font-size: 13px;
+  font-weight: 700; cursor: pointer; transition: all 0.2s;
+}
+.cp-btn-almost:hover { background: #fef9c3; }
+.cp-btn-missed {
+  background: #fef2f2; color: #b91c1c; border: 1.5px solid #fecaca;
+  padding: 10px 18px; border-radius: 999px; font-family: inherit; font-size: 13px;
+  font-weight: 700; cursor: pointer; transition: all 0.2s;
+}
+.cp-btn-missed:hover { background: #fee2e2; }
 
 /* ─── Self assess ─────────────────────────────── */
 .cp-self-assess {
@@ -860,44 +905,25 @@
           <div class="cp-empty-sub" id="cp-empty-sub">Choose any chapter and your first SEE question appears instantly.</div>
         </div>
 
-        <!-- Formulas & Tips toggle -->
-        <div class="hidden" id="cp-tips-wrap">
-          <button class="cp-tips-toggle" id="cp-tips-toggle" onclick="toggleTips()">
-            <span>📋 Key Formulas & Common Mistakes</span>
-            <span class="cp-tips-toggle-arrow">▼</span>
-          </button>
-          <div class="cp-tips-panel" id="cp-tips-panel">
-            <div id="cp-formulas-section"></div>
-            <div id="cp-mistakes-section"></div>
-          </div>
-        </div>
-
         <!-- Question card -->
         <div class="cp-q-card hidden" id="cp-q-card">
           <div class="cp-q-meta">
             <span class="cp-q-num" id="cp-q-num">Q1</span>
             <span class="cp-q-marks" id="cp-q-marks">2 marks</span>
+            <button class="cp-lang-toggle hidden" id="cp-lang-toggle" onclick="CP.toggleLang()">नेपाली</button>
           </div>
+          <div class="cp-q-figure hidden" id="cp-q-figure"></div>
           <div class="cp-q-text" id="cp-q-text"></div>
-          <textarea class="cp-ans" id="cp-ans"
-            placeholder="Write your answer here…&#10;&#10;Show your working — just like in the real SEE exam."></textarea>
-          <div class="cp-ans-warning" id="cp-ans-warning">
-            ✏️ Please write something first — even a guess. That's how learning happens!
-          </div>
-          <div class="cp-q-actions">
+          <div class="cp-q-parts hidden" id="cp-q-parts"></div>
+          <div class="cp-mcq hidden" id="cp-mcq"></div>
+          <div class="cp-q-actions" id="cp-q-actions">
             <button class="cp-btn-skip" onclick="CP.skip()">
               <i class="ti ti-player-skip-forward" aria-hidden="true"></i> Skip
             </button>
-            <button class="cp-btn-check" onclick="CP.showAnswer()">
-              Check answer →
+            <button class="cp-btn-check" id="cp-btn-check" onclick="CP.showAnswer()">
+              Show answer
             </button>
           </div>
-        </div>
-
-        <!-- Student answer -->
-        <div class="cp-student-ans hidden" id="cp-student-ans">
-          <div class="cp-student-ans-title">Your answer</div>
-          <div class="cp-student-ans-body" id="cp-student-ans-body"></div>
         </div>
 
         <!-- Model answer -->
@@ -908,10 +934,11 @@
 
         <!-- Self assessment -->
         <div class="cp-self-assess hidden" id="cp-self-assess">
-          <p>Did you get it right?</p>
-          <div class="cp-self-btns">
-            <button class="cp-btn-got-it" onclick="CP.gotIt()">✓ Yes, I got it!</button>
-            <button class="cp-btn-next-q" onclick="CP.next()">Next question →</button>
+          <p id="cp-assess-q">How did you do?</p>
+          <div class="cp-self-btns" id="cp-self-btns">
+            <button class="cp-btn-got-it" onclick="CP.assess('got')">✓ Got it</button>
+            <button class="cp-btn-almost" onclick="CP.assess('almost')">~ Almost</button>
+            <button class="cp-btn-missed" onclick="CP.assess('missed')">✗ Missed</button>
           </div>
         </div>
 
@@ -1190,11 +1217,9 @@ function switchSubject(subject) {
   fetchSubjectStructure(subject);
   $('cp-empty').classList.remove('hidden');
   $('cp-q-card').classList.add('hidden');
-  $('cp-student-ans').classList.add('hidden');
   $('cp-model-ans').classList.add('hidden');
   $('cp-self-assess').classList.add('hidden');
   $('cp-complete').classList.add('hidden');
-  $('cp-tips-wrap').classList.add('hidden');
   currentChapter = null;
   currentChapterIdx = -1;
   questionIndex = 0;
@@ -1296,7 +1321,7 @@ async function fetchQuestionCounts(subject) {
     const byChapter = {};
     allQs.forEach(function(q) {
       if (!byChapter[q.chapter_name]) byChapter[q.chapter_name] = [];
-      byChapter[q.chapter_name].push({ q: q.question_text, a: q.answer_text, m: q.marks });
+      byChapter[q.chapter_name].push(mapQ(q));
     });
 
     window._qCache[subject] = byChapter;
@@ -1420,16 +1445,53 @@ function startChapter(ch, idx) {
   openGroupForChapter(idx);
 
   $('cp-ctx-ch').textContent = ch.name;
-  renderTips(ch);
   updateProgress();
   loadQuestion();
 }
+
+/* ── Map a DB row → a rich question object (handles single, multi-part & MCQ) ── */
+function mapQ(row) {
+  const parts = Array.isArray(row.parts) ? row.parts : null;
+  const hasOpts = !!(row.option_a || row.option_b || row.option_c || row.option_d);
+  const total = (parts && parts.length)
+    ? parts.reduce((s, p) => s + (Number(p.marks) || 0), 0)
+    : (Number(row.marks) || 0);
+  return {
+    type: (row.question_type === 'mcq' || hasOpts) ? 'mcq' : 'written',
+    stem: row.question_text || '',
+    stem_np: row.question_text_np || '',
+    a: row.answer_text || '',
+    a_np: row.answer_text_np || '',
+    m: total,
+    diagram: row.diagram_svg || '',
+    parts: parts,
+    opts: hasOpts ? { a: row.option_a, b: row.option_b, c: row.option_c, d: row.option_d } : null,
+    correct: (row.correct_option || '').toString().trim().toLowerCase() || null,
+    explanation: row.explanation || ''
+  };
+}
+
+/* ── Render text that may contain simple HTML (sup/sub/tables/svg); else plain ── */
+function renderRich(el, text) {
+  if (!text) { el.innerHTML = ''; return; }
+  if (/<(svg|sub|sup|br|span|table|thead|tbody|tr|td|th|i>|i |b>|strong|em|div|ul|ol|li|p>|p |overline)/i.test(text)
+      || /&[a-zA-Z#0-9]+;/.test(text)) {
+    el.innerHTML = text;
+  } else {
+    el.textContent = text;
+  }
+}
+
+const ROMAN = { a: 'i', b: 'ii', c: 'iii', d: 'iv' };
+const ASSESS_BTNS =
+  '<button class="cp-btn-got-it" onclick="CP.assess(\'got\')">✓ Got it</button>' +
+  '<button class="cp-btn-almost" onclick="CP.assess(\'almost\')">~ Almost</button>' +
+  '<button class="cp-btn-missed" onclick="CP.assess(\'missed\')">✗ Missed</button>';
 
 /* ── Load question ── */
 async function loadQuestion() {
   $('cp-empty').classList.add('hidden');
   $('cp-complete').classList.add('hidden');
-  $('cp-student-ans').classList.add('hidden');
   $('cp-model-ans').classList.add('hidden');
   $('cp-self-assess').classList.add('hidden');
 
@@ -1445,11 +1507,7 @@ async function loadQuestion() {
       const data = await res.json();
 
       if (data && data.length > 0) {
-        currentChapter.qs = data.map(q => ({
-          q: q.question_text,
-          a: q.answer_text,
-          m: q.marks
-        }));
+        currentChapter.qs = data.map(mapQ);
       } else {
         $('cp-empty-icon').textContent = '📝';
         document.querySelector('.cp-empty-title').textContent = 'Questions coming soon';
@@ -1469,14 +1527,7 @@ async function loadQuestion() {
   const q = currentChapter.qs[questionIndex];
   if (!q) { showComplete(); return; }
 
-  $('cp-q-num').textContent   = `Q${questionIndex + 1} of ${currentChapter.qs.length}`;
-  $('cp-q-marks').textContent = `${q.m} mark${q.m > 1 ? 's' : ''}`;
-  $('cp-q-text').textContent  = q.q;
-  $('cp-ans').value           = '';
-  $('cp-ans').disabled        = false;
-  $('cp-ans').style.opacity   = '1';
-  $('cp-ans').classList.remove('shake');
-  $('cp-ans-warning').style.display = 'none';
+  renderQuestion(q);
 
   const card = $('cp-q-card');
   card.classList.remove('hidden');
@@ -1485,6 +1536,85 @@ async function loadQuestion() {
   card.style.animation = '';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── Render the current question in the chosen language ── */
+function renderQuestion(q) {
+  const useNp = CP.lang === 'np';
+
+  // meta
+  $('cp-q-num').textContent   = `Q${questionIndex + 1} of ${currentChapter.qs.length}`;
+  $('cp-q-marks').textContent = q.type === 'mcq'
+    ? `${q.m} mark${q.m > 1 ? 's' : ''} · MCQ`
+    : `${q.m} mark${q.m > 1 ? 's' : ''}`;
+
+  // language toggle — shown only when a Nepali version exists
+  const hasNp = !!(q.stem_np || (q.parts && q.parts.some(p => p.q_np)));
+  const tgl = $('cp-lang-toggle');
+  if (hasNp) { tgl.classList.remove('hidden'); tgl.textContent = useNp ? 'English' : 'नेपाली'; }
+  else { tgl.classList.add('hidden'); }
+
+  // figure
+  const fig = $('cp-q-figure');
+  if (q.diagram) { fig.innerHTML = q.diagram; fig.classList.remove('hidden'); }
+  else { fig.innerHTML = ''; fig.classList.add('hidden'); }
+
+  // stem
+  renderRich($('cp-q-text'), useNp && q.stem_np ? q.stem_np : q.stem);
+
+  // parts
+  const partsEl = $('cp-q-parts');
+  partsEl.innerHTML = '';
+  if (q.parts && q.parts.length) {
+    q.parts.forEach(p => {
+      const row = document.createElement('div');
+      row.className = 'cp-part';
+      const lbl = document.createElement('span');
+      lbl.className = 'cp-part-lbl';
+      lbl.textContent = (p.sub || '') + ')';
+      const txt = document.createElement('span');
+      txt.className = 'cp-part-q';
+      renderRich(txt, useNp && p.q_np ? p.q_np : (p.q || ''));
+      const mk = document.createElement('span');
+      mk.className = 'cp-part-mk';
+      mk.textContent = (p.marks != null) ? `[${p.marks}]` : '';
+      row.appendChild(lbl); row.appendChild(txt); row.appendChild(mk);
+      partsEl.appendChild(row);
+    });
+    partsEl.classList.remove('hidden');
+  } else {
+    partsEl.classList.add('hidden');
+  }
+
+  // reset answer/self-assess state
+  $('cp-self-btns').innerHTML = ASSESS_BTNS;
+  $('cp-assess-q').textContent = 'How did you do?';
+
+  // MCQ options vs written "Show answer"
+  const mcqEl = $('cp-mcq');
+  const actions = $('cp-q-actions');
+  mcqEl.innerHTML = '';
+  if (q.type === 'mcq' && q.opts) {
+    ['a','b','c','d'].forEach(k => {
+      if (!q.opts[k]) return;
+      const btn = document.createElement('button');
+      btn.className = 'cp-opt';
+      btn.dataset.key = k;
+      const label = document.createElement('span');
+      renderRich(label, `(${ROMAN[k]}) ${q.opts[k]}`);
+      const tick = document.createElement('span');
+      tick.className = 'cp-opt-tick';
+      btn.appendChild(label); btn.appendChild(tick);
+      btn.onclick = () => CP.answerMcq(k);
+      mcqEl.appendChild(btn);
+    });
+    mcqEl.classList.remove('hidden');
+    actions.classList.add('hidden');
+  } else {
+    mcqEl.classList.add('hidden');
+    actions.classList.remove('hidden');
+    $('cp-btn-check').classList.remove('hidden');
+  }
 }
 
 /* ── Progress ── */
@@ -1498,7 +1628,6 @@ function updateProgress() {
 /* ── Chapter complete ── */
 function showComplete() {
   $('cp-q-card').classList.add('hidden');
-  $('cp-student-ans').classList.add('hidden');
   $('cp-model-ans').classList.add('hidden');
   $('cp-self-assess').classList.add('hidden');
 
@@ -1616,54 +1745,78 @@ function findGroupForChapter(chapterName) {
 
 /* ── Practice engine ── */
 const CP = {
+  lang: 'en',
+
+  toggleLang() {
+    this.lang = this.lang === 'en' ? 'np' : 'en';
+    const q = currentChapter.qs[questionIndex];
+    if (!q) return;
+    const answerShown = !$('cp-model-ans').classList.contains('hidden');
+    renderQuestion(q);
+    // re-reveal the answer in the new language if it was already open
+    if (answerShown) {
+      renderRich($('cp-model-ans-body'), (this.lang === 'np' && q.a_np) ? q.a_np : q.a);
+      $('cp-model-ans').classList.remove('hidden');
+      $('cp-self-assess').classList.remove('hidden');
+      $('cp-btn-check').classList.add('hidden');
+    }
+  },
 
   showAnswer() {
-    const ans = $('cp-ans').value.trim();
-    if (!ans) {
-      const area = $('cp-ans');
-      area.classList.remove('shake');
-      area.offsetHeight;
-      area.classList.add('shake');
-      $('cp-ans-warning').style.display = 'block';
-      area.focus();
-      return;
-    }
-
     const q = currentChapter.qs[questionIndex];
-    $('cp-ans-warning').style.display = 'none';
-    $('cp-ans').classList.remove('shake');
-    $('cp-student-ans-body').textContent = ans;
-    $('cp-student-ans').classList.remove('hidden');
-    $('cp-model-ans-body').textContent = q.a;
+    renderRich($('cp-model-ans-body'), (this.lang === 'np' && q.a_np) ? q.a_np : q.a);
     $('cp-model-ans').classList.remove('hidden');
     $('cp-self-assess').classList.remove('hidden');
-    $('cp-ans').disabled      = true;
-    $('cp-ans').style.opacity = '0.6';
+    $('cp-btn-check').classList.add('hidden');
 
     totalAnswered++;
     updateProgress();
     $('cp-model-ans').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   },
 
-  gotIt() {
-    gotItCount++;
+  answerMcq(key) {
+    const q = currentChapter.qs[questionIndex];
+    const correct = q.correct;
+    $('cp-mcq').querySelectorAll('.cp-opt').forEach(b => {
+      b.classList.add('locked');
+      b.onclick = null;
+      const tick = b.querySelector('.cp-opt-tick');
+      if (b.dataset.key === correct) { b.classList.add('correct'); if (tick) tick.textContent = '✓'; }
+      else if (b.dataset.key === key) { b.classList.add('wrong'); if (tick) tick.textContent = '✗'; }
+    });
+
+    const right = key === correct;
+    if (right) gotItCount++;
+    totalAnswered++;
+
+    const expl = (this.lang === 'np' && q.a_np) ? q.a_np : (q.explanation || q.a);
+    if (expl) { renderRich($('cp-model-ans-body'), expl); $('cp-model-ans').classList.remove('hidden'); }
+
+    $('cp-assess-q').textContent = right ? 'Correct! 🎉' : 'Not quite — see the answer.';
+    $('cp-self-btns').innerHTML = '<button class="cp-btn-next-q" onclick="CP.next()">Next question →</button>';
+    $('cp-self-assess').classList.remove('hidden');
+    updateProgress();
+  },
+
+  assess(kind) {
+    if (kind === 'got') gotItCount++;
     const assess = $('cp-self-assess');
-    assess.classList.add('celebrating');
-    setTimeout(() => { assess.classList.remove('celebrating'); this.next(); }, 400);
+    if (kind === 'got') {
+      assess.classList.add('celebrating');
+      setTimeout(() => { assess.classList.remove('celebrating'); this.next(); }, 350);
+    } else {
+      this.next();
+    }
   },
 
   next() {
     questionIndex++;
-    $('cp-ans').disabled      = false;
-    $('cp-ans').style.opacity = '1';
     questionIndex >= currentChapter.qs.length ? showComplete() : loadQuestion();
     updateProgress();
   },
 
   skip() {
     questionIndex++;
-    $('cp-ans').disabled      = false;
-    $('cp-ans').style.opacity = '1';
     questionIndex >= currentChapter.qs.length ? showComplete() : loadQuestion();
     updateProgress();
   },
