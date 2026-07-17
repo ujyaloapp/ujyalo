@@ -49,7 +49,6 @@
   .dq-rm:hover{border-color:#e11d48;}
   .dq-empty,.dq-loading{color:#52606d;font-size:13px;padding:16px;text-align:center;border:1px dashed #e6eae8;border-radius:10px;}
   @media(max-width:760px){.dq-cols{grid-template-columns:1fr;}}
-  .pb-paper{font-family:'Fraunces',serif;font-weight:600;color:var(--forest);font-size:14px;padding-left:12px;margin-left:4px;border-left:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .vt{font-family:'Outfit';font-size:13px;font-weight:600;border:none;background:transparent;color:var(--muted);padding:6px 12px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:6px;}
   .vt.on{background:var(--card);color:var(--forest);box-shadow:0 1px 3px #0000001a;}
   .flagn{background:var(--flag);color:#fff;border-radius:99px;font-size:10px;padding:1px 6px;min-width:16px;text-align:center;}
@@ -354,7 +353,6 @@
   </div>
   <div class="paperbar">
     <div class="vtabs" id="vtabs"></div>
-    <span class="pb-paper hidden" id="pb-paper"></span>
   </div>
 
   <div class="wrap" id="main-wrap">
@@ -503,7 +501,7 @@
   async function dqAdd(qnum){ var pid=$('dq-paper').value; if(!pid)return; try{ await dailyPost('daily-add',{paper_id:pid,question_number:+qnum}); toast('Added to daily pool'); await loadDailyPool(); loadCandidates(pid); }catch(e){ toast(e.message||'Could not add'); } }
   async function dqRemove(id){ try{ await dailyPost('daily-remove',{id:id}); toast('Removed from pool'); await loadDailyPool(); if($('dq-paper').value) loadCandidates($('dq-paper').value); }catch(e){ toast('Could not remove'); } }
   (function(){ var s=$('dq-paper'); if(s) s.addEventListener('change',function(){ loadCandidates(this.value); }); var v=$('picker-daily'); if(v) v.addEventListener('click',function(e){ var a=e.target.closest('[data-add]'); if(a){ dqAdd(a.getAttribute('data-add')); return; } var rm=e.target.closest('[data-rm]'); if(rm){ dqRemove(rm.getAttribute('data-rm')); return; } }); })();
-  function updatePbPaper(){ var show=!!DATA && !$('paperview').classList.contains('hidden') && !$('editor').classList.contains('hidden'); $('pb-paper').classList.toggle('hidden',!show); }
+  function updatePbPaper(){ var pb=$('pb-paper'); if(!pb) return; var show=!!DATA && !$('paperview').classList.contains('hidden') && !$('editor').classList.contains('hidden'); pb.classList.toggle('hidden',!show); }
 
   // ── picker (subject → year → province) ──
   // Always land back on the papers dashboard (never the flags list you came from).
@@ -790,7 +788,6 @@
     try{ DATA=await apiGet('load','paper_id='+encodeURIComponent(id)); PAPER=DATA.paper.id; PAPER_TOTAL=DATA.paper.total_marks||75; IS_ENG=!!DATA.isEnglish;
       var cf=SUBJ_CFG[(DATA.subject||{}).code]||{name:(DATA.subject||{}).name||''};
       $('paper-title').textContent='SEE '+DATA.paper.year+' · '+DATA.paper.province+' · '+cf.name;
-      $('pb-paper').textContent='SEE '+DATA.paper.year+' · '+DATA.paper.province+' · '+cf.name;
       updatePbPaper();
       render();
     }catch(e){ $('questions').innerHTML='<div class="empty-state">Could not load this paper.</div>'; toast('Load failed'); }
