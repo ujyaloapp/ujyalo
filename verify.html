@@ -274,6 +274,23 @@
   #picker .vc-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);}
   #picker .vl-empty{grid-column:1/-1;text-align:center;color:var(--faint);font-size:12px;padding:14px 0;}
 
+  /* ── stage pipeline (pending → review → verified → published) ── */
+  #picker .rail{display:flex;align-items:stretch;gap:6px;margin:6px 0 10px;flex-wrap:wrap;}
+  #picker .rail-seg{flex:1;min-width:112px;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--faint);border-radius:0 0 11px 11px;padding:11px 13px;cursor:pointer;text-align:left;font-family:inherit;display:flex;flex-direction:column;gap:3px;}
+  #picker .rail-seg:hover{border-color:var(--brass);}
+  #picker .rail-l{font-size:12px;color:var(--muted);font-weight:600;}
+  #picker .rail-n{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--forest);line-height:1;}
+  #picker .rail-arr{align-self:center;color:var(--faint);font-size:18px;}
+  #picker .sec-h .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  #picker .sec-hint{margin-left:auto;font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--faint);}
+  #picker .badge.live{background:var(--green-bg);color:#166534;}
+  #picker .pubwrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:2px 16px;margin-top:18px;}
+  #picker .pubwrap>summary{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);cursor:pointer;padding:12px 2px;list-style:none;}
+  #picker .pubwrap>summary::-webkit-details-marker{display:none;}
+  #picker .pubwrap .c{background:var(--parch-2);border-radius:99px;padding:1px 9px;font-size:11px;color:var(--muted);}
+  #picker .pubwrap[open]>summary{border-bottom:1px solid var(--line);margin-bottom:12px;}
+  #picker .pubwrap .cont{padding-bottom:14px;}
+
   /* ── team board ── */
   #boardview .bwrap{max-width:980px;margin:0 auto;padding:24px 20px 90px;}
   .b-head{display:flex;align-items:flex-end;gap:14px;margin-bottom:18px;flex-wrap:wrap;}
@@ -591,52 +608,76 @@
       '<div class="tc-hs">What everyone\'s checked so far.</div>'+rows+
       '<div class="tc-together">Together: <b>'+totalQ+' question'+(totalQ===1?'':'s')+'</b> verified</div></div>';
   }
+  // ── the four-stage pipeline the whole desk is organised around ──
+  // A paper's stage comes from the server (single source both screens read);
+  // we fall back to the same rule locally so the picker still works offline.
+  function stageOf(p){
+    if(p.stage) return p.stage;
+    if(p.status==='live') return 'published';
+    var total=p.total||0, ver=p.verified||0, flg=p.flagged||0;
+    if(total>0 && ver>=total) return 'verified';
+    if(ver>0 || flg>0) return 'review';
+    return 'pending';
+  }
+  var STAGE_DEFS=[
+    {k:'pending',   t:'Pending',   hint:'new papers waiting to be checked',      col:'#8b93a0', empty:'No new papers waiting.'},
+    {k:'review',    t:'In review', hint:'started — keep going',                  col:'#f59e0b', empty:'Nothing in review.'},
+    {k:'verified',  t:'Verified',  hint:'your part is done — admin can publish', col:'#16a34a'},
+    {k:'published', t:'Published', hint:'live to students',                      col:'#0f766e'}
+  ];
+  function stageRailHtml(buckets){
+    return '<div class="rail">'+STAGE_DEFS.map(function(d,i){
+      var n=(buckets[d.k]||[]).length;
+      var arrow=i<STAGE_DEFS.length-1?'<span class="rail-arr">›</span>':'';
+      return '<button class="rail-seg" data-stage="'+d.k+'" style="border-top-color:'+d.col+'"><span class="rail-l">'+d.t+'</span><span class="rail-n">'+n+'</span></button>'+arrow;
+    }).join('')+'</div>';
+  }
+  function stageCardHtml(p){
+    var st=stageOf(p), c=subjCol(p.subject), nm=(SUBJ_CFG[p.subject]||{}).name||p.subject;
+    var pct=p.total?Math.round(p.verified/p.total*100):0;
+    var fl=p.flagged?'<span class="fl">⚑ '+p.flagged+'</span>':'';
+    var badge, meta, go;
+    if(st==='pending'){ badge='<span class="badge todo">Not started</span>'; meta=(p.total||0)+' questions'; go='Start →'; }
+    else if(st==='review'){ badge='<span class="badge prog">'+p.verified+'/'+p.total+'</span>'; meta=pct+'% checked'; go='Continue →'; }
+    else if(st==='verified'){ badge='<span class="badge done">✓ Verified</span>'; meta='by '+esc(p.verifiedBy||'team'); go='Open →'; }
+    else { badge='<span class="badge live">● Live</span>'; meta=p.verified+'/'+(p.total||0)+' verified'; go='Open →'; }
+    return '<div class="pc" data-open="'+p.id+'" style="--ac:'+c.fg+'">'+
+      '<div class="pc-top"><span class="sbj" style="background:'+c.bg+';color:'+c.fg+'">'+esc(nm)+'</span>'+
+        '<span style="display:flex;align-items:center;gap:6px;">'+fl+badge+'</span></div>'+
+      '<div class="pc-t">SEE '+p.year+' <span>· '+esc(p.province)+'</span></div>'+
+      (st==='review'?'<div class="pbar"><b style="width:'+pct+'%"></b></div>':'')+
+      '<div class="pc-b"><span>'+meta+'</span><span class="go">'+go+'</span></div></div>';
+  }
+  function stageSectionsHtml(buckets){
+    return STAGE_DEFS.map(function(d){
+      var list=(buckets[d.k]||[]).slice();
+      if(d.k==='review') list.sort(function(a,b){ var pa=a.total?a.verified/a.total:0,pb=b.total?b.verified/b.total:0; return pb-pa; });
+      else list.sort(function(a,b){ return (b.year-a.year) || (((SUBJ_CFG[a.subject]||{}).order||9)-((SUBJ_CFG[b.subject]||{}).order||9)); });
+      var head='<div class="sec-h"><span class="dot" style="background:'+d.col+'"></span>'+d.t+' <span class="c">'+list.length+'</span><span class="sec-hint">'+esc(d.hint)+'</span></div>';
+      if(!list.length){
+        if(d.empty==null) return '';   // hide empty Verified / Published quietly
+        return '<div id="stage-'+d.k+'">'+head+'<div class="empty">'+esc(d.empty)+'</div></div>';
+      }
+      var cards='<div class="cont">'+list.map(stageCardHtml).join('')+'</div>';
+      if(d.k==='published'){
+        return '<details id="stage-'+d.k+'" class="pubwrap"><summary><span class="dot" style="background:'+d.col+'"></span>'+d.t+' <span class="c">'+list.length+'</span><span class="sec-hint">'+esc(d.hint)+'</span></summary>'+cards+'</details>';
+      }
+      return '<div id="stage-'+d.k+'">'+head+cards+'</div>';
+    }).join('');
+  }
   function renderPicker(){
     renderTeam();
     renderModes();
     var ov=OVERVIEW||[];
-    var totalPapers=ov.length;
-    var doneList=ov.filter(function(p){ return p.total>0 && p.verified>=p.total; });
-    var progList=ov.filter(function(p){ return statusOf(p)==='prog'; });
-    var doneCount=doneList.length;
-    var overallPct=totalPapers?Math.round(doneCount/totalPapers*100):0;
-    var mood = overallPct>=100?'All verified!' : overallPct>=66?'Almost there' : overallPct>=33?'Getting there' : overallPct>0?'Just getting started' : 'Nothing verified yet';
-
-    // overview band
-    $('bd-overview').innerHTML=
-      '<div class="ov">'+
-        '<div class="ring" style="background:conic-gradient(var(--brass) 0 '+overallPct+'%,var(--parch-2) '+overallPct+'% 100%)"><i>'+overallPct+'%</i></div>'+
-        '<div class="ov-mid"><b>'+mood+'</b><span>'+doneCount+' of '+totalPapers+' papers fully verified</span></div>'+
-        '<div class="tiles">'+
-          '<div class="tile"><div class="n">'+totalPapers+'</div><div class="l">Papers</div></div>'+
-          '<div class="tile"><div class="n">'+progList.length+'</div><div class="l">In progress</div></div>'+
-          '<div class="tile flag" data-gotoflags="1"><div class="n">'+FLAGS_N+'</div><div class="l">Flags waiting →</div></div>'+
-        '</div>'+
-      '</div>';
-
-    // continue verifying (in-progress papers, most-complete first)
-    if(progList.length){
-      var cards=progList.slice().sort(function(a,b){
-        var pa=a.total?a.verified/a.total:0, pb=b.total?b.verified/b.total:0; return pb-pa;
-      }).map(function(p){return pcHtml(p);}).join('');
-      $('bd-continue').innerHTML='<div class="sec-h">◐ Continue verifying <span class="c">'+progList.length+'</span></div><div class="cont">'+cards+'</div>';
-    } else { $('bd-continue').innerHTML=''; }
-
-    // by subject + finished drawer
-    var codes=[]; ov.forEach(function(p){ if(p.subject && codes.indexOf(p.subject)<0) codes.push(p.subject); });
-    codes.sort(function(a,b){ return ((SUBJ_CFG[a]||{}).order||9)-((SUBJ_CFG[b]||{}).order||9); });
-    if(!codes.length){ $('bd-list').innerHTML='<div class="empty">No papers yet.</div>'; return; }
-    var grid='<div class="sec-h">All papers · by subject</div><div class="sgrid">'+
-      codes.map(function(c){ return scHtml(c, ov.filter(function(p){return p.subject===c;})); }).join('')+'</div>';
-    var drawer='';
-    if(doneList.length){
-      if(DONE_OPEN){ drawer=verifiedLibraryHtml(doneList); }
-      else { drawer='<div class="done" data-done="1">✓ '+doneList.length+' paper'+(doneList.length>1?'s':'')+' fully verified <span class="m">show ▾</span></div>'; }
-    }
-    $('bd-list').innerHTML = grid + drawer;
+    var buckets={pending:[],review:[],verified:[],published:[]};
+    ov.forEach(function(p){ (buckets[stageOf(p)]||buckets.pending).push(p); });
+    $('bd-overview').innerHTML = ov.length ? stageRailHtml(buckets) : '';
+    $('bd-continue').innerHTML = '';
+    $('bd-list').innerHTML = ov.length ? stageSectionsHtml(buckets) : '<div class="empty">No papers yet.</div>';
   }
   $('picker').addEventListener('click',function(e){
     var row=e.target.closest('[data-open]'); if(row){ loadPaper(row.getAttribute('data-open')); return; }
+    var rs=e.target.closest('[data-stage]'); if(rs){ var sec=$('stage-'+rs.getAttribute('data-stage')); if(sec){ if(sec.tagName==='DETAILS') sec.open=true; sec.scrollIntoView({behavior:'smooth',block:'start'}); } return; }
     var md=e.target.closest('[data-mode]'); if(md){ if(md.classList.contains('soon')){ toast('Chapter-practice verification is coming soon'); return; } setMode(md.getAttribute('data-mode')); return; }
     if(e.target.closest('[data-gotoflags]')){ setTab('flags'); loadFlags(); return; }
     var vf=e.target.closest('[data-vfilter]'); if(vf){ VER_FILTER=vf.getAttribute('data-vfilter'); renderPicker(); return; }
@@ -843,7 +884,10 @@
   function stripPen(el){var c=el.cloneNode(true);var p=c.querySelector('.pen');if(p)p.remove();if(c.querySelector('.empty'))return '';return c.textContent.trim();}
   function findVal(id,field){if(!DATA)return null;for(var i=0;i<DATA.groups.length;i++){var g=DATA.groups[i];if(g.parent&&String(g.parent.id)===String(id))return g.parent[field]||'';for(var j=0;j<g.subs.length;j++){if(String(g.subs[j].id)===String(id))return g.subs[j][field]||'';}}return null;}
   function updateLocal(id,field,v){if(!DATA)return;DATA.groups.forEach(function(g){if(g.parent&&String(g.parent.id)===String(id))g.parent[field]=v;g.subs.forEach(function(s){if(String(s.id)===String(id))s[field]=v;});});}
-  async function saveField(id,field,value,ok,fail){try{await apiPost('update-field',{id:id,field:field,value:value});toast('Saved');ok&&ok();}catch(e){toast('Save failed');fail&&fail();}}
+  async function saveField(id,field,value,ok,fail){try{var r=await apiPost('update-field',{id:id,field:field,value:value});toast('Saved');ok&&ok();if(r&&r.rechecked)markRecheck(id);}catch(e){toast('Save failed');fail&&fail();}}
+  // If an edit un-verified a part that was already verified, reflect it: drop the
+  // card's verified state and nudge for a re-check.
+  function markRecheck(id){ if(!DATA)return; DATA.groups.forEach(function(g){ var has=(g.parent&&String(g.parent.id)===String(id))||g.subs.some(function(s){return String(s.id)===String(id);}); if(has&&g.verified){ g.verified=false; var card=$('qc-'+g.num); if(card){ card.classList.remove('verified'); var st=$('st-'+g.num); if(st)st.innerHTML='<span class="chip unv">Needs re-check</span>'; var foot=$('foot-'+g.num); if(foot)foot.innerHTML=footHTML(g); } updateProgress(); refreshFlagCount(); toast('Edited — please re-verify this question'); } }); }
 
   async function doStatus(act,qn){
     var g=DATA.groups.filter(function(x){return x.num===qn;})[0]; if(!g)return;
@@ -853,8 +897,8 @@
       }catch(e){toast('Failed');}
     } else {
       var note=prompt('What needs a look? (a short note so you know what to check)',g.flag_note||''); if(note===null)return;
-      try{ await apiPost('set-status',{paper_id:PAPER,question_number:qn,flagged:true,flag_note:note}); g.flagged=true;g.verified=false;g.flag_note=note;
-        var card=$('qc-'+qn);card.classList.add('flagged');card.classList.remove('verified');$('st-'+qn).innerHTML='<span class="chip flg">⚑ Flagged</span>';var fn=card.querySelector('.flagnote');if(!fn){fn=document.createElement('div');fn.className='flagnote';$('foot-'+qn).parentNode.insertBefore(fn,$('foot-'+qn));}fn.textContent='⚑ '+note;$('foot-'+qn).innerHTML=footHTML(g);updateProgress();refreshFlagCount();toast('Flagged');
+      try{ var fres=await apiPost('set-status',{paper_id:PAPER,question_number:qn,flagged:true,flag_note:note}); g.flagged=true;g.verified=false;g.flag_note=note;
+        var card=$('qc-'+qn);card.classList.add('flagged');card.classList.remove('verified');$('st-'+qn).innerHTML='<span class="chip flg">⚑ Flagged</span>';var fn=card.querySelector('.flagnote');if(!fn){fn=document.createElement('div');fn.className='flagnote';$('foot-'+qn).parentNode.insertBefore(fn,$('foot-'+qn));}fn.textContent='⚑ '+note;$('foot-'+qn).innerHTML=footHTML(g);updateProgress();refreshFlagCount();toast(fres&&fres.pulled?'Flagged — paper pulled from live':'Flagged');
       }catch(e){toast('Failed');}
     }
   }

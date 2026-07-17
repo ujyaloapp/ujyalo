@@ -7,6 +7,9 @@
 // ============================================================
 
 const EDITABLE = ['question_text_english','question_text_nepali','answer_text','marks','topic','difficulty'];
+// Editing any of these un-verifies just that part (it needs a fresh check).
+// topic/difficulty are metadata and do not trigger a re-check.
+const RECHECK_ON_EDIT = ['question_text_english','question_text_nepali','answer_text','marks'];
 
 const SB  = () => process.env.SUPABASE_URL;
 const KEY = () => process.env.SUPABASE_SERVICE_KEY;
@@ -61,6 +64,21 @@ async function getEditor(req) {
   const role = rows && rows[0] && rows[0].role;
   if (role === 'editor' || role === 'admin') return ((rows[0].email || u.email || '').toLowerCase());
   return null;
+}
+
+// Resolve just the caller's role — used to gate publish/unpublish to admins only.
+async function getRole(req) {
+  const hdr = req.headers.authorization || '';
+  const token = hdr.replace(/^Bearer\s+/i, '').trim();
+  if (!token) return null;
+  const r = await fetch(`${SB()}/auth/v1/user`, {
+    headers: { apikey: process.env.SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` },
+  });
+  if (!r.ok) return null;
+  const u = await r.json();
+  if (!u || !u.id) return null;
+  const rows = await sbGet(`/users?id=eq.${u.id}&select=role`);
+  return (rows && rows[0] && rows[0].role) || null;
 }
 
 // Build a human label for a paper + question, e.g. "SEE 2082 · Koshi · Q7".
@@ -133,18 +151,25 @@ export default async function handler(req, res) {
         });
         const nums = Object.keys(q);
         const verified = nums.filter(n => q[n].v).length;
+        const flagged = nums.filter(n => q[n].f).length;
         const fully = nums.length > 0 && verified === nums.length;
         let topBy = '', topN = -1;
         for (const e in by) { if (by[e] > topN) { topN = by[e]; topBy = e; } }
         if (fully && topBy && team[topBy]) { team[topBy].papers++; }
+        // Pipeline stage — the one place the ladder is defined; both the verify
+        // desk and admin read this instead of each deriving their own.
+        const stage = (p.status || '') === 'live' ? 'published'
+                    : fully                        ? 'verified'
+                    : (verified > 0 || flagged > 0) ? 'review'
+                    :                                 'pending';
         return {
           id: p.id, year: p.year, province: p.province, status: p.status || '',
           subject: (byId[p.subject_id] || {}).code || '',
           subjectName: (byId[p.subject_id] || {}).name || '',
           total: nums.length,
           verified,
-          flagged: nums.filter(n => q[n].f).length,
-          fully, verifiedBy: topBy, verifiedAt: lastAt,
+          flagged,
+          fully, stage, verifiedBy: topBy, verifiedAt: lastAt,
         };
       }));
       const teamArr = Object.values(team)
@@ -263,8 +288,13 @@ export default async function handler(req, res) {
       if (!id || !EDITABLE.includes(field)) return res.status(400).json({ error: 'Field not editable' });
       if (field === 'marks') { value = parseInt(value, 10); if (isNaN(value)) value = 0; }
       const patch = {}; patch[field] = value;
+      // Drift guard (soft): editing a verified question's content un-verifies just
+      // that part so it gets a fresh check. The paper stays live if it was live —
+      // only flagging pulls a live paper down.
+      const rechecked = RECHECK_ON_EDIT.includes(field);
+      if (rechecked) { patch.verified = false; patch.verified_by = null; patch.verified_at = null; }
       const row = await sbPatch(`/past_paper_questions?id=eq.${encodeURIComponent(id)}`, patch, true);
-      return res.status(200).json({ ok: true, row: (row && row[0]) || null });
+      return res.status(200).json({ ok: true, row: (row && row[0]) || null, rechecked });
     }
 
     if (action === 'set-status') {
@@ -283,7 +313,37 @@ export default async function handler(req, res) {
         if (body.flagged) patch.verified = false;
       }
       await sbPatch(`/past_paper_questions?paper_id=eq.${encodeURIComponent(paper_id)}&question_number=eq.${encodeURIComponent(question_number)}`, patch, false);
+      // Drift guard (hard): flagging a question on a LIVE paper means a known
+      // problem is in front of students — pull the whole paper back to draft until
+      // it's fixed and re-verified.
+      if (body.flagged) {
+        const pp = await sbGet(`/past_papers?id=eq.${encodeURIComponent(paper_id)}&select=status`);
+        if (pp && pp[0] && pp[0].status === 'live') {
+          await sbPatch(`/past_papers?id=eq.${encodeURIComponent(paper_id)}`, { status: 'draft' }, false);
+          return res.status(200).json({ ok: true, pulled: true });
+        }
+      }
       return res.status(200).json({ ok: true });
+    }
+
+    // Publish / unpublish a paper — ADMIN ONLY, and publishing is refused unless
+    // every question is verified and none flagged. This is the server-side wall:
+    // the "only verified goes live" rule lives here, not in a hidden button.
+    if (action === 'publish' || action === 'unpublish') {
+      const callerRole = await getRole(req);
+      if (callerRole !== 'admin') return res.status(403).json({ error: 'Only an admin can publish or unpublish papers.' });
+      const paper_id = body.paper_id;
+      if (!paper_id) return res.status(400).json({ error: 'Missing paper_id' });
+      if (action === 'publish') {
+        const qs = await sbGet(`/past_paper_questions?paper_id=eq.${encodeURIComponent(paper_id)}&select=verified,flagged`);
+        if (!qs.length) return res.status(400).json({ error: 'This paper has no questions yet.' });
+        if (qs.some(q => q.flagged)) return res.status(400).json({ error: 'Resolve the flagged questions before publishing.' });
+        if (!qs.every(q => q.verified)) return res.status(400).json({ error: 'Every question must be verified before publishing.' });
+        await sbPatch(`/past_papers?id=eq.${encodeURIComponent(paper_id)}`, { status: 'live' }, false);
+        return res.status(200).json({ ok: true, status: 'live' });
+      }
+      await sbPatch(`/past_papers?id=eq.${encodeURIComponent(paper_id)}`, { status: 'draft' }, false);
+      return res.status(200).json({ ok: true, status: 'draft' });
     }
 
     if (action === 'add-sub') {

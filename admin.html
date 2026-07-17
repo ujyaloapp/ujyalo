@@ -363,7 +363,7 @@ async function loadHome(){
     var live = stats.papersLive || 0;
     var totalP = stats.papersTotal || 0;
     await ensurePapers(); await ensureOverview();
-    var ready = (OV && OV.papers ? OV.papers : []).filter(function(p){ return p.fully && p.status!=='live'; }).length;
+    var ready = (OV && OV.papers ? OV.papers : []).filter(function(p){ return p.stage==='verified'; }).length;
     var vCount = stats.qVerified || 0;
     var tCount = stats.qTotal || 0;
     // Match the verify desk: count unique flagged QUESTIONS (deduped sub-parts), not raw rows.
@@ -468,14 +468,16 @@ function renderReady(){
   // exactly one group (first match wins). Note a fully verified paper never has flags:
   // flagging a question clears its verified mark.
   var GROUPS=[
-    {t:'Needs attention', s:'A partner flagged something. Any that are live are public right now.',
+    {t:'Needs attention', s:'A partner flagged something. Anything live has been pulled back for a fix.',
      f:function(p){ return (p.flagged||0)>0; }, open:true},
+    {t:'Pending', s:'Entered and waiting for a partner to start checking.',
+     f:function(p){ return p.stage==='pending'; }, open:true},
+    {t:'In review', s:'A partner has started — being checked now.',
+     f:function(p){ return p.stage==='review'; }, open:true},
     {t:'Ready to publish', s:'Every question checked. One click takes it live.',
-     f:function(p){ return p.status!=='live' && p.fully; }, open:true},
-    {t:'Being verified', s:'Entered, waiting on a partner to check it.',
-     f:function(p){ return p.status!=='live' && !p.fully; }, open:true},
+     f:function(p){ return p.stage==='verified'; }, open:true},
     {t:'Published', s:'Live and clean — nothing to do.',
-     f:function(p){ return p.status==='live'; }, open:false}
+     f:function(p){ return p.stage==='published'; }, open:false}
   ];
   var taken={}, html='';
   GROUPS.forEach(function(g){
@@ -506,12 +508,14 @@ window.toggleRgrp = function(btn){
 async function setPaperLive(id, live, btn, busyText, failText){
   btn.disabled=true; var was=btn.textContent; btn.textContent=busyText;
   try{
-    var r=await sbPatch('past_papers', id, {status: live ? 'live' : 'draft'});
-    if(!r.ok) throw new Error('patch');
+    // Go through the server, which enforces "every question verified" before a
+    // paper can go live — the browser button is a convenience, not the gate.
+    var r=await authFetch('/api/admin-paper?action='+(live?'publish':'unpublish'),{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({paper_id:id})});
+    if(!r.ok){ var er=await r.json().catch(function(){return{};}); throw new Error(er.error||'failed'); }
     var p=PAPERS.filter(function(x){return x.id===id;})[0]; if(p)p.status=live?'live':'draft';
-    var ov=OVMAP[id]; if(ov)ov.status=live?'live':'draft';
+    var ov=OVMAP[id]; if(ov){ ov.status=live?'live':'draft'; ov.stage=live?'published':(ov.fully?'verified':((ov.verified>0||ov.flagged>0)?'review':'pending')); }
     renderGrid(); renderReady(); loadHome();
-  }catch(err){ alert(failText); btn.disabled=false; btn.textContent=was; }
+  }catch(err){ alert(err.message||failText); btn.disabled=false; btn.textContent=was; }
 }
 $('ready-list').addEventListener('click', function(e){
   var b=e.target.closest('[data-pub]');
