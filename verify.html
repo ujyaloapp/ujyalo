@@ -130,6 +130,11 @@
   .act.verify{color:#166534;border-color:#bbf7d0;}.act.verify:hover{background:var(--green-bg);} .act.flag{color:#9f1239;border-color:#fecdd3;}.act.flag:hover{background:var(--flag-bg);}
   .verby{font-size:12.5px;color:var(--muted);}.verby b{color:#166534;}
   .flagnote{font-size:12.5px;color:#9f1239;background:var(--flag-bg);border-radius:7px;padding:7px 11px;margin-top:8px;}
+  .flagtop{display:flex;gap:9px;background:var(--flag-bg);border-radius:9px;padding:11px 13px;margin:0 0 13px;}
+  .flagtop-ic{color:var(--flag);font-size:15px;flex-shrink:0;line-height:1.3;}
+  .flagtop-l{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#9f1239;margin-bottom:2px;}
+  .flagtop-t{font-size:13.5px;color:#9f1239;line-height:1.5;}
+  .pg-flag{font-size:11px;font-weight:700;color:#9f1239;background:var(--flag-bg);border-radius:99px;padding:3px 10px;white-space:nowrap;}
   .flagcard{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--flag);border-radius:11px;padding:14px 16px;margin-bottom:12px;}
   .flagcard .fmeta{font-size:12px;color:var(--brass-deep);font-weight:600;} .flagcard .fnote{font-size:13.5px;color:#9f1239;background:var(--flag-bg);border-radius:7px;padding:8px 11px;margin:7px 0;}
   .fopen{font-size:12.5px;font-weight:600;color:var(--forest);background:#fff;border:1px solid var(--line);border-radius:7px;padding:6px 13px;cursor:pointer;}
@@ -392,7 +397,8 @@
         <div class="paperhdr">
           <button class="changep" id="changepaper">← Change paper</button>
           <span class="ptitle" id="paper-title"></span>
-          <div class="prog"><div class="prog-top"><span>Verified</span><span><b id="pg-v">0</b> of <span id="pg-t">0</span></span></div><div class="bar"><i id="pg-bar"></i></div></div>
+          <span class="pg-flag hidden" id="pg-flag"></span>
+          <div class="prog"><div class="prog-top"><span><b id="pg-v">0</b> of <span id="pg-t">0</span> verified</span></div><div class="bar"><i id="pg-bar"></i></div></div>
           <div class="tally" id="tally"></div>
         </div>
         <div class="hint">👆 Click any text, the नेपाली, an answer, a topic or a mark to edit. In a नेपाली box, type English letters → Nepali. Use <b>+ Add a part</b>, <b>▲ ▼</b>, <b>✕</b> to change sub-questions. Mark each <b>Verified</b>, or <b>Flag</b> it for review.</div>
@@ -843,13 +849,14 @@
     h+='<span class="ed chipd" data-id="'+lead.id+'" data-field="topic">'+(lead.topic?esc(lead.topic):'<span class="empty">+ topic</span>')+'<span class="pen">✎</span></span>';
     h+='<span class="ed chipd" data-id="'+lead.id+'" data-field="difficulty">'+(lead.difficulty?esc(lead.difficulty):'<span class="empty">+ level</span>')+'<span class="pen">✎</span></span>';
     h+='<span class="qc-total">Marks <b class="qtot">0</b></span><span id="st-'+g.num+'">'+status+'</span></div>';
+    if(g.flagged&&g.flag_note) h+=flagTopHtml(g.flag_note);   // the reason to fix, right under the badge
     h+=diagramBlock(g);
     if(g.parent) h+=rowBlock(g.parent,'Question',g.num,false);
     g.subs.forEach(function(s){ h+=rowBlock(s,'Part '+String(s.sub_part||'').toUpperCase(),g.num,true); });
     h+='<button class="addpart" data-act="add-sub" data-qn="'+g.num+'">+ Add a part</button>';
-    if(g.flagged&&g.flag_note) h+='<div class="flagnote">⚑ '+esc(g.flag_note)+'</div>';
     h+='<div class="qc-foot" id="foot-'+g.num+'">'+footHTML(g)+'</div></div>'; return h;
   }
+  function flagTopHtml(note){ return '<div class="flagtop"><span class="flagtop-ic">⚑</span><div><div class="flagtop-l">What to fix</div><div class="flagtop-t">'+esc(note)+'</div></div></div>'; }
   function footHTML(g){ if(g.verified) return '<span class="verby">Verified by <b>'+esc(g.verified_by||'editor')+'</b></span> <button class="act flag" data-act="flag" data-qn="'+g.num+'">⚑ Flag</button>'; return '<button class="act verify" data-act="verify" data-qn="'+g.num+'">✓ Mark verified</button><button class="act flag" data-act="flag" data-qn="'+g.num+'">⚑ '+(g.flagged?'Edit flag':'Flag for review')+'</button>'; }
   function render(){
     var box=$('questions');
@@ -860,7 +867,7 @@
   }
   function recalcCard(qn){var card=$('qc-'+qn);if(!card)return;var t=0;card.querySelectorAll('.mk').forEach(function(i){t+=parseInt(i.value||0,10)||0;});var el=card.querySelector('.qtot');if(el)el.textContent=t;}
   function updateTally(){var t=0;document.querySelectorAll('#questions .mk').forEach(function(i){t+=parseInt(i.value||0,10)||0;});var el=$('tally');el.innerHTML='Marks: <b>'+t+'</b> / '+PAPER_TOTAL;el.classList.toggle('bad',t!==PAPER_TOTAL);}
-  function updateProgress(){var total=DATA.groups.length,ver=DATA.groups.filter(function(g){return g.verified;}).length;$('pg-v').textContent=ver;$('pg-t').textContent=total;$('pg-bar').style.width=(total?Math.round(ver/total*100):0)+'%';}
+  function updateProgress(){var total=DATA.groups.length,ver=DATA.groups.filter(function(g){return g.verified;}).length,flg=DATA.groups.filter(function(g){return g.flagged;}).length;$('pg-v').textContent=ver;$('pg-t').textContent=total;$('pg-bar').style.width=(total?Math.round(ver/total*100):0)+'%';var fe=$('pg-flag');if(fe){if(flg){fe.textContent='⚑ '+flg+' flagged';fe.classList.remove('hidden');}else{fe.classList.add('hidden');}}}
 
   $('questions').addEventListener('click',function(e){ if(e.target.closest('.editbox'))return; var act=e.target.closest('[data-act]'); if(act)return handleAct(act); var el=e.target.closest('.ed'); if(!el||el.dataset.editing)return; startEdit(el); });
   $('questions').addEventListener('change',function(e){ var mk=e.target.closest('.mk'); if(!mk)return; saveField(mk.dataset.id,'marks',mk.value,function(){var card=mk.closest('.qc');recalcCard(card.dataset.qn);updateTally();}); });
@@ -896,12 +903,12 @@
     var g=DATA.groups.filter(function(x){return x.num===qn;})[0]; if(!g)return;
     if(act==='verify'){
       try{ await apiPost('set-status',{paper_id:PAPER,question_number:qn,verified:true}); g.verified=true;g.flagged=false;g.verified_by=$('who-email').textContent;
-        var card=$('qc-'+qn);card.classList.add('verified');card.classList.remove('flagged');$('st-'+qn).innerHTML='<span class="chip ver">✓ Verified</span>';$('foot-'+qn).innerHTML=footHTML(g);var fn=card.querySelector('.flagnote');if(fn)fn.remove();updateProgress();refreshFlagCount();toast('Verified ✓');
+        var card=$('qc-'+qn);card.classList.add('verified');card.classList.remove('flagged');$('st-'+qn).innerHTML='<span class="chip ver">✓ Verified</span>';$('foot-'+qn).innerHTML=footHTML(g);var fn=card.querySelector('.flagtop');if(fn)fn.remove();updateProgress();refreshFlagCount();toast('Verified ✓');
       }catch(e){toast('Failed');}
     } else {
       var note=prompt('What needs a look? (a short note so you know what to check)',g.flag_note||''); if(note===null)return;
       try{ var fres=await apiPost('set-status',{paper_id:PAPER,question_number:qn,flagged:true,flag_note:note}); g.flagged=true;g.verified=false;g.flag_note=note;
-        var card=$('qc-'+qn);card.classList.add('flagged');card.classList.remove('verified');$('st-'+qn).innerHTML='<span class="chip flg">⚑ Flagged</span>';var fn=card.querySelector('.flagnote');if(!fn){fn=document.createElement('div');fn.className='flagnote';$('foot-'+qn).parentNode.insertBefore(fn,$('foot-'+qn));}fn.textContent='⚑ '+note;$('foot-'+qn).innerHTML=footHTML(g);updateProgress();refreshFlagCount();toast(fres&&fres.pulled?'Flagged — paper pulled from live':'Flagged');
+        var card=$('qc-'+qn);card.classList.add('flagged');card.classList.remove('verified');$('st-'+qn).innerHTML='<span class="chip flg">⚑ Flagged</span>';var ft=card.querySelector('.flagtop');if(!ft){ft=document.createElement('div');ft.className='flagtop';card.querySelector('.qc-head').insertAdjacentElement('afterend',ft);}ft.innerHTML='<span class="flagtop-ic">⚑</span><div><div class="flagtop-l">What to fix</div><div class="flagtop-t">'+esc(note)+'</div></div>';$('foot-'+qn).innerHTML=footHTML(g);updateProgress();refreshFlagCount();toast(fres&&fres.pulled?'Flagged — paper pulled from live':'Flagged');
       }catch(e){toast('Failed');}
     }
   }
