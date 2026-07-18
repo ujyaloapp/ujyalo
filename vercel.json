@@ -1,8 +1,28 @@
 {
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "ujyalo.vercel.app" }],
+      "destination": "https://ujyalo.app/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/see", "destination": "/see.html" },
     { "source": "/see/past-papers/:year/:province/:subject", "destination": "/see-paper.html" },
     { "source": "/see/past-papers", "destination": "/see.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()" }
+      ]
+    }
   ]
 }

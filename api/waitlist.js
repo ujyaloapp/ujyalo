@@ -4,11 +4,30 @@
 // File: api/waitlist.js
 // ═══════════════════════════════════════════════════════════
 
+// Best-effort per-IP rate limit (per warm instance) to blunt spam signups.
+const _hits = new Map();
+function rateLimited(ip, limit = 5, windowMs = 10 * 60 * 1000) {
+  const now = Date.now();
+  const arr = (_hits.get(ip) || []).filter(t => now - t < windowMs);
+  arr.push(now);
+  _hits.set(ip, arr);
+  if (_hits.size > 5000) _hits.clear();
+  return arr.length > limit;
+}
+function clientIp(req) {
+  return (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+      || req.headers['x-real-ip'] || 'unknown';
+}
+
 export default async function handler(req, res) {
 
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  if (rateLimited(clientIp(req))) {
+    return res.status(429).json({ error: 'Too many requests. Please wait a few minutes and try again.' });
   }
 
   // Get the data from the form

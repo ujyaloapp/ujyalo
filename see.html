@@ -279,7 +279,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .fx-foot .fs{font-size:12px;color:var(--muted);margin-top:3px;}
 @media(max-width:900px){.fx-hero{padding:18px 16px;}.fx-hero-t{font-size:21px;}.fx-pad{padding:16px;}}
 @media print{
-  .lsb,.mtop,.mbtm,#stabs,.fx-hero,.fx-cards,.fx-toolbar{display:none!important;}
+  .lsb,.mtop,.mbtm,#stabs,.fx-head,.fx-cards,.fx-toolbar{display:none!important;}
   .vw:not(#vw-formulas){display:none!important;}
   .fx-pad{padding:0!important;}
   .fx-sheet{border:none!important;margin:0!important;}
@@ -814,11 +814,13 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 
       <!-- FORMULAS VIEW -->
       <div class="vw" id="vw-formulas">
-        <div class="fx-hero">
-          <div class="fx-hero-t">SEE Formulas <em>&amp;</em> Common Mistakes</div>
-          <div class="fx-hero-s">Every formula you need for the SEE exam, chapter by chapter — with the mistakes that quietly cost marks. Free to use, download, and share.</div>
-        </div>
         <div class="fx-pad">
+          <div class="fx-head">
+            <div class="ppl-eyebrow">SEE · सूत्र</div>
+            <div class="ppl-h1">Every formula, <em>ready to revise</em>.</div>
+            <div class="ppl-sub">Chapter by chapter — the formulas you need, with the mistakes that quietly cost marks. Free to download and share.</div>
+            <div class="ppl-rule"></div>
+          </div>
           <div class="fx-cards">
             <button class="fx-card on" id="fx-c-maths" onclick="fxPick('maths')"><span class="fxi">🧮</span><span><span class="nm">Maths</span> <span class="mt">· 17 chapters</span></span></button>
             <button class="fx-card" id="fx-c-science" onclick="fxPick('science')"><span class="fxi">🔬</span><span><span class="nm">Science</span> <span class="mt">· 24 chapters</span></span></button>

@@ -3,9 +3,38 @@
 // Saves message to Supabase + sends confirmation email via Resend
 // ═══════════════════════════════════════════════════════════
 
+// Escape anything the visitor typed before it goes into an HTML email, so a
+// name/message can't inject markup or links into the emails we send/receive.
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+// Plain one-line version for the email Subject (no HTML entities there).
+function oneLine(s) { return String(s == null ? '' : s).replace(/[\r\n]+/g, ' ').trim(); }
+
+// Best-effort per-IP rate limit (per warm instance) to blunt form spam.
+const _hits = new Map();
+function rateLimited(ip, limit = 5, windowMs = 10 * 60 * 1000) {
+  const now = Date.now();
+  const arr = (_hits.get(ip) || []).filter(t => now - t < windowMs);
+  arr.push(now);
+  _hits.set(ip, arr);
+  if (_hits.size > 5000) _hits.clear();
+  return arr.length > limit;
+}
+function clientIp(req) {
+  return (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+      || req.headers['x-real-ip'] || 'unknown';
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  if (rateLimited(clientIp(req))) {
+    return res.status(429).json({ error: 'Too many messages. Please wait a few minutes and try again.' });
   }
 
   const { full_name, email, role, message } = req.body;
@@ -19,6 +48,14 @@ export default async function handler(req, res) {
   if (!emailRegex.test(email)) {
     return res.status(400).json({ error: 'Please enter a valid email address.' });
   }
+
+  // Escaped copies for use inside the HTML emails, plus plain copies for headers.
+  const nameSafe  = esc(full_name.trim());
+  const emailSafe = esc(email.trim());
+  const roleSafe  = esc(role);
+  const msgSafe   = esc(message.trim());
+  const subjName  = oneLine(full_name.trim());
+  const subjEmail = oneLine(email.trim());
 
   try {
     // 1. Save to Supabase
@@ -53,15 +90,15 @@ export default async function handler(req, res) {
   <tr><td align="center">
     <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
       <tr><td style="background:#0A1628;padding:24px 32px;border-radius:10px 10px 0 0;">
-        <span style="font-size:20px;font-weight:700;color:#F59E0B;">✦ ujyalo</span>
+        <span style="font-size:20px;font-weight:700;color:#0f766e;">✦ ujyalo</span>
       </td></tr>
       <tr><td style="background:#ffffff;padding:32px;border-left:1px solid #E5E7EB;border-right:1px solid #E5E7EB;">
         <p style="font-size:22px;font-weight:500;color:#0A1628;margin:0 0 12px;">We got your message.</p>
-        <p style="font-size:15px;color:#4B5563;line-height:1.7;margin:0 0 24px;">Thanks for reaching out, ${full_name.trim()}. We've received your message and will get back to you within 24 hours.</p>
+        <p style="font-size:15px;color:#4B5563;line-height:1.7;margin:0 0 24px;">Thanks for reaching out, ${nameSafe}. We've received your message and will get back to you as soon as we can.</p>
         <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:24px;">
           <tr><td style="background:#EFF6FF;border-radius:8px;padding:16px 20px;">
             <p style="font-size:13px;font-weight:500;color:#185FA5;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.06em;">Your message</p>
-            <p style="font-size:14px;color:#374151;line-height:1.6;margin:0;font-style:italic;">"${message.trim()}"</p>
+            <p style="font-size:14px;color:#374151;line-height:1.6;margin:0;font-style:italic;">"${msgSafe}"</p>
           </td></tr>
         </table>
         <p style="font-size:15px;color:#4B5563;line-height:1.7;margin:0 0 24px;">While you wait, you can start practising with our SEE chapter practice — it's completely free.</p>
@@ -94,21 +131,21 @@ export default async function handler(req, res) {
   <tr><td align="center">
     <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
       <tr><td style="background:#0A1628;padding:24px 32px;border-radius:10px 10px 0 0;">
-        <span style="font-size:20px;font-weight:700;color:#F59E0B;">✦ ujyalo</span>
+        <span style="font-size:20px;font-weight:700;color:#0f766e;">✦ ujyalo</span>
         <span style="font-size:12px;color:#94A3B8;margin-left:12px;">New contact message</span>
       </td></tr>
       <tr><td style="background:#ffffff;padding:32px;border:1px solid #E5E7EB;border-top:none;border-radius:0 0 10px 10px;">
-        <p style="font-size:18px;font-weight:500;color:#0A1628;margin:0 0 20px;">New message from ${full_name.trim()}</p>
+        <p style="font-size:18px;font-weight:500;color:#0A1628;margin:0 0 20px;">New message from ${nameSafe}</p>
         <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:20px;font-size:14px;">
-          <tr><td style="padding:6px 0;color:#6B7280;width:100px;">Name</td><td style="padding:6px 0;color:#111827;font-weight:500;">${full_name.trim()}</td></tr>
-          <tr><td style="padding:6px 0;color:#6B7280;">Email</td><td style="padding:6px 0;color:#185FA5;"><a href="mailto:${email.trim()}" style="color:#185FA5;">${email.trim()}</a></td></tr>
-          <tr><td style="padding:6px 0;color:#6B7280;">Role</td><td style="padding:6px 0;color:#111827;">${role}</td></tr>
+          <tr><td style="padding:6px 0;color:#6B7280;width:100px;">Name</td><td style="padding:6px 0;color:#111827;font-weight:500;">${nameSafe}</td></tr>
+          <tr><td style="padding:6px 0;color:#6B7280;">Email</td><td style="padding:6px 0;color:#185FA5;"><a href="mailto:${emailSafe}" style="color:#185FA5;">${emailSafe}</a></td></tr>
+          <tr><td style="padding:6px 0;color:#6B7280;">Role</td><td style="padding:6px 0;color:#111827;">${roleSafe}</td></tr>
         </table>
         <div style="background:#F9FAFB;border-radius:8px;padding:16px 20px;border-left:3px solid #185FA5;">
           <p style="font-size:13px;color:#6B7280;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.06em;">Message</p>
-          <p style="font-size:14px;color:#374151;line-height:1.7;margin:0;">${message.trim()}</p>
+          <p style="font-size:14px;color:#374151;line-height:1.7;margin:0;">${msgSafe}</p>
         </div>
-        <p style="margin:20px 0 0;"><a href="mailto:${email.trim()}" style="display:inline-block;background:#185FA5;color:#ffffff;padding:10px 22px;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;">Reply to ${full_name.trim()} →</a></p>
+        <p style="margin:20px 0 0;"><a href="mailto:${emailSafe}" style="display:inline-block;background:#185FA5;color:#ffffff;padding:10px 22px;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;">Reply to ${nameSafe} →</a></p>
       </td></tr>
     </table>
   </td></tr>
@@ -145,7 +182,7 @@ export default async function handler(req, res) {
           from: 'Ujyalo Contact <hello@ujyalo.app>',
           to: ['hello@ujyalo.app'],
           reply_to: email.trim().toLowerCase(),
-          subject: `New message from ${full_name.trim()} — ${email.trim()}`,
+          subject: `New message from ${subjName} — ${subjEmail}`,
           html: notificationEmail,
         })
       })
