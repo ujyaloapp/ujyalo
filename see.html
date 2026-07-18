@@ -182,6 +182,10 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 
 /* PRACTICE ENGINE */
 .prac-wrap{max-width:680px;}
+.prac-run-head{margin-bottom:18px;}
+.prac-run-title{font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:var(--ink);margin-bottom:4px;}
+.prac-run-sub{font-size:13px;color:var(--muted);line-height:1.55;max-width:560px;}
+.prac-run-sub strong{color:var(--brand-deep);font-weight:700;}
 .cp-prog{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
 .cp-pbar{flex:1;height:6px;background:var(--line);border-radius:99px;overflow:hidden;}
 .cp-pfill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:99px;transition:width .4s;}
@@ -710,6 +714,10 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
           <div class="prac-pad">
             <div class="prac-crumb"><button class="prac-bk" id="pr-back" onclick="practiceStep('prac-chapters')">← Chapters</button><span class="prac-sep">›</span><span id="pr-subj">Maths</span><span class="prac-sep">›</span><strong id="pr-chap">Sets</strong></div>
             <div class="prac-wrap">
+              <div class="prac-run-head">
+                <div class="prac-run-title" id="pr-chap-title">Practice</div>
+                <div class="prac-run-sub">SEE-style questions. Read each one, work it out on paper, then tap <strong>Show answer</strong> to check the model answer and mark yourself. Use <strong>Next</strong> to move on anytime.</div>
+              </div>
               <div class="cp-prog"><div class="cp-pbar"><div class="cp-pfill" id="cp-pfill" style="width:0%"></div></div><div class="cp-ptxt" id="cp-ptxt">0 / 0</div></div>
 
               <div id="cp-qblock"></div>
@@ -1490,6 +1498,7 @@ function practiceRun(chapter){
   pracState.chapter=chapter;
   pracState.idx=0; pracState.got=0; pracState.revealed=false;
   document.getElementById('pr-chap').textContent=chapter;
+  document.getElementById('pr-chap-title').textContent=chapter;
   document.getElementById('cp-qblock').style.display='block';
   document.getElementById('cp-doneblock').style.display='none';
   practiceStep('prac-run');
@@ -1532,7 +1541,7 @@ function cpLoad(){
       '<div class="cp-qmeta"><span class="cp-qnum">Q'+(i+1)+' of '+qs.length+'</span>'+
         '<span style="display:flex;align-items:center;gap:8px">'+marksChip+langBtn+'</span></div>'+
       '<div id="cp-qbody"></div>'+
-      '<div class="cp-qact" id="cp-qact"><button class="cp-bskip" onclick="cpSkip()">⤼ Skip</button><button class="cp-bcheck" onclick="cpCheck()">Show answer →</button></div>'+
+      '<div class="cp-qact" id="cp-qact"><button class="cp-bskip" onclick="cpSkip()">Next →</button><button class="cp-bcheck" onclick="cpCheck()">Show answer →</button></div>'+
     '</div>'+
     '<div id="cp-model" style="display:none"></div>'+
     '<div class="cp-assess" id="cp-assess" style="display:none"><p>How did you do?</p><div class="cp-assess-btns"><button class="cp-bgot" onclick="cpResult(\'got_it\')">✓ Got it</button><button class="cp-balmost" onclick="cpResult(\'almost\')">~ Almost</button><button class="cp-bmiss" onclick="cpResult(\'missed\')">✗ Didn\'t get it</button></div></div>';
