@@ -712,29 +712,9 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
             <div class="prac-wrap">
               <div class="cp-prog"><div class="cp-pbar"><div class="cp-pfill" id="cp-pfill" style="width:0%"></div></div><div class="cp-ptxt" id="cp-ptxt">0 / 0</div></div>
 
-              <div id="cp-qblock">
-                <div class="cp-qcard">
-                  <div class="cp-qmeta"><span class="cp-qnum" id="cp-qnum">Q1</span><span class="cp-qmarks" id="cp-qmarks">2 marks</span></div>
-                  <div class="cp-qtext" id="cp-qtext"></div>
-                  <textarea class="cp-qans" id="cp-qans" placeholder="Write your answer here…&#10;&#10;Show your working — just like the real SEE exam."></textarea>
-                  <div class="cp-qact"><button class="cp-bskip" onclick="cpSkip()">⤼ Skip</button><button class="cp-bcheck" onclick="cpCheck()">Check answer →</button></div>
-                </div>
-                <div class="cp-model" id="cp-model" style="display:none">
-                  <div class="cp-model-t">✓ Model answer</div>
-                  <div class="cp-model-b" id="cp-model-b"></div>
-                </div>
-                <div class="cp-assess" id="cp-assess" style="display:none">
-                  <p>How did you do?</p>
-                  <div class="cp-assess-btns"><button class="cp-bgot" onclick="cpResult('got_it')">✓ Got it</button><button class="cp-balmost" onclick="cpResult('almost')">~ Almost</button><button class="cp-bmiss" onclick="cpResult('missed')">✗ Didn't get it</button></div>
-                </div>
-              </div>
+              <div id="cp-qblock"></div>
 
               <div id="cp-doneblock" style="display:none"></div>
-
-              <div class="cp-tips" id="cp-tips" style="display:none">
-                <button class="cp-tips-tog" id="cp-tips-tog" onclick="cpToggleTips()">📋 Key Formulas &amp; Common Mistakes <span>▼</span></button>
-                <div class="cp-tips-body" id="cp-tips-body"></div>
-              </div>
             </div>
           </div>
         </div>
@@ -1418,7 +1398,33 @@ var CHAPTER_META = {
 // Per-session cache of fetched questions, keyed by subject
 var QCACHE = {};
 
-var pracState = {subject:'maths', chapter:null, idx:0, got:0, qs:[]};
+var pracState = {subject:'maths', chapter:null, idx:0, got:0, qs:[], revealed:false};
+
+// Map a chapter_questions row → a rich question item (parent stem + parts + figure + MCQ + Nepali)
+function mapPracQ(q){
+  var parts = Array.isArray(q.parts) ? q.parts : null;
+  var hasOpts = !!(q.option_a||q.option_b||q.option_c||q.option_d);
+  var opts = hasOpts ? [q.option_a,q.option_b,q.option_c,q.option_d].filter(function(x){return x!=null && String(x).trim()!=='';}) : null;
+  var total = (parts&&parts.length) ? parts.reduce(function(s,p){return s+(Number(p.marks)||0);},0) : (Number(q.marks)||0);
+  var ans = q.answer_text || '';
+  if(hasOpts && q.correct_option){
+    var ci = ({a:0,b:1,c:2,d:3})[String(q.correct_option).trim().toLowerCase()];
+    if(ci!=null && opts && opts[ci]!=null){
+      var L=['A','B','C','D'][ci];
+      ans = 'Correct answer: '+L+'. '+opts[ci] + (q.explanation?('\n'+q.explanation):(q.answer_text?('\n'+q.answer_text):''));
+    }
+  }
+  return {
+    id:q.id, topic:q.topic||'',
+    total: total,
+    hasNp: !!(q.question_text_np || (parts&&parts.some(function(p){return p.q_np;}))),
+    answer_np: q.answer_text_np || '',
+    group:{
+      parent:{ en:q.question_text||'', np:q.question_text_np||'', answer:ans, marks:0, diagram:q.diagram_svg||null, opts:opts, topic:q.topic||'' },
+      subs: (parts&&parts.length) ? parts.map(function(p){return {sub:p.sub||'', en:p.q||'', np:p.q_np||'', answer:p.a||'', marks:Number(p.marks)||0, diagram:p.diagram||null, opts:null};}) : []
+    }
+  };
+}
 
 function practiceStep(id, silent){
   document.querySelectorAll('.prac-step').forEach(s=>s.classList.remove('show'));
@@ -1459,7 +1465,7 @@ function fetchCounts(subjCode){
       all.forEach(function(q){
         var ch=q.chapter_name; if(!ch) return;
         if(!byChapter[ch]) byChapter[ch]=[];
-        byChapter[ch].push({id:q.id, q:q.question_text, a:q.answer_text, m:q.marks, topic:q.topic});
+        byChapter[ch].push(mapPracQ(q));
       });
       QCACHE[subjCode]=byChapter;
       if(pracState.subject===subjCode) applyCounts(subjCode);
@@ -1482,34 +1488,21 @@ function applyCounts(subjCode){
 
 function practiceRun(chapter){
   pracState.chapter=chapter;
-  pracState.idx=0; pracState.got=0;
+  pracState.idx=0; pracState.got=0; pracState.revealed=false;
   document.getElementById('pr-chap').textContent=chapter;
-  // Step 4: real tips from CHAPTER_META
-  var tips=CHAPTER_META[chapter];
-  var tipsWrap=document.getElementById('cp-tips');
-  if(tips && ((tips.f&&tips.f.length)||(tips.m&&tips.m.length))){
-    var b='';
-    if(tips.f&&tips.f.length){ b+='<div class="cp-tip-h" style="color:var(--blue)">📋 Key Formulas</div>'; tips.f.forEach(function(f){b+='<div class="cp-tip-f">'+f+'</div>';}); }
-    if(tips.m&&tips.m.length){ b+='<div class="cp-tip-h" style="color:#c25b2a">⚠️ Common Mistakes</div>'; tips.m.forEach(function(m){b+='<div class="cp-tip-m">'+m+'</div>';}); }
-    document.getElementById('cp-tips-body').innerHTML=b;
-    document.getElementById('cp-tips-tog').classList.remove('open');
-    document.getElementById('cp-tips-body').classList.remove('open');
-    tipsWrap.style.display='block';
-  } else { tipsWrap.style.display='none'; }
   document.getElementById('cp-qblock').style.display='block';
   document.getElementById('cp-doneblock').style.display='none';
   practiceStep('prac-run');
 
-  // Step 3: load real questions (from cache if present, else fetch this chapter)
+  // Load real questions (from cache if present, else fetch this chapter)
   var cached = QCACHE[pracState.subject] && QCACHE[pracState.subject][chapter];
   if(cached && cached.length){ pracState.qs=cached; cpLoad(); return; }
-  // show loading
   cpShowLoading();
   fetch('/api/practice?action=get-questions&subject='+encodeURIComponent(pracState.subject)+'&chapter='+encodeURIComponent(chapter))
     .then(function(r){return r.json();})
     .then(function(data){
       if(Array.isArray(data) && data.length){
-        pracState.qs=data.map(function(q){return {id:q.id, q:q.question_text, a:q.answer_text, m:q.marks, topic:q.topic};});
+        pracState.qs=data.map(mapPracQ);
         cpLoad();
       } else {
         cpShowEmpty();
@@ -1523,48 +1516,52 @@ function cpShowLoading(){
 }
 function cpShowEmpty(){
   document.getElementById('cp-qblock').innerHTML='<div class="cp-qcard"><div class="cp-qtext">📝 Questions coming soon for this chapter.</div><div style="color:var(--faint);font-size:14px;margin-top:8px">We\u2019re adding questions here. Check back soon.</div></div>';
-  document.getElementById('cp-tips').style.display='none';
 }
 function cpShowError(){
   document.getElementById('cp-qblock').innerHTML='<div class="cp-qcard"><div class="cp-qtext">⚠️ Could not load questions.</div><div style="color:var(--faint);font-size:14px;margin-top:8px">Please check your connection and try again.</div></div>';
-  document.getElementById('cp-tips').style.display='none';
 }
 
 function cpLoad(){
-  // Rebuild the question card shell (it may have been replaced by loading/empty state)
-  var block=document.getElementById('cp-qblock');
-  block.innerHTML =
-    '<div class="cp-qcard">'+
-      '<div class="cp-qmeta"><span class="cp-qnum" id="cp-qnum">Q1</span><span class="cp-qmarks" id="cp-qmarks">2 marks</span></div>'+
-      '<div class="cp-qtext" id="cp-qtext"></div>'+
-      '<textarea class="cp-qans" id="cp-qans" placeholder="Write your answer here…&#10;&#10;Show your working — just like the real SEE exam."></textarea>'+
-      '<div class="cp-qact"><button class="cp-bskip" onclick="cpSkip()">⤼ Skip</button><button class="cp-bcheck" onclick="cpCheck()">Check answer →</button></div>'+
-    '</div>'+
-    '<div class="cp-model" id="cp-model" style="display:none"><div class="cp-model-t">✓ Model answer</div><div class="cp-model-b" id="cp-model-b"></div></div>'+
-    '<div class="cp-assess" id="cp-assess" style="display:none"><p>How did you do?</p><div class="cp-assess-btns"><button class="cp-bgot" onclick="cpResult(\'got_it\')">✓ Got it</button><button class="cp-balmost" onclick="cpResult(\'almost\')">~ Almost</button><button class="cp-bmiss" onclick="cpResult(\'missed\')">✗ Didn\'t get it</button></div></div>';
-
   var qs=pracState.qs, i=pracState.idx;
   if(!qs.length){ cpShowEmpty(); return; }
-  var q=qs[i];
-  var marks=Number(q.m)||0;
-  document.getElementById('cp-qnum').textContent='Q'+(i+1)+' of '+qs.length;
-  document.getElementById('cp-qmarks').textContent=marks+(marks===1?' mark':' marks');
-  document.getElementById('cp-qtext').textContent=q.q||'';
-  document.getElementById('cp-model-b').textContent=q.a||'Model answer coming soon.';
+  var item=qs[i], g=item.group, total=item.total;
+  var langBtn = item.hasNp ? '<button class="dq-lang" onclick="cpToggleLang()">'+(DQ.lang==='np'?'English':'नेपाली')+'</button>' : '';
+  var marksChip = total ? '<span class="cp-qmarks">'+total+(total===1?' mark':' marks')+'</span>' : '';
+  document.getElementById('cp-qblock').innerHTML =
+    '<div class="cp-qcard">'+
+      '<div class="cp-qmeta"><span class="cp-qnum">Q'+(i+1)+' of '+qs.length+'</span>'+
+        '<span style="display:flex;align-items:center;gap:8px">'+marksChip+langBtn+'</span></div>'+
+      '<div id="cp-qbody"></div>'+
+      '<div class="cp-qact" id="cp-qact"><button class="cp-bskip" onclick="cpSkip()">⤼ Skip</button><button class="cp-bcheck" onclick="cpCheck()">Show answer →</button></div>'+
+    '</div>'+
+    '<div id="cp-model" style="display:none"></div>'+
+    '<div class="cp-assess" id="cp-assess" style="display:none"><p>How did you do?</p><div class="cp-assess-btns"><button class="cp-bgot" onclick="cpResult(\'got_it\')">✓ Got it</button><button class="cp-balmost" onclick="cpResult(\'almost\')">~ Almost</button><button class="cp-bmiss" onclick="cpResult(\'missed\')">✗ Didn\'t get it</button></div></div>';
+
+  document.getElementById('cp-qbody').innerHTML = renderDailyQuestion(g);
+  document.getElementById('cp-model').innerHTML = cpAnswerHTML(item);
   document.getElementById('cp-pfill').style.width=(i/qs.length*100)+'%';
   document.getElementById('cp-ptxt').textContent=i+' / '+qs.length;
+  if(pracState.revealed) cpShowAnswer();
   window.scrollTo(0,0);
 }
+function cpAnswerHTML(item){
+  if(DQ.lang==='np' && item.answer_np) return dqAnswerHtml(item.answer_np,'');
+  return renderDailyAnswers(item.group);
+}
+function cpShowAnswer(){
+  var m=document.getElementById('cp-model'); if(m) m.style.display='block';
+  var a=document.getElementById('cp-assess'); if(a) a.style.display='flex';
+  var act=document.getElementById('cp-qact'); if(act) act.style.display='none';
+}
+function cpToggleLang(){ DQ.lang=(DQ.lang==='np')?'en':'np'; cpLoad(); }
 function cpCheck(){
-  var v=document.getElementById('cp-qans').value.trim();
-  if(!v){ document.getElementById('cp-qans').focus(); return; }
-  document.getElementById('cp-model').style.display='block';
-  document.getElementById('cp-assess').style.display='flex';
-  document.getElementById('cp-qans').disabled=true;
+  pracState.revealed=true;
+  cpShowAnswer();
+  var m=document.getElementById('cp-model'); if(m) m.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function cpResult(result){ if(result==='got_it') pracState.got++; logAttempt(result, true); cpAdvance(); }
 function cpSkip(){ logAttempt('skipped', false); cpAdvance(); }
-function cpAdvance(){ pracState.idx++; if(pracState.idx>=pracState.qs.length) cpComplete(); else cpLoad(); }
+function cpAdvance(){ pracState.idx++; pracState.revealed=false; if(pracState.idx>=pracState.qs.length) cpComplete(); else cpLoad(); }
 function cpGot(){ cpResult('got_it'); }
 function cpNext(){ cpResult('missed'); }
 function logAttempt(result, revealed){
@@ -1587,7 +1584,6 @@ function logAttempt(result, revealed){
 }
 function cpComplete(){
   document.getElementById('cp-qblock').style.display='none';
-  document.getElementById('cp-tips').style.display='none';
   document.getElementById('cp-pfill').style.width='100%';
   var total=pracState.qs.length, got=pracState.got;
   document.getElementById('cp-ptxt').textContent=total+' / '+total;
