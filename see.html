@@ -234,6 +234,57 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .cp-bretry{background:var(--bg);color:var(--ink);border:1.5px solid var(--line);padding:12px 22px;border-radius:99px;font-size:14px;font-weight:700;cursor:pointer;}
 .cp-bnextch{background:var(--blue);color:#fff;border:none;padding:12px 22px;border-radius:99px;font-size:14px;font-weight:700;cursor:pointer;}
 
+/* ─── FORMULAS TAB ─────────────────────────────── */
+.fx-hero{padding:26px 34px 22px;background:linear-gradient(135deg,var(--brand),var(--brand-deep));color:#fff;position:relative;overflow:hidden;}
+.fx-hero::after{content:"";position:absolute;top:-60px;right:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.06);}
+.fx-hero-t{font-family:'Fraunces',serif;font-size:26px;font-weight:900;position:relative;}
+.fx-hero-t em{font-style:italic;color:#ffe1b0;}
+.fx-hero-s{font-size:13px;color:rgba(255,255,255,.82);max-width:520px;margin-top:4px;position:relative;}
+.fx-pad{padding:22px 34px 40px;}
+.fx-cards{display:flex;gap:12px;}
+.fx-card{flex:1;border:1.5px solid var(--line);background:var(--card);border-radius:16px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:.18s;text-align:left;font-family:inherit;color:var(--ink);}
+.fx-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(15,118,110,.10);}
+.fx-card.on{border-color:var(--brand);background:var(--brand-soft);}
+.fx-card .fxi{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--brand-soft);flex-shrink:0;}
+.fx-card.on .fxi{background:#fff;}
+.fx-card .nm{font-weight:700;font-size:16px;}
+.fx-card .mt{font-size:12px;color:var(--muted);}
+.fx-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:20px 0 0;flex-wrap:wrap;}
+.fx-title{font-family:'Fraunces',serif;font-size:20px;font-weight:900;color:var(--ink);}
+.fx-tools{display:flex;gap:8px;}
+.fx-tbtn{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 15px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+.fx-tbtn.primary{background:var(--brand);border-color:var(--brand);color:#fff;}
+.fx-tbtn:hover{border-color:var(--brand);}
+.fx-sheet{background:var(--card);border:1px solid var(--line);border-radius:18px;margin-top:14px;overflow:hidden;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='230' height='165'%3E%3Ctext x='4' y='95' font-family='sans-serif' font-size='21' font-weight='700' fill='%230f766e' fill-opacity='0.045' transform='rotate(-22 115 82)'%3Eujyalo.app%3C/text%3E%3C/svg%3E");background-repeat:repeat;}
+.fx-band{background:var(--brand-soft);border-bottom:1px solid #cfe9e3;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.fx-band .l{font-weight:800;color:var(--brand-deep);font-size:14px;}
+.fx-band .r{font-size:11.5px;color:var(--muted);white-space:nowrap;}
+.fx-group-h{font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--brand);margin:22px 20px 10px;display:flex;align-items:center;gap:10px;}
+.fx-group-h::after{content:"";flex:1;height:1px;background:var(--line);}
+.fx-chap{padding:0 20px 16px;}
+.fx-chap-nm{font-family:'Fraunces',serif;font-size:17px;font-weight:800;margin:14px 0 9px;color:var(--ink);}
+.fx-block{border-radius:12px;padding:12px 14px;margin-bottom:9px;}
+.fx-block.f{background:var(--brand-soft);border:1px solid #cfe9e3;}
+.fx-block.m{background:#fff6e6;border:1px solid #f3dca6;}
+.fx-block-h{font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px;}
+.fx-block.f .fx-block-h{color:var(--brand-deep);}
+.fx-block.m .fx-block-h{color:#8a5308;}
+.fx-flist,.fx-mlist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
+.fx-flist li{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;color:var(--ink);line-height:1.5;padding-left:16px;position:relative;}
+.fx-flist li::before{content:"";position:absolute;left:2px;top:8px;width:5px;height:5px;border-radius:50%;background:var(--brand);}
+.fx-mlist li{font-size:13px;color:var(--ink);line-height:1.5;padding-left:20px;position:relative;}
+.fx-mlist li::before{content:"!";position:absolute;left:0;top:1px;width:15px;height:15px;border-radius:50%;background:#e0900c;color:#fff;font-size:10px;font-weight:800;text-align:center;line-height:15px;}
+.fx-foot{padding:18px 20px;border-top:1px solid var(--line);text-align:center;}
+.fx-foot .fb{font-weight:800;color:var(--brand-deep);font-size:14px;}
+.fx-foot .fs{font-size:12px;color:var(--muted);margin-top:3px;}
+@media(max-width:900px){.fx-hero{padding:18px 16px;}.fx-hero-t{font-size:21px;}.fx-pad{padding:16px;}}
+@media print{
+  .lsb,.mtop,.mbtm,#stabs,.fx-hero,.fx-cards,.fx-toolbar{display:none!important;}
+  .vw:not(#vw-formulas){display:none!important;}
+  .fx-pad{padding:0!important;}
+  .fx-sheet{border:none!important;margin:0!important;}
+}
+
 /* PLUS HUB */
 .plus-hero{background:linear-gradient(135deg,#fff6e0,#ffe9c2);border:1.5px solid #ffdd9e;border-radius:18px;padding:24px;margin-bottom:20px;}
 .plus-hero-badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#3a2a05;background:linear-gradient(135deg,#ffd86b,#f5a623);padding:4px 12px;border-radius:99px;margin-bottom:10px;}
@@ -625,6 +676,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
       <button class="li act" onclick="showView('papers',this)" id="nav-papers"><span class="li-icon">📄</span><span class="li-lbl">Past Papers</span></button>
       <button class="li" onclick="showView('practice',this)" id="nav-practice"><span class="li-icon">📖</span><span class="li-lbl">Practice</span></button>
       <button class="li" onclick="showView('daily',this)" id="nav-daily"><span class="li-icon">📅</span><span class="li-lbl">Daily Question</span></button>
+      <button class="li" onclick="showView('formulas',this)" id="nav-formulas"><span class="li-icon">📐</span><span class="li-lbl">Formulas</span></button>
       <button class="li" onclick="showView('saved',this)" id="nav-saved" style="display:none"><span class="li-icon">🔖</span><span class="li-lbl">Saved</span></button>
 
       <div class="lsb-plus-label"><span class="plus-star">⭐</span> PLUS</div>
@@ -757,6 +809,28 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
             </div>
             <div class="dq-done" id="dq-done" style="display:none"></div>
           </div>
+        </div>
+      </div>
+
+      <!-- FORMULAS VIEW -->
+      <div class="vw" id="vw-formulas">
+        <div class="fx-hero">
+          <div class="fx-hero-t">SEE Formulas <em>&amp;</em> Common Mistakes</div>
+          <div class="fx-hero-s">Every formula you need for the SEE exam, chapter by chapter — with the mistakes that quietly cost marks. Free to use, download, and share.</div>
+        </div>
+        <div class="fx-pad">
+          <div class="fx-cards">
+            <button class="fx-card on" id="fx-c-maths" onclick="fxPick('maths')"><span class="fxi">🧮</span><span><span class="nm">Maths</span> <span class="mt">· 17 chapters</span></span></button>
+            <button class="fx-card" id="fx-c-science" onclick="fxPick('science')"><span class="fxi">🔬</span><span><span class="nm">Science</span> <span class="mt">· 24 chapters</span></span></button>
+          </div>
+          <div class="fx-toolbar">
+            <div class="fx-title" id="fx-title">SEE Maths — Formula Sheet</div>
+            <div class="fx-tools">
+              <button class="fx-tbtn" onclick="fxShare()">↗ Share</button>
+              <button class="fx-tbtn primary" onclick="fxDownload()">⬇ Download PDF</button>
+            </div>
+          </div>
+          <div class="fx-sheet" id="fx-sheet"></div>
         </div>
       </div>
 
@@ -915,6 +989,7 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
     <button class="mbtm-i" id="mb-papers" onclick="mobileNav('papers',this)"><span class="mbtm-ic">📄</span><span class="mbtm-tx">Papers</span></button>
     <button class="mbtm-i" id="mb-practice" onclick="mobileNav('practice',this)"><span class="mbtm-ic">📖</span><span class="mbtm-tx">Practice</span></button>
     <button class="mbtm-i" id="mb-daily" onclick="mobileNav('daily',this)"><span class="mbtm-ic">📅</span><span class="mbtm-tx">Daily</span></button>
+    <button class="mbtm-i" id="mb-formulas" onclick="mobileNav('formulas',this)"><span class="mbtm-ic">📐</span><span class="mbtm-tx">Formulas</span></button>
     <button class="mbtm-i" id="mb-saved" onclick="mobileNav('saved',this)" style="display:none"><span class="mbtm-ic">🔖</span><span class="mbtm-tx">Saved</span></button>
     <button class="mbtm-i mbtm-plus" id="mb-plus" onclick="mobileNav('plus',this)"><span class="mbtm-ic">⭐</span><span class="mbtm-tx">Plus</span></button>
   </nav>
@@ -1005,7 +1080,7 @@ const S = {subj:'maths', year:'all', data:null};
   var _deep=(location.hash||'').replace('#','');
   var _parts=_deep.split('/');
   var _view=_parts[0];
-  var _navMap={papers:'nav-papers',practice:'nav-practice',saved:'nav-saved'};
+  var _navMap={papers:'nav-papers',practice:'nav-practice',daily:'nav-daily',formulas:'nav-formulas',saved:'nav-saved'};
   if(_view && _navMap[_view]){
     showView(_view, document.getElementById(_navMap[_view]));
     if(_view==='practice' && _parts[1]){
@@ -1165,13 +1240,14 @@ function goView(id){
   // When leaving practice, reset to step 1 so it's clean on return
   if(id!=='practice') practiceStep('prac-subjects', true);
   if(id==='daily') loadDailyQuestion();
+  if(id==='formulas') fxInit();
   if(id==='mock') loadMockList();
 }
 
 /* ─── MOBILE CHROME (top header + bottom nav sync) ─────────────────────────── */
 function syncMobileChrome(viewId){
   // bottom nav highlight
-  var map={papers:'mb-papers',practice:'mb-practice',daily:'mb-daily',saved:'mb-saved',plus:'mb-plus',
+  var map={papers:'mb-papers',practice:'mb-practice',daily:'mb-daily',formulas:'mb-formulas',saved:'mb-saved',plus:'mb-plus',
            heatmap:'mb-plus',predict:'mb-plus',mypaper:'mb-plus',mock:'mb-plus'};
   document.querySelectorAll('.mbtm-i').forEach(b=>b.classList.remove('act'));
   var mbId=map[viewId]; if(mbId) document.getElementById(mbId)?.classList.add('act');
@@ -1180,7 +1256,7 @@ function syncMobileChrome(viewId){
 function updateMobileHeader(viewId){
   var t=document.getElementById('mtop-title');
   var back=document.getElementById('mtop-back');
-  var titles={papers:'Past Papers',practice:'Practice',daily:'Daily Question',saved:'Saved',plus:'ujyalo Plus',
+  var titles={papers:'Past Papers',practice:'Practice',daily:'Daily Question',formulas:'Formulas',saved:'Saved',plus:'ujyalo Plus',
               heatmap:'Hot Topics',predict:'Predict 2083',mypaper:'My Paper'};
   if(!t) return;
   // On practice, header reflects the step
@@ -1197,9 +1273,141 @@ function updateMobileHeader(viewId){
   else { back.style.display='none'; }
 }
 function mobileNav(id,btn){
-  var navMap={papers:'nav-papers',practice:'nav-practice',daily:'nav-daily',saved:'nav-saved',plus:null};
+  var navMap={papers:'nav-papers',practice:'nav-practice',daily:'nav-daily',formulas:'nav-formulas',saved:'nav-saved',plus:null};
   if(id==='plus'){ showView('plus'); document.querySelectorAll('.li').forEach(i=>i.classList.remove('act')); }
   else { showView(id, document.getElementById(navMap[id])); }
+}
+
+/* ─── FORMULAS TAB ─────────────────────────────────────────────────────────── */
+var FX={rendered:false,subj:'maths'};
+var FX_DATA={
+ maths:{label:'Maths',groups:[
+  {name:'Sets',chapters:[
+   {nm:'Sets',f:['n(A∪B) = n(A) + n(B) − n(A∩B)','n(A∪B∪C) = n(A)+n(B)+n(C) − n(A∩B) − n(B∩C) − n(A∩C) + n(A∩B∩C)','n₀(A) = only A = n(A) − n(A∩B)','Neither = n(U) − n(A∪B)'],
+    m:['Subtract the "both" group once — students double-count it','Draw the Venn diagram first','For % problems take the total as 100, not the real number']}]},
+  {name:'Arithmetic',chapters:[
+   {nm:'Tax and Money Exchange',f:['Discount = MP × D% / 100 ;  SP = MP − Discount','VAT = SP × V% / 100 ;  Total = SP + VAT','NPR → foreign: use the SELLING rate','Foreign → NPR: use the BUYING rate'],
+    m:['VAT is charged on the price AFTER discount, not the marked price','Devaluation: add the rate to the old rate; revaluation: subtract it','To find MP, work backwards — divide by (1−D%)(1+V%)']},
+   {nm:'Compound Interest',f:['CA = P(1 + R/100)ᵀ ;  CI = CA − P','Half-yearly: CA = P(1 + R/200)²ᵀ','Quarterly: CA = P(1 + R/400)⁴ᵀ','Different rates: CA = P(1+R₁/100)(1+R₂/100)…','T yr M mth: CA = P(1+R/100)ᵀ(1 + MR/1200)'],
+    m:['CI is interest only; CA is the total amount','Half-yearly: halve the rate AND double the time (R/200 and 2T)','Never use the SI formula for a compound problem']},
+   {nm:'Population Growth & Depreciation',f:['Growth: Pᴛ = P₀(1 + R/100)ᵀ','Increase = Pᴛ − P₀','Depreciation: Vᴛ = V₀(1 − R/100)ᵀ','Past value: P₀ = Pᴛ ÷ (1 + R/100)ᵀ'],
+    m:['Growth uses (1 + R/100); depreciation uses (1 − R/100)','To find a past value, DIVIDE by the factor, don’t multiply']}]},
+  {name:'Mensuration',chapters:[
+   {nm:'Plane Surface (Area)',f:['Triangle = ½ × base × height','Equilateral = (√3/4) × side²','Heron: √[s(s−a)(s−b)(s−c)], s = (a+b+c)/2','Trapezium = ½ (sum of parallel sides) × height','Rhombus = ½ × d₁ × d₂'],
+    m:['Height must be PERPENDICULAR to the base','Rhombus uses the DIAGONALS, not the sides','Always write the unit — cm² for area']},
+   {nm:'Cylinder and Sphere',f:['Cylinder: CSA = 2πrh ;  TSA = 2πr(r+h) ;  V = πr²h','Sphere: SA = 4πr² ;  V = (4/3)πr³','Hemisphere: CSA = 2πr² ;  TSA = 3πr² ;  V = (2/3)πr³','Cone: CSA = πrl ;  V = (1/3)πr²h ;  l = √(r²+h²)'],
+    m:['TSA of a cylinder has TWO circular ends; CSA has none','Use the radius, not the diameter','Volume is cm³, surface area is cm²']},
+   {nm:'Prism and Pyramid',f:['Prism: V = base area × length ;  LSA = perimeter × length','Square pyramid: V = (1/3) a²h ;  TSA = a² + 2al','Slant height: l² = h² + (a/2)² ;  edge e² = l² + (a/2)²','Pyramid LSA = ½ × perimeter × slant height'],
+    m:['SLANT height for surface area, VERTICAL height for volume','Find the base area first','a/2 (half the base), not a, inside the slant-height formula']}]},
+  {name:'Algebra',chapters:[
+   {nm:'HCF and LCM',f:['HCF × LCM = product of the two expressions','HCF: common factors with the LOWEST power','LCM: all factors with the HIGHEST power'],
+    m:['Factorise completely before finding HCF/LCM','HCF = lowest power, LCM = highest power — don’t swap them']},
+   {nm:'Radical and Surd',f:['√(a×b) = √a × √b ;  √(a/b) = √a/√b','Conjugate of (a+√b) is (a−√b)','(a+√b)(a−√b) = a² − b','Rationalise: multiply by the conjugate'],
+    m:['Only LIKE surds add/subtract: √4 + √9 ≠ √13','Simplify surds first: √50 = 5√2']},
+   {nm:'Indices',f:['aᵐ × aⁿ = aᵐ⁺ⁿ ;  aᵐ ÷ aⁿ = aᵐ⁻ⁿ','(aᵐ)ⁿ = aᵐⁿ ;  a⁰ = 1 ;  a⁻ⁿ = 1/aⁿ','a^(m/n) = ⁿ√(aᵐ)'],
+    m:['Multiplying powers ADDS them (aᵐ·aⁿ = aᵐ⁺ⁿ, not aᵐⁿ)','a⁰ = 1 for any non-zero a']},
+   {nm:'Algebraic Identities & Fractions',f:['(a±b)² = a² ± 2ab + b² ;  a² − b² = (a+b)(a−b)','a³ ± b³ = (a±b)(a² ∓ ab + b²)','Simplify a fraction: factorise top & bottom, then cancel','Add/subtract: use a common denominator first'],
+    m:['Cancel only COMMON FACTORS, never individual terms','x/(x+1) does not simplify to 1']},
+   {nm:'Equations',f:['Linear pair: solve by substitution or elimination','Quadratic: ax² + bx + c = 0','x = [ −b ± √(b²−4ac) ] / 2a','Or factorise: split the middle term'],
+    m:['Check the answer in BOTH original equations','A quadratic has TWO roots — don’t drop one','Multiply EVERY term when clearing a fraction']}]},
+  {name:'Geometry',chapters:[
+   {nm:'Area of Triangles & Quadrilaterals',f:['Triangle = ½ × base × height ;  Parallelogram = base × height','Same base + same parallels ⇒ triangles equal in area','A triangle = ½ the parallelogram on the same base & parallels','A median divides a triangle into two equal areas'],
+    m:['Equal area does NOT mean congruent','The height must be perpendicular to the chosen base']},
+   {nm:'Circle Theorems',f:['Central angle = 2 × inscribed angle (same arc)','Angles in the same segment are equal','Angle in a semicircle = 90°','Cyclic quadrilateral: opposite angles = 180°'],
+    m:['Central angle is at the CENTRE, inscribed at the CIRCUMFERENCE','The rule needs both angles on the SAME arc']}]},
+  {name:'Trigonometry',chapters:[
+   {nm:'Trigonometry',f:['sinθ = p/h ;  cosθ = b/h ;  tanθ = p/b   (p=opp, b=adj, h=hyp)','cosecθ = h/p ;  secθ = h/b ;  cotθ = b/p','sin²θ + cos²θ = 1 ;  Pythagoras: h² = p² + b²','Values 0/30/45/60/90 — sin: 0, ½, 1/√2, √3/2, 1','Height & distance: tanθ = height ÷ distance'],
+    m:['Angles of elevation/depression are from the horizontal — draw it','sin²θ means (sinθ)², not sin(θ²)','Learn the standard-angle table cold']}]},
+  {name:'Statistics',chapters:[
+   {nm:'Statistics',f:['Mean = A + (Σfd / N)   (shortcut, d = m − A)','Median = L + [ (N/2 − cf) / f ] × i','Mode = L + [ (f₁−f₀) / (2f₁−f₀−f₂) ] × i','Q₁ = L + [ (N/4 − cf)/f ] × i ;  Q₃ uses 3N/4'],
+    m:['For grouped data use the class-boundary formulas, not raw values','cf is the cumulative frequency BEFORE the median class','Sort the data before finding the median of ungrouped values']}]},
+  {name:'Probability',chapters:[
+   {nm:'Probability',f:['P(E) = favourable ÷ total ;  0 ≤ P(E) ≤ 1','P(not E) = 1 − P(E)','Mutually exclusive: P(A∪B) = P(A) + P(B)','Independent: P(A∩B) = P(A) × P(B)','2 dice = 36 outcomes ; 2 coins = 4 ; deck = 52 cards'],
+    m:['List the whole sample space before counting','P is never greater than 1','"Or" adds, "and" multiplies']}]}
+ ]},
+ science:{label:'Science',groups:[
+  {name:'Physics',chapters:[
+   {nm:'Force',f:['F = ma ;  Weight W = mg ;  g = 10 m/s²','Momentum p = mv','Force = change in momentum ÷ time'],
+    m:['Mass is in kg, weight in newtons — not the same','Always write the SI unit in the final answer','Find acceleration before force']},
+   {nm:'Pressure',f:['P = F/A ;  unit = pascal (Pa) = N/m²','Liquid pressure P = hρg','1 atm ≈ 101,325 Pa'],
+    m:['Smaller area ⇒ greater pressure for the same force','Liquid pressure depends on DEPTH, not volume','Atmospheric pressure decreases with altitude']},
+   {nm:'Energy',f:['KE = ½mv² ;  PE = mgh','Work W = F × d ;  Power P = W/t (watt)'],
+    m:['KE depends on v² — double the speed, four times the KE','Power is joules per second (W)','Keep units consistent (J, W, s)']},
+   {nm:'Heat',f:['Q = mcΔT','Specific heat of water = 4200 J/kg°C','Kelvin = °C + 273'],
+    m:['Heat and temperature are different things','Temperature stays constant during a change of state','ΔT is the CHANGE, not the final temperature']},
+   {nm:'Light',f:['Reflection: ∠i = ∠r','Refraction (Snell): n = sin i / sin r ;  n = c/v','Speed of light c = 3 × 10⁸ m/s'],
+    m:['Angles are measured from the NORMAL, not the surface','Get the +/− sign of u, v, f right — one slip ruins the answer','A real image can be projected; a virtual image cannot']},
+   {nm:'Current Electricity and Magnetism',f:['Ohm: V = IR','Power P = VI = I²R = V²/R','Series: R = R₁+R₂+R₃','Parallel: 1/R = 1/R₁ + 1/R₂ + 1/R₃'],
+    m:['In parallel, total R is LESS than the smallest resistor','In series the current is the same everywhere; voltage divides','Draw a clear circuit diagram']}]},
+  {name:'Chemistry',chapters:[
+   {nm:'Classification of Elements',f:['Atomic number = number of protons','Mass number = protons + neutrons','Outer-shell electrons = group number (main groups)'],
+    m:['Same GROUP ⇒ similar properties (not same period)','Metals are on the LEFT of the table']},
+   {nm:'Chemical Reaction',f:['OIL RIG: Oxidation Is Loss, Reduction Is Gain (of e⁻)','Exothermic releases heat; endothermic absorbs heat','Types: combination, decomposition, displacement, redox'],
+    m:['Balance every equation — count atoms on both sides','Write state symbols: (s), (l), (g), (aq)','Oxidation and reduction always happen together']},
+   {nm:'Acid, Base and Salt',f:['Acid + Base → Salt + Water','Acid + Metal → Salt + Hydrogen','pH < 7 acidic, = 7 neutral, > 7 alkaline'],
+    m:['Lower pH = stronger acid','Neutralisation always gives salt and water','Blue litmus → red in acid; red → blue in base']},
+   {nm:'Some Gases',f:['Oxygen: relights a glowing splint','Hydrogen: burns with a squeaky "pop"','CO₂: turns lime water milky','Ammonia: damp red litmus → blue'],
+    m:['Each gas has ONE specific test — don’t mix them','CO₂ does not support combustion (used in extinguishers)']},
+   {nm:'Metals',f:['Reactivity: K>Na>Ca>Mg>Al>Zn>Fe>Cu>Au','Rusting: Fe + O₂ + H₂O → hydrated Fe₂O₃','Alloy = metal + other element(s)'],
+    m:['Rusting needs BOTH oxygen and water','A more reactive metal displaces a less reactive one']},
+   {nm:'Hydrocarbon and its Compounds',f:['Alkanes CₙH₂ₙ₊₂ (single bonds, saturated)','Alkenes CₙH₂ₙ (C=C double bond, unsaturated)','Methane CH₄, Ethane C₂H₆, Propane C₃H₈'],
+    m:['Alkane = saturated, alkene = unsaturated','Test: an alkene decolourises bromine water, an alkane doesn’t']},
+   {nm:'Materials Used in Daily Life',f:['Saponification: Fat + NaOH → Soap + Glycerol','Thermoplastic = remeltable; thermosetting = permanent','Concrete = cement + sand + gravel + water'],
+    m:['Thermoplastics can be remoulded; thermosetting cannot','Soap forms scum in hard water']}]},
+  {name:'Biology',chapters:[
+   {nm:'Invertebrates',f:['Insects: 3 body parts, 6 legs ;  Spiders: 2 parts, 8 legs','Complete metamorphosis: egg→larva→pupa→adult (4)','Incomplete: egg→nymph→adult (3)'],
+    m:['Earthworm is Annelida, not Arthropoda','Complete = 4 stages, incomplete = 3']},
+   {nm:'Human Nervous and Glandular Systems',f:['CNS = brain + spinal cord','Reflex arc: stimulus→receptor→sensory→spinal cord→motor→effector','Endocrine glands are ductless — hormones into blood'],
+    m:['A reflex is processed by the SPINAL CORD, not the brain','Nerves = fast/electrical; hormones = slow/chemical']},
+   {nm:'Blood Circulation in Human Body',f:['Heart = 4 chambers ;  BP ≈ 120/80 mmHg','Path: body→RA→RV→lungs→LA→LV→body'],
+    m:['Left ventricle has the thickest wall (pumps to the body)','Arteries carry blood AWAY; veins carry it TOWARDS the heart']},
+   {nm:'Chromosome and Sex Determination',f:['Body cells: 46 chromosomes (23 pairs)','Gametes: 23 chromosomes','Female XX, Male XY'],
+    m:['Sex is determined by the FATHER (X or Y sperm)','Gametes carry HALF the chromosome number']},
+   {nm:'Asexual and Sexual Reproduction',f:['Asexual: 1 parent, identical offspring','Sexual: 2 parents, varied offspring','Binary fission: 1 cell → 2'],
+    m:['Asexual offspring are identical clones','Variation from sexual reproduction drives evolution']},
+   {nm:'Artificial Vegetative Propagation',f:['Methods: cutting, grafting, layering, budding','Grafting: scion (shoot) joined to rootstock'],
+    m:['Grafting combines TWO plants — not one','No seeds are used; offspring are identical to the parent']},
+   {nm:'Heredity',f:['Dominant allele masks the recessive one','Homozygous AA/aa ;  Heterozygous Aa','Tt × Tt → genotype 1:2:1, phenotype 3:1'],
+    m:['Dominant ≠ more common','Show the cross/Punnett square in the answer, not just the ratio']},
+   {nm:'Environmental Pollution and Management',f:['Greenhouse gases: CO₂, CH₄, N₂O, CFCs','Acid rain pH < 5.6 ;  3 Rs: reduce, reuse, recycle'],
+    m:['CFCs destroy ozone; CO₂ drives warming — different problems','The enhanced greenhouse effect causes climate change']}]},
+  {name:'Astronomy & Geology',chapters:[
+   {nm:'History of the Earth',f:['Earth ≈ 4.6 billion years old','Rocks: igneous (magma), sedimentary (layers), metamorphic (heat+pressure)'],
+    m:['Fossils are found in SEDIMENTARY rocks','Metamorphic rock is changed existing rock, not new magma']},
+   {nm:'Climate Change and Atmosphere',f:['Layers: troposphere→stratosphere→mesosphere→thermosphere→exosphere','Ozone layer is in the stratosphere'],
+    m:['Weather happens in the TROPOSPHERE','Ozone depletion ≠ the greenhouse effect']},
+   {nm:'The Earth in the Universe',f:['8 planets: Mercury→Neptune','Rotation = 24 h (day & night)','Revolution = 365¼ days (year & seasons)'],
+    m:['Seasons come from the axial TILT, not distance from the Sun','Day/night = rotation; seasons = revolution']}]}
+ ]}
+};
+function fxEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function fxRender(subj){
+  FX.subj=subj;
+  var d=FX_DATA[subj];
+  document.getElementById('fx-c-maths').classList.toggle('on',subj==='maths');
+  document.getElementById('fx-c-science').classList.toggle('on',subj==='science');
+  document.getElementById('fx-title').textContent='SEE '+d.label+' — Formula Sheet';
+  var h='<div class="fx-band"><span class="l">'+(subj==='maths'?'🧮':'🔬')+' SEE '+d.label+' — Formulas &amp; Common Mistakes</span><span class="r">ujyalo.app · free SEE prep</span></div>';
+  d.groups.forEach(function(g){
+    h+='<div class="fx-group-h">'+fxEsc(g.name)+'</div>';
+    g.chapters.forEach(function(c){
+      h+='<div class="fx-chap"><div class="fx-chap-nm">'+fxEsc(c.nm)+'</div>';
+      h+='<div class="fx-block f"><div class="fx-block-h">▦ Formulas</div><ul class="fx-flist">'+c.f.map(function(x){return '<li>'+fxEsc(x)+'</li>';}).join('')+'</ul></div>';
+      h+='<div class="fx-block m"><div class="fx-block-h">⚠ Common mistakes</div><ul class="fx-mlist">'+c.m.map(function(x){return '<li>'+fxEsc(x)+'</li>';}).join('')+'</ul></div>';
+      h+='</div>';
+    });
+  });
+  h+='<div class="fx-foot"><div class="fb">ujyalo.app</div><div class="fs">Free SEE practice, past papers &amp; formulas — made for Nepal.</div></div>';
+  document.getElementById('fx-sheet').innerHTML=h;
+}
+function fxPick(s){ fxRender(s); document.getElementById('scroll').scrollTop=0; }
+function fxInit(){ if(!FX.rendered){ fxRender(FX.subj); FX.rendered=true; } }
+function fxDownload(){ window.print(); }
+function fxShare(){
+  var url=location.origin+'/see#formulas';
+  var title='SEE Formulas & Common Mistakes — ujyalo.app';
+  if(navigator.share){ navigator.share({title:title,text:'Free SEE formula sheet + common mistakes',url:url}).catch(function(){}); }
+  else{ window.open('https://wa.me/?text='+encodeURIComponent(title+' '+url),'_blank'); }
 }
 
 /* ─── DAILY QUESTION ───────────────────────────────────────────────────────────
