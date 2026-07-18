@@ -611,20 +611,27 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .mock-hero-title{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--ink)}
 .mock-hero-sub{font-size:14px;color:#7a5a1a;margin-top:4px}
 .mock-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
-.mock-card{display:flex;flex-direction:column;background:var(--card);border:1.5px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;font-family:inherit;text-align:left;padding:0;transition:transform .15s,box-shadow .15s,border-color .15s}
-.mock-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(13,27,62,.10);border-color:#ffd98a}
-.mock-sheet{position:relative;padding:18px 16px 14px 22px;min-height:120px;background:repeating-linear-gradient(#ffffff,#ffffff 25px,#eef3f1 26px,#ffffff 27px);border-bottom:1px solid var(--line)}
-.mock-sheet::before{content:'';position:absolute;left:9px;top:0;bottom:0;width:2px;background:#f0b9ae}
-.mock-set{font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:var(--ink);line-height:1.1}
-.mock-subj{font-size:12px;color:var(--muted);margin-top:3px}
-.mock-chips{margin-top:14px;display:flex;gap:6px;flex-wrap:wrap}
-.mock-chip{font-size:11px;font-weight:700;color:var(--brand-deep);background:var(--brand-soft);padding:3px 9px;border-radius:99px}
-.mock-foot{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;font-size:13px;font-weight:700;background:var(--card)}
-.mock-foot .lbl{color:var(--muted);font-weight:600;font-size:11.5px;letter-spacing:.3px}
-.mock-foot .cta{color:var(--brand)}
-.mock-card.locked{opacity:.94}
-.mock-card.locked .mock-sheet::before{background:var(--line)}
-.mock-card.locked .mock-foot .cta{color:var(--muted)}
+.mock-card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;font-family:inherit;text-align:left;padding:0;transition:transform .18s,box-shadow .18s,border-color .18s;box-shadow:0 1px 2px rgba(31,41,51,.04)}
+.mock-card:hover{transform:translateY(-4px);box-shadow:0 16px 34px -14px rgba(15,118,110,.30);border-color:#0f766e}
+.mock-top{height:5px;background:linear-gradient(90deg,#0f766e,#12a48f)}
+.mock-body{position:relative;flex:1;padding:20px 18px 16px;text-align:center}
+.mock-seal{position:absolute;top:14px;right:14px;width:44px;height:44px;border:1.5px solid #0f766e;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-11deg);color:#0f766e}
+.mock-seal b{font-family:'Fraunces',serif;font-size:17px;font-weight:900;line-height:1}
+.mock-seal span{font-size:7px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-top:1px}
+.mock-board{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#0f766e}
+.mock-subj{font-family:'Fraunces',serif;font-size:20px;font-weight:900;color:var(--ink);line-height:1.15;margin:8px 14px 0}
+.mock-grade{font-size:11.5px;color:var(--muted);margin-top:4px;font-weight:600}
+.mock-rule{height:1px;background:var(--line);margin:14px 4px 0}
+.mock-hdr{display:flex;justify-content:space-between;padding:9px 6px 0;font-size:11.5px;color:var(--muted)}
+.mock-hdr b{color:var(--ink);font-weight:800}
+.mock-foot{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid #eef2f0;background:#fbfdfc}
+.mock-free{font-size:11px;font-weight:800;letter-spacing:.04em;color:#15803d;background:#e7f6ec;border-radius:99px;padding:3px 11px}
+.mock-go{font-size:13px;font-weight:800;color:var(--brand);display:flex;align-items:center;gap:5px}
+.mock-plus{font-size:11px;font-weight:800;color:#8a5a00;background:#fdefcf;border-radius:99px;padding:3px 10px}
+.mock-locklbl{font-size:11.5px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px}
+.mock-card.locked .mock-top{background:#d3dbd8}
+.mock-card.locked .mock-seal{border-color:#b6bfbb;color:#8b93a0}
+.mock-card.locked .mock-board{color:#9aa2a8}
 .mock-loading{padding:20px;color:var(--muted);font-size:14px}
 .mock-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;background:var(--card);border-bottom:1px solid var(--line);padding:12px 18px}
 .mock-back{background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
@@ -2038,17 +2045,23 @@ function loadMockList(){
   fetch('/api/mock?action=list').then(function(r){return r.json();}).then(function(d){
     var mocks=(d&&d.mocks)||[];
     if(!mocks.length){grid.innerHTML='<div class="mock-loading">No mock tests yet.</div>';return;}
-    grid.innerHTML=mocks.map(function(m){
+    grid.innerHTML=mocks.map(function(m,i){
       var hrs=Math.round((m.duration_minutes||180)/60);
+      var num=((''+(m.set_label||m.title||'')).match(/\d+/)||[i+1])[0];
       var lock=m.is_free?'':' locked';
       var foot=m.is_free
-        ? '<span class="lbl">Free</span><span class="cta">Start &rarr;</span>'
-        : '<span class="lbl">&#128274; Locked</span><span class="cta">&#11088; Plus</span>';
+        ? '<span class="mock-free">FREE</span><span class="mock-go">Start test <span style="font-size:15px">&rarr;</span></span>'
+        : '<span class="mock-locklbl">&#128274; Locked</span><span class="mock-plus">&#9733; Plus</span>';
       return '<button class="mock-card'+lock+'" onclick="openMock(\''+m.slug+'\')">'+
-        '<div class="mock-sheet"><div class="mock-set">'+mockEsc(m.set_label||m.title)+'</div>'+
-        '<div class="mock-subj">'+mockEsc(m.subject)+'</div>'+
-        '<div class="mock-chips"><span class="mock-chip">'+m.total_marks+' marks</span>'+
-        '<span class="mock-chip">'+hrs+' hrs</span></div></div>'+
+        '<div class="mock-top"></div>'+
+        '<div class="mock-body">'+
+          '<div class="mock-seal"><b>'+mockEsc(num)+'</b><span>Set</span></div>'+
+          '<div class="mock-board">SEE &middot; Mock Paper</div>'+
+          '<div class="mock-subj">'+mockEsc(m.subject||m.set_label||m.title)+'</div>'+
+          '<div class="mock-grade">Grade 10</div>'+
+          '<div class="mock-rule"></div>'+
+          '<div class="mock-hdr"><span>Time: <b>'+hrs+' hrs</b></span><span>Full Marks: <b>'+m.total_marks+'</b></span></div>'+
+        '</div>'+
         '<div class="mock-foot">'+foot+'</div></button>';
     }).join('');
   }).catch(function(){grid.innerHTML='<div class="mock-loading">Could not load mock tests.</div>';MOCK.loaded=false;});
