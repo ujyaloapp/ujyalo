@@ -9,6 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Default to working on the `dev` branch.
 - Never commit, push, or merge to `main` (the live production site) without explicit confirmation from the owner. When the owner wants to go live, walk them through it step by step.
 - Never deploy untested changes. Verify locally with `vercel dev` first.
+- **Reference materials live in `references/`.** When the owner says "take a reference" / "look at their files", read from that folder (curriculum, sample papers, scans, images — PDFs and images included). Chat-uploaded files don't persist across sessions; the `references/` folder does. Suggest the owner drop new reference files there rather than re-pasting them.
 
 ## What this is
 

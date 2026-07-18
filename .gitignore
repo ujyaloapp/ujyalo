@@ -21,3 +21,7 @@ yarn-error.log*
 
 # Archived one-off SQL fix scripts (already applied)
 sql-archive/
+
+# Local reference material — kept on disk, not committed (read in-session)
+references/*
+!references/README.md
