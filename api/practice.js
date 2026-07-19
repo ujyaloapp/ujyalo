@@ -89,27 +89,67 @@ function _groupQuestion(num, rows) {
   rows.forEach(q => { if (!q.sub_part) parent = q; else subs.push(q); });
   return { num: parseInt(num), parent: parent ? (() => { const p = _mapRow(parent); delete p.sub; return p; })() : null, subs: subs.map(_mapRow) };
 }
-// Resolve (and if needed, fix for the whole world) today's daily question.
+// Deterministic index from the date string, so two visitors hitting a fresh day
+// compute the SAME pick (the ignore-duplicates insert then collapses them).
+function _seedIndex(s, n) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return n ? (h % n) : 0; }
+function _cap(s) { s = String(s || ''); return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+// Subjects the daily draws from (widen this list as other subjects mature).
+const _DAILY_SUBJECTS = ['maths', 'science'];
+
+// Resolve today's daily. It auto-draws from LIVE Maths/Science papers — a published
+// paper is fully verified, so "live question" == "verified question" — minus any
+// question retired ("not for daily"), minus recently-shown. No hand-curated pool.
 async function _ensureTodaysDaily() {
   const date = _nepalDate(0);
   let sched = await _svcGet(`/daily_schedule?date=eq.${date}&select=daily_question_id&limit=1`);
   if (sched.length) return { date, dqid: sched[0].daily_question_id };
-  const approved = await _svcGet(`/daily_questions?status=eq.approved&order=added_at.asc&select=id,pinned_date`);
-  if (!approved.length) return { date, dqid: null };
-  let pick = approved.find(q => q.pinned_date === date);
-  if (!pick) {
-    const all = await _svcGet(`/daily_schedule?select=daily_question_id,date&order=date.asc`);
-    const shown = new Set(all.map(s => s.daily_question_id));
-    pick = approved.find(q => !shown.has(q.id));                    // never shown yet
-    if (!pick) {                                                    // all shown → least-recently-shown
-      const appIds = new Set(approved.map(q => q.id));
-      const oldest = all.find(s => appIds.has(s.daily_question_id));
-      pick = (oldest && approved.find(q => q.id === oldest.daily_question_id)) || approved[0];
-    }
+
+  // eligible = distinct (paper, question_number) from live Maths/Science papers
+  const subs = await _svcGet(`/exam_subjects?code=in.(${_DAILY_SUBJECTS.join(',')})&select=id,code`);
+  if (!subs.length) return { date, dqid: null };
+  const subById = {}; subs.forEach(s => { subById[s.id] = s.code; });
+  const papers = await _svcGet(`/past_papers?status=eq.live&subject_id=in.(${subs.map(s => s.id).join(',')})&select=id,year,province,subject_id`);
+  if (!papers.length) return { date, dqid: null };
+  const paperById = {}; papers.forEach(p => { paperById[p.id] = p; });
+  const rows = await _svcGet(`/past_paper_questions?paper_id=in.(${papers.map(p => p.id).join(',')})&select=paper_id,question_number`);
+  const seen = {}; let eligible = [];
+  rows.forEach(r => { const k = r.paper_id + '#' + r.question_number; if (!seen[k]) { seen[k] = 1; eligible.push({ pid: r.paper_id, qn: r.question_number, k }); } });
+  if (!eligible.length) return { date, dqid: null };
+
+  // remove questions marked "not for daily" (retired daily_questions rows)
+  const retired = await _svcGet(`/daily_questions?status=eq.retired&select=paper_id,question_number`);
+  const exSet = new Set(retired.map(r => r.paper_id + '#' + r.question_number));
+  eligible = eligible.filter(e => !exSet.has(e.k));
+  if (!eligible.length) return { date, dqid: null };
+
+  // prefer questions never shown before (dedupe against the schedule history)
+  const allSched = await _svcGet(`/daily_schedule?select=daily_question_id&order=date.asc`);
+  const shownIds = allSched.map(s => s.daily_question_id).filter(Boolean);
+  let shownSet = new Set();
+  if (shownIds.length) {
+    const dqs = await _svcGet(`/daily_questions?id=in.(${shownIds.join(',')})&select=id,paper_id,question_number`);
+    const map = {}; dqs.forEach(d => { map[d.id] = d.paper_id + '#' + d.question_number; });
+    shownIds.forEach(id => { if (map[id]) shownSet.add(map[id]); });
   }
-  try { await _svcPost(`/daily_schedule`, { date, daily_question_id: pick.id }, 'resolution=ignore-duplicates'); } catch (e) {}
+  let pool = eligible.filter(e => !shownSet.has(e.k));
+  if (!pool.length) pool = eligible;                              // all shown once → recycle
+  pool.sort((a, b) => (a.k < b.k ? -1 : a.k > b.k ? 1 : 0));      // stable order → race-safe pick
+  const pick = pool[_seedIndex(date, pool.length)];
+
+  // the schedule/attempts tables key off daily_questions.id, so make sure the pick
+  // has a row (create it 'approved' the first time it's ever chosen)
+  let dqid;
+  const existing = await _svcGet(`/daily_questions?paper_id=eq.${pick.pid}&question_number=eq.${pick.qn}&select=id&limit=1`);
+  if (existing.length) dqid = existing[0].id;
+  else {
+    const p = paperById[pick.pid];
+    const label = `SEE ${p.year} · ${_cap(p.province)} · Q${pick.qn}`;
+    const created = await _svcPost(`/daily_questions`, { paper_id: pick.pid, question_number: pick.qn, subject_code: subById[p.subject_id] || '', source_label: label, status: 'approved', added_by: 'auto' }, 'return=representation');
+    dqid = (created && created[0] && created[0].id) || (await _svcGet(`/daily_questions?paper_id=eq.${pick.pid}&question_number=eq.${pick.qn}&select=id&limit=1`))[0].id;
+  }
+  try { await _svcPost(`/daily_schedule`, { date, daily_question_id: dqid }, 'resolution=ignore-duplicates'); } catch (e) {}
   sched = await _svcGet(`/daily_schedule?date=eq.${date}&select=daily_question_id&limit=1`);
-  return { date, dqid: sched.length ? sched[0].daily_question_id : pick.id };
+  return { date, dqid: sched.length ? sched[0].daily_question_id : dqid };
 }
 
 export default async function handler(req, res) {

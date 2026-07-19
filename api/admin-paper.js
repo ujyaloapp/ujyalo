@@ -407,6 +407,18 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
+    // Staff "not for daily → swap": retire today's daily question so it's never
+    // auto-picked again, and clear today's slot so the next load re-rolls a fresh one.
+    if (action === 'daily-swap') {
+      const dqid = body.daily_question_id;
+      if (!dqid) return res.status(400).json({ error: 'Missing daily_question_id' });
+      // today in Nepal time (UTC+5:45), matching the picker in api/practice.js
+      const nepal = new Date(Date.now() + (5 * 60 + 45) * 60000).toISOString().slice(0, 10);
+      await sbPatch(`/daily_questions?id=eq.${encodeURIComponent(dqid)}`, { status: 'retired' }, false);
+      await sbDelete(`/daily_schedule?date=eq.${nepal}`);
+      return res.status(200).json({ ok: true });
+    }
+
     return res.status(400).json({ error: 'Unknown action' });
   } catch (e) {
     console.error('admin-paper error:', e);
