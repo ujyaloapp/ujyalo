@@ -58,6 +58,39 @@
   .dq-swap:hover{background:#ffe4e6;}
   .dq-note{font-size:12px;color:#8b93a0;}
   .dq-cand-figs{margin-top:12px;display:flex;flex-wrap:wrap;gap:10px;}
+  /* chapter-practice review */
+  .ch-subj{margin-bottom:22px;}
+  .ch-subj-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:7px;padding:5px 11px;margin-bottom:10px;}
+  .ch-row{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e6eae8;border-radius:11px;padding:12px 15px;margin-bottom:8px;cursor:pointer;transition:.12s;}
+  .ch-row:hover{border-color:#0f766e;}
+  .ch-name{font-family:'Fraunces',serif;font-weight:600;color:#1f2933;font-size:15px;flex:1;min-width:0;}
+  .ch-meta{font-size:12px;color:#52606d;white-space:nowrap;}
+  .ch-badge{font-size:11px;font-weight:700;border-radius:99px;padding:3px 10px;white-space:nowrap;}
+  .ch-badge.to{background:#fff3da;color:#92600a;}.ch-badge.ok{background:#dcfce7;color:#166534;}
+  .ch-go{font-size:12.5px;font-weight:600;color:#0b5c55;white-space:nowrap;}
+  .ch-back{font-family:'Outfit';font-size:12.5px;font-weight:600;color:#1f2933;background:#fff;border:1px solid #e6eae8;border-radius:8px;padding:5px 11px;cursor:pointer;vertical-align:2px;margin-right:6px;}
+  .chq{background:#fff;border:1px solid #e6eae8;border-radius:13px;padding:16px 18px;margin-bottom:14px;max-width:760px;}
+  .chq-top{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+  .chq-type{font-size:10px;font-weight:700;letter-spacing:.06em;color:#52606d;background:#eef2f0;border-radius:6px;padding:3px 8px;}
+  .chq-stem{font-family:'Lora',serif;font-size:15.5px;color:#1f2933;line-height:1.55;}
+  .ch-opts{margin-top:11px;display:flex;flex-direction:column;gap:7px;}
+  .ch-opt{font-size:14px;border:1px solid #e6eae8;border-radius:8px;padding:8px 12px;color:#1f2933;}
+  .ch-opt.ok{border-color:#bbf7d0;background:#dcfce7;color:#166534;}
+  .ch-ok{font-size:11px;font-weight:700;}
+  .ch-parts{margin-top:11px;display:flex;flex-direction:column;gap:6px;}
+  .ch-part{font-size:14px;color:#1f2933;line-height:1.5;}
+  .ch-mk{font-size:11px;color:#52606d;}
+  .ch-ans{margin-top:12px;background:#dcfce7;border-radius:8px;padding:10px 13px;font-size:13.5px;color:#166534;line-height:1.5;}
+  .ch-ans b{color:#14532d;}
+  .chq-actions{display:flex;gap:9px;margin-top:15px;padding-top:13px;border-top:1px solid #eef2f0;flex-wrap:wrap;}
+  .chq-btn{font-family:'Outfit';font-size:13px;font-weight:600;border-radius:8px;padding:9px 15px;border:1px solid #e6eae8;background:#fff;color:#52606d;cursor:pointer;}
+  .chq-btn.ok{color:#166534;border-color:#bbf7d0;}.chq-btn.ok:hover{background:#dcfce7;}
+  .chq-btn.fix:hover{border-color:#0f766e;color:#1f2933;}
+  .chq-btn.del{color:#9f1239;border-color:#fecdd3;}.chq-btn.del:hover{background:#ffe4e6;}
+  .chf-row{margin-bottom:12px;}
+  .chf-row label{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8b93a0;margin-bottom:5px;}
+  .chf-ta{width:100%;border:1.5px solid #0f766e;border-radius:8px;padding:9px;font-family:'Lora',serif;font-size:15px;color:#1f2933;line-height:1.5;min-height:60px;resize:vertical;}
+  .chf-inp{border:1.5px solid #0f766e;border-radius:8px;padding:8px 10px;font-family:'Outfit';font-size:15px;width:70px;text-transform:lowercase;}
   @media(max-width:760px){.dq-cols{grid-template-columns:1fr;}}
   .vt{font-family:'Outfit';font-size:13px;font-weight:600;border:none;background:transparent;color:var(--muted);padding:6px 12px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:6px;}
   .vt.on{background:var(--card);color:var(--forest);box-shadow:0 1px 3px #0000001a;}
@@ -388,6 +421,13 @@
           <p class="dq-sub">Auto-picked from your verified Maths &amp; Science papers. This is exactly what students see today. If one doesn't work as a daily, swap it — it's replaced for today and never picked again.</p>
           <div id="dq-today"></div>
         </div>
+
+        <div id="picker-chapters" class="hidden">
+          <div class="eyebrow">Chapter practice</div>
+          <h1 class="bd-h1" id="ch-title">Practice questions</h1>
+          <p class="dq-sub" id="ch-sub">Check each question — <b>approve</b> the good ones (students can practise them), <b>fix</b> a small mistake, or <b>delete</b> a bad one. New questions stay hidden until approved.</p>
+          <div id="ch-body"><div class="dq-loading">Loading…</div></div>
+        </div>
       </div>
 
       <!-- editor -->
@@ -516,6 +556,71 @@
     try{ await dailyPost('daily-swap',{daily_question_id:dqid}); toast('Swapped — a fresh question is live now'); loadDaily(); }catch(e){ toast(e.message||'Could not swap'); }
   }
   (function(){ var v=$('picker-daily'); if(v) v.addEventListener('click',function(e){ var b=e.target.closest('[data-swap]'); if(b){ dqSwap(b.getAttribute('data-swap')); } }); })();
+
+  // ── Chapter-practice review (approve / fix / delete AI-drafted questions) ──
+  var CH_VIEW={subject:null,chapter:null,questions:[]};
+  async function chGet(action,params){var r=await fetch('/api/admin-paper?action='+action+(params?('&'+params):''),{headers:authHeaders()});if(r.status===403){localStorage.removeItem('ujyalo_token');location.replace('/login.html?expired=1');throw new Error('forbidden');}if(!r.ok)throw new Error((await r.json().catch(function(){return{};})).error||('HTTP '+r.status));return r.json();}
+  async function chPost(action,body){body=body||{};body.action=action;var r=await fetch('/api/admin-paper?action='+action,{method:'POST',headers:authHeaders(),body:JSON.stringify(body)});if(r.status===403){localStorage.removeItem('ujyalo_token');location.replace('/login.html?expired=1');throw new Error('forbidden');}if(!r.ok)throw new Error((await r.json().catch(function(){return{};})).error||('HTTP '+r.status));return r.json();}
+  async function loadChapters(){
+    $('ch-title').textContent='Practice questions';
+    var el=$('ch-body'); el.innerHTML='<div class="dq-loading">Loading chapters…</div>';
+    try{
+      var d=await chGet('chapter-overview'); var subs=d.subjects||[];
+      if(!subs.length){ el.innerHTML='<div class="dq-empty">No practice questions yet.</div>'; return; }
+      el.innerHTML=subs.map(function(s){
+        var nm=(SUBJ_CFG[s.subject]||{}).name||s.subject, c=subjCol(s.subject);
+        var rows=s.chapters.map(function(ch){
+          var badge=ch.toCheck>0?'<span class="ch-badge to">'+ch.toCheck+' to check</span>':'<span class="ch-badge ok">✓ all checked</span>';
+          return '<div class="ch-row" data-subject="'+esc(s.subject)+'" data-chapter="'+esc(ch.chapter)+'"><span class="ch-name">'+esc(ch.chapter)+'</span><span class="ch-meta">'+ch.total+' questions · '+ch.live+' live</span>'+badge+'<span class="ch-go">Review →</span></div>';
+        }).join('');
+        return '<div class="ch-subj"><span class="ch-subj-tag" style="background:'+c.bg+';color:'+c.fg+'">'+esc(nm)+'</span>'+rows+'</div>';
+      }).join('');
+    }catch(e){ el.innerHTML='<div class="dq-empty">Could not load.</div>'; }
+  }
+  async function openChapter(subject,chapter){
+    CH_VIEW.subject=subject; CH_VIEW.chapter=chapter;
+    $('ch-title').innerHTML='<button class="ch-back" data-chback>← Chapters</button> '+esc(chapter);
+    var el=$('ch-body'); el.innerHTML='<div class="dq-loading">Loading questions…</div>';
+    try{ var d=await chGet('chapter-load','subject='+encodeURIComponent(subject)+'&chapter='+encodeURIComponent(chapter)); CH_VIEW.questions=d.questions||[]; renderChQuestions(); }
+    catch(e){ el.innerHTML='<div class="dq-empty">Could not load.</div>'; }
+  }
+  function renderChQuestions(){ var l=CH_VIEW.questions; $('ch-body').innerHTML=l.length?l.map(chQuestionCard).join(''):'<div class="dq-empty">No questions in this chapter.</div>'; }
+  function chQuestionCard(q){
+    var live=q.status==='live', ver=!!q.verified;
+    var status=ver?'<span class="chip ver">✓ Approved</span>':(live?'<span class="chip unv">Live · not checked</span>':'<span class="chip unv">Draft — hidden</span>');
+    var opts='';
+    if(q.question_type==='mcq' && (q.option_a||q.option_b)){ var L=['a','b','c','d']; opts='<div class="ch-opts">'+L.map(function(x){ var t=q['option_'+x]; if(t==null||t==='') return ''; var ok=(String(q.correct_option||'').toLowerCase()===x); return '<div class="ch-opt'+(ok?' ok':'')+'">'+x.toUpperCase()+') '+esc(t)+(ok?' <span class="ch-ok">✓ correct</span>':'')+'</div>'; }).join('')+'</div>'; }
+    var parts=''; if(q.parts && q.parts.length){ try{ parts='<div class="ch-parts">'+q.parts.map(function(p){ return '<div class="ch-part"><b>('+esc(p.sub||'')+')</b> '+esc(p.q||'')+(p.marks?' <span class="ch-mk">'+p.marks+'m</span>':'')+'</div>'; }).join('')+'</div>'; }catch(e){} }
+    var fig=q.diagram_svg?dqFigsHtml([{svg:q.diagram_svg}]):'';
+    var ans=q.answer_text?('<div class="ch-ans"><b>Answer:</b> '+esc(q.answer_text)+'</div>'):'';
+    return '<div class="chq" id="chq-'+q.id+'"><div class="chq-top"><span class="chq-type">'+esc((q.question_type||'written').toUpperCase())+'</span>'+status+'</div>'+
+      '<div class="chq-stem">'+esc(q.question_text||'')+'</div>'+opts+parts+fig+ans+
+      '<div class="chq-actions">'+(ver?'':'<button class="chq-btn ok" data-chapprove="'+q.id+'">✓ Approve</button>')+'<button class="chq-btn fix" data-chfix="'+q.id+'">✎ Fix</button><button class="chq-btn del" data-chdel="'+q.id+'">✗ Delete</button></div></div>';
+  }
+  function chFix(id){ var q=CH_VIEW.questions.filter(function(x){return x.id===id;})[0]; if(!q)return; var card=$('chq-'+id); if(!card)return; var mcq=q.question_type==='mcq';
+    card.innerHTML='<div class="chf"><div class="chf-row"><label>Question (English)</label><textarea class="chf-ta" id="chf-q-'+id+'">'+esc(q.question_text||'')+'</textarea></div>'+
+      (mcq?'<div class="chf-row"><label>Correct option (a/b/c/d)</label><input class="chf-inp" id="chf-co-'+id+'" maxlength="1" value="'+esc(q.correct_option||'')+'"></div>':'')+
+      '<div class="chf-row"><label>Answer (English)</label><textarea class="chf-ta" id="chf-a-'+id+'">'+esc(q.answer_text||'')+'</textarea></div>'+
+      '<div class="chq-actions"><button class="chq-btn ok" data-chsave="'+id+'">Save</button><button class="chq-btn" data-chcancel="'+id+'">Cancel</button></div></div>';
+  }
+  async function chSaveFix(id){ var q=CH_VIEW.questions.filter(function(x){return x.id===id;})[0]; if(!q)return; var qv=$('chf-q-'+id).value, av=$('chf-a-'+id).value, coEl=$('chf-co-'+id), co=coEl?coEl.value:null;
+    try{ if(qv!==(q.question_text||'')){ await chPost('chapter-edit',{id:id,field:'question_text',value:qv}); q.question_text=qv; }
+      if(av!==(q.answer_text||'')){ await chPost('chapter-edit',{id:id,field:'answer_text',value:av}); q.answer_text=av; }
+      if(co!=null && co!==(q.correct_option||'')){ await chPost('chapter-edit',{id:id,field:'correct_option',value:co}); q.correct_option=co; }
+      toast('Saved'); $('chq-'+id).outerHTML=chQuestionCard(q);
+    }catch(e){ toast(e.message||'Save failed'); } }
+  async function chApprove(id){ var q=CH_VIEW.questions.filter(function(x){return x.id===id;})[0]; try{ await chPost('chapter-approve',{id:id}); if(q){q.verified=true;q.status='live';} toast('Approved — live to students'); if(q) $('chq-'+id).outerHTML=chQuestionCard(q); }catch(e){ toast(e.message||'Failed'); } }
+  async function chDelete(id){ if(!confirm('Delete this question? Students won’t see it any more.'))return; try{ await chPost('chapter-delete',{id:id}); CH_VIEW.questions=CH_VIEW.questions.filter(function(x){return x.id!==id;}); var c=$('chq-'+id); if(c)c.remove(); toast('Deleted'); }catch(e){ toast(e.message||'Failed'); } }
+  (function(){ var pc=$('picker-chapters'); if(!pc) return; pc.addEventListener('click',function(e){
+    var row=e.target.closest('[data-subject][data-chapter]'); if(row){ openChapter(row.getAttribute('data-subject'),row.getAttribute('data-chapter')); return; }
+    if(e.target.closest('[data-chback]')){ loadChapters(); return; }
+    var ap=e.target.closest('[data-chapprove]'); if(ap){ chApprove(ap.getAttribute('data-chapprove')); return; }
+    var dl=e.target.closest('[data-chdel]'); if(dl){ chDelete(dl.getAttribute('data-chdel')); return; }
+    var fx=e.target.closest('[data-chfix]'); if(fx){ chFix(fx.getAttribute('data-chfix')); return; }
+    var sv=e.target.closest('[data-chsave]'); if(sv){ chSaveFix(sv.getAttribute('data-chsave')); return; }
+    var cn=e.target.closest('[data-chcancel]'); if(cn){ var id=cn.getAttribute('data-chcancel'); var q=CH_VIEW.questions.filter(function(x){return x.id===id;})[0]; if(q) $('chq-'+id).outerHTML=chQuestionCard(q); return; }
+  }); })();
+
   function updatePbPaper(){ var pb=$('pb-paper'); if(!pb) return; var show=!!DATA && !$('paperview').classList.contains('hidden') && !$('editor').classList.contains('hidden'); pb.classList.toggle('hidden',!show); }
 
   // ── picker (subject → year → province) ──
@@ -526,17 +631,19 @@
   // Flags is no longer a top-level mode — a flag belongs to a paper, so it now
   // lives inside the papers view as "Needs attention". The flags list is still
   // reachable via the "See all flagged questions" link (setMode('flags')).
-  var MODES=[{key:'papers',label:'Past papers'},{key:'chapters',label:'Chapter practice',soon:true},{key:'daily',label:'Daily Questions'}];
+  var MODES=[{key:'papers',label:'Past papers'},{key:'chapters',label:'Chapter practice'},{key:'daily',label:'Daily Questions'}];
   var CUR_MODE='papers';
   function setMode(k){
     CUR_MODE=k; renderModes();
-    var isDaily=(k==='daily'), isFlags=(k==='flags');
-    var pp=$('picker-papers'), pd=$('picker-daily'), fv=$('flagsview');
-    if(pp) pp.classList.toggle('hidden',isDaily||isFlags);
+    var isDaily=(k==='daily'), isFlags=(k==='flags'), isChap=(k==='chapters');
+    var pp=$('picker-papers'), pd=$('picker-daily'), fv=$('flagsview'), pc=$('picker-chapters');
+    if(pp) pp.classList.toggle('hidden',isDaily||isFlags||isChap);
     if(pd) pd.classList.toggle('hidden',!isDaily);
     if(fv) fv.classList.toggle('hidden',!isFlags);
+    if(pc) pc.classList.toggle('hidden',!isChap);
     if(isDaily) loadDaily();
     if(isFlags) loadFlags();
+    if(isChap) loadChapters();
   }
   var SUBJ_COL={maths:{bg:'#e8eef6',fg:'#2a5b9c'},science:{bg:'#e0f2ee',fg:'#1f7a68'},english:{bg:'#fbeede',fg:'#a4701a'},social:{bg:'#efe9f6',fg:'#6b4ba0'},nepali:{bg:'#fdeef0',fg:'#a83a5b'},hpe:{bg:'#fdeaea',fg:'#b3433f'}};
   function subjCol(code){ return SUBJ_COL[code]||{bg:'#eef2f0',fg:'#52606d'}; }

@@ -281,6 +281,32 @@ export default async function handler(req, res) {
       return res.status(200).json({ pool: rows });
     }
 
+    // ── chapter-practice verification (service-key reads: see ALL statuses,
+    //    not just live, since the point is to review the not-yet-live ones) ──
+    if (action === 'chapter-overview') {
+      const rows = await sbGet('/chapter_questions?select=subject,chapter_name,status,verified&order=subject.asc,chapter_name.asc');
+      const map = {}; // subject -> chapter -> counts
+      (rows || []).forEach(r => {
+        const sub = r.subject || 'other', ch = r.chapter_name || 'Uncategorised';
+        const s = map[sub] || (map[sub] = {});
+        const c = s[ch] || (s[ch] = { chapter: ch, total: 0, verified: 0, live: 0, toCheck: 0 });
+        c.total++;
+        if (r.verified) c.verified++; else c.toCheck++;
+        if (r.status === 'live') c.live++;
+      });
+      const subjects = Object.keys(map).map(sub => ({
+        subject: sub,
+        chapters: Object.values(map[sub]).sort((a, b) => a.chapter.localeCompare(b.chapter)),
+      }));
+      return res.status(200).json({ subjects });
+    }
+    if (action === 'chapter-load') {
+      const subject = req.query.subject, chapter = req.query.chapter;
+      if (!subject || !chapter) return res.status(400).json({ error: 'Missing subject/chapter' });
+      const rows = await sbGet(`/chapter_questions?subject=eq.${encodeURIComponent(subject)}&chapter_name=eq.${encodeURIComponent(chapter)}&status=neq.rejected&order=sort_order.asc&select=*`);
+      return res.status(200).json({ questions: rows || [] });
+    }
+
     // ── writes (POST only) ──
     if (req.method !== 'POST') return res.status(405).json({ error: 'POST required' });
     const body = req.body || {};
@@ -417,6 +443,34 @@ export default async function handler(req, res) {
       await sbPatch(`/daily_questions?id=eq.${encodeURIComponent(dqid)}`, { status: 'retired' }, false);
       await sbDelete(`/daily_schedule?date=eq.${nepal}`);
       return res.status(200).json({ ok: true });
+    }
+
+    // ── chapter-practice review actions ──
+    const CHAPTER_EDITABLE = ['question_text','question_text_np','answer_text','answer_text_np','option_a','option_b','option_c','option_d','correct_option','explanation','marks','topic'];
+    // Approve = mark checked AND make it live to students.
+    if (action === 'chapter-approve') {
+      const id = body.id;
+      if (!id) return res.status(400).json({ error: 'Missing id' });
+      await sbPatch(`/chapter_questions?id=eq.${encodeURIComponent(id)}`, { verified: true, verified_by: editor, verified_at: new Date().toISOString(), status: 'live' }, false);
+      return res.status(200).json({ ok: true });
+    }
+    // Delete = throw the bad question away (soft: hide from students, keep the row).
+    if (action === 'chapter-delete') {
+      const id = body.id;
+      if (!id) return res.status(400).json({ error: 'Missing id' });
+      await sbPatch(`/chapter_questions?id=eq.${encodeURIComponent(id)}`, { status: 'rejected', verified: false }, false);
+      return res.status(200).json({ ok: true });
+    }
+    // Fix = edit one field (a wrong answer, a typo). Approve separately once fixed.
+    if (action === 'chapter-edit') {
+      const { id, field } = body;
+      let value = body.value;
+      if (!id || !CHAPTER_EDITABLE.includes(field)) return res.status(400).json({ error: 'Field not editable' });
+      if (field === 'marks') { value = parseInt(value, 10); if (isNaN(value)) value = 0; }
+      if (field === 'correct_option') value = String(value || '').toLowerCase().slice(0, 1);
+      const patch = {}; patch[field] = value;
+      const row = await sbPatch(`/chapter_questions?id=eq.${encodeURIComponent(id)}`, patch, true);
+      return res.status(200).json({ ok: true, row: (row && row[0]) || null });
     }
 
     return res.status(400).json({ error: 'Unknown action' });
