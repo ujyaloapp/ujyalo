@@ -952,7 +952,7 @@ async function loadPracticeTab(){
 async function loadSettings(){
   LOADED.settings = true;
   try{
-    var s = await fetch('/api/settings',{cache:'no-store'}).then(function(r){return r.json();});
+    var s = await fetch('/api/auth?action=site-settings',{cache:'no-store'}).then(function(r){return r.json();});
     $('set-date').value = s.see_exam_date || '';
     $('set-ann-on').checked = s.announce_on !== false;
     $('set-ann-text').value = s.announce_text || '';

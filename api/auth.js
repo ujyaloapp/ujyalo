@@ -16,6 +16,33 @@ export default async function handler(req, res) {
     });
   }
 
+  // ── Public site settings (GET) ────────────────────────────
+  // The safe, read-only copy the browser applies (countdown, announcement,
+  // feature visibility). Lives here (not its own function) to stay under the
+  // serverless-function cap. Always returns sensible defaults.
+  if (req.method === 'GET' && action === 'site-settings') {
+    res.setHeader('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+    const DEFAULTS = { see_exam_date: null, announce_on: true, announce_text: null, feature_formulas: true, feature_mocks: false, feature_plus: false };
+    try {
+      const r = await fetch(
+        `${process.env.SUPABASE_URL}/rest/v1/site_settings?id=eq.1&select=see_exam_date,announce_on,announce_text,feature_formulas,feature_mocks,feature_plus`,
+        { headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}` } }
+      );
+      const rows = await r.json();
+      const s = (Array.isArray(rows) && rows[0]) ? rows[0] : {};
+      return res.status(200).json({
+        see_exam_date: s.see_exam_date || null,
+        announce_on: s.announce_on !== false,
+        announce_text: s.announce_text || null,
+        feature_formulas: s.feature_formulas !== false,
+        feature_mocks: !!s.feature_mocks,
+        feature_plus: !!s.feature_plus,
+      });
+    } catch (e) {
+      return res.status(200).json(DEFAULTS);
+    }
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

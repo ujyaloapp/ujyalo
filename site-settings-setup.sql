@@ -3,8 +3,8 @@
 -- Powers: the SEE exam countdown, the announcement band, and which student
 -- features are visible. Editing these no longer needs a code change.
 --
--- The public site reads a safe copy via GET /api/settings (server-side,
--- service key). Only the admin writes, via the admin API. Run once.
+-- The public site reads a safe copy via GET /api/auth?action=site-settings
+-- (server-side, service key). Only the admin writes, via the admin API. Run once.
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS site_settings (

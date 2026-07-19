@@ -40,7 +40,7 @@ function buildCountdownStrip() {
 // AFTER the nav is injected. Purely additive: if the fetch fails, the built-in
 // defaults stay, so the site never depends on this call.
 function applySiteSettings() {
-  fetch('/api/settings', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (s) {
+  fetch('/api/auth?action=site-settings', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (s) {
     if (!s) return;
     window.UJYALO_SETTINGS = s;
     var days = null;
