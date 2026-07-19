@@ -110,6 +110,11 @@ export default async function handler(req, res) {
         count('waitlist?select=id'),
         count('users?role=eq.student&select=id'),
       ]);
+      // Mock tests live/total (table may not exist yet → default to 0, never throw).
+      const [mockTotal, mockLive] = await Promise.all([
+        count('mock_tests?select=id').catch(() => 0),
+        count('mock_tests?status=eq.published&select=id').catch(() => 0),
+      ]);
       // Record today's snapshot (Nepal day) so trend lines have real history —
       // fire-and-forget, an upsert keyed on the day; a failure never blocks stats.
       const nepalDay = new Date(Date.now() + 5.75 * 3600 * 1000).toISOString().slice(0, 10);
@@ -126,7 +131,7 @@ export default async function handler(req, res) {
           practice_total: chapterTotal, waitlist, messages, flagged: qFlagged, updated_at: new Date().toISOString() }),
       }).catch(() => {});
       return res.status(200).json({ success: true, papersTotal, papersLive, qTotal, qVerified, qFlagged, messages,
-        chapterTotal, chapterVerified, chapterLive, waitlist, students });
+        chapterTotal, chapterVerified, chapterLive, waitlist, students, mockTotal, mockLive });
     } catch (e) {
       console.error('Admin stats error:', e);
       return res.status(500).json({ error: 'Failed to load stats.' });

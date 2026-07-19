@@ -152,6 +152,19 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
 /* analytics strip */
 .analytics{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 22px;}
 .analytics .al{font-size:13px;color:var(--muted);margin-right:auto;}
+/* content library rows */
+.clib-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line-soft,#eff3f1);cursor:pointer;}
+.clib-row:first-child{padding-top:2px;}
+.clib-row:last-child{border-bottom:none;padding-bottom:0;}
+.clib-ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:19px;flex-shrink:0;}
+.clib-main{flex:1;min-width:0;}
+.clib-name{font-size:14px;font-weight:600;color:var(--ink);display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;}
+.clib-meta{font-size:12px;color:var(--faint);font-weight:400;}
+.clib-track{height:7px;border-radius:99px;background:var(--parch-2);overflow:hidden;margin-top:8px;}
+.clib-track span{display:block;height:100%;border-radius:99px;}
+.clib-right{font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap;text-align:right;}
+.clib-pill{font-size:11px;font-weight:700;border-radius:99px;padding:3px 10px;background:var(--parch-2);color:var(--muted);}
+.clib-pill.live{background:var(--green-bg);color:#15803d;}
 /* cards */
 .card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:20px 22px;margin-bottom:18px;}
 .card-h{font-family:'Fraunces',serif;font-size:17px;color:var(--forest);font-weight:600;margin-bottom:3px;}
@@ -297,12 +310,12 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
             <div class="spark" id="hs-students"></div>
           </div>
           <div class="hero">
-            <div class="hl"><i class="ti ti-circle-check"></i> Library verified</div>
+            <div class="hl"><i class="ti ti-circle-check"></i> Content verified</div>
             <div class="hn tn" id="hero-verif">—</div>
             <span class="htr coral" id="hero-verif-tr">—</span>
           </div>
           <div class="hero">
-            <div class="hl"><i class="ti ti-file-text"></i> Papers live</div>
+            <div class="hl"><i class="ti ti-player-play"></i> Live for students</div>
             <div class="hn tn" id="hero-papers">—</div>
             <span class="htr flat" id="hero-papers-tr">—</span>
           </div>
@@ -317,59 +330,43 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
         <div class="kpi"><div class="kt"><i class="ti ti-flag"></i> Flagged</div><div class="kn tn" id="s-flagged">—</div><div class="kf">need a decision</div><div class="ksp" id="k-flagged"></div></div>
       </div>
 
-      <!-- GROWTH + VERIFICATION -->
+      <!-- CONTENT LIBRARY + VERIFICATION -->
       <div class="dgrid g-2-1">
         <div class="dcard">
-          <div class="p-head"><div class="p-title">Student growth</div><div class="p-tag">Last 10 weeks</div></div>
-          <div class="p-sub">Total students signed up, week by week.</div>
-          <div id="area"><div class="loading">Loading…</div></div>
-          <div class="area-foot">
-            <div class="af">This week<b class="tn" id="af-week">—</b></div>
-            <div class="af">Best week<b class="tn" id="af-best">—</b></div>
-            <div class="af">Total<b class="tn" id="af-total">—</b></div>
-          </div>
+          <div class="p-head"><div class="p-title">Content library</div><div class="p-tag">everything students can reach</div></div>
+          <div class="p-sub">Every product line — what's live, and what's still to check.</div>
+          <div id="content-lib"><div class="loading">Loading…</div></div>
         </div>
         <div class="dcard">
-          <div class="p-head"><div class="p-title">Verification</div></div>
-          <div class="p-sub">How much of the library is checked.</div>
+          <div class="p-head"><div class="p-title">Verified</div></div>
+          <div class="p-sub">Questions checked, across papers &amp; practice.</div>
           <div class="radialwrap">
             <div id="radial"><div class="loading">Loading…</div></div>
             <div class="radial-legend">
               <div class="rl"><span class="sw" style="background:var(--teal)"></span> Verified <b class="tn" id="rl-ver">—</b></div>
-              <div class="rl"><span class="sw" style="background:var(--line)"></span> Remaining <b class="tn" id="rl-rem">—</b></div>
-              <div class="rl faint"><span class="sw" style="background:var(--teal-bright)"></span> Practice checked <b class="tn" id="rl-prac">—</b></div>
+              <div class="rl"><span class="sw" style="background:var(--line)"></span> To check <b class="tn" id="rl-rem">—</b></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- PIPELINE + COVERAGE -->
-      <div class="dgrid g-1-1">
-        <div class="dcard">
-          <div class="p-head"><div class="p-title">Content pipeline</div><div class="p-tag" id="pl-total">—</div></div>
-          <div class="p-sub">Every paper's stage on the way to students.</div>
-          <div class="plbar" id="plbar"><div class="loading">Loading…</div></div>
-          <div class="pllegend" id="pllegend"></div>
-        </div>
-        <div class="dcard">
-          <div class="p-head"><div class="p-title">Coverage by subject</div></div>
-          <div class="p-sub">Papers by stage, across all years.</div>
-          <div id="cover"><div class="loading">Loading…</div></div>
+      <!-- STUDENT GROWTH -->
+      <div class="dcard">
+        <div class="p-head"><div class="p-title">Student growth</div><div class="p-tag">Last 10 weeks</div></div>
+        <div class="p-sub">Total students signed up, week by week.</div>
+        <div id="area"><div class="loading">Loading…</div></div>
+        <div class="area-foot">
+          <div class="af">This week<b class="tn" id="af-week">—</b></div>
+          <div class="af">Best week<b class="tn" id="af-best">—</b></div>
+          <div class="af">Total<b class="tn" id="af-total">—</b></div>
         </div>
       </div>
 
-      <!-- YEARS + ATTENTION -->
-      <div class="dgrid g-1-1">
-        <div class="dcard">
-          <div class="p-head"><div class="p-title">Papers by year</div></div>
-          <div class="p-sub">Where the library is strong — and thin.</div>
-          <div id="years-wrap"><div class="loading">Loading…</div></div>
-        </div>
-        <div class="dcard">
-          <div class="p-head"><div class="p-title">Needs your attention</div></div>
-          <div class="p-sub">The few things only you can move forward.</div>
-          <div id="attention"><div class="loading">Loading…</div></div>
-        </div>
+      <!-- ATTENTION -->
+      <div class="dcard">
+        <div class="p-head"><div class="p-title">Needs your attention</div></div>
+        <div class="p-sub">The few things only you can move forward — across everything.</div>
+        <div id="attention"><div class="loading">Loading…</div></div>
       </div>
 
       <!-- ANALYTICS -->
@@ -385,6 +382,24 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
       <div class="eyebrow">Content cockpit</div>
       <h1 class="pg">Content</h1>
       <div class="pg-sub">What's live, in progress, and still missing. Every empty cell is a paper — and a search result — you don't have yet.</div>
+      <div class="dgrid g-1-1">
+        <div class="dcard">
+          <div class="p-head"><div class="p-title">Pipeline</div><div class="p-tag" id="pl-total">—</div></div>
+          <div class="p-sub">Every paper's stage on the way to students.</div>
+          <div class="plbar" id="plbar"><div class="loading">Loading…</div></div>
+          <div class="pllegend" id="pllegend"></div>
+        </div>
+        <div class="dcard">
+          <div class="p-head"><div class="p-title">By year</div></div>
+          <div class="p-sub">Where the library is strong — and thin.</div>
+          <div id="years-wrap"><div class="loading">Loading…</div></div>
+        </div>
+      </div>
+      <div class="dcard">
+        <div class="p-head"><div class="p-title">Coverage by subject</div></div>
+        <div class="p-sub">Papers by stage, across all years.</div>
+        <div id="cover"><div class="loading">Loading…</div></div>
+      </div>
       <div class="yrtabs" id="cov-years"></div>
       <div class="cov" id="cov-grid"><div class="loading">Loading coverage…</div></div>
       <div class="card">
@@ -576,13 +591,29 @@ function yearsHTML(papers){
 // cumulative students-over-time from signup dates → last 10 week-ends
 function weekStart(d){ var t=new Date(d); var day=(t.getDay()+6)%7; t.setDate(t.getDate()-day); t.setHours(0,0,0,0); return t; }
 function studentSeries(users){
-  var dates=(users||[]).filter(function(u){return !isTeam(u.role) && u.created_at;}).map(function(u){return new Date(u.created_at).getTime();}).sort(function(a,b){return a-b;});
-  var now=weekStart(new Date()), out=[];
-  for(var i=9;i>=0;i--){ var ws=new Date(now); ws.setDate(ws.getDate()-i*7); var end=ws.getTime()+7*864e5;
-    var cum=0; for(var j=0;j<dates.length;j++){ if(dates[j]<end) cum++; else break; }
-    out.push({d:ws, cum:cum}); }
-  var weekly=out.map(function(o,i){ return i===0?o.cum:Math.max(0,o.cum-out[i-1].cum); });
-  return {cum:out.map(function(o){return o.cum;}), weekly:weekly, labels:out.map(function(o){return o.d.getDate()+'/'+(o.d.getMonth()+1);})};
+  var dates=(users||[]).filter(function(u){return !isTeam(u.role) && u.created_at;}).map(function(u){return new Date(u.created_at).getTime();});
+  var now=weekStart(new Date()), cum=[], weekly=[], labels=[];
+  for(var i=9;i>=0;i--){ var ws=new Date(now); ws.setDate(ws.getDate()-i*7); var a=ws.getTime(), b=a+7*864e5;
+    var c=0,w=0; for(var j=0;j<dates.length;j++){ if(dates[j]<b) c++; if(dates[j]>=a && dates[j]<b) w++; }
+    cum.push(c); weekly.push(w); labels.push(ws.getDate()+'/'+(ws.getMonth()+1)); }
+  return {cum:cum, weekly:weekly, labels:labels};
+}
+// Content library rows — one per product line, each with a readiness bar.
+function libRow(icon,color,name,meta,ratio,rightTxt,onclick){
+  var bar = (ratio!=null) ? '<div class="clib-track"><span style="width:'+Math.round(ratio*100)+'%;background:'+color+'"></span></div>' : '<div class="clib-track"></div>';
+  return '<div class="clib-row"'+(onclick?' onclick="'+onclick+'"':' style="cursor:default"')+'>'
+    +'<div class="clib-ic" style="background:'+color+'1f;color:'+color+'"><i class="ti '+icon+'"></i></div>'
+    +'<div class="clib-main"><div class="clib-name">'+name+' <span class="clib-meta">'+meta+'</span></div>'+bar+'</div>'
+    +'<div class="clib-right">'+rightTxt+'</div></div>';
+}
+function contentLibHTML(s){
+  var qPct=s.qTotal?s.qVerified/s.qTotal:0, cPct=s.chapterTotal?s.chapterVerified/s.chapterTotal:0, mPct=s.mockTotal?s.mockLive/s.mockTotal:0;
+  var toDo=Math.max(0,(s.chapterTotal||0)-(s.chapterVerified||0));
+  return libRow('ti-file-text','#0f766e','Past papers',(s.papersLive||0)+' live · '+(s.papersTotal||0)+' total',qPct,Math.round(qPct*100)+'% verified',"goPanel('coverage')")
+    + libRow('ti-clipboard-list','#fb6f5c','Mock tests',(s.mockLive||0)+' live · '+(s.mockTotal||0)+' sets',mPct,(s.mockLive||0)+' published',"goPanel('coverage')")
+    + libRow('ti-books','#16a34a','Practice',(s.chapterLive||0)+' live · '+(s.chapterTotal||0)+' total',cPct,(toDo>0?toDo+' to verify':'all verified'),"location.href='/verify.html?tab=chapters'")
+    + libRow('ti-calendar-star','#f59e0b','Daily question','auto from verified Maths &amp; Science',null,'<span class="clib-pill">Auto</span>',"location.href='/verify.html?tab=daily'")
+    + libRow('ti-math-function','#7c3aed','Formulas','quick-reference tab',null,'<span class="clib-pill live">Live</span>',"");
 }
 
 /* ── HOME ── */
@@ -613,15 +644,22 @@ async function loadHome(){
     var ss = studentSeries(allUsers);
     var thisWeek = ss.weekly[ss.weekly.length-1] || 0, bestWeek = Math.max.apply(null, ss.weekly) || 0;
 
-    // ── masthead heroes ──
+    // Overall question-verification (past papers + practice combined)
+    var vAll = vCount + (stats.chapterVerified||0), tAll = tCount + (stats.chapterTotal||0);
+    var pctQ = tAll ? Math.round(vAll/tAll*100) : 0;
+    var liveForStudents = live + (stats.mockLive||0);
+    var practiceToDo = Math.max(0,(stats.chapterTotal||0)-(stats.chapterVerified||0));
+    var mockDraft = Math.max(0,(stats.mockTotal||0)-(stats.mockLive||0));
+
+    // ── masthead heroes (overall) ──
     $('hero-students').textContent = sCount;
     $('hero-students-tr').innerHTML = thisWeek>0 ? '<i class="ti ti-trending-up"></i> +'+thisWeek+' this week' : 'steady this week';
     $('hero-students-tr').className = 'htr '+(thisWeek>0?'up':'flat');
     $('hs-students').innerHTML = miniSpark(ss.cum,'#2dd4bf');
-    $('hero-verif').innerHTML = pct+'<small>%</small>';
-    $('hero-verif-tr').textContent = vCount+' of '+tCount+' questions';
-    $('hero-papers').innerHTML = live+'<small> / '+totalP+'</small>';
-    $('hero-papers-tr').textContent = ready>0 ? ready+' more ready to publish' : 'all caught up';
+    $('hero-verif').innerHTML = pctQ+'<small>%</small>';
+    $('hero-verif-tr').textContent = vAll+' of '+tAll+' questions';
+    $('hero-papers').innerHTML = liveForStudents;
+    $('hero-papers-tr').textContent = live+' papers · '+(stats.mockLive||0)+' mocks';
 
     // ── KPI band ──
     $('s-practice').textContent = stats.chapterLive || 0;
@@ -635,28 +673,23 @@ async function loadHome(){
     $('k-messages').innerHTML = miniSpark(hist.map(function(r){return r.messages;}).filter(isNum),'#0f766e');
     $('k-flagged').innerHTML  = miniSpark(hist.map(function(r){return r.flagged;}).filter(isNum),'#e11d48');
 
+    // ── content library (all product lines) ──
+    $('content-lib').innerHTML = contentLibHTML(stats);
+
+    // ── verification radial (papers + practice) ──
+    $('radial').innerHTML = radialSVG(pctQ);
+    $('rl-ver').textContent = vAll; $('rl-rem').textContent = Math.max(0,tAll-vAll);
+
     // ── student growth ──
     $('area').innerHTML = areaChart(ss.cum, ss.labels);
     $('af-week').textContent = '+'+thisWeek; $('af-best').textContent = '+'+bestWeek; $('af-total').textContent = sCount;
 
-    // ── verification radial ──
-    $('radial').innerHTML = radialSVG(pct);
-    $('rl-ver').textContent = vCount; $('rl-rem').textContent = Math.max(0,tCount-vCount);
-    $('rl-prac').textContent = (stats.chapterVerified||0)+' / '+(stats.chapterTotal||0);
-
-    // ── pipeline ──
-    var counts={}; papers.forEach(function(p){ counts[p.stage]=(counts[p.stage]||0)+1; });
-    var pl = pipelineHTML(counts); $('plbar').innerHTML = pl.bar; $('pllegend').innerHTML = pl.legend;
-    $('pl-total').textContent = pl.total+' paper'+(pl.total===1?'':'s');
-
-    // ── coverage + years ──
-    $('cover').innerHTML = papers.length ? coverHTML(papers) : '<div class="empty">No papers yet.</div>';
-    $('years-wrap').innerHTML = yearsHTML(papers);
-
-    // ── attention ──
+    // ── attention (across everything) ──
     var att='';
     if(ready>0) att += attRow('ti-rocket','<b>'+ready+' paper'+(ready>1?'s':'')+'</b> verified and ready to publish',"goPanel('coverage')",false);
     if(fCount>0) att += attRow('ti-flag','<b>'+fCount+' question'+(fCount>1?'s':'')+'</b> flagged in verify need a decision',"location.href='/verify.html?tab=flags'",true);
+    if(practiceToDo>0) att += attRow('ti-books','<b>'+practiceToDo+' practice question'+(practiceToDo>1?'s':'')+'</b> waiting to be verified',"location.href='/verify.html?tab=chapters'",false);
+    if(mockDraft>0) att += attRow('ti-clipboard-list','<b>'+mockDraft+' mock test'+(mockDraft>1?'s':'')+'</b> in draft — publish when ready',"goPanel('coverage')",false);
     if(mCount>0) att += attRow('ti-message','<b>'+mCount+' message'+(mCount>1?'s':'')+'</b> in your inbox',"goPanel('inbox')",false);
     if(!att) att = '<div class="datt"><div class="ai"><i class="ti ti-check"></i></div><div class="atx">All clear — nothing needs you right now.</div></div>';
     $('attention').innerHTML = att;
@@ -691,6 +724,13 @@ async function loadCoverage(){
   try{
     await ensurePapers();
     await ensureOverview();
+    // Past-paper analytics (moved here from Home — this is the papers deep-dive).
+    var ovp = (OV && OV.papers) ? OV.papers : [];
+    var counts={}; ovp.forEach(function(p){ counts[p.stage]=(counts[p.stage]||0)+1; });
+    var pl = pipelineHTML(counts);
+    if($('plbar')){ $('plbar').innerHTML = pl.bar; $('pllegend').innerHTML = pl.legend; $('pl-total').textContent = pl.total+' paper'+(pl.total===1?'':'s'); }
+    if($('cover')) $('cover').innerHTML = ovp.length ? coverHTML(ovp) : '<div class="empty">No papers yet.</div>';
+    if($('years-wrap')) $('years-wrap').innerHTML = yearsHTML(ovp);
     var years=[]; PAPERS.forEach(function(p){ if(years.indexOf(p.year)<0) years.push(p.year); }); years.sort(function(a,b){return b-a;});
     if(!years.length){ $('cov-grid').innerHTML='<div class="empty">No papers yet.</div>'; $('cov-years').innerHTML=''; $('ready-list').innerHTML='<div class="empty">Nothing ready to publish.</div>'; return; }
     if(COV_YEAR===null || years.indexOf(COV_YEAR)<0) COV_YEAR=years[0];
