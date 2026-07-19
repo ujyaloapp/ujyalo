@@ -24,7 +24,7 @@ function buildAnnounce() {
   const days = seeDaysLeft();
   const cd = days ? ` · <b>${days} day${days !== 1 ? 's' : ''}</b> to the SEE exam` : '';
   return `
-<div class="ujyalo-announce">
+<div class="ujyalo-announce" data-kind="announce">
   🇳🇵 Free SEE practice for every Nepali student${cd}.
   <a href="/see.html">Start now →</a>
 </div>`;
@@ -33,7 +33,38 @@ function buildAnnounce() {
 function buildCountdownStrip() {
   const days = seeDaysLeft();
   if (!days) return '';
-  return `<div class="ujyalo-announce">⏳ <b>${days} day${days !== 1 ? 's' : ''}</b> to the SEE exam — keep practising.</div>`;
+  return `<div class="ujyalo-announce" data-kind="countdown">⏳ <b>${days} day${days !== 1 ? 's' : ''}</b> to the SEE exam — keep practising.</div>`;
+}
+
+// Apply admin-controlled site settings (countdown date, announcement, features)
+// AFTER the nav is injected. Purely additive: if the fetch fails, the built-in
+// defaults stay, so the site never depends on this call.
+function applySiteSettings() {
+  fetch('/api/settings', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (s) {
+    if (!s) return;
+    window.UJYALO_SETTINGS = s;
+    var days = null;
+    if (s.see_exam_date) {
+      var d = new Date(s.see_exam_date + 'T00:00:00');
+      if (!isNaN(d.getTime())) { var dd = Math.ceil((d - new Date()) / 86400000); days = dd > 0 ? dd : null; }
+    }
+    var band = document.querySelector('.ujyalo-announce');
+    if (band) {
+      var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+      if (band.getAttribute('data-kind') === 'countdown') {
+        if (days) { band.innerHTML = '⏳ <b>' + days + ' day' + (days !== 1 ? 's' : '') + '</b> to the SEE exam — keep practising.'; band.style.display = ''; }
+        else { band.style.display = 'none'; }
+      } else if (s.announce_on === false) {
+        band.style.display = 'none';
+      } else {
+        band.style.display = '';
+        var lead = s.announce_text ? esc(s.announce_text) : '🇳🇵 Free SEE practice for every Nepali student';
+        var cd = days ? ' · <b>' + days + ' day' + (days !== 1 ? 's' : '') + '</b> to the SEE exam' : '';
+        band.innerHTML = lead + cd + '. <a href="/see.html">Start now →</a>';
+      }
+    }
+    try { document.dispatchEvent(new CustomEvent('ujyalo-settings', { detail: s })); } catch (e) {}
+  }).catch(function () {});
 }
 
 /* ── Text logo — sharp, scalable, consistent ── */
@@ -648,5 +679,8 @@ document.addEventListener('DOMContentLoaded', function() {
       link.classList.add('active');
     }
   });
+
+  // Apply admin-controlled settings on top of the defaults just injected.
+  applySiteSettings();
 
 });

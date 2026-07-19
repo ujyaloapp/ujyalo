@@ -219,6 +219,25 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
 /* toast */
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#1c242b;color:#fff;font-size:13.5px;font-weight:500;padding:11px 20px;border-radius:11px;box-shadow:0 10px 30px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:.2s;z-index:100;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* settings */
+.set-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.set-input{font-family:inherit;font-size:14px;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 13px;background:#fff;}
+.set-input:focus{outline:none;border-color:var(--teal);}
+.set-ta{width:100%;min-height:62px;resize:vertical;line-height:1.5;}
+.set-hint{font-size:12px;color:var(--faint);margin-top:8px;}
+.set-feat{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0 2px;border-top:1px solid var(--line-soft,#eff3f1);}
+.set-feat b{font-size:14px;color:var(--ink);font-weight:600;display:block;}
+.set-feat span{font-size:12.5px;color:var(--muted);}
+.set-actions{display:flex;align-items:center;gap:16px;margin-top:6px;}
+.set-saved{font-size:13px;color:var(--green);font-weight:600;opacity:0;transition:.2s;}
+.set-saved.show{opacity:1;}
+/* switch */
+.switch{position:relative;display:inline-block;width:44px;height:26px;flex-shrink:0;}
+.switch input{opacity:0;width:0;height:0;}
+.slider{position:absolute;inset:0;background:#cdd6d3;border-radius:99px;transition:.18s;cursor:pointer;}
+.slider::before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.18s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.switch input:checked + .slider{background:var(--teal);}
+.switch input:checked + .slider::before{transform:translateX(18px);}
 /* practice summary rows */
 .prow2{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-soft,#eff3f1);}
 .prow2:last-child{border-bottom:none;padding-bottom:0;}
@@ -355,6 +374,7 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
       <a data-p="team"><i class="ti ti-shield-check"></i> <span>Team</span></a>
       <a data-p="students"><i class="ti ti-users"></i> <span>Students</span></a>
       <a data-p="inbox"><i class="ti ti-mail"></i> <span>Inbox</span></a>
+      <a data-p="settings"><i class="ti ti-settings"></i> <span>Settings</span></a>
       <a class="nav-ext" href="/verify.html"><i class="ti ti-checkup-list"></i> <span>Open verify desk</span> <i class="ti ti-arrow-up-right arr"></i></a>
     </nav>
     <div class="side-foot">
@@ -559,6 +579,41 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
       <div class="pg-sub">Contact-form messages. Replies are handled in your shared Gmail (hello@ujyalo.app).</div>
       <div id="inbox-list"><div class="loading">Loading…</div></div>
     </section>
+
+    <!-- SETTINGS -->
+    <section class="panel" id="p-settings">
+      <div class="eyebrow">Site controls</div>
+      <h1 class="pg">Settings</h1>
+      <div class="pg-sub">Flip things on the live site without touching code. Changes reach students within about a minute.</div>
+
+      <div class="dcard">
+        <div class="p-head"><div class="p-title">Exam countdown</div></div>
+        <div class="p-sub">Shows “N days to the SEE exam” in the banner across the site. Set the date when NEB announces it; clear it to turn the countdown off.</div>
+        <div class="set-row">
+          <input type="date" id="set-date" class="set-input">
+          <button class="lnk" id="set-date-clear" type="button"><i class="ti ti-x"></i> Clear</button>
+        </div>
+      </div>
+
+      <div class="dcard">
+        <div class="p-head"><div class="p-title">Announcement banner</div><label class="switch"><input type="checkbox" id="set-ann-on"><span class="slider"></span></label></div>
+        <div class="p-sub">The strip at the very top of every page. Leave the text blank to use the default message.</div>
+        <textarea id="set-ann-text" class="set-input set-ta" placeholder="🇳🇵 Free SEE practice for every Nepali student"></textarea>
+        <div class="set-hint">The countdown (if set) and a “Start now →” link are added automatically.</div>
+      </div>
+
+      <div class="dcard">
+        <div class="p-head"><div class="p-title">Student features</div></div>
+        <div class="p-sub">Show or hide product lines on the site.</div>
+        <div class="set-feat"><div><b>Formulas tab</b><span>The quick-reference formulas page.</span></div><label class="switch"><input type="checkbox" id="set-formulas"><span class="slider"></span></label></div>
+        <div class="ct-note" style="margin-top:12px"><i class="ti ti-info-circle"></i> Mock tests and Plus get their own switches here once those features go live for students — a toggle that hid nothing would just mislead.</div>
+      </div>
+
+      <div class="set-actions">
+        <button class="btn pub" id="set-save" type="button">Save settings</button>
+        <span class="set-saved" id="set-saved"></span>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -639,6 +694,7 @@ $('nav').addEventListener('click', function(e){
   if(p==='coverage' && !LOADED.coverage) loadCoverage();
   if((p==='team'||p==='students') && !LOADED.people) loadPeople();
   if(p==='inbox'    && !LOADED.inbox)    loadInbox();
+  if(p==='settings' && !LOADED.settings) loadSettings();
 });
 
 /* ── chart helpers (hand-drawn SVG/CSS — no external libraries) ── */
@@ -891,6 +947,37 @@ async function loadPracticeTab(){
     }).join('');
   }catch(e){ box.innerHTML='<div class="empty">Could not load practice overview.</div>'; }
 }
+
+/* ── SETTINGS ── */
+async function loadSettings(){
+  LOADED.settings = true;
+  try{
+    var s = await fetch('/api/settings',{cache:'no-store'}).then(function(r){return r.json();});
+    $('set-date').value = s.see_exam_date || '';
+    $('set-ann-on').checked = s.announce_on !== false;
+    $('set-ann-text').value = s.announce_text || '';
+    $('set-formulas').checked = s.feature_formulas !== false;
+  }catch(e){ toast('Could not load settings'); }
+}
+async function saveSettings(){
+  var body = {
+    see_exam_date: $('set-date').value || null,
+    announce_on: $('set-ann-on').checked,
+    announce_text: $('set-ann-text').value,
+    feature_formulas: $('set-formulas').checked
+  };
+  var btn=$('set-save'); btn.disabled=true; btn.textContent='Saving…';
+  try{
+    var r = await authFetch('/api/admin-users?action=settings-save',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(Object.assign({action:'settings-save'},body))});
+    if(!r.ok) throw new Error();
+    var sv=$('set-saved'); sv.textContent='✓ Saved — live within a minute'; sv.classList.add('show'); setTimeout(function(){ sv.classList.remove('show'); },3500);
+  }catch(e){ toast('Save failed'); }
+  finally{ btn.disabled=false; btn.textContent='Save settings'; }
+}
+(function(){
+  var sv=$('set-save'); if(sv) sv.addEventListener('click', saveSettings);
+  var cl=$('set-date-clear'); if(cl) cl.addEventListener('click', function(){ $('set-date').value=''; });
+})();
 
 /* ── COVERAGE ── */
 async function ensurePapers(){

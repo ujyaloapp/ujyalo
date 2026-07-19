@@ -1005,6 +1005,18 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 </div><!-- /app -->
 
 <script>
+// Admin can hide the Formulas tab site-wide via Settings. components.js fetches
+// the settings and fires 'ujyalo-settings'; we also check in case it arrived first.
+function applyFeatureToggles(s){
+  if(!s) return;
+  if(s.feature_formulas === false){
+    var a=document.getElementById('nav-formulas'); if(a) a.style.display='none';
+    var b=document.getElementById('mb-formulas');  if(b) b.style.display='none';
+  }
+}
+document.addEventListener('ujyalo-settings', function(e){ applyFeatureToggles(e.detail); });
+if(window.UJYALO_SETTINGS) applyFeatureToggles(window.UJYALO_SETTINGS);
+
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
 const SUBJECTS = [

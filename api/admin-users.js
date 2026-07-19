@@ -84,6 +84,23 @@ export default async function handler(req, res) {
       }
     }
 
+    // ── Site settings (admin-only): countdown, announcement, feature visibility ──
+    if (action === 'settings-save') {
+      const p = { id: 1, updated_at: new Date().toISOString() };
+      if ('see_exam_date' in body)    p.see_exam_date    = body.see_exam_date || null;
+      if ('announce_on' in body)      p.announce_on      = !!body.announce_on;
+      if ('announce_text' in body)    p.announce_text    = (body.announce_text && String(body.announce_text).trim()) ? String(body.announce_text).trim() : null;
+      if ('feature_formulas' in body) p.feature_formulas = !!body.feature_formulas;
+      if ('feature_mocks' in body)    p.feature_mocks    = !!body.feature_mocks;
+      if ('feature_plus' in body)     p.feature_plus     = !!body.feature_plus;
+      const r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/site_settings?on_conflict=id`, {
+        method: 'POST',
+        headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+        body: JSON.stringify(p),
+      });
+      return r.ok ? res.status(200).json({ ok: true }) : res.status(500).json({ error: 'Save failed' });
+    }
+
     return res.status(400).json({ error: 'Unknown action' });
   }
 
