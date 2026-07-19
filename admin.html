@@ -200,6 +200,25 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
 .mtag.plus{background:#fef3c7;color:#92600a;}
 .mtag.pub{background:var(--green-bg);color:#15803d;}
 .mtag.draft{background:var(--parch-2);color:var(--muted);}
+/* mock controls */
+.mctrl{display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.mtoggle{font-family:inherit;font-size:11px;font-weight:700;border-radius:99px;padding:5px 13px;border:1px solid transparent;cursor:pointer;}
+.mtoggle.free{background:var(--teal-soft);color:var(--teal-deep);border-color:#bfe5de;}
+.mtoggle.plus{background:#fef3c7;color:#92600a;border-color:#fadf9a;}
+.mtoggle:hover{filter:brightness(.97);}
+.mbtn{font-family:inherit;font-size:12px;font-weight:600;border-radius:8px;padding:7px 14px;cursor:pointer;border:1px solid var(--line);}
+.mbtn.pub{background:var(--teal);color:#fff;border-color:var(--teal);}
+.mbtn.pub:hover{background:var(--teal-deep);}
+.mbtn.unpub{background:#fff;color:var(--rust);border-color:#f3c9d1;}
+.mbtn.unpub:hover{background:var(--rust-bg);}
+.mmove{display:flex;flex-direction:column;gap:3px;}
+.marr{width:25px;height:17px;display:grid;place-items:center;border:1px solid var(--line);background:#fff;border-radius:5px;cursor:pointer;color:var(--muted);padding:0;}
+.marr:hover:not(:disabled){border-color:var(--teal);color:var(--teal-deep);}
+.marr:disabled{opacity:.35;cursor:default;}
+.marr i{font-size:13px;}
+/* toast */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#1c242b;color:#fff;font-size:13.5px;font-weight:500;padding:11px 20px;border-radius:11px;box-shadow:0 10px 30px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:.2s;z-index:100;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 /* practice summary rows */
 .prow2{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-soft,#eff3f1);}
 .prow2:last-child{border-bottom:none;padding-bottom:0;}
@@ -474,7 +493,7 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
       <div class="ct-panel" id="ct-mocks">
         <div class="dcard">
           <div class="p-head"><div class="p-title">Mock tests</div><div class="p-tag" id="mocks-tag">—</div></div>
-          <div class="p-sub">Full-length model papers. Mock 1 is free; the rest unlock with Plus. Publishing &amp; reordering controls come next.</div>
+          <div class="p-sub">Full-length model papers. <b>Publish</b> a set to show it to students, tap the <b>Free/Plus</b> pill to switch access, and use the arrows to reorder.</div>
           <div id="mocks-list"><div class="loading">Loading…</div></div>
         </div>
       </div>
@@ -794,6 +813,7 @@ async function loadHome(){
   }catch(e){ console.error('Home error',e); $('attention').innerHTML='<div class="empty">Could not load. Try refreshing.</div>'; }
 }
 function goPanel(p){ var a=document.querySelector('#nav a[data-p="'+p+'"]'); if(a) a.click(); }
+function toast(msg){ var t=$('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.body.appendChild(t); } t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove('show'); }, 2200); }
 
 /* ── exam switcher (scaffold — SEE only for now) ── */
 (function(){
@@ -815,23 +835,44 @@ function goPanel(p){ var a=document.querySelector('#nav a[data-p="'+p+'"]'); if(
   });
 })();
 
+var MOCKS=[];
 async function loadMocksTab(){
   LOADED.mocks = true;
   var box=$('mocks-list');
   try{
     var d = await authFetch('/api/admin-users?action=mocks',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();});
-    var mocks = (d && d.mocks) ? d.mocks : [];
-    if(!mocks.length){ box.innerHTML='<div class="empty">No mock tests yet.</div>'; $('mocks-tag').textContent='0 sets'; return; }
-    var pub = mocks.filter(function(m){return m.status==='published';}).length;
-    $('mocks-tag').textContent = pub+' live · '+mocks.length+' sets';
-    box.innerHTML = mocks.map(function(m,i){
-      var free = m.is_free ? '<span class="mtag free">Free</span>' : '<span class="mtag plus">Plus</span>';
-      var st = m.status==='published' ? '<span class="mtag pub">Live</span>' : '<span class="mtag draft">Draft</span>';
-      var meta = [m.subject, (m.total_marks?m.total_marks+' marks':''), (m.duration_minutes?m.duration_minutes+' min':'')].filter(Boolean).join(' · ');
-      return '<div class="mrow"><div class="mnum">'+(m.set_label||(i+1))+'</div><div class="mmain"><div class="mtitle">'+esc(m.title||'Mock test')+'</div><div class="mmeta">'+esc(meta)+'</div></div><div class="mtags">'+free+st+'</div></div>';
-    }).join('');
+    MOCKS = (d && d.mocks) ? d.mocks : [];
+    renderMocks();
   }catch(e){ box.innerHTML='<div class="empty">Could not load mock tests.</div>'; }
 }
+function renderMocks(){
+  var box=$('mocks-list');
+  if(!MOCKS.length){ box.innerHTML='<div class="empty">No mock tests yet.</div>'; $('mocks-tag').textContent='0 sets'; return; }
+  var pub = MOCKS.filter(function(m){return m.status==='published';}).length;
+  $('mocks-tag').textContent = pub+' live · '+MOCKS.length+' sets';
+  box.innerHTML = MOCKS.map(function(m,i){
+    var meta = [m.subject, (m.total_marks?m.total_marks+' marks':''), (m.duration_minutes?m.duration_minutes+' min':'')].filter(Boolean).join(' · ');
+    var freeBtn = '<button class="mtoggle '+(m.is_free?'free':'plus')+'" data-mfree="'+m.id+'" title="Click to switch">'+(m.is_free?'Free':'Plus')+'</button>';
+    var pubBtn = m.status==='published'
+      ? '<button class="mbtn unpub" data-mpub="'+m.id+'" data-to="draft">Unpublish</button>'
+      : '<button class="mbtn pub" data-mpub="'+m.id+'" data-to="published">Publish</button>';
+    var move = '<div class="mmove"><button class="marr" data-mup="'+m.id+'"'+(i===0?' disabled':'')+' title="Move up"><i class="ti ti-chevron-up"></i></button><button class="marr" data-mdown="'+m.id+'"'+(i===MOCKS.length-1?' disabled':'')+' title="Move down"><i class="ti ti-chevron-down"></i></button></div>';
+    return '<div class="mrow" data-id="'+m.id+'"><div class="mnum">'+esc(m.set_label||(i+1))+'</div>'
+      +'<div class="mmain"><div class="mtitle">'+esc(m.title||'Mock test')+'</div><div class="mmeta">'+esc(meta)+'</div></div>'
+      +'<div class="mctrl">'+freeBtn+pubBtn+move+'</div></div>';
+  }).join('');
+}
+async function mockPost(action,body){ body=body||{}; body.action=action; var r=await authFetch('/api/admin-users?action='+action,{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)}); if(!r.ok) throw new Error('failed'); return r.json(); }
+function mockById(id){ return MOCKS.filter(function(x){return String(x.id)===String(id);})[0]; }
+async function mockSetFree(id){ var m=mockById(id); if(!m)return; var nv=!m.is_free; try{ await mockPost('mock-set-free',{id:id,is_free:nv}); m.is_free=nv; renderMocks(); toast(nv?'Set to Free':'Moved to Plus'); }catch(e){ toast('Could not update'); } }
+async function mockSetStatus(id,to){ var m=mockById(id); if(!m)return; try{ await mockPost('mock-set-status',{id:id,status:to}); m.status=to; renderMocks(); toast(to==='published'?'Published — live to students':'Unpublished — hidden'); }catch(e){ toast('Could not update'); } }
+async function mockMove(id,dir){ var i=-1; MOCKS.forEach(function(x,k){ if(String(x.id)===String(id)) i=k; }); if(i<0)return; var j=i+dir; if(j<0||j>=MOCKS.length)return; var tmp=MOCKS[i];MOCKS[i]=MOCKS[j];MOCKS[j]=tmp; renderMocks(); try{ await mockPost('mock-reorder',{order:MOCKS.map(function(x){return x.id;})}); }catch(e){ toast('Could not save order'); } }
+(function(){ var box=$('mocks-list'); if(!box) return; box.addEventListener('click', function(e){
+  var fb=e.target.closest('[data-mfree]'); if(fb){ mockSetFree(fb.getAttribute('data-mfree')); return; }
+  var pb=e.target.closest('[data-mpub]'); if(pb){ mockSetStatus(pb.getAttribute('data-mpub'), pb.getAttribute('data-to')); return; }
+  var up=e.target.closest('[data-mup]'); if(up){ mockMove(up.getAttribute('data-mup'),-1); return; }
+  var dn=e.target.closest('[data-mdown]'); if(dn){ mockMove(dn.getAttribute('data-mdown'),1); return; }
+}); })();
 
 var PRAC_SUBJ_DOT={maths:'#2563eb',science:'#16a34a',english:'#7c3aed',social:'#d97706',nepali:'#dc2626',hpe:'#0d9488'};
 async function loadPracticeTab(){

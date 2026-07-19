@@ -35,24 +35,56 @@ export default async function handler(req, res) {
     return res.status(403).json({ error: 'Not authorized.' });
   }
 
-  // ── change a user's app role (also powers "remove from team" → student) ──
   if (req.method === 'POST') {
     const action = req.query.action || (req.body && req.body.action);
-    if (action !== 'set-role') return res.status(400).json({ error: 'Unknown action' });
-    const id = req.body && req.body.id;
-    const role = req.body && req.body.role;
-    const ALLOWED = ['admin', 'editor', 'student'];
-    if (!id || !ALLOWED.includes(role)) return res.status(400).json({ error: 'Bad request' });
-    if (id === admin.id && role !== 'admin') {
-      return res.status(400).json({ error: 'You cannot change your own admin role.' });
+    const body = req.body || {};
+
+    // ── change a user's app role (also powers "remove from team" → student) ──
+    if (action === 'set-role') {
+      const id = body.id, role = body.role;
+      const ALLOWED = ['admin', 'editor', 'student'];
+      if (!id || !ALLOWED.includes(role)) return res.status(400).json({ error: 'Bad request' });
+      if (id === admin.id && role !== 'admin') {
+        return res.status(400).json({ error: 'You cannot change your own admin role.' });
+      }
+      const pr = await fetch(`${process.env.SUPABASE_URL}/rest/v1/users?id=eq.${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ role }),
+      });
+      if (!pr.ok) return res.status(500).json({ error: 'Update failed' });
+      return res.status(200).json({ ok: true });
     }
-    const pr = await fetch(`${process.env.SUPABASE_URL}/rest/v1/users?id=eq.${encodeURIComponent(id)}`, {
-      method: 'PATCH',
-      headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ role }),
-    });
-    if (!pr.ok) return res.status(500).json({ error: 'Update failed' });
-    return res.status(200).json({ ok: true });
+
+    // ── Mock tests management (admin-only, like paper publishing) ──
+    if (action === 'mock-set-status' || action === 'mock-set-free' || action === 'mock-reorder') {
+      async function mockPatch(id, patch) {
+        const r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/mock_tests?id=eq.${encodeURIComponent(id)}`, {
+          method: 'PATCH',
+          headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+          body: JSON.stringify(patch),
+        });
+        return r.ok;
+      }
+      if (action === 'mock-set-status') {
+        if (!body.id || !['draft', 'published'].includes(body.status)) return res.status(400).json({ error: 'Bad request' });
+        const ok = await mockPatch(body.id, { status: body.status });
+        return ok ? res.status(200).json({ ok: true }) : res.status(500).json({ error: 'Update failed' });
+      }
+      if (action === 'mock-set-free') {
+        if (!body.id) return res.status(400).json({ error: 'Bad request' });
+        const ok = await mockPatch(body.id, { is_free: !!body.is_free });
+        return ok ? res.status(200).json({ ok: true }) : res.status(500).json({ error: 'Update failed' });
+      }
+      if (action === 'mock-reorder') {
+        const order = Array.isArray(body.order) ? body.order : [];
+        if (!order.length) return res.status(400).json({ error: 'Bad request' });
+        for (let i = 0; i < order.length; i++) { await mockPatch(order[i], { sort_order: i }); }
+        return res.status(200).json({ ok: true });
+      }
+    }
+
+    return res.status(400).json({ error: 'Unknown action' });
   }
 
   if (req.method !== 'GET') {
