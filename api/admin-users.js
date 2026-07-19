@@ -151,6 +151,20 @@ export default async function handler(req, res) {
     }
   }
 
+  // Mock tests list for the Content → Mock tests tab (read-only here; full
+  // management comes later). Safe if the table doesn't exist yet.
+  if (req.query.action === 'mocks') {
+    try {
+      const r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/mock_tests?select=id,slug,title,set_label,subject,total_marks,duration_minutes,is_free,sort_order,status&order=sort_order.asc`, {
+        headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}` },
+      });
+      const mocks = await r.json();
+      return res.status(200).json({ success: true, mocks: Array.isArray(mocks) ? mocks : [] });
+    } catch (e) {
+      return res.status(200).json({ success: true, mocks: [] });
+    }
+  }
+
   try {
     // Fetch users from Supabase Auth admin endpoint
     const response = await fetch(
