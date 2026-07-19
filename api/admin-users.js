@@ -96,18 +96,53 @@ export default async function handler(req, res) {
       return Number.isFinite(n) ? n : 0;
     }
     try {
-      const [papersTotal, papersLive, qTotal, qVerified, qFlagged, messages] = await Promise.all([
+      const [papersTotal, papersLive, qTotal, qVerified, qFlagged, messages,
+             chapterTotal, chapterVerified, chapterLive, waitlist, students] = await Promise.all([
         count('past_papers?select=id'),
         count('past_papers?status=eq.live&select=id'),
         count('past_paper_questions?select=id'),
         count('past_paper_questions?verified=eq.true&select=id'),
         count('past_paper_questions?flagged=eq.true&select=id'),
         count('contact_messages?select=id'),
+        count('chapter_questions?status=neq.rejected&select=id'),
+        count('chapter_questions?verified=eq.true&select=id'),
+        count('chapter_questions?status=eq.live&select=id'),
+        count('waitlist?select=id'),
+        count('users?role=eq.student&select=id'),
       ]);
-      return res.status(200).json({ success: true, papersTotal, papersLive, qTotal, qVerified, qFlagged, messages });
+      // Record today's snapshot (Nepal day) so trend lines have real history —
+      // fire-and-forget, an upsert keyed on the day; a failure never blocks stats.
+      const nepalDay = new Date(Date.now() + 5.75 * 3600 * 1000).toISOString().slice(0, 10);
+      fetch(`${process.env.SUPABASE_URL}/rest/v1/stats_daily?on_conflict=day`, {
+        method: 'POST',
+        headers: {
+          'apikey': process.env.SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates,return=minimal',
+        },
+        body: JSON.stringify({ day: nepalDay, students, papers_live: papersLive, papers_total: papersTotal,
+          q_verified: qVerified, q_total: qTotal, practice_live: chapterLive, practice_checked: chapterVerified,
+          practice_total: chapterTotal, waitlist, messages, flagged: qFlagged, updated_at: new Date().toISOString() }),
+      }).catch(() => {});
+      return res.status(200).json({ success: true, papersTotal, papersLive, qTotal, qVerified, qFlagged, messages,
+        chapterTotal, chapterVerified, chapterLive, waitlist, students });
     } catch (e) {
       console.error('Admin stats error:', e);
       return res.status(500).json({ error: 'Failed to load stats.' });
+    }
+  }
+
+  if (req.query.action === 'stats-history') {
+    try {
+      const r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/stats_daily?select=*&order=day.asc&limit=120`, {
+        headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}` },
+      });
+      const history = await r.json();
+      return res.status(200).json({ success: true, history: Array.isArray(history) ? history : [] });
+    } catch (e) {
+      console.error('Admin stats-history error:', e);
+      return res.status(200).json({ success: true, history: [] });
     }
   }
 
