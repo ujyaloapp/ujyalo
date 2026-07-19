@@ -284,7 +284,8 @@ export default async function handler(req, res) {
     // ── chapter-practice verification (service-key reads: see ALL statuses,
     //    not just live, since the point is to review the not-yet-live ones) ──
     if (action === 'chapter-overview') {
-      const rows = await sbGet('/chapter_questions?select=subject,chapter_name,status,verified&order=subject.asc,chapter_name.asc');
+      // exclude deleted (rejected) questions from the counts
+      const rows = await sbGet('/chapter_questions?status=neq.rejected&select=subject,chapter_name,status,verified&order=subject.asc,chapter_name.asc');
       const map = {}; // subject -> chapter -> counts
       (rows || []).forEach(r => {
         const sub = r.subject || 'other', ch = r.chapter_name || 'Uncategorised';
@@ -446,7 +447,7 @@ export default async function handler(req, res) {
     }
 
     // ── chapter-practice review actions ──
-    const CHAPTER_EDITABLE = ['question_text','question_text_np','answer_text','answer_text_np','option_a','option_b','option_c','option_d','correct_option','explanation','marks','topic'];
+    const CHAPTER_EDITABLE = ['question_text','question_text_np','answer_text','answer_text_np','option_a','option_b','option_c','option_d','correct_option','explanation','marks','topic','parts'];
     // Approve = mark checked AND make it live to students.
     if (action === 'chapter-approve') {
       const id = body.id;
@@ -468,6 +469,7 @@ export default async function handler(req, res) {
       if (!id || !CHAPTER_EDITABLE.includes(field)) return res.status(400).json({ error: 'Field not editable' });
       if (field === 'marks') { value = parseInt(value, 10); if (isNaN(value)) value = 0; }
       if (field === 'correct_option') value = String(value || '').toLowerCase().slice(0, 1);
+      if (field === 'parts' && !Array.isArray(value)) return res.status(400).json({ error: 'parts must be an array' });
       const patch = {}; patch[field] = value;
       const row = await sbPatch(`/chapter_questions?id=eq.${encodeURIComponent(id)}`, patch, true);
       return res.status(200).json({ ok: true, row: (row && row[0]) || null });

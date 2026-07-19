@@ -91,6 +91,23 @@
   .chf-row label{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8b93a0;margin-bottom:5px;}
   .chf-ta{width:100%;border:1.5px solid #0f766e;border-radius:8px;padding:9px;font-family:'Lora',serif;font-size:15px;color:#1f2933;line-height:1.5;min-height:60px;resize:vertical;}
   .chf-inp{border:1.5px solid #0f766e;border-radius:8px;padding:8px 10px;font-family:'Outfit';font-size:15px;width:70px;text-transform:lowercase;}
+  /* subject picker (level 1) */
+  .ch-subjgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+  .ch-subjcard{display:flex;flex-direction:column;align-items:flex-start;gap:8px;background:#fff;border:1px solid #e6eae8;border-radius:13px;padding:16px 16px 15px;cursor:pointer;text-align:left;transition:.12s;font-family:inherit;}
+  .ch-subjcard:hover{border-color:#0f766e;box-shadow:0 4px 14px rgba(15,118,110,.08);transform:translateY(-1px);}
+  .ch-subjcard-tag{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border-radius:7px;padding:5px 11px;}
+  .ch-subjcard-meta{font-size:12.5px;color:#52606d;}
+  /* editor extras */
+  .chf-optrow{display:flex;align-items:center;gap:9px;margin-bottom:7px;}
+  .chf-oL{width:22px;height:22px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:6px;background:#eef2f0;font-size:12px;font-weight:700;color:#52606d;}
+  .chf-optrow .chf-inp{width:100%;text-transform:none;}
+  .chf-co{width:70px;}
+  .chf-hint{font-weight:600;text-transform:none;letter-spacing:0;color:#0f766e;font-size:11px;}
+  .chf-part{border:1px solid #e6eae8;border-radius:10px;padding:11px;margin-bottom:9px;background:#f7faf8;}
+  .chf-plabel{font-size:12px;font-weight:700;color:#52606d;margin-bottom:7px;}
+  .chf-mk{width:52px;border:1px solid #cfd8d5;border-radius:6px;padding:3px 6px;font-family:'Outfit';font-size:13px;}
+  .chf-part .chf-ta{margin-bottom:7px;}
+  .ch-pa{margin-top:4px;}
   @media(max-width:760px){.dq-cols{grid-template-columns:1fr;}}
   .vt{font-family:'Outfit';font-size:13px;font-weight:600;border:none;background:transparent;color:var(--muted);padding:6px 12px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:6px;}
   .vt.on{background:var(--card);color:var(--forest);box-shadow:0 1px 3px #0000001a;}
@@ -558,62 +575,129 @@
   (function(){ var v=$('picker-daily'); if(v) v.addEventListener('click',function(e){ var b=e.target.closest('[data-swap]'); if(b){ dqSwap(b.getAttribute('data-swap')); } }); })();
 
   // ── Chapter-practice review (approve / fix / delete AI-drafted questions) ──
+  // Navigation is subject → chapters → questions so it scales to many subjects.
   var CH_VIEW={subject:null,chapter:null,questions:[]};
+  var CH_OVERVIEW=null;
+  function escA(s){return esc(s).replace(/"/g,'&quot;');}
+  function chOpts(q){ return [q.option_a,q.option_b,q.option_c,q.option_d].filter(function(x){return x!=null && String(x).trim()!=='';}); }
+  function chIsMcq(q){ return chOpts(q).length>0; }
+  function chHasParts(q){ return !!(q.parts && q.parts.length); }
   async function chGet(action,params){var r=await fetch('/api/admin-paper?action='+action+(params?('&'+params):''),{headers:authHeaders()});if(r.status===403){localStorage.removeItem('ujyalo_token');location.replace('/login.html?expired=1');throw new Error('forbidden');}if(!r.ok)throw new Error((await r.json().catch(function(){return{};})).error||('HTTP '+r.status));return r.json();}
   async function chPost(action,body){body=body||{};body.action=action;var r=await fetch('/api/admin-paper?action='+action,{method:'POST',headers:authHeaders(),body:JSON.stringify(body)});if(r.status===403){localStorage.removeItem('ujyalo_token');location.replace('/login.html?expired=1');throw new Error('forbidden');}if(!r.ok)throw new Error((await r.json().catch(function(){return{};})).error||('HTTP '+r.status));return r.json();}
+  // Refresh the subject/chapter counts from the server, then run `then` (keeps
+  // "N to check" and question totals current after an approve/delete).
+  async function chReload(then){ try{ var d=await chGet('chapter-overview'); CH_OVERVIEW=d.subjects||[]; }catch(e){} if(then)then(); }
   async function loadChapters(){
     $('ch-title').textContent='Practice questions';
-    var el=$('ch-body'); el.innerHTML='<div class="dq-loading">Loading chapters…</div>';
-    try{
-      var d=await chGet('chapter-overview'); var subs=d.subjects||[];
-      if(!subs.length){ el.innerHTML='<div class="dq-empty">No practice questions yet.</div>'; return; }
-      el.innerHTML=subs.map(function(s){
-        var nm=(SUBJ_CFG[s.subject]||{}).name||s.subject, c=subjCol(s.subject);
-        var rows=s.chapters.map(function(ch){
-          var badge=ch.toCheck>0?'<span class="ch-badge to">'+ch.toCheck+' to check</span>':'<span class="ch-badge ok">✓ all checked</span>';
-          return '<div class="ch-row" data-subject="'+esc(s.subject)+'" data-chapter="'+esc(ch.chapter)+'"><span class="ch-name">'+esc(ch.chapter)+'</span><span class="ch-meta">'+ch.total+' questions · '+ch.live+' live</span>'+badge+'<span class="ch-go">Review →</span></div>';
-        }).join('');
-        return '<div class="ch-subj"><span class="ch-subj-tag" style="background:'+c.bg+';color:'+c.fg+'">'+esc(nm)+'</span>'+rows+'</div>';
-      }).join('');
-    }catch(e){ el.innerHTML='<div class="dq-empty">Could not load.</div>'; }
+    var el=$('ch-body'); el.innerHTML='<div class="dq-loading">Loading subjects…</div>';
+    try{ var d=await chGet('chapter-overview'); CH_OVERVIEW=d.subjects||[]; renderSubjects(); }
+    catch(e){ el.innerHTML='<div class="dq-empty">Could not load.</div>'; }
   }
+  // Level 1 — pick a subject.
+  function renderSubjects(){
+    $('ch-title').textContent='Practice questions';
+    var subs=CH_OVERVIEW||[]; var el=$('ch-body');
+    if(!subs.length){ el.innerHTML='<div class="dq-empty">No practice questions yet.</div>'; return; }
+    el.innerHTML='<div class="ch-subjgrid">'+subs.map(function(s){
+      var nm=(SUBJ_CFG[s.subject]||{}).name||s.subject, c=subjCol(s.subject);
+      var toCheck=s.chapters.reduce(function(a,ch){return a+(ch.toCheck||0);},0);
+      var total=s.chapters.reduce(function(a,ch){return a+(ch.total||0);},0);
+      var badge=toCheck>0?'<span class="ch-badge to">'+toCheck+' to check</span>':'<span class="ch-badge ok">✓ all checked</span>';
+      return '<button class="ch-subjcard" data-gosubject="'+escA(s.subject)+'"><span class="ch-subjcard-tag" style="background:'+c.bg+';color:'+c.fg+'">'+esc(nm)+'</span><span class="ch-subjcard-meta">'+s.chapters.length+' chapters · '+total+' questions</span>'+badge+'</button>';
+    }).join('')+'</div>';
+  }
+  // Level 2 — chapters within a subject.
+  function openSubject(subject){
+    var s=(CH_OVERVIEW||[]).filter(function(x){return x.subject===subject;})[0]; if(!s){ renderSubjects(); return; }
+    var nm=(SUBJ_CFG[subject]||{}).name||subject;
+    $('ch-title').innerHTML='<button class="ch-back" data-chsubback>← Subjects</button> '+esc(nm);
+    $('ch-body').innerHTML=s.chapters.map(function(ch){
+      var badge=ch.toCheck>0?'<span class="ch-badge to">'+ch.toCheck+' to check</span>':'<span class="ch-badge ok">✓ all checked</span>';
+      return '<div class="ch-row" data-subject="'+escA(subject)+'" data-chapter="'+escA(ch.chapter)+'"><span class="ch-name">'+esc(ch.chapter)+'</span><span class="ch-meta">'+ch.total+' questions · '+ch.live+' live</span>'+badge+'<span class="ch-go">Review →</span></div>';
+    }).join('');
+  }
+  // Level 3 — questions within a chapter.
   async function openChapter(subject,chapter){
     CH_VIEW.subject=subject; CH_VIEW.chapter=chapter;
-    $('ch-title').innerHTML='<button class="ch-back" data-chback>← Chapters</button> '+esc(chapter);
+    var nm=(SUBJ_CFG[subject]||{}).name||subject;
+    $('ch-title').innerHTML='<button class="ch-back" data-chback>← '+esc(nm)+'</button> '+esc(chapter);
     var el=$('ch-body'); el.innerHTML='<div class="dq-loading">Loading questions…</div>';
     try{ var d=await chGet('chapter-load','subject='+encodeURIComponent(subject)+'&chapter='+encodeURIComponent(chapter)); CH_VIEW.questions=d.questions||[]; renderChQuestions(); }
     catch(e){ el.innerHTML='<div class="dq-empty">Could not load.</div>'; }
   }
   function renderChQuestions(){ var l=CH_VIEW.questions; $('ch-body').innerHTML=l.length?l.map(chQuestionCard).join(''):'<div class="dq-empty">No questions in this chapter.</div>'; }
+  // Show the answer EXACTLY the way the student site builds it, so what you
+  // verify here is what students actually see:
+  //  • multiple-choice → correct option + the explanation
+  //  • multi-part      → each part's own answer
+  //  • written         → the plain answer
+  function chAnswerHtml(q){
+    var opts=chOpts(q);
+    if(opts.length && q.correct_option){
+      var ci=({a:0,b:1,c:2,d:3})[String(q.correct_option).trim().toLowerCase()];
+      if(ci!=null && opts[ci]!=null){ var L=['A','B','C','D'][ci]; var extra=q.explanation||q.answer_text||''; return '<div class="ch-ans"><b>Answer:</b> '+L+'. '+esc(opts[ci])+(extra?' — '+esc(extra):'')+'</div>'; }
+    }
+    if(chHasParts(q)){ return '<div class="ch-ans"><b>Answers:</b>'+q.parts.map(function(p,i){ return '<div class="ch-pa">('+esc(p.sub||String.fromCharCode(97+i))+') '+esc(p.a||'—')+'</div>'; }).join('')+'</div>'; }
+    return q.answer_text?('<div class="ch-ans"><b>Answer:</b> '+esc(q.answer_text)+'</div>'):'';
+  }
   function chQuestionCard(q){
     var live=q.status==='live', ver=!!q.verified;
     var status=ver?'<span class="chip ver">✓ Approved</span>':(live?'<span class="chip unv">Live · not checked</span>':'<span class="chip unv">Draft — hidden</span>');
+    var typeLabel=chHasParts(q)?'MULTI-PART':(chIsMcq(q)?'MCQ':'WRITTEN');
     var opts='';
-    if(q.question_type==='mcq' && (q.option_a||q.option_b)){ var L=['a','b','c','d']; opts='<div class="ch-opts">'+L.map(function(x){ var t=q['option_'+x]; if(t==null||t==='') return ''; var ok=(String(q.correct_option||'').toLowerCase()===x); return '<div class="ch-opt'+(ok?' ok':'')+'">'+x.toUpperCase()+') '+esc(t)+(ok?' <span class="ch-ok">✓ correct</span>':'')+'</div>'; }).join('')+'</div>'; }
-    var parts=''; if(q.parts && q.parts.length){ try{ parts='<div class="ch-parts">'+q.parts.map(function(p){ return '<div class="ch-part"><b>('+esc(p.sub||'')+')</b> '+esc(p.q||'')+(p.marks?' <span class="ch-mk">'+p.marks+'m</span>':'')+'</div>'; }).join('')+'</div>'; }catch(e){} }
+    if(chIsMcq(q)){ var L=['a','b','c','d']; opts='<div class="ch-opts">'+L.map(function(x){ var t=q['option_'+x]; if(t==null||t==='') return ''; var ok=(String(q.correct_option||'').toLowerCase()===x); return '<div class="ch-opt'+(ok?' ok':'')+'">'+x.toUpperCase()+') '+esc(t)+(ok?' <span class="ch-ok">✓ correct</span>':'')+'</div>'; }).join('')+'</div>'; }
+    var parts=''; if(chHasParts(q)){ try{ parts='<div class="ch-parts">'+q.parts.map(function(p){ return '<div class="ch-part"><b>('+esc(p.sub||'')+')</b> '+esc(p.q||'')+(p.marks?' <span class="ch-mk">'+p.marks+'m</span>':'')+'</div>'; }).join('')+'</div>'; }catch(e){} }
     var fig=q.diagram_svg?dqFigsHtml([{svg:q.diagram_svg}]):'';
-    var ans=q.answer_text?('<div class="ch-ans"><b>Answer:</b> '+esc(q.answer_text)+'</div>'):'';
-    return '<div class="chq" id="chq-'+q.id+'"><div class="chq-top"><span class="chq-type">'+esc((q.question_type||'written').toUpperCase())+'</span>'+status+'</div>'+
+    var ans=chAnswerHtml(q);
+    return '<div class="chq" id="chq-'+q.id+'"><div class="chq-top"><span class="chq-type">'+typeLabel+'</span>'+status+'</div>'+
       '<div class="chq-stem">'+esc(q.question_text||'')+'</div>'+opts+parts+fig+ans+
       '<div class="chq-actions">'+(ver?'':'<button class="chq-btn ok" data-chapprove="'+q.id+'">✓ Approve</button>')+'<button class="chq-btn fix" data-chfix="'+q.id+'">✎ Fix</button><button class="chq-btn del" data-chdel="'+q.id+'">✗ Delete</button></div></div>';
   }
-  function chFix(id){ var q=CH_VIEW.questions.filter(function(x){return x.id===id;})[0]; if(!q)return; var card=$('chq-'+id); if(!card)return; var mcq=q.question_type==='mcq';
-    card.innerHTML='<div class="chf"><div class="chf-row"><label>Question (English)</label><textarea class="chf-ta" id="chf-q-'+id+'">'+esc(q.question_text||'')+'</textarea></div>'+
-      (mcq?'<div class="chf-row"><label>Correct option (a/b/c/d)</label><input class="chf-inp" id="chf-co-'+id+'" maxlength="1" value="'+esc(q.correct_option||'')+'"></div>':'')+
-      '<div class="chf-row"><label>Answer (English)</label><textarea class="chf-ta" id="chf-a-'+id+'">'+esc(q.answer_text||'')+'</textarea></div>'+
-      '<div class="chq-actions"><button class="chq-btn ok" data-chsave="'+id+'">Save</button><button class="chq-btn" data-chcancel="'+id+'">Cancel</button></div></div>';
+  // Field-aware editor — edits the SAME fields the site uses per question type.
+  function chFix(id){ var q=CH_VIEW.questions.filter(function(x){return x.id===id;})[0]; if(!q)return; var card=$('chq-'+id); if(!card)return;
+    var mcq=chIsMcq(q), hasParts=chHasParts(q);
+    var h='<div class="chf">';
+    h+='<div class="chf-row"><label>Question (English)</label><textarea class="chf-ta" id="chf-q-'+id+'">'+esc(q.question_text||'')+'</textarea></div>';
+    h+='<div class="chf-row"><label>Question (Nepali)</label><textarea class="chf-ta" id="chf-qnp-'+id+'">'+esc(q.question_text_np||'')+'</textarea></div>';
+    if(mcq){
+      h+='<div class="chf-row"><label>Options</label>'+['a','b','c','d'].map(function(L){ return '<div class="chf-optrow"><span class="chf-oL">'+L.toUpperCase()+'</span><input class="chf-inp" id="chf-o'+L+'-'+id+'" value="'+escA(q['option_'+L]||'')+'"></div>'; }).join('')+'</div>';
+      h+='<div class="chf-row"><label>Correct option (a/b/c/d)</label><input class="chf-inp chf-co" id="chf-co-'+id+'" maxlength="1" value="'+escA(q.correct_option||'')+'"></div>';
+      h+='<div class="chf-row"><label>Explanation <span class="chf-hint">— this is the answer students see</span></label><textarea class="chf-ta" id="chf-ex-'+id+'">'+esc(q.explanation||'')+'</textarea></div>';
+    } else if(hasParts){
+      h+='<div class="chf-row"><label>Parts <span class="chf-hint">— each part’s answer is what students see</span></label>'+q.parts.map(function(p,i){ var sub=p.sub||String.fromCharCode(97+i); return '<div class="chf-part"><div class="chf-plabel">Part ('+esc(sub)+') · <input class="chf-mk" id="chf-pm-'+id+'-'+i+'" type="number" value="'+escA(String(p.marks==null?'':p.marks))+'"> marks</div><textarea class="chf-ta" id="chf-pq-'+id+'-'+i+'" placeholder="Question">'+esc(p.q||'')+'</textarea><textarea class="chf-ta" id="chf-pa-'+id+'-'+i+'" placeholder="Answer (what students see)">'+esc(p.a||'')+'</textarea></div>'; }).join('')+'</div>';
+    } else {
+      h+='<div class="chf-row"><label>Answer (English)</label><textarea class="chf-ta" id="chf-a-'+id+'">'+esc(q.answer_text||'')+'</textarea></div>';
+      h+='<div class="chf-row"><label>Answer (Nepali)</label><textarea class="chf-ta" id="chf-anp-'+id+'">'+esc(q.answer_text_np||'')+'</textarea></div>';
+    }
+    h+='<div class="chq-actions"><button class="chq-btn ok" data-chsave="'+id+'">Save</button><button class="chq-btn" data-chcancel="'+id+'">Cancel</button></div></div>';
+    card.innerHTML=h;
   }
-  async function chSaveFix(id){ var q=CH_VIEW.questions.filter(function(x){return x.id===id;})[0]; if(!q)return; var qv=$('chf-q-'+id).value, av=$('chf-a-'+id).value, coEl=$('chf-co-'+id), co=coEl?coEl.value:null;
-    try{ if(qv!==(q.question_text||'')){ await chPost('chapter-edit',{id:id,field:'question_text',value:qv}); q.question_text=qv; }
-      if(av!==(q.answer_text||'')){ await chPost('chapter-edit',{id:id,field:'answer_text',value:av}); q.answer_text=av; }
-      if(co!=null && co!==(q.correct_option||'')){ await chPost('chapter-edit',{id:id,field:'correct_option',value:co}); q.correct_option=co; }
+  async function chSaveFix(id){ var q=CH_VIEW.questions.filter(function(x){return x.id===id;})[0]; if(!q)return;
+    var mcq=chIsMcq(q), hasParts=chHasParts(q);
+    async function put(field,value){ await chPost('chapter-edit',{id:id,field:field,value:value}); }
+    try{
+      var qv=$('chf-q-'+id).value; if(qv!==(q.question_text||'')){ await put('question_text',qv); q.question_text=qv; }
+      var qnp=$('chf-qnp-'+id).value; if(qnp!==(q.question_text_np||'')){ await put('question_text_np',qnp); q.question_text_np=qnp; }
+      if(mcq){
+        for(var i=0;i<4;i++){ var Lx='abcd'[i]; var elo=$('chf-o'+Lx+'-'+id); if(elo){ var ov=elo.value; if(ov!==(q['option_'+Lx]||'')){ await put('option_'+Lx,ov); q['option_'+Lx]=ov; } } }
+        var co=$('chf-co-'+id).value.toLowerCase().slice(0,1); if(co!==(q.correct_option||'')){ await put('correct_option',co); q.correct_option=co; }
+        var ex=$('chf-ex-'+id).value; if(ex!==(q.explanation||'')){ await put('explanation',ex); q.explanation=ex; }
+      } else if(hasParts){
+        var changed=false; var newParts=q.parts.map(function(p,i){ var np=Object.assign({},p); var pq=$('chf-pq-'+id+'-'+i), pa=$('chf-pa-'+id+'-'+i), pm=$('chf-pm-'+id+'-'+i); if(pq&&pq.value!==(p.q||'')){np.q=pq.value;changed=true;} if(pa&&pa.value!==(p.a||'')){np.a=pa.value;changed=true;} if(pm){ var mv=pm.value===''?null:Number(pm.value); if(mv!==(p.marks==null?null:p.marks)){np.marks=mv;changed=true;} } return np; });
+        if(changed){ await put('parts',newParts); q.parts=newParts; }
+      } else {
+        var av=$('chf-a-'+id).value; if(av!==(q.answer_text||'')){ await put('answer_text',av); q.answer_text=av; }
+        var anp=$('chf-anp-'+id).value; if(anp!==(q.answer_text_np||'')){ await put('answer_text_np',anp); q.answer_text_np=anp; }
+      }
       toast('Saved'); $('chq-'+id).outerHTML=chQuestionCard(q);
     }catch(e){ toast(e.message||'Save failed'); } }
-  async function chApprove(id){ var q=CH_VIEW.questions.filter(function(x){return x.id===id;})[0]; try{ await chPost('chapter-approve',{id:id}); if(q){q.verified=true;q.status='live';} toast('Approved — live to students'); if(q) $('chq-'+id).outerHTML=chQuestionCard(q); }catch(e){ toast(e.message||'Failed'); } }
-  async function chDelete(id){ if(!confirm('Delete this question? Students won’t see it any more.'))return; try{ await chPost('chapter-delete',{id:id}); CH_VIEW.questions=CH_VIEW.questions.filter(function(x){return x.id!==id;}); var c=$('chq-'+id); if(c)c.remove(); toast('Deleted'); }catch(e){ toast(e.message||'Failed'); } }
+  async function chApprove(id){ var q=CH_VIEW.questions.filter(function(x){return x.id===id;})[0]; try{ await chPost('chapter-approve',{id:id}); if(q){q.verified=true;q.status='live';} toast('Approved — live to students'); if(q) $('chq-'+id).outerHTML=chQuestionCard(q); chReload(); }catch(e){ toast(e.message||'Failed'); } }
+  async function chDelete(id){ if(!confirm('Delete this question? Students won’t see it any more.'))return; try{ await chPost('chapter-delete',{id:id}); CH_VIEW.questions=CH_VIEW.questions.filter(function(x){return x.id!==id;}); var c=$('chq-'+id); if(c)c.remove(); toast('Deleted'); chReload(); }catch(e){ toast(e.message||'Failed'); } }
   (function(){ var pc=$('picker-chapters'); if(!pc) return; pc.addEventListener('click',function(e){
+    var gs=e.target.closest('[data-gosubject]'); if(gs){ openSubject(gs.getAttribute('data-gosubject')); return; }
+    if(e.target.closest('[data-chsubback]')){ chReload(renderSubjects); return; }
     var row=e.target.closest('[data-subject][data-chapter]'); if(row){ openChapter(row.getAttribute('data-subject'),row.getAttribute('data-chapter')); return; }
-    if(e.target.closest('[data-chback]')){ loadChapters(); return; }
+    if(e.target.closest('[data-chback]')){ var sb=CH_VIEW.subject; chReload(function(){ openSubject(sb); }); return; }
     var ap=e.target.closest('[data-chapprove]'); if(ap){ chApprove(ap.getAttribute('data-chapprove')); return; }
     var dl=e.target.closest('[data-chdel]'); if(dl){ chDelete(dl.getAttribute('data-chdel')); return; }
     var fx=e.target.closest('[data-chfix]'); if(fx){ chFix(fx.getAttribute('data-chfix')); return; }
