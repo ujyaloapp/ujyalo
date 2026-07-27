@@ -25,3 +25,10 @@ sql-archive/
 # Local reference material — kept on disk, not committed (read in-session)
 references/*
 !references/README.md
+
+# Internal planning — kept local, never served on the public site
+docs/
+LAUNCH-CHECKLIST.md
+
+# Local Claude Code / editor config (machine-specific)
+.claude/
