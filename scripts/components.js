@@ -23,8 +23,14 @@ function seeDaysLeft() {
 function buildAnnounce() {
   const days = seeDaysLeft();
   const cd = days ? ` · <b>${days} day${days !== 1 ? 's' : ''}</b> to the SEE exam` : '';
+  // Start hidden unless we already know (from a previous visit) the bar is ON.
+  // This prevents the red bar flashing on screen before the admin setting loads.
+  // applySiteSettings() reveals it (and caches the answer) once the server responds.
+  var known = '';
+  try { known = localStorage.getItem('ujyalo_announce_on'); } catch (e) {}
+  const hidden = known !== 'true';
   return `
-<div class="ujyalo-announce" data-kind="announce">
+<div class="ujyalo-announce" data-kind="announce"${hidden ? ' style="display:none"' : ''}>
   🇳🇵 Free SEE practice for every Nepali student${cd}.
   <a href="/see.html">Start now →</a>
 </div>`;
@@ -56,11 +62,13 @@ function applySiteSettings() {
         else { band.style.display = 'none'; }
       } else if (s.announce_on === false) {
         band.style.display = 'none';
+        try { localStorage.setItem('ujyalo_announce_on', 'false'); } catch (e) {}
       } else {
         band.style.display = '';
         var lead = s.announce_text ? esc(s.announce_text) : '🇳🇵 Free SEE practice for every Nepali student';
         var cd = days ? ' · <b>' + days + ' day' + (days !== 1 ? 's' : '') + '</b> to the SEE exam' : '';
         band.innerHTML = lead + cd + '. <a href="/see.html">Start now →</a>';
+        try { localStorage.setItem('ujyalo_announce_on', 'true'); } catch (e) {}
       }
     }
     try { document.dispatchEvent(new CustomEvent('ujyalo-settings', { detail: s })); } catch (e) {}
