@@ -4,6 +4,7 @@
 // Every action requires a valid Supabase login token whose email
 // is on the EDITOR allowlist. Writes use the service key server-side.
 // Actions (?action=): whoami | list | load | update-field | set-status
+//                     | create-paper (manual/AI "Add a paper" → draft/Pending)
 // ============================================================
 
 const EDITABLE = ['question_text_english','question_text_nepali','answer_text','marks','topic','difficulty'];
@@ -121,6 +122,16 @@ export default async function handler(req, res) {
         total: p.total_marks || 75,
       }));
       return res.status(200).json({ papers: out });
+    }
+
+    // ── catalog (read): exams + subjects, so the verify desk can use the managed
+    //    lists instead of hardcoded ones. Editor-accessible (read-only).
+    if (action === 'catalog') {
+      const [exams, subjects] = await Promise.all([
+        sbGet('/exams?select=id,code,name,status,display_order&order=display_order.asc'),
+        sbGet('/exam_subjects?select=id,exam_id,code,name,icon,status,display_order&order=display_order.asc'),
+      ]);
+      return res.status(200).json({ exams, subjects });
     }
 
     // ── verification overview: per-paper verified/total/flagged + attribution + team tally ──
@@ -374,6 +385,71 @@ export default async function handler(req, res) {
       }
       await sbPatch(`/past_papers?id=eq.${encodeURIComponent(paper_id)}`, { status: 'draft' }, false);
       return res.status(200).json({ ok: true, status: 'draft' });
+    }
+
+    // ── create a brand-new paper (manual "Add a paper") ──
+    // Lands as a DRAFT so it enters the pipeline at Pending — invisible to
+    // students (the library reads status=eq.live) until it's verified and an
+    // admin publishes it. The AI wizard, when enabled, saves through here too.
+    if (action === 'create-paper') {
+      const year = parseInt(body.year, 10);
+      const province = (body.province || '').trim();
+      const subjectCode = (body.subject_code || '').trim().toLowerCase();
+      const questions = Array.isArray(body.questions) ? body.questions : [];
+      if (!year || year < 2000 || year > 2200) return res.status(400).json({ error: 'Enter a valid year in B.S., e.g. 2081.' });
+      if (!province) return res.status(400).json({ error: 'Choose a province.' });
+      if (!subjectCode) return res.status(400).json({ error: 'Choose a subject.' });
+      if (!questions.length) return res.status(400).json({ error: 'Add at least one question.' });
+
+      // resolve the subject code → id
+      const subs = await sbGet(`/exam_subjects?code=eq.${encodeURIComponent(subjectCode)}&select=id,code,name`);
+      const subject = subs[0];
+      if (!subject) return res.status(400).json({ error: `Unknown subject "${subjectCode}".` });
+
+      // don't create a second paper for the same year · province · subject
+      const dupe = await sbGet(`/past_papers?year=eq.${year}&province=eq.${encodeURIComponent(province)}&subject_id=eq.${subject.id}&select=id`);
+      if (dupe.length) return res.status(409).json({ error: `A ${subject.name} paper for SEE ${year} · ${province} already exists — open it from the list to edit.` });
+
+      // build the question/part rows and total the marks
+      const clean = (s) => (s == null ? '' : String(s));
+      const mk = (m) => { const n = parseInt(m, 10); return isNaN(n) ? 0 : n; };
+      const rows = [];
+      let total = 0;
+      questions.forEach((q, i) => {
+        const base = { paper_id: null, question_number: i + 1, question_type: 'written', question_text: '', group_name: 'general', question_no: 0, status: 'live', verified: false, flagged: false };
+        const parts = Array.isArray(q.parts) ? q.parts.filter(p => clean(p.english).trim() || clean(p.nepali).trim()) : [];
+        if (parts.length) {
+          // parent row carries the stem; marks live on each part
+          rows.push(Object.assign({}, base, { sub_part: null, marks: 0, question_text_english: clean(q.english), question_text_nepali: clean(q.nepali), answer_text: clean(q.answer) }));
+          parts.forEach((p, j) => {
+            const pm = mk(p.marks); total += pm;
+            rows.push(Object.assign({}, base, { sub_part: String.fromCharCode(97 + j), marks: pm, question_text_english: clean(p.english), question_text_nepali: clean(p.nepali), answer_text: clean(p.answer) }));
+          });
+        } else {
+          const m = mk(q.marks); total += m;
+          rows.push(Object.assign({}, base, { sub_part: null, marks: m, question_text_english: clean(q.english), question_text_nepali: clean(q.nepali), answer_text: clean(q.answer) }));
+        }
+      });
+
+      // 1) create the paper as a draft
+      let created;
+      try {
+        created = await sbPost('/past_papers', [{ year, province, subject_id: subject.id, status: 'draft', total_marks: total }]);
+      } catch (e) {
+        return res.status(500).json({ error: 'Could not create the paper: ' + e.message });
+      }
+      const paper = created && created[0];
+      if (!paper || !paper.id) return res.status(500).json({ error: 'Could not create the paper. Try again.' });
+
+      // 2) add the questions; if that fails, roll back the empty paper so no orphan is left
+      rows.forEach(r => { r.paper_id = paper.id; });
+      try {
+        await sbPost('/past_paper_questions', rows);
+      } catch (e) {
+        try { await sbDelete(`/past_papers?id=eq.${paper.id}`); } catch (_) {}
+        return res.status(500).json({ error: 'The questions failed to save, so nothing was kept — please try again. (' + e.message + ')' });
+      }
+      return res.status(200).json({ ok: true, paper_id: paper.id, questions: rows.length, subject: subject.code, subjectName: subject.name, year, province });
     }
 
     if (action === 'add-sub') {

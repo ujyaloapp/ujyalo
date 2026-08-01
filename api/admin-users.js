@@ -101,11 +101,78 @@ export default async function handler(req, res) {
       return r.ok ? res.status(200).json({ ok: true }) : res.status(500).json({ error: 'Save failed' });
     }
 
+    // ── Catalog management (admin-only): exams · subjects · chapters ──
+    // Create / update / archive the structure the whole site hangs off. Only
+    // whitelisted columns per type can be written. Archive = a status flip
+    // (soft delete), never a real delete — content is never destroyed.
+    if (action === 'catalog-save' || action === 'catalog-archive') {
+      const TABLE  = { exam: 'exams', subject: 'exam_subjects', chapter: 'chapters' };
+      const FIELDS = {
+        exam:    ['code', 'name', 'description', 'status', 'display_order'],
+        subject: ['exam_id', 'code', 'name', 'icon', 'status', 'display_order'],
+        chapter: ['exam_subject_id', 'name', 'slug', 'status', 'display_order'],
+      };
+      const kind = body.kind, table = TABLE[kind];
+      if (!table) return res.status(400).json({ error: 'Unknown catalog type.' });
+      const svcHeaders = { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
+
+      if (action === 'catalog-archive') {
+        if (!body.id || !body.status) return res.status(400).json({ error: 'Missing id/status' });
+        const r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/${table}?id=eq.${encodeURIComponent(body.id)}`, {
+          method: 'PATCH', headers: svcHeaders, body: JSON.stringify({ status: String(body.status) }),
+        });
+        if (!r.ok) return res.status(500).json({ error: 'Update failed: ' + (await r.text()) });
+        return res.status(200).json({ ok: true });
+      }
+
+      // catalog-save — build the row from whitelisted fields only
+      const inF = body.fields || {};
+      const patch = {};
+      FIELDS[kind].forEach(f => { if (f in inF) patch[f] = inF[f]; });
+      if (!body.id) {
+        if (kind === 'exam' && !patch.code) return res.status(400).json({ error: 'An exam needs a code (e.g. see).' });
+        if ((kind === 'subject' || kind === 'chapter') && !patch.name) return res.status(400).json({ error: 'Name is required.' });
+        if (kind === 'subject' && !patch.exam_id) return res.status(400).json({ error: 'Pick which exam this subject belongs to.' });
+        if (kind === 'chapter' && !patch.exam_subject_id) return res.status(400).json({ error: 'Pick which subject this chapter belongs to.' });
+        if (!('status' in patch)) patch.status = (kind === 'chapter') ? 'live' : 'soon';
+      }
+      let r;
+      if (body.id) {
+        r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/${table}?id=eq.${encodeURIComponent(body.id)}`, { method: 'PATCH', headers: svcHeaders, body: JSON.stringify(patch) });
+      } else {
+        r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/${table}`, { method: 'POST', headers: svcHeaders, body: JSON.stringify([patch]) });
+      }
+      if (!r.ok) return res.status(500).json({ error: 'Save failed: ' + (await r.text()) });
+      const rows = await r.json();
+      return res.status(200).json({ ok: true, row: (rows && rows[0]) || null });
+    }
+
     return res.status(400).json({ error: 'Unknown action' });
   }
 
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // ── Catalog: the whole structure in one call for the admin Catalog screen ──
+  if (req.query.action === 'catalog') {
+    const svc = (p) => fetch(`${process.env.SUPABASE_URL}/rest/v1/${p}`, {
+      headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}` },
+    }).then(r => r.ok ? r.json() : []);
+    try {
+      const [exams, subjects, chapters, qrows] = await Promise.all([
+        svc('exams?select=*&order=display_order.asc'),
+        svc('exam_subjects?select=*&order=display_order.asc'),
+        svc('chapters?select=*&order=display_order.asc'),
+        svc('chapter_questions?select=chapter_id&status=eq.live'),
+      ]);
+      // count live questions per chapter (for the "N questions" meta in the UI)
+      const qByChapter = {};
+      (qrows || []).forEach(q => { if (q.chapter_id) qByChapter[q.chapter_id] = (qByChapter[q.chapter_id] || 0) + 1; });
+      return res.status(200).json({ exams, subjects, chapters, qByChapter });
+    } catch (e) {
+      return res.status(500).json({ error: 'Could not load the catalog.' });
+    }
   }
 
   // ── list contact-form messages for the admin Inbox ──

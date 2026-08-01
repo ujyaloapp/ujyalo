@@ -371,6 +371,7 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
     <nav class="nav" id="nav">
       <a class="on" data-p="home"><i class="ti ti-layout-dashboard"></i> <span>Home</span></a>
       <a data-p="coverage"><i class="ti ti-layout-grid"></i> <span>Content</span></a>
+      <a data-p="catalog"><i class="ti ti-sitemap"></i> <span>Catalog</span></a>
       <a data-p="team"><i class="ti ti-shield-check"></i> <span>Team</span></a>
       <a data-p="students"><i class="ti ti-users"></i> <span>Students</span></a>
       <a data-p="inbox"><i class="ti ti-mail"></i> <span>Inbox</span></a>
@@ -482,6 +483,11 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
 
       <!-- PAST PAPERS -->
       <div class="ct-panel on" id="ct-papers">
+        <div class="card">
+          <div class="card-h">Publish &amp; unpublish</div>
+          <div class="card-hs">A paper only reaches students once you publish it. Verified papers can go live; anything live can be taken down again at any time.</div>
+          <div id="ready-list"><div class="loading">Loading…</div></div>
+        </div>
         <div class="dgrid g-1-1">
           <div class="dcard">
             <div class="p-head"><div class="p-title">Pipeline</div><div class="p-tag" id="pl-total">—</div></div>
@@ -502,11 +508,6 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
         </div>
         <div class="yrtabs" id="cov-years"></div>
         <div class="cov" id="cov-grid"><div class="loading">Loading coverage…</div></div>
-        <div class="card">
-          <div class="card-h">Publish &amp; unpublish</div>
-          <div class="card-hs">A paper only reaches students once you publish it. Verified papers can go live; anything live can be taken down again at any time.</div>
-          <div id="ready-list"><div class="loading">Loading…</div></div>
-        </div>
       </div>
 
       <!-- MOCK TESTS -->
@@ -547,6 +548,19 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
     </section>
 
     <!-- TEAM (staff & access) -->
+    <!-- CATALOG (exams · subjects · chapters) -->
+    <section class="panel" id="p-catalog">
+      <div class="eyebrow">Structure</div>
+      <h1 class="pg">Catalog</h1>
+      <div class="pg-sub">Exams, their subjects, and each subject’s chapters — the skeleton the whole site hangs off. Change it here and it updates everywhere.</div>
+      <div class="subtabs" id="cat-tabs">
+        <button class="subtab on" data-cat="exams" type="button"><i class="ti ti-award"></i> Exams</button>
+        <button class="subtab" data-cat="subjects" type="button"><i class="ti ti-book"></i> Subjects</button>
+        <button class="subtab" data-cat="chapters" type="button"><i class="ti ti-list-details"></i> Chapters</button>
+      </div>
+      <div id="cat-view"><div class="loading">Loading…</div></div>
+    </section>
+
     <section class="panel" id="p-team">
       <div class="eyebrow">Your staff</div>
       <h1 class="pg">Team</h1>
@@ -692,6 +706,7 @@ $('nav').addEventListener('click', function(e){
   document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('on');});
   $('p-'+p).classList.add('on');
   if(p==='coverage' && !LOADED.coverage) loadCoverage();
+  if(p==='catalog'  && !LOADED.catalog)  loadCatalog();
   if((p==='team'||p==='students') && !LOADED.people) loadPeople();
   if(p==='inbox'    && !LOADED.inbox)    loadInbox();
   if(p==='settings' && !LOADED.settings) loadSettings();
@@ -1226,11 +1241,189 @@ async function loadInbox(){
 
 function logout(){ localStorage.removeItem('ujyalo_token'); localStorage.removeItem('ujyalo_user'); window.location.href='/index.html'; }
 
+/* ================= CATALOG — exams · subjects · chapters =================
+   Reads/writes the existing (already-populated) exams, exam_subjects and
+   chapters tables via admin-users.js. Archive = a status flip (soft delete),
+   never a real delete. Self-contained; uses authFetch/token/toast/esc. */
+var CAT={exams:[],subjects:[],chapters:[],qByChapter:{}}, CATTAB='exams', CATSUB=null, catKind=null, catId=null;
+(function initCatalog(){
+  var css =
+    '.cat-bar{display:flex;align-items:center;gap:12px;margin-bottom:14px;}'+
+    '.cat-bar .t{font-family:Fraunces,serif;font-weight:600;font-size:17px;color:var(--forest);}'+
+    '.cat-bar .s{font-size:12.5px;color:var(--faint);}'+
+    '.cat-add{margin-left:auto;font-family:Outfit;font-size:13px;font-weight:600;border:none;background:var(--brass);color:#fff;border-radius:8px;padding:9px 15px;cursor:pointer;}'+
+    '.cat-add:hover{background:var(--brass-deep);}'+
+    '.cat-crumb{font-size:12.5px;color:var(--muted);margin-bottom:12px;}.cat-crumb b{color:var(--forest);}'+
+    '.cat-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}'+
+    '.cat-chip{font-family:Outfit;font-weight:600;font-size:13px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 13px;cursor:pointer;color:var(--ink);}'+
+    '.cat-chip.on{background:var(--forest);color:#fff;border-color:var(--forest);}'+
+    '.cat-card{background:var(--card);border:1px solid var(--line);border-radius:13px;overflow:hidden;}'+
+    '.cat-row{display:flex;align-items:center;gap:13px;padding:13px 16px;border-bottom:1px solid var(--line);}'+
+    '.cat-row:last-child{border-bottom:none;}.cat-row.off{opacity:.5;}'+
+    '.cat-ic{width:30px;height:30px;border-radius:8px;background:var(--parch-2);color:var(--brass-deep);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}'+
+    '.cat-nm{font-weight:600;color:var(--forest);}.cat-meta{font-size:12px;color:var(--faint);margin-top:1px;}'+
+    '.cat-sp{flex:1;}'+
+    '.cat-pill{font-size:11px;font-weight:700;border-radius:99px;padding:3px 9px;}'+
+    '.cat-pill.live{background:#dcfce7;color:#166534;}.cat-pill.soon{background:#fef3c7;color:#92600a;}.cat-pill.arch{background:var(--parch-2);color:var(--muted);}'+
+    '.cat-lnk{border:none;background:none;color:var(--muted);cursor:pointer;font-size:12.5px;font-weight:600;padding:5px 8px;border-radius:7px;font-family:Outfit;}'+
+    '.cat-lnk:hover{background:var(--parch-2);color:var(--forest);}.cat-lnk.dz:hover{color:#e11d48;}'+
+    '.cat-empty{padding:26px;text-align:center;color:var(--faint);}'+
+    '.cat-ov{position:fixed;inset:0;background:#1f293399;z-index:120;display:none;align-items:center;justify-content:center;padding:20px;}'+
+    '.cat-ov.show{display:flex;}'+
+    '.cat-modal{background:var(--card);width:100%;max-width:460px;border-radius:16px;box-shadow:0 30px 80px #0006;overflow:hidden;}'+
+    '.cat-mh{padding:15px 20px;border-bottom:1px solid var(--line);font-family:Fraunces,serif;font-weight:600;font-size:17px;color:var(--forest);display:flex;align-items:center;}'+
+    '.cat-x{margin-left:auto;background:none;border:none;font-size:22px;color:var(--faint);cursor:pointer;}'+
+    '.cat-mb{padding:20px;}.cat-mf{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:10px;}'+
+    '.cat-fld{margin-bottom:14px;}.cat-lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--brass-deep);font-weight:700;margin-bottom:6px;display:block;}'+
+    '.cat-in{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-family:Outfit;font-size:14px;color:var(--ink);background:#fff;}.cat-in:focus{outline:none;border-color:var(--brass);}'+
+    '.cat-r2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}'+
+    '.cat-ghost{font-family:Outfit;font-size:13.5px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:9px;padding:10px 16px;cursor:pointer;}'+
+    '.cat-go{font-family:Outfit;font-size:13.5px;font-weight:600;border:none;background:var(--brass);color:#fff;border-radius:9px;padding:10px 18px;cursor:pointer;margin-left:auto;}.cat-go:hover{background:var(--brass-deep);}';
+  var st=document.createElement('style'); st.textContent=css; document.head.appendChild(st);
+  var ov=document.createElement('div'); ov.className='cat-ov'; ov.id='cat-ov';
+  ov.innerHTML='<div class="cat-modal"><div class="cat-mh"><span id="cat-mt">Add</span><button class="cat-x" id="cat-x" type="button">×</button></div><div class="cat-mb" id="cat-mb"></div><div class="cat-mf" id="cat-mf"></div></div>';
+  document.body.appendChild(ov);
+  $('cat-x').addEventListener('click',catClose);
+  ov.addEventListener('click',function(e){ if(e.target===ov) catClose(); });
+  var tabs=$('cat-tabs'); if(tabs) tabs.addEventListener('click',function(e){ var b=e.target.closest('[data-cat]'); if(!b)return; CATTAB=b.getAttribute('data-cat'); tabs.querySelectorAll('.subtab').forEach(function(x){x.classList.toggle('on',x===b);}); renderCat(); });
+  var view=$('cat-view'); if(view) view.addEventListener('click',function(e){
+    var b=e.target.closest('[data-act]'); if(!b) return;
+    var act=b.getAttribute('data-act'), kind=b.getAttribute('data-kind'), id=b.getAttribute('data-id');
+    if(act==='add') catOpen(kind,null);
+    else if(act==='edit') catOpen(kind,id);
+    else if(act==='archive') catArchive(kind,id,b.getAttribute('data-status'));
+    else if(act==='chapters'){ CATSUB=id; CATTAB='chapters'; $('cat-tabs').querySelectorAll('.subtab').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-cat')==='chapters');}); renderCat(); }
+    else if(act==='pick'){ CATSUB=id; renderCat(); }
+  });
+})();
+
+async function loadCatalog(){
+  LOADED.catalog=true;
+  try{ var r=await authFetch('/api/admin-users?action=catalog',{headers:{'Authorization':'Bearer '+token}}); CAT=await r.json(); }
+  catch(e){ if($('cat-view')) $('cat-view').innerHTML='<div class="cat-empty">Could not load the catalog.</div>'; return; }
+  if(!CAT||!Array.isArray(CAT.exams)) CAT={exams:[],subjects:[],chapters:[],qByChapter:{}};
+  if(CATSUB===null && CAT.subjects.length) CATSUB=CAT.subjects[0].id;
+  renderCat();
+}
+function catPill(s){ var k=(s==='live')?'live':(s==='soon'?'soon':'arch'); return '<span class="cat-pill '+k+'">'+esc(s||'—')+'</span>'; }
+function catActs(kind,x){
+  var archived = x.status==='archived';
+  return '<button class="cat-lnk" data-act="edit" data-kind="'+kind+'" data-id="'+x.id+'">Edit</button>'+
+    '<button class="cat-lnk dz" data-act="archive" data-kind="'+kind+'" data-id="'+x.id+'" data-status="'+(archived?'live':'archived')+'">'+(archived?'Restore':'Archive')+'</button>';
+}
+function renderCat(){
+  var v=$('cat-view'); if(!v) return;
+  if(CATTAB==='exams') v.innerHTML=catExams();
+  else if(CATTAB==='subjects') v.innerHTML=catSubjects();
+  else v.innerHTML=catChapters();
+}
+function catExams(){
+  var rows=(CAT.exams||[]).map(function(x){
+    var subs=(CAT.subjects||[]).filter(function(s){return s.exam_id===x.id;}).length;
+    return '<div class="cat-row'+(x.status==='archived'?' off':'')+'"><div class="cat-ic"><i class="ti ti-award"></i></div>'+
+      '<div><span class="cat-nm">'+esc(x.name)+'</span><div class="cat-meta">'+esc(x.description||'')+' · '+subs+' subjects · code “'+esc(x.code)+'”</div></div>'+
+      '<div class="cat-sp"></div>'+catPill(x.status)+catActs('exam',x)+'</div>';
+  }).join('') || '<div class="cat-empty">No exams yet.</div>';
+  return '<div class="cat-bar"><div><div class="t">Exams</div><div class="s">Each exam holds its own subjects and papers.</div></div><button class="cat-add" data-act="add" data-kind="exam">＋ Add exam</button></div><div class="cat-card">'+rows+'</div>';
+}
+function catSubjects(){
+  var rows=(CAT.subjects||[]).map(function(x){
+    var chs=(CAT.chapters||[]).filter(function(c){return c.exam_subject_id===x.id;}).length;
+    var exam=(CAT.exams||[]).filter(function(e){return e.id===x.exam_id;})[0];
+    return '<div class="cat-row'+(x.status==='archived'?' off':'')+'"><div class="cat-ic"><i class="ti '+esc(x.icon||'ti-book')+'"></i></div>'+
+      '<div><span class="cat-nm">'+esc(x.name)+'</span><div class="cat-meta">'+esc((exam&&exam.name)||'')+' · '+chs+' chapters · code “'+esc(x.code||'')+'”</div></div>'+
+      '<div class="cat-sp"></div>'+catPill(x.status)+
+      '<button class="cat-lnk" data-act="chapters" data-id="'+x.id+'">Chapters →</button>'+catActs('subject',x)+'</div>';
+  }).join('') || '<div class="cat-empty">No subjects yet.</div>';
+  return '<div class="cat-crumb">Subjects across all exams</div><div class="cat-bar"><div><div class="t">Subjects</div><div class="s">Name, code, icon and which exam they belong to.</div></div><button class="cat-add" data-act="add" data-kind="subject">＋ Add subject</button></div><div class="cat-card">'+rows+'</div>';
+}
+function catChapters(){
+  var chips=(CAT.subjects||[]).map(function(s){ return '<button class="cat-chip'+(s.id===CATSUB?' on':'')+'" data-act="pick" data-id="'+s.id+'">'+esc(s.name)+'</button>'; }).join('');
+  var sub=(CAT.subjects||[]).filter(function(s){return s.id===CATSUB;})[0]||{};
+  var list=(CAT.chapters||[]).filter(function(c){return c.exam_subject_id===CATSUB;});
+  var rows=list.map(function(x){
+    var q=(CAT.qByChapter||{})[x.id]||0;
+    return '<div class="cat-row'+(x.status==='archived'?' off':'')+'"><div class="cat-ic">'+esc(x.display_order||'•')+'</div>'+
+      '<div><span class="cat-nm">'+esc(x.name)+'</span><div class="cat-meta">'+q+' questions</div></div>'+
+      '<div class="cat-sp"></div>'+catPill(x.status)+catActs('chapter',x)+'</div>';
+  }).join('') || '<div class="cat-empty">No chapters in this subject yet.</div>';
+  return '<div class="cat-crumb"><b>'+esc(sub.name||'—')+'</b> › Chapters</div><div class="cat-chips">'+chips+'</div>'+
+    '<div class="cat-bar"><div><div class="t">Chapters in '+esc(sub.name||'')+'</div><div class="s">Order with the number field; students see them in that order.</div></div><button class="cat-add" data-act="add" data-kind="chapter">＋ Add chapter</button></div><div class="cat-card">'+rows+'</div>';
+}
+
+/* ---- add / edit modal ---- */
+function catOpen(kind,id){
+  catKind=kind; catId=id||null;
+  var mb=$('cat-mb'), mt=$('cat-mt');
+  var it={};
+  if(id){
+    var src = kind==='exam'?CAT.exams : kind==='subject'?CAT.subjects : CAT.chapters;
+    it = (src||[]).filter(function(x){return String(x.id)===String(id);})[0] || {};
+  }
+  mt.textContent=(id?'Edit ':'Add ')+kind;
+  var statusSel=function(v){ return '<select class="cat-in" id="cat-f-status">'+['live','soon','archived'].map(function(o){return '<option'+(o===(v||'')?' selected':'')+'>'+o+'</option>';}).join('')+'</select>'; };
+  var ordDefault=function(arr){ var m=0; (arr||[]).forEach(function(x){ if((x.display_order||0)>m)m=x.display_order||0; }); return m+1; };
+  if(kind==='exam'){
+    mb.innerHTML='<div class="cat-r2"><div class="cat-fld"><label class="cat-lbl">Name</label><input class="cat-in" id="cat-f-name" value="'+esc(it.name||'')+'" placeholder="SEE Grade 10"></div>'+
+      '<div class="cat-fld"><label class="cat-lbl">Code</label><input class="cat-in" id="cat-f-code" value="'+esc(it.code||'')+'" placeholder="see"></div></div>'+
+      '<div class="cat-fld"><label class="cat-lbl">Description</label><input class="cat-in" id="cat-f-desc" value="'+esc(it.description||'')+'"></div>'+
+      '<div class="cat-r2"><div class="cat-fld"><label class="cat-lbl">Status</label>'+statusSel(it.status)+'</div>'+
+      '<div class="cat-fld"><label class="cat-lbl">Order</label><input class="cat-in" id="cat-f-order" value="'+esc(id?(it.display_order||''):ordDefault(CAT.exams))+'"></div></div>';
+  } else if(kind==='subject'){
+    var examOpts=(CAT.exams||[]).map(function(e){return '<option value="'+e.id+'"'+((id?it.exam_id:CATexamGuess())===e.id?' selected':'')+'>'+esc(e.name)+'</option>';}).join('');
+    mb.innerHTML='<div class="cat-r2"><div class="cat-fld"><label class="cat-lbl">Name</label><input class="cat-in" id="cat-f-name" value="'+esc(it.name||'')+'" placeholder="Mathematics"></div>'+
+      '<div class="cat-fld"><label class="cat-lbl">Code</label><input class="cat-in" id="cat-f-code" value="'+esc(it.code||'')+'" placeholder="maths"></div></div>'+
+      '<div class="cat-r2"><div class="cat-fld"><label class="cat-lbl">Exam</label><select class="cat-in" id="cat-f-exam">'+examOpts+'</select></div>'+
+      '<div class="cat-fld"><label class="cat-lbl">Icon (Tabler)</label><input class="cat-in" id="cat-f-icon" value="'+esc(it.icon||'')+'" placeholder="ti-math-function"></div></div>'+
+      '<div class="cat-r2"><div class="cat-fld"><label class="cat-lbl">Status</label>'+statusSel(it.status)+'</div>'+
+      '<div class="cat-fld"><label class="cat-lbl">Order</label><input class="cat-in" id="cat-f-order" value="'+esc(id?(it.display_order||''):ordDefault(CAT.subjects))+'"></div></div>';
+  } else {
+    var subOpts=(CAT.subjects||[]).map(function(s){return '<option value="'+s.id+'"'+((id?it.exam_subject_id:CATSUB)===s.id?' selected':'')+'>'+esc(s.name)+'</option>';}).join('');
+    mb.innerHTML='<div class="cat-fld"><label class="cat-lbl">Name</label><input class="cat-in" id="cat-f-name" value="'+esc(it.name||'')+'" placeholder="Algebra"></div>'+
+      '<div class="cat-fld"><label class="cat-lbl">Subject</label><select class="cat-in" id="cat-f-sub">'+subOpts+'</select></div>'+
+      '<div class="cat-r2"><div class="cat-fld"><label class="cat-lbl">Status</label>'+statusSel(it.status||'live')+'</div>'+
+      '<div class="cat-fld"><label class="cat-lbl">Order</label><input class="cat-in" id="cat-f-order" value="'+esc(id?(it.display_order||''):ordDefault((CAT.chapters||[]).filter(function(c){return c.exam_subject_id===CATSUB;})))+'"></div></div>';
+  }
+  $('cat-mf').innerHTML='<button class="cat-ghost" id="cat-cancel" type="button">Cancel</button><button class="cat-go" id="cat-save" type="button">'+(id?'Save':'Add')+'</button>';
+  $('cat-cancel').addEventListener('click',catClose);
+  $('cat-save').addEventListener('click',catSave);
+  $('cat-ov').classList.add('show');
+}
+function CATexamGuess(){ var see=(CAT.exams||[]).filter(function(e){return e.code==='see';})[0]; return see?see.id:((CAT.exams[0]||{}).id); }
+function catClose(){ $('cat-ov').classList.remove('show'); }
+function catVal(id){ var el=$(id); return el?String(el.value).trim():''; }
+async function catSave(){
+  var fields={};
+  if(catKind==='exam'){ fields.name=catVal('cat-f-name'); fields.code=catVal('cat-f-code'); fields.description=catVal('cat-f-desc'); }
+  else if(catKind==='subject'){ fields.name=catVal('cat-f-name'); fields.code=catVal('cat-f-code'); fields.exam_id=catVal('cat-f-exam'); fields.icon=catVal('cat-f-icon'); }
+  else { fields.name=catVal('cat-f-name'); fields.exam_subject_id=catVal('cat-f-sub'); }
+  fields.status=catVal('cat-f-status');
+  var ord=parseInt(catVal('cat-f-order'),10); if(!isNaN(ord)) fields.display_order=ord;
+  if(!fields.name && catKind!=='exam'){ toast('Name is required'); return; }
+  var btn=$('cat-save'); btn.disabled=true; var was=btn.textContent; btn.textContent='Saving…';
+  try{
+    var r=await authFetch('/api/admin-users?action=catalog-save',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({kind:catKind,id:catId,fields:fields})});
+    if(!r.ok){ var er=await r.json().catch(function(){return{};}); throw new Error(er.error||'Save failed'); }
+    catClose(); LOADED.catalog=false; await loadCatalog(); toast(catId?'Saved':'Added — live in the catalog');
+  }catch(e){ btn.disabled=false; btn.textContent=was; toast(e.message||'Save failed'); }
+}
+async function catArchive(kind,id,status){
+  if(status==='archived' && !confirm('Archive this? It’s hidden but recoverable — nothing is deleted.')) return;
+  try{
+    var r=await authFetch('/api/admin-users?action=catalog-archive',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({kind:kind,id:id,status:status})});
+    if(!r.ok){ var er=await r.json().catch(function(){return{};}); throw new Error(er.error||'Failed'); }
+    LOADED.catalog=false; await loadCatalog(); toast(status==='archived'?'Archived':'Restored');
+  }catch(e){ toast(e.message||'Failed'); }
+}
+
 async function init(){
   if(!checkAccess()) return;
   try{ var c = await fetch('/api/auth?action=config').then(function(r){return r.json();}); window._sbKey = c.anon_key; }
   catch(e){ console.error('Config error',e); }
   loadHome();
+  // Deep-link: /admin.html#publish (or #coverage) opens Content → Past papers,
+  // where the Publish card now sits at the top. Used by the verify-desk hand-off.
+  if(location.hash==='#publish' || location.hash==='#coverage') goPanel('coverage');
 }
 init();
 </script>

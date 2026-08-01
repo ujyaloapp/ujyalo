@@ -424,6 +424,10 @@
         <div id="picker-papers">
           <h1 class="bd-h1">Verification Dashboard</h1>
           <div class="bd-sub">Track verification progress, fix flags, and publish quality papers.</div>
+          <div class="apw-bar">
+            <div><div class="apw-bar-t">Got a new past paper?</div><div class="apw-bar-s">Type it in yourself, or read it from a scan. Either way it lands in <b>Pending</b> for checking.</div></div>
+            <button class="apw-add" id="add-paper-btn" type="button">＋ Add a paper</button>
+          </div>
           <div id="bd-overview"></div>
           <div id="bd-list"></div>
           <div class="bd-bottom">
@@ -512,6 +516,19 @@
     if(user.role==='admin') $('tb-admin').classList.remove('hidden');
     try{ var d=await apiGet('overview'); OVERVIEW=d.papers||[]; TEAM=d.team||[]; }catch(e){ toast('Could not load papers'); }
     try{ var f=await apiGet('flags'); setFlagCount((f.flags||[]).length); }catch(e){}
+    // Pull the managed subject list from the catalog and merge it in, so a subject
+    // added/renamed in admin → Catalog shows up here with no code change. If this
+    // fetch fails for any reason, the hardcoded SUBJ_CFG above stays as the fallback.
+    try{
+      var cat=await apiGet('catalog');
+      if(cat && Array.isArray(cat.subjects)){
+        cat.subjects.forEach(function(s){
+          if(!s || !s.code) return;
+          var ex=SUBJ_CFG[s.code]||{};
+          SUBJ_CFG[s.code]={ name:s.name||ex.name||s.code, np:ex.np||'', order:(s.display_order!=null?s.display_order:(ex.order||9)) };
+        });
+      }
+    }catch(e){ /* keep the hardcoded SUBJ_CFG defaults */ }
     showPicker();
     if(/[?&#]tab=flags/.test(location.search+location.hash)){ setMode('flags'); }
   }
@@ -835,7 +852,18 @@
       if(d.k==='review') list.sort(function(a,b){ return (b.flagged||0)-(a.flagged||0) || ((b.total?b.verified/b.total:0)-(a.total?a.verified/a.total:0)); });
       else list.sort(function(a,b){return (b.year-a.year)||(((SUBJ_CFG[a.subject]||{}).order||9)-((SUBJ_CFG[b.subject]||{}).order||9));});
       var flags=list.reduce(function(a,p){return a+(p.flagged||0);},0);
-      var right=(d.k==='review'&&flags>0)?'<span class="sec-link" data-gotoflags="1">See all '+flags+' flags →</span>':'<span class="sec-hint">'+d.hint+'</span>';
+      var right;
+      if(d.k==='review'&&flags>0){
+        right='<span class="sec-link" data-gotoflags="1">See all '+flags+' flags →</span>';
+      } else if(d.k==='verified'){
+        // These are ready to go live. Only an admin can publish (server-enforced),
+        // so give the admin a direct link and the editor a clear hand-off note.
+        right = (user.role==='admin')
+          ? '<a class="sec-link" href="/admin.html#publish">Publish in Admin →</a>'
+          : '<span class="sec-hint">ready — your admin publishes these</span>';
+      } else {
+        right='<span class="sec-hint">'+d.hint+'</span>';
+      }
       var head='<div class="sec-h"><span class="dot" style="background:'+d.col+'"></span>'+d.t+' <span class="c">'+list.length+'</span>'+right+'</div>';
       // Cap each section to 2 rows; a "Show all" toggle reveals the rest so a big
       // stage never turns the dashboard into an endless scroll.
@@ -1131,6 +1159,220 @@
     }catch(e){ $('flagslist').innerHTML=flagsHeadHtml(0)+'<div class="empty-state">Could not load flags.</div>'; }
   }
   $('flagslist').addEventListener('click',function(e){ if(e.target.closest('[data-flagsback]')){ setMode('papers'); return; } var b=e.target.closest('.fopen'); if(!b)return; loadPaper(b.getAttribute('data-pid'),parseInt(b.getAttribute('data-qn'),10)); });
+
+  /* ======================================================================
+     ADD A PAPER — the pipeline's front door (lands new papers in Pending).
+     Manual entry works now; the AI-from-scan option is gated until the
+     company Anthropic account is ready. Self-contained so it can be lifted
+     out later; shares apiPost / apiGet / SUBJ_CFG / PROV_CFG / attachNep.
+     ====================================================================== */
+  (function initAddPaper(){
+    var css =
+      '.apw-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--brass);background:linear-gradient(100deg,#0f766e,#0b5c55);color:#fff;border-radius:14px;padding:15px 18px;margin:16px 0 20px;}'+
+      '.apw-bar-t{font-weight:600;font-size:15px;}.apw-bar-s{font-size:12.5px;color:#cdeae6;margin-top:2px;}.apw-bar-s b{color:#fff;}'+
+      '.apw-add{font-family:Outfit;font-size:14px;font-weight:600;border:none;background:#fff;color:var(--brass-deep);border-radius:9px;padding:11px 17px;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px #0003;}'+
+      '.apw-add:hover{background:#eefaf8;}'+
+      '.apw-ov{position:fixed;inset:0;background:#1f293399;z-index:120;display:none;align-items:flex-start;justify-content:center;padding:30px 14px;overflow:auto;}'+
+      '.apw-ov.show{display:flex;}'+
+      '.apw-sheet{background:var(--parch);width:100%;max-width:720px;border-radius:18px;box-shadow:0 30px 80px #0006;overflow:hidden;margin:auto;}'+
+      '.apw-h{background:var(--card);border-bottom:1px solid var(--line);padding:15px 22px;display:flex;align-items:center;gap:12px;}'+
+      '.apw-ttl{font-family:Fraunces,serif;font-weight:600;font-size:18px;color:var(--forest);}'+
+      '.apw-x{margin-left:auto;background:none;border:none;font-size:24px;line-height:1;color:var(--faint);cursor:pointer;}'+
+      '.apw-b{padding:22px;}'+
+      '.apw-f{display:flex;align-items:center;gap:10px;padding:15px 22px;background:var(--card);border-top:1px solid var(--line);}'+
+      '.apw-f:empty{display:none;}'+
+      '.apw-steps{display:flex;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:6px 0;}'+
+      '.apw-step{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--faint);font-weight:600;}'+
+      '.apw-step .num{width:23px;height:23px;border-radius:99px;background:var(--parch-2);color:var(--faint);display:flex;align-items:center;justify-content:center;font-size:12px;}'+
+      '.apw-step.on .num{background:var(--brass);color:#fff;}.apw-step.on{color:var(--forest);}'+
+      '.apw-step.done .num{background:var(--green);color:#fff;}.apw-step .sp{width:22px;height:2px;background:var(--line);margin:0 7px;}'+
+      '.apw-choose{display:grid;grid-template-columns:1fr 1fr;gap:14px;}@media(max-width:600px){.apw-choose{grid-template-columns:1fr;}}'+
+      '.apw-m{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:19px;cursor:pointer;text-align:left;font-family:inherit;transition:.14s;}'+
+      '.apw-m:hover{border-color:var(--brass);box-shadow:0 8px 24px #0f766e1a;transform:translateY(-2px);}'+
+      '.apw-m .ic{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:11px;}'+
+      '.apw-m h3{font-family:Fraunces,serif;font-weight:600;font-size:16px;color:var(--forest);margin:0 0 5px;}'+
+      '.apw-m p{font-size:12.5px;color:var(--muted);margin:0;}'+
+      '.apw-m .tl{margin-top:11px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;}'+
+      '.apw-fld{margin-bottom:15px;}.apw-lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-deep);font-weight:700;margin-bottom:7px;display:block;}'+
+      '.apw-in{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-family:Outfit;font-size:14px;color:var(--ink);background:#fff;}.apw-in:focus{outline:none;border-color:var(--brass);}'+
+      '.apw-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}'+
+      '.apw-chips{display:flex;gap:8px;flex-wrap:wrap;}.apw-chip{font-family:Outfit;font-weight:600;font-size:13px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 14px;cursor:pointer;color:var(--ink);}.apw-chip.on{background:var(--forest);color:#fff;border-color:var(--forest);}'+
+      '.apw-q{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px;margin-bottom:12px;}'+
+      '.apw-q-h{display:flex;align-items:center;gap:10px;margin-bottom:9px;}.apw-qn{font-family:Fraunces,serif;font-weight:600;color:var(--forest);}'+
+      '.apw-qmk{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}'+
+      '.apw-del{background:none;border:none;color:#9f1239;font-size:12.5px;font-weight:600;cursor:pointer;}'+
+      '.apw-mk{width:54px;text-align:center;border:1px solid var(--line);border-radius:7px;padding:5px;font-family:Fraunces,serif;color:var(--forest);}'+
+      '.apw-mini{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin:9px 0 3px;}'+
+      '.apw-ta{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-family:Lora,serif;font-size:14px;color:var(--ink);resize:vertical;min-height:42px;}.apw-ta.np{font-family:"Noto Sans Devanagari",serif;}'+
+      '.apw-part{border-left:2px solid var(--brass-lt);padding-left:11px;margin:9px 0 0 4px;}'+
+      '.apw-addpart{margin-top:9px;font-size:12px;font-weight:600;color:var(--brass-deep);background:#d3f0ec;border:1px dashed #99d5cf;border-radius:8px;padding:6px 12px;cursor:pointer;}'+
+      '.apw-addq{width:100%;border:1.5px dashed #99d5cf;background:#d3f0ec;color:var(--brass-deep);border-radius:11px;padding:12px;font-weight:600;cursor:pointer;font-family:Outfit;font-size:14px;}'+
+      '.apw-ghost{font-family:Outfit;font-size:13.5px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:9px;padding:10px 16px;cursor:pointer;}'+
+      '.apw-go{font-family:Outfit;font-size:13.5px;font-weight:600;border:none;background:var(--brass);color:#fff;border-radius:9px;padding:10px 18px;cursor:pointer;margin-left:auto;}.apw-go:hover{background:var(--brass-deep);}.apw-go[disabled]{opacity:.55;cursor:default;}'+
+      '.apw-note{font-size:12.5px;color:var(--muted);margin:0 0 15px;}.apw-note b{color:var(--forest);}'+
+      '.apw-gate{background:#fff8e6;border:1px solid #f0e2b8;border-radius:12px;padding:18px;color:#7a5f13;font-size:13.5px;line-height:1.6;}.apw-gate b{color:#5f4a0d;}'+
+      '.apw-done{text-align:center;padding:12px 8px 4px;}.apw-tick{width:60px;height:60px;border-radius:99px;background:var(--green-bg);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 13px;}'+
+      '.apw-done h3{font-family:Fraunces,serif;font-weight:600;font-size:19px;color:var(--forest);margin:0 0 6px;}.apw-done p{color:var(--muted);font-size:13.5px;max-width:430px;margin:0 auto;}';
+    var st=document.createElement('style'); st.textContent=css; document.head.appendChild(st);
+
+    var ov=document.createElement('div'); ov.className='apw-ov';
+    ov.innerHTML='<div class="apw-sheet"><div class="apw-h"><span class="apw-ttl" id="apw-ttl">Add a paper</span><button class="apw-x" id="apw-x" type="button">×</button></div><div class="apw-b" id="apw-b"></div><div class="apw-f" id="apw-f"></div></div>';
+    document.body.appendChild(ov);
+    var body=$('apw-b'), foot=$('apw-f'), ttl=$('apw-ttl');
+    var sel={year:'',province:'Bagmati',subject:'maths'};
+
+    function openW(){ ov.classList.add('show'); screenChoose(); }
+    function closeW(){ ov.classList.remove('show'); body.innerHTML=''; foot.innerHTML=''; }
+    $('apw-x').addEventListener('click',closeW);
+    ov.addEventListener('click',function(e){ if(e.target===ov) closeW(); });
+    var btn=$('add-paper-btn'); if(btn) btn.addEventListener('click',openW);
+
+    function setFoot(html){ foot.innerHTML=html||''; }
+    function steps(active,labels){
+      return '<div class="apw-steps">'+labels.map(function(l,i){
+        var c=i<active?'done':(i===active?'on':'');
+        return '<div class="apw-step '+c+'"><span class="num">'+(i<active?'✓':(i+1))+'</span>'+l+'</div>'+(i<labels.length-1?'<span class="sp"></span>':'');
+      }).join('')+'</div>';
+    }
+
+    /* ---- choose method ---- */
+    function screenChoose(){
+      ttl.textContent='Add a paper'; setFoot('');
+      body.innerHTML =
+        '<p class="apw-note">How do you want to add this paper? Both land it in <b>Pending</b>, ready for a human to check.</p>'+
+        '<div class="apw-choose">'+
+          '<button class="apw-m" id="apw-manual" type="button"><div class="ic" style="background:#d3f0ec;color:var(--brass-deep)">✍️</div><h3>Type it in myself</h3><p>Enter the questions by hand — number, marks, English &amp; Nepali. Works now; either partner can do it.</p><div class="tl" style="color:var(--green)">Available now</div></button>'+
+          '<button class="apw-m" id="apw-ai" type="button"><div class="ic" style="background:#fef3c7;color:#92600a">🤖</div><h3>Read from a scan (AI)</h3><p>Upload photos of the paper; AI drafts every question and you fix the misreads.</p><div class="tl" style="color:var(--amber)">Coming soon</div></button>'+
+        '</div>';
+      $('apw-manual').addEventListener('click',manualDetails);
+      $('apw-ai').addEventListener('click',aiGate);
+    }
+
+    /* ---- AI gate (until company account) ---- */
+    function aiGate(){
+      ttl.textContent='Read from a scan (AI)';
+      body.innerHTML='<div class="apw-gate">🤖 <b>Almost ready.</b> The AI reader uploads scan photos and drafts every question for you to check. It needs our <b>company Anthropic account</b> before it can switch on — it uses a stronger model than the practice page.<br><br>Until then, use <b>“Type it in myself”</b> — it saves to the exact same place (Pending), so nothing you add now is wasted.</div>';
+      setFoot('<button class="apw-ghost" id="apw-back" type="button">← Back</button><button class="apw-go" id="apw-tomanual" type="button">Type it in myself →</button>');
+      $('apw-back').addEventListener('click',screenChoose);
+      $('apw-tomanual').addEventListener('click',manualDetails);
+    }
+
+    /* ---- manual step 1: details ---- */
+    function manualDetails(){
+      ttl.textContent='Add a paper · by hand';
+      var provs=Object.keys(PROV_CFG).map(function(p){ return '<option'+(p===sel.province?' selected':'')+'>'+p+'</option>'; }).join('');
+      var subs=Object.keys(SUBJ_CFG).sort(function(a,b){return SUBJ_CFG[a].order-SUBJ_CFG[b].order;})
+        .map(function(k){ return '<span class="apw-chip'+(k===sel.subject?' on':'')+'" data-subj="'+k+'">'+SUBJ_CFG[k].name+'</span>'; }).join('');
+      body.innerHTML = steps(0,['Details','Questions','Save'])+
+        '<div class="apw-fld"><label class="apw-lbl">Exam</label><input class="apw-in" value="SEE (Grade 10)" disabled></div>'+
+        '<div class="apw-row2">'+
+          '<div class="apw-fld"><label class="apw-lbl">Year (B.S.)</label><input class="apw-in" id="apw-year" inputmode="numeric" placeholder="e.g. 2081" value="'+esc(sel.year)+'"></div>'+
+          '<div class="apw-fld"><label class="apw-lbl">Province</label><select class="apw-in" id="apw-prov">'+provs+'</select></div>'+
+        '</div>'+
+        '<div class="apw-fld"><label class="apw-lbl">Subject</label><div class="apw-chips" id="apw-subs">'+subs+'</div></div>';
+      $('apw-subs').addEventListener('click',function(e){ var c=e.target.closest('[data-subj]'); if(!c)return; sel.subject=c.getAttribute('data-subj'); Array.prototype.forEach.call(body.querySelectorAll('#apw-subs .apw-chip'),function(x){x.classList.toggle('on',x===c);}); });
+      setFoot('<button class="apw-ghost" id="apw-back" type="button">← Back</button><button class="apw-go" id="apw-next" type="button">Next: add questions →</button>');
+      $('apw-back').addEventListener('click',screenChoose);
+      $('apw-next').addEventListener('click',function(){
+        var y=($('apw-year').value||'').trim();
+        if(!/^\d{4}$/.test(y)){ toast('Enter the year in B.S., e.g. 2081'); return; }
+        sel.year=y; sel.province=$('apw-prov').value;
+        manualQuestions();
+      });
+    }
+
+    /* ---- manual step 2: questions ---- */
+    var qseq=0;
+    function manualQuestions(){
+      ttl.textContent='Add a paper · by hand';
+      body.innerHTML = steps(1,['Details','Questions','Save'])+
+        '<p class="apw-note">Add each question. Use <b>+ Add a part</b> for (a), (b), (c). Nepali is optional — type English letters + space and it converts. You can also finish the Nepali later on the desk.</p>'+
+        '<div id="apw-qlist"></div>'+
+        '<button class="apw-addq" id="apw-addq" type="button">＋ Add another question</button>';
+      qseq=0;
+      $('apw-addq').addEventListener('click',function(){ addQ(); });
+      addQ();
+      setFoot('<button class="apw-ghost" id="apw-back" type="button">← Back</button><button class="apw-go" id="apw-save" type="button">Save to Pending →</button>');
+      $('apw-back').addEventListener('click',manualDetails);
+      $('apw-save').addEventListener('click',doSave);
+    }
+    function addQ(){
+      qseq++;
+      var wrap=document.createElement('div'); wrap.className='apw-q';
+      wrap.innerHTML =
+        '<div class="apw-q-h"><span class="apw-qn">Question <span class="apw-qi"></span></span>'+
+          '<span class="apw-qmk">Marks <input class="apw-mk apw-q-mk" inputmode="numeric" value="2"></span>'+
+          '<button class="apw-del" type="button" title="Remove this question">✕</button></div>'+
+        '<div class="apw-mini">Question (English)</div><textarea class="apw-ta apw-q-en" placeholder="Type the question in English…"></textarea>'+
+        '<div class="apw-mini">Question (Nepali) — optional</div><textarea class="apw-ta np apw-q-np" placeholder="नेपालीमा…"></textarea>'+
+        '<div class="apw-mini">Answer / marking notes</div><textarea class="apw-ta apw-q-ans" placeholder="Model answer…"></textarea>'+
+        '<div class="apw-parts"></div>'+
+        '<button class="apw-addpart" type="button">＋ Add a part</button>';
+      $('apw-qlist').appendChild(wrap);
+      attachNep(wrap.querySelector('.apw-q-np'));
+      wrap.querySelector('.apw-del').addEventListener('click',function(){ wrap.remove(); renumber(); });
+      wrap.querySelector('.apw-addpart').addEventListener('click',function(){ addPart(wrap.querySelector('.apw-parts')); });
+      renumber();
+    }
+    function addPart(container){
+      var idx=container.children.length;
+      var el=document.createElement('div'); el.className='apw-part';
+      el.innerHTML =
+        '<div class="apw-q-h" style="margin-bottom:4px"><span class="apw-mini" style="margin:0">Part ('+String.fromCharCode(97+idx)+')</span>'+
+          '<span class="apw-qmk">Marks <input class="apw-mk apw-p-mk" inputmode="numeric" value="1"></span>'+
+          '<button class="apw-del" type="button">✕</button></div>'+
+        '<textarea class="apw-ta apw-p-en" placeholder="Part text (English)…"></textarea>'+
+        '<textarea class="apw-ta np apw-p-np" placeholder="भाग (नेपाली) — optional" style="margin-top:7px"></textarea>';
+      container.appendChild(el);
+      attachNep(el.querySelector('.apw-p-np'));
+      el.querySelector('.apw-del').addEventListener('click',function(){ el.remove(); relabelParts(container); });
+    }
+    function relabelParts(container){ Array.prototype.forEach.call(container.children,function(el,i){ el.querySelector('.apw-mini').textContent='Part ('+String.fromCharCode(97+i)+')'; }); }
+    function renumber(){ Array.prototype.forEach.call(body.querySelectorAll('#apw-qlist .apw-qi'),function(el,i){ el.textContent=(i+1); }); }
+
+    /* ---- save ---- */
+    async function doSave(){
+      var qEls=body.querySelectorAll('#apw-qlist .apw-q');
+      var questions=[];
+      for(var i=0;i<qEls.length;i++){
+        var q=qEls[i];
+        var en=(q.querySelector('.apw-q-en').value||'').trim();
+        var np=(q.querySelector('.apw-q-np').value||'').trim();
+        var ans=(q.querySelector('.apw-q-ans').value||'').trim();
+        var mk=(q.querySelector('.apw-q-mk').value||'').trim();
+        var partEls=q.querySelectorAll('.apw-parts .apw-part');
+        var parts=[];
+        for(var j=0;j<partEls.length;j++){
+          var p=partEls[j];
+          var pen=(p.querySelector('.apw-p-en').value||'').trim();
+          var pnp=(p.querySelector('.apw-p-np').value||'').trim();
+          if(!pen && !pnp) continue;
+          parts.push({ english:pen, nepali:pnp, marks:(p.querySelector('.apw-p-mk').value||'').trim() });
+        }
+        if(!en && !np && !parts.length) continue;   // skip a wholly empty block
+        questions.push({ english:en, nepali:np, answer:ans, marks:mk, parts:parts });
+      }
+      if(!questions.length){ toast('Add at least one question'); return; }
+      var saveBtn=$('apw-save'); saveBtn.disabled=true; var was=saveBtn.textContent; saveBtn.textContent='Saving…';
+      try{
+        var res=await apiPost('create-paper',{ year:sel.year, province:sel.province, subject_code:sel.subject, questions:questions });
+        savedScreen(res);
+        try{ var d=await apiGet('overview'); OVERVIEW=d.papers||[]; TEAM=d.team||[]; }catch(e){}
+        renderPicker();
+      }catch(err){
+        saveBtn.disabled=false; saveBtn.textContent=was;
+        toast(err.message||'Could not save');
+      }
+    }
+    function savedScreen(res){
+      ttl.textContent='Added to Pending';
+      var nm=(res&&res.subjectName)||SUBJ_CFG[sel.subject].name;
+      body.innerHTML='<div class="apw-done"><div class="apw-tick">✓</div><h3>'+((res&&res.questions)||0)+' question'+(((res&&res.questions)||0)===1?'':'s')+' saved to Pending</h3>'+
+        '<p><b>'+esc(nm)+' · SEE '+esc(sel.year)+' · '+esc(sel.province)+'</b> is now in the pipeline as a draft — hidden from students until it’s checked and an admin publishes it. Open it from the <b>Pending</b> section to start verifying.</p></div>';
+      setFoot('<button class="apw-go" id="apw-done" type="button" style="margin-left:auto">Done</button>');
+      $('apw-done').addEventListener('click',function(){ closeW(); setMode('papers'); var s=$('stage-pending'); if(s) s.scrollIntoView({behavior:'smooth',block:'start'}); });
+    }
+  })();
 
   boot();
 })();
