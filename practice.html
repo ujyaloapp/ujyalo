@@ -217,15 +217,17 @@ function renderExams() {
   });
 }
 
-// Drive the exam cards from the Catalog (the switchboard): which exams are
-// "Shown" vs "Coming soon", and which subjects appear — all live from admin.
-// The hardcoded EXAMS above stay as the styling + fallback if the fetch fails.
+// Build the hub as ONE card per exam, straight from the Catalog. Clicking an
+// exam opens that exam's page (SEE → /see), where Past Papers, Practice, Daily,
+// Formulas live as tabs. The hardcoded EXAMS above are only a fallback if the
+// Catalog fetch fails.
 async function loadCatalogIntoExams(){
   try{
     const r = await fetch('/api/practice?action=catalog');
     if(!r.ok) throw new Error('catalog');
     const cat = await r.json();
     const exams = cat.exams || [], subjects = cat.subjects || [];
+    if(!exams.length) throw new Error('empty');
     // cosmetic colours by subject code (Catalog stores names + icons, not colours)
     const COL = {
       maths:{bg:'#EFF6FF',color:'#1E5FA8'}, science:{bg:'#F0FDF4',color:'#16A34A'},
@@ -234,20 +236,33 @@ async function loadCatalogIntoExams(){
       physics:{bg:'#EFF6FF',color:'#1E5FA8'}, chemistry:{bg:'#FDF4FF',color:'#9333EA'},
       biology:{bg:'#F0FDF4',color:'#16A34A'}
     };
-    const byCode = {}; exams.forEach(e => { byCode[e.code] = e; });
-    EXAMS.forEach(card => {
-      const code = (card.key === 'see-papers') ? 'see' : card.key;   // both SEE cards → the SEE exam
-      const ex = byCode[code];
-      if(!ex) return;                                   // not in Catalog → keep hardcoded card
-      card.status = (ex.status === 'live') ? 'live' : 'soon';
-      const subs = subjects.filter(s => s.exam_id === ex.id && s.status === 'live');
-      if(subs.length){
-        card.subjects = subs.map(s => {
-          const c = COL[(s.code || '').toLowerCase()] || { bg:'#eef2f0', color:'#52606d' };
-          return { label: s.name, icon: s.icon || 'ti-book', bg: c.bg, color: c.color };
-        });
-      }
-    });
+    // per-exam look + where a live exam goes (only SEE has a page today)
+    const PRES = {
+      see:   {icon:'ti-notebook',    color:'#0f766e', colorBg:'#d3f0ec', url:'/see'},
+      neb11: {icon:'ti-certificate', color:'#16A34A', colorBg:'#F0FDF4', url:'/neb11'},
+      neb12: {icon:'ti-award',       color:'#9333EA', colorBg:'#FDF4FF', url:'/neb12'},
+      ioe:   {icon:'ti-building',    color:'#C2410C', colorBg:'#FFF7ED', url:'/ioe'},
+      cmat:  {icon:'ti-chart-bar',   color:'#0891B2', colorBg:'#ECFEFF', url:'/cmat'}
+    };
+    const built = exams
+      .filter(e => e.status !== 'archived')
+      .sort((a,b) => (a.display_order||0) - (b.display_order||0))
+      .map(e => {
+        const p = PRES[e.code] || { icon:'ti-notebook', color:'#0f766e', colorBg:'#d3f0ec', url:'#' };
+        const subs = subjects
+          .filter(s => s.exam_id === e.id && s.status === 'live')
+          .map(s => {
+            const c = COL[(s.code || '').toLowerCase()] || { bg:'#eef2f0', color:'#52606d' };
+            return { label: s.name, icon: s.icon || 'ti-book', bg: c.bg, color: c.color };
+          });
+        return {
+          key: e.code, name: e.name, sub: e.description || '',
+          icon: p.icon, color: p.color, colorBg: p.colorBg,
+          status: (e.status === 'live') ? 'live' : 'soon',
+          url: p.url, subjects: subs, cta: 'Open →'
+        };
+      });
+    if(built.length){ EXAMS.length = 0; Array.prototype.push.apply(EXAMS, built); }
   }catch(e){ /* keep the hardcoded EXAMS as a safe fallback */ }
   renderExams();
 }
