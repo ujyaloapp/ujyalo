@@ -84,7 +84,7 @@ const NAV_PUBLIC = `
   <div class="ujyalo-nav-inner">
     ${LOGO_HTML}
     <div class="ujyalo-nav-links" id="nav-links">
-      <a href="/see.html">SEE</a>
+      <a href="/exams">Exams</a>
       <a href="/features.html">Features</a>
       <a href="/about.html">About</a>
     </div>
@@ -97,7 +97,7 @@ const NAV_PUBLIC = `
     </button>
   </div>
   <div class="ujyalo-mobile-menu" id="nav-mobile-menu">
-    <a href="/see.html">SEE</a>
+    <a href="/exams">Exams</a>
     <a href="/features.html">Features</a>
     <a href="/about.html">About</a>
     <div class="ujyalo-mobile-divider"></div>
@@ -158,7 +158,7 @@ function buildAppNav(firstName, initials, fullName, email) {
     ${LOGO_HTML}
     <div class="ujyalo-nav-links" id="nav-links">
       <a href="${_home}">Dashboard</a>
-      <a href="/see.html">SEE</a>
+      <a href="/exams">Exams</a>
     </div>
     <div class="ujyalo-nav-actions" id="nav-actions">
       <span class="ujyalo-streak">🔥 <span id="nav-streak">0</span></span>
@@ -180,7 +180,7 @@ function buildAppNav(firstName, initials, fullName, email) {
   </div>
   <div class="ujyalo-mobile-menu" id="nav-mobile-menu">
     <a href="${_home}">Dashboard</a>
-    <a href="/see.html">SEE</a>
+    <a href="/exams">Exams</a>
     <div class="ujyalo-mobile-divider"></div>
     <a href="/profile.html">Edit profile</a>
     <button onclick="ujyaloLogout()" class="ujyalo-mobile-signup" style="border:none;cursor:pointer;font-family:inherit;">Log out</button>

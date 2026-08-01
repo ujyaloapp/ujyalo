@@ -9,6 +9,7 @@
   ],
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/exams", "destination": "/practice.html" },
     { "source": "/see", "destination": "/see.html" },
     { "source": "/see/past-papers/:year/:province/:subject", "destination": "/see-paper.html" },
     { "source": "/see/past-papers", "destination": "/see.html" }
