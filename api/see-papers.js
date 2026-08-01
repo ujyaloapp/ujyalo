@@ -22,12 +22,17 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
 
   try {
-    const [papers, subjects] = await Promise.all([
+    const [papers, allSubjects] = await Promise.all([
       fetchFromSupabase('/past_papers?status=eq.live&select=id,year,province,subject_id,total_marks,duration&order=year.desc'),
-      fetchFromSupabase('/exam_subjects?select=id,name,code&order=name.asc')
+      fetchFromSupabase('/exam_subjects?select=id,name,code,status&order=display_order.asc')
     ]);
 
-    // Build subject map
+    // One rule, obeyed here too: only subjects switched "Shown" in the Catalog
+    // reach students. A subject set to "Coming soon"/"Hidden" hides its papers —
+    // even published ones. (A missing status is treated as shown, to be safe.)
+    const subjects = allSubjects.filter(s => s.status !== 'soon' && s.status !== 'archived');
+
+    // Build subject map (Shown subjects only)
     const subjectMap = {};
     subjects.forEach(s => { subjectMap[s.id] = s; });
 

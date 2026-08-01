@@ -217,7 +217,41 @@ function renderExams() {
   });
 }
 
-renderExams();
+// Drive the exam cards from the Catalog (the switchboard): which exams are
+// "Shown" vs "Coming soon", and which subjects appear — all live from admin.
+// The hardcoded EXAMS above stay as the styling + fallback if the fetch fails.
+async function loadCatalogIntoExams(){
+  try{
+    const r = await fetch('/api/practice?action=catalog');
+    if(!r.ok) throw new Error('catalog');
+    const cat = await r.json();
+    const exams = cat.exams || [], subjects = cat.subjects || [];
+    // cosmetic colours by subject code (Catalog stores names + icons, not colours)
+    const COL = {
+      maths:{bg:'#EFF6FF',color:'#1E5FA8'}, science:{bg:'#F0FDF4',color:'#16A34A'},
+      english:{bg:'#FDF4FF',color:'#9333EA'}, nepali:{bg:'#FEF2F2',color:'#DC2626'},
+      social:{bg:'#FFF7ED',color:'#C2410C'}, hpe:{bg:'#ECFEFF',color:'#0891B2'},
+      physics:{bg:'#EFF6FF',color:'#1E5FA8'}, chemistry:{bg:'#FDF4FF',color:'#9333EA'},
+      biology:{bg:'#F0FDF4',color:'#16A34A'}
+    };
+    const byCode = {}; exams.forEach(e => { byCode[e.code] = e; });
+    EXAMS.forEach(card => {
+      const code = (card.key === 'see-papers') ? 'see' : card.key;   // both SEE cards → the SEE exam
+      const ex = byCode[code];
+      if(!ex) return;                                   // not in Catalog → keep hardcoded card
+      card.status = (ex.status === 'live') ? 'live' : 'soon';
+      const subs = subjects.filter(s => s.exam_id === ex.id && s.status === 'live');
+      if(subs.length){
+        card.subjects = subs.map(s => {
+          const c = COL[(s.code || '').toLowerCase()] || { bg:'#eef2f0', color:'#52606d' };
+          return { label: s.name, icon: s.icon || 'ti-book', bg: c.bg, color: c.color };
+        });
+      }
+    });
+  }catch(e){ /* keep the hardcoded EXAMS as a safe fallback */ }
+  renderExams();
+}
+loadCatalogIntoExams();
 </script>
 </body>
 </html>

@@ -155,6 +155,22 @@ async function _ensureTodaysDaily() {
 export default async function handler(req, res) {
   const action = req.query.action || req.body?.action;
 
+  // ── Public catalog (GET) — the single source the student pages read from:
+  //    exams → subjects → chapters, each with its Shown/Coming-soon/Hidden status.
+  //    Read with the service key server-side so it works regardless of RLS.
+  if (req.method === 'GET' && action === 'catalog') {
+    try {
+      const [exams, subjects, chapters] = await Promise.all([
+        _svcGet('/exams?select=id,code,name,description,status,display_order&order=display_order.asc'),
+        _svcGet('/exam_subjects?select=id,exam_id,code,name,icon,status,display_order&order=display_order.asc'),
+        _svcGet('/chapters?select=id,exam_subject_id,name,status,display_order&order=display_order.asc'),
+      ]);
+      return res.status(200).json({ exams, subjects, chapters });
+    } catch (e) {
+      return res.status(500).json({ error: 'Failed to load catalog.' });
+    }
+  }
+
   // ── Get ALL questions for a subject (GET) ────────────────
   if (req.method === 'GET' && action === 'get-all-questions') {
     const { subject } = req.query;
