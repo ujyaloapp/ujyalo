@@ -202,14 +202,18 @@ export default async function handler(req, res) {
 
   // ── Get chapter questions (GET) ───────────────────────────
   if (req.method === 'GET' && action === 'get-questions') {
-    const { subject, chapter } = req.query;
+    const { subject, chapter, chapter_id } = req.query;
 
-    if (!subject || !chapter) {
-      return res.status(400).json({ error: 'Missing subject or chapter.' });
+    // Prefer the reliable Catalog link (chapter_id); fall back to the legacy
+    // subject + chapter_name match so older callers keep working.
+    if (!chapter_id && (!subject || !chapter)) {
+      return res.status(400).json({ error: 'Missing chapter.' });
     }
 
     try {
-      const url = `${process.env.SUPABASE_URL}/rest/v1/chapter_questions?subject=eq.${encodeURIComponent(subject)}&chapter_name=eq.${encodeURIComponent(chapter)}&status=eq.live&order=sort_order.asc`;
+      const url = chapter_id
+        ? `${process.env.SUPABASE_URL}/rest/v1/chapter_questions?chapter_id=eq.${encodeURIComponent(chapter_id)}&status=eq.live&order=sort_order.asc`
+        : `${process.env.SUPABASE_URL}/rest/v1/chapter_questions?subject=eq.${encodeURIComponent(subject)}&chapter_name=eq.${encodeURIComponent(chapter)}&status=eq.live&order=sort_order.asc`;
 
       const dbRes = await fetch(url, {
         headers: {

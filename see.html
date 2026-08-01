@@ -1635,7 +1635,86 @@ var CHAPTER_META = {
 // Per-session cache of fetched questions, keyed by subject
 var QCACHE = {};
 
-var pracState = {subject:'maths', chapter:null, idx:0, got:0, qs:[], revealed:false};
+var pracState = {subject:'maths', chapter:null, chapterId:null, idx:0, got:0, qs:[], revealed:false};
+
+/* ── Catalog wiring: subjects + chapters come from admin → Catalog, so adding /
+      showing content there flows here automatically. If the fetch fails or a
+      subject has no catalog chapters, we fall back to the built-in PRAC_STRUCT /
+      subject cards — so this can never break the practice tab. ── */
+var PRAC_CATALOG = null, CATALOG_STRUCT = null;
+var SUBJ_STYLE = {}; SUBJECTS.forEach(function(s){ SUBJ_STYLE[s.code] = s; });
+
+function buildCatalogStruct(cat){
+  try{
+    var subs = cat.subjects || [];
+    var chs  = cat.chapters || [];
+    var struct = {};
+    subs.forEach(function(s){
+      var mine = chs.filter(function(c){ return c.exam_subject_id === s.id && c.status === 'live'; })
+                    .sort(function(a,b){ return (a.display_order||0) - (b.display_order||0); });
+      if(!mine.length) return;                       // no catalog chapters → fall back for this subject
+      var groups = [], gmap = {};
+      mine.forEach(function(c){
+        var gn = c.group_name || s.name;             // group by group_name; else one group per subject
+        if(!gmap[gn]){ gmap[gn] = { name: gn, icon: '', chapters: [] }; groups.push(gmap[gn]); }
+        gmap[gn].chapters.push({ name: c.name, id: c.id });
+      });
+      struct[s.code] = { label: s.name, groups: groups };
+    });
+    return struct;
+  }catch(e){ return null; }
+}
+
+function renderSubjectCards(cat){
+  try{
+    var grid = document.getElementById('subj-grid'); if(!grid) return;
+    var see  = (cat.exams||[]).filter(function(e){ return e.code === 'see'; })[0];
+    var subs = (cat.subjects||[])
+      .filter(function(s){ return (!see || s.exam_id === see.id) && s.status !== 'archived'; })
+      .sort(function(a,b){ return (a.display_order||0) - (b.display_order||0); });
+    if(!subs.length) return;                          // keep the hardcoded cards
+    grid.innerHTML = subs.map(function(s){
+      var st = SUBJ_STYLE[s.code] || { icon:(s.name||'?').charAt(0), accent:'#0f766e', light:'#d3f0ec', np:'' };
+      if(s.status === 'live'){
+        return '<button class="subj-card" onclick="practiceChapters(\''+s.code+'\')">'+
+          '<div class="subj-ico" style="background:'+st.light+';color:'+st.accent+';">'+st.icon+'</div>'+
+          '<div class="subj-nm">'+s.name+'</div><div class="subj-np">'+(st.np||'')+'</div>'+
+          '<div class="subj-bar"><div class="subj-fill" style="width:0%;background:'+st.accent+';"></div></div>'+
+          '<div class="subj-meta">Tap to start</div></button>';
+      }
+      return '<button class="subj-card soon"><div class="soon-tag">Soon</div>'+
+        '<div class="subj-ico" style="background:'+st.light+';color:'+st.accent+';">'+st.icon+'</div>'+
+        '<div class="subj-nm">'+s.name+'</div><div class="subj-np">'+(st.np||'')+'</div>'+
+        '<div class="subj-bar"><div class="subj-fill" style="width:0%;"></div></div>'+
+        '<div class="subj-meta">Coming soon</div></button>';
+    }).join('');
+  }catch(e){ /* keep hardcoded cards */ }
+}
+
+function loadPracCatalog(){
+  fetch('/api/practice?action=catalog')
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(cat){
+      if(cat && Array.isArray(cat.subjects)){
+        PRAC_CATALOG = cat;
+        CATALOG_STRUCT = buildCatalogStruct(cat);
+        renderSubjectCards(cat);
+      }
+    })
+    .catch(function(){ /* keep built-in fallback */ });
+}
+
+// Prefer the Catalog's chapter list; fall back to the built-in PRAC_STRUCT.
+function getStruct(subjCode){
+  if(CATALOG_STRUCT && CATALOG_STRUCT[subjCode]) return CATALOG_STRUCT[subjCode];
+  var st = PRAC_STRUCT[subjCode]; if(!st) return null;
+  return { label: st.label, groups: st.groups.map(function(g){
+    return { name: g.name, icon: g.icon, chapters: g.chapters.map(function(ch){
+      return (typeof ch === 'string') ? { name: ch, id: null } : ch;
+    }) };
+  }) };
+}
+loadPracCatalog();
 
 // Map a chapter_questions row → a rich question item (parent stem + parts + figure + MCQ + Nepali)
 function mapPracQ(q){
@@ -1671,17 +1750,18 @@ function practiceStep(id, silent){
 
 function practiceChapters(subjCode){
   pracState.subject=subjCode;
-  var st=PRAC_STRUCT[subjCode]; if(!st) return;
+  var st=getStruct(subjCode); if(!st) return;
   document.getElementById('pc-subj').textContent=st.label;
   document.getElementById('pr-subj').textContent=st.label;
   // Render chapter cards (counts filled once questions are fetched)
   var html='';
   st.groups.forEach(function(g){
-    html+='<div class="chap-grp"><div class="chap-grp-h"><span>'+g.icon+'</span><span class="chap-grp-nm">'+g.name+'</span><span class="chap-grp-line"></span></div><div class="chap-grid">';
+    html+='<div class="chap-grp"><div class="chap-grp-h"><span>'+(g.icon||'')+'</span><span class="chap-grp-nm">'+g.name+'</span><span class="chap-grp-line"></span></div><div class="chap-grid">';
     g.chapters.forEach(function(ch){
-      var safe=ch.replace(/'/g,"\\'");
-      var idAttr='chapct-'+subjCode+'-'+ch.replace(/[^a-zA-Z0-9]/g,'_');
-      html+='<button class="chap-card" id="card-'+ch.replace(/[^a-zA-Z0-9]/g,'_')+'" onclick="practiceRun(\''+safe+'\')"><div><div class="chap-nm">'+ch+'</div><div class="chap-prog">Tap to practise</div></div><span class="chap-ct" id="'+idAttr+'">…</span></button>';
+      var nm=ch.name, safe=nm.replace(/'/g,"\\'");
+      var key=String(ch.id||nm).replace(/[^a-zA-Z0-9]/g,'_');
+      var idArg=ch.id ? ("'"+ch.id+"'") : "null";
+      html+='<button class="chap-card" onclick="practiceRun(\''+safe+'\','+idArg+')"><div><div class="chap-nm">'+nm+'</div><div class="chap-prog">Tap to practise</div></div><span class="chap-ct" id="chapct-'+subjCode+'-'+key+'">…</span></button>';
     });
     html+='</div></div>';
   });
@@ -1698,33 +1778,37 @@ function fetchCounts(subjCode){
     .then(function(r){return r.json();})
     .then(function(all){
       if(!Array.isArray(all)) return;
-      var byChapter={};
+      // Key questions by BOTH chapter_id and chapter_name, so counts + the run
+      // cache work whether a chapter came from the Catalog (id) or the fallback (name).
+      var byKey={};
       all.forEach(function(q){
-        var ch=q.chapter_name; if(!ch) return;
-        if(!byChapter[ch]) byChapter[ch]=[];
-        byChapter[ch].push(mapPracQ(q));
+        var mapped=mapPracQ(q);
+        if(q.chapter_id){ (byKey[q.chapter_id]=byKey[q.chapter_id]||[]).push(mapped); }
+        if(q.chapter_name){ (byKey[q.chapter_name]=byKey[q.chapter_name]||[]).push(mapped); }
       });
-      QCACHE[subjCode]=byChapter;
+      QCACHE[subjCode]=byKey;
       if(pracState.subject===subjCode) applyCounts(subjCode);
     })
     .catch(function(e){ console.error('count fetch failed', e); });
 }
 function applyCounts(subjCode){
-  var byChapter=QCACHE[subjCode]||{};
-  var st=PRAC_STRUCT[subjCode]; if(!st) return;
+  var byKey=QCACHE[subjCode]||{};
+  var st=getStruct(subjCode); if(!st) return;
   st.groups.forEach(function(g){
     g.chapters.forEach(function(ch){
-      var el=document.getElementById('chapct-'+subjCode+'-'+ch.replace(/[^a-zA-Z0-9]/g,'_'));
+      var key=ch.id||ch.name;
+      var el=document.getElementById('chapct-'+subjCode+'-'+String(key).replace(/[^a-zA-Z0-9]/g,'_'));
       if(!el) return;
-      var n=(byChapter[ch]||[]).length;
+      var n=(byKey[key]||[]).length;
       el.textContent = n>0 ? n+'q' : 'soon';
       if(n===0){ el.style.opacity='.6'; }
     });
   });
 }
 
-function practiceRun(chapter){
+function practiceRun(chapter, chapterId){
   pracState.chapter=chapter;
+  pracState.chapterId=chapterId||null;
   pracState.idx=0; pracState.got=0; pracState.revealed=false;
   document.getElementById('pr-chap').textContent=chapter;
   document.getElementById('pr-chap-title').textContent=chapter;
@@ -1732,11 +1816,16 @@ function practiceRun(chapter){
   document.getElementById('cp-doneblock').style.display='none';
   practiceStep('prac-run');
 
-  // Load real questions (from cache if present, else fetch this chapter)
-  var cached = QCACHE[pracState.subject] && QCACHE[pracState.subject][chapter];
+  // Load real questions (from cache if present, else fetch this chapter).
+  // Prefer the Catalog id; fall back to subject + chapter name.
+  var key = chapterId || chapter;
+  var cached = QCACHE[pracState.subject] && QCACHE[pracState.subject][key];
   if(cached && cached.length){ pracState.qs=cached; cpLoad(); return; }
   cpShowLoading();
-  fetch('/api/practice?action=get-questions&subject='+encodeURIComponent(pracState.subject)+'&chapter='+encodeURIComponent(chapter))
+  var url = chapterId
+    ? '/api/practice?action=get-questions&chapter_id='+encodeURIComponent(chapterId)
+    : '/api/practice?action=get-questions&subject='+encodeURIComponent(pracState.subject)+'&chapter='+encodeURIComponent(chapter);
+  fetch(url)
     .then(function(r){return r.json();})
     .then(function(data){
       if(Array.isArray(data) && data.length){
