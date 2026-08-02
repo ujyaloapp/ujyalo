@@ -136,7 +136,7 @@ export default async function handler(req, res) {
 
     // ── verification overview: per-paper verified/total/flagged + attribution + team tally ──
     if (action === 'overview') {
-      const papers = await sbGet('/past_papers?select=id,year,province,subject_id,status&order=year.desc,province.asc');
+      const papers = await sbGet('/past_papers?select=id,year,province,subject_id,status,complete&order=year.desc,province.asc');
       const subs   = await sbGet('/exam_subjects?select=id,code,name');
       const byId = {}; subs.forEach(s => { byId[s.id] = s; });
       // current team (admin/editor) — drives who appears; removed accounts never show
@@ -184,6 +184,7 @@ export default async function handler(req, res) {
           verified,
           flagged,
           fully, stage, verifiedBy: topBy, verifiedAt: lastAt,
+          complete: p.complete, building: (p.complete === false),
         };
       }));
       const teamArr = Object.values(team)
@@ -215,7 +216,7 @@ export default async function handler(req, res) {
       });
       const list = Object.values(groups).sort((a, b) => a.num - b.num);
       return res.status(200).json({
-        paper: { id: paper.id, year: paper.year, province: paper.province, total_marks: paper.total_marks || 75 },
+        paper: { id: paper.id, year: paper.year, province: paper.province, total_marks: paper.total_marks || 75, complete: paper.complete, status: paper.status || '' },
         subject: { code: subj.code || '', name: subj.name || '' },
         isEnglish: (subj.code === 'english'),
         groups: list,
@@ -376,6 +377,8 @@ export default async function handler(req, res) {
       const paper_id = body.paper_id;
       if (!paper_id) return res.status(400).json({ error: 'Missing paper_id' });
       if (action === 'publish') {
+        const pp = (await sbGet(`/past_papers?id=eq.${encodeURIComponent(paper_id)}&select=complete`))[0];
+        if (pp && pp.complete === false) return res.status(400).json({ error: 'Mark the paper complete before publishing.' });
         const qs = await sbGet(`/past_paper_questions?paper_id=eq.${encodeURIComponent(paper_id)}&select=verified,flagged`);
         if (!qs.length) return res.status(400).json({ error: 'This paper has no questions yet.' });
         if (qs.some(q => q.flagged)) return res.status(400).json({ error: 'Resolve the flagged questions before publishing.' });
@@ -445,7 +448,7 @@ export default async function handler(req, res) {
       // 1) create the paper as a draft
       let created;
       try {
-        created = await sbPost('/past_papers', [{ year, province, subject_id: subject.id, status: 'draft', total_marks: total }]);
+        created = await sbPost('/past_papers', [{ year, province, subject_id: subject.id, status: 'draft', total_marks: total, complete: false }]);
       } catch (e) {
         return res.status(500).json({ error: 'Could not create the paper: ' + e.message });
       }
@@ -466,6 +469,8 @@ export default async function handler(req, res) {
     if (action === 'add-sub') {
       const { paper_id, question_number } = body;
       if (!paper_id || question_number == null) return res.status(400).json({ error: 'Missing paper/question' });
+      const _pp = (await sbGet(`/past_papers?id=eq.${encodeURIComponent(paper_id)}&select=complete`))[0];
+      if (_pp && _pp.complete !== false) return res.status(409).json({ error: 'This paper is marked complete — reopen it to add or change parts.' });
       const ex = await sbGet(`/past_paper_questions?paper_id=eq.${encodeURIComponent(paper_id)}&question_number=eq.${encodeURIComponent(question_number)}&select=sub_part`);
       const used = ex.map(r => (r.sub_part || '')).filter(Boolean);
       const letters = 'abcdefghijklmnopqrstuvwxyz';
@@ -495,6 +500,41 @@ export default async function handler(req, res) {
         await sbPatch(`/past_paper_questions?id=eq.${encodeURIComponent(order[i])}`, { sub_part: lbl }, false);
       }
       return res.status(200).json({ ok: true });
+    }
+
+    // ── add a whole new question to an existing paper (only while "Building") ──
+    if (action === 'add-question') {
+      const { paper_id } = body;
+      if (!paper_id) return res.status(400).json({ error: 'Missing paper' });
+      const pp = (await sbGet(`/past_papers?id=eq.${encodeURIComponent(paper_id)}&select=complete,status`))[0];
+      if (!pp) return res.status(404).json({ error: 'Paper not found' });
+      if ((pp.status || '') === 'live') return res.status(409).json({ error: 'This paper is live — unpublish it first to change its questions.' });
+      if (pp.complete !== false) return res.status(409).json({ error: 'This paper is marked complete — reopen it to add questions.' });
+      const rows = await sbGet(`/past_paper_questions?paper_id=eq.${encodeURIComponent(paper_id)}&select=question_number`);
+      let maxN = 0; rows.forEach(r => { const n = parseInt(r.question_number, 10); if (!isNaN(n) && n > maxN) maxN = n; });
+      const qn = maxN + 1;
+      const row = await sbPost('/past_paper_questions', [{
+        paper_id, question_number: qn, sub_part: null, question_type: 'written',
+        marks: 0, question_text: '', question_text_english: '', question_text_nepali: '',
+        answer_text: '', group_name: 'general', question_no: 0, status: 'live', verified: false, flagged: false,
+      }]);
+      return res.status(200).json({ ok: true, question_number: qn, row: (row && row[0]) || null });
+    }
+
+    // ── mark a paper complete (lock) / reopen (unlock) ──
+    if (action === 'set-complete') {
+      const { paper_id } = body;
+      const complete = !!body.complete;
+      if (!paper_id) return res.status(400).json({ error: 'Missing paper' });
+      const patch = { complete };
+      // Reopening a LIVE paper pulls it off the site (its questions are changing).
+      let pulled = false;
+      if (!complete) {
+        const pp = (await sbGet(`/past_papers?id=eq.${encodeURIComponent(paper_id)}&select=status`))[0];
+        if (pp && (pp.status || '') === 'live') { patch.status = 'draft'; pulled = true; }
+      }
+      await sbPatch(`/past_papers?id=eq.${encodeURIComponent(paper_id)}`, patch, false);
+      return res.status(200).json({ ok: true, complete, pulled });
     }
 
     if (action === 'daily-add') {

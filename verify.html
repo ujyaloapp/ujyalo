@@ -184,6 +184,14 @@
   .mk{width:50px;text-align:center;border:1px solid var(--line);border-radius:6px;padding:4px;font-family:'Fraunces',serif;color:var(--forest);font-size:14px;} .mk:focus{outline:none;border-color:var(--brass);} .mkwrap{font-size:12px;color:var(--muted);margin-top:6px;}
   .subctl{display:flex;gap:6px;margin-top:7px;} .sbtn{font-size:11px;border:1px solid var(--line);background:#fff;border-radius:6px;padding:3px 9px;cursor:pointer;color:var(--muted);} .sbtn.del{color:#9f1239;border-color:#fecdd3;}
   .addpart{margin-top:10px;font-size:12.5px;font-weight:600;color:var(--brass-deep);background:#d3f0ec;border:1px dashed #99d5cf;border-radius:8px;padding:8px 13px;cursor:pointer;}
+  .pstate{font-size:11.5px;font-weight:700;border-radius:99px;padding:3px 11px;}
+  .pstate.building{background:#fef3c7;color:#92600a;}.pstate.done{background:var(--green-bg);color:#166534;}.pstate.live{background:#d3f0ec;color:var(--brass-deep);}
+  .pcbtn{font-family:Outfit;font-size:12.5px;font-weight:600;border-radius:8px;padding:7px 13px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--muted);}
+  .pcbtn.done{background:var(--green);color:#fff;border:none;}.pcbtn.done:hover{background:#15803d;}.pcbtn.reopen:hover{border-color:var(--brass);color:var(--brass-deep);}
+  .addq-btn{width:100%;border:1.5px dashed #99d5cf;background:#d3f0ec;color:var(--brass-deep);border-radius:11px;padding:13px;font-weight:600;cursor:pointer;font-family:Outfit;font-size:14px;margin-top:4px;}
+  .lockednote{display:none;font-size:12.5px;color:var(--muted);background:var(--parch-2);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:6px;}
+  #editor.locked .addpart,#editor.locked .subctl,#editor.locked #add-question-btn{display:none;}
+  #editor.locked .lockednote{display:block;}
   .qc-foot{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line);flex-wrap:wrap;}
   .act{font-family:'Outfit';font-size:12.5px;font-weight:600;border-radius:8px;padding:7px 13px;border:1px solid var(--line);background:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
   .act.verify{color:#166534;border-color:#bbf7d0;}.act.verify:hover{background:var(--green-bg);} .act.flag{color:#9f1239;border-color:#fecdd3;}.act.flag:hover{background:var(--flag-bg);}
@@ -459,9 +467,13 @@
           <span class="pg-flag hidden" id="pg-flag"></span>
           <div class="prog"><div class="prog-top"><span><b id="pg-v">0</b> of <span id="pg-t">0</span> verified</span></div><div class="bar"><i id="pg-bar"></i></div></div>
           <div class="tally" id="tally"></div>
+          <span class="pstate" id="paper-state"></span>
+          <button class="pcbtn" id="paper-complete-btn" type="button"></button>
         </div>
         <div class="hint">👆 Click any text, the नेपाली, an answer, a topic or a mark to edit. In a नेपाली box, type English letters → Nepali. Use <b>+ Add a part</b>, <b>▲ ▼</b>, <b>✕</b> to change sub-questions. Mark each <b>Verified</b>, or <b>Flag</b> it for review.</div>
         <div id="questions"></div>
+        <button class="addq-btn" id="add-question-btn" type="button">＋ Add a question</button>
+        <div class="lockednote" id="paper-locked-note">🔒 This paper is complete and locked. Use <b>Reopen to edit</b> (top right) to add or change questions.</div>
       </div>
     </div>
 
@@ -480,7 +492,7 @@
   var API='/api/admin-paper';
   var user=ujyaloGetUser();
   var token=ujyaloGetToken();
-  var DATA=null, PAPER=null, PAPER_TOTAL=75, IS_ENG=false, PENDING_SCROLL=null;
+  var DATA=null, PAPER=null, PAPER_TOTAL=75, PAPER_COMPLETE=true, PAPER_STATUS='', IS_ENG=false, PENDING_SCROLL=null;
   var PAPERS=[], FLAGS_N=0, OVERVIEW=[], TEAM=[];
   var BOARD={items:[],team:[],me:''}, BOARD_FILTER='all', B_DONE_OPEN=false;
   var AREAS=[{k:'content',n:'Content',ic:'📚',bg:'#e0f2ee',fg:'#1f7a68'},{k:'social',n:'Social',ic:'📱',bg:'#fbeede',fg:'#a4701a'},{k:'code',n:'Code',ic:'🧑‍💻',bg:'#e8eef6',fg:'#2a5b9c'},{k:'outreach',n:'Outreach',ic:'📣',bg:'#efe9f6',fg:'#6b4ba0'}];
@@ -1021,14 +1033,43 @@
   async function loadPaper(id,scrollTo){
     PENDING_SCROLL=(scrollTo!=null)?scrollTo:null; showEditor();
     $('questions').innerHTML='<div class="empty-state">Loading…</div>';
-    try{ DATA=await apiGet('load','paper_id='+encodeURIComponent(id)); PAPER=DATA.paper.id; PAPER_TOTAL=DATA.paper.total_marks||75; IS_ENG=!!DATA.isEnglish;
+    try{ DATA=await apiGet('load','paper_id='+encodeURIComponent(id)); PAPER=DATA.paper.id; PAPER_TOTAL=DATA.paper.total_marks||75; PAPER_COMPLETE=(DATA.paper.complete!==false); PAPER_STATUS=(DATA.paper.status||''); IS_ENG=!!DATA.isEnglish;
       var cf=SUBJ_CFG[(DATA.subject||{}).code]||{name:(DATA.subject||{}).name||''};
       $('paper-title').textContent='SEE '+DATA.paper.year+' · '+DATA.paper.province+' · '+cf.name;
       updatePbPaper();
       render();
+      updateEditorState();
     }catch(e){ $('questions').innerHTML='<div class="empty-state">Could not load this paper.</div>'; toast('Load failed'); }
   }
   function reloadPaper(){ if(PAPER) loadPaper(PAPER); }
+  // Building vs Complete/Locked: sets the header pill, the complete/reopen button,
+  // and locks the add-question / add-part controls (via the #editor.locked class).
+  function updateEditorState(){
+    var live=PAPER_STATUS==='live', locked=PAPER_COMPLETE||live;
+    var ed=$('editor'); if(ed) ed.classList.toggle('locked',locked);
+    var pill=$('paper-state'), btn=$('paper-complete-btn');
+    if(pill){
+      if(live){ pill.className='pstate live'; pill.textContent='● Live'; }
+      else if(PAPER_COMPLETE){ pill.className='pstate done'; pill.textContent='✓ Complete'; }
+      else { pill.className='pstate building'; pill.textContent='✎ Building'; }
+    }
+    if(btn){
+      if(live){ btn.style.display='none'; }
+      else { btn.style.display=''; if(PAPER_COMPLETE){ btn.className='pcbtn reopen'; btn.textContent='↺ Reopen to edit'; } else { btn.className='pcbtn done'; btn.textContent='✓ Mark complete'; } }
+    }
+  }
+  (function(){
+    var pcb=$('paper-complete-btn'); if(pcb) pcb.addEventListener('click',async function(){
+      if(!PAPER)return; var making=!PAPER_COMPLETE;
+      var msg=making?'Mark this paper complete? It locks — no new questions can be added until you reopen it.':'Reopen this paper for editing? You’ll be able to add and change questions again.';
+      if(!confirm(msg))return;
+      try{ var r=await apiPost('set-complete',{paper_id:PAPER,complete:making}); toast(making?'Marked complete — locked':((r&&r.pulled)?'Reopened — pulled from live':'Reopened for editing')); reloadPaper(); }catch(e){ toast(e.message||'Failed'); }
+    });
+    var aqb=$('add-question-btn'); if(aqb) aqb.addEventListener('click',async function(){
+      if(!PAPER)return;
+      try{ var r=await apiPost('add-question',{paper_id:PAPER}); toast('Question added — fill it in'); loadPaper(PAPER,(r&&r.question_number)); }catch(e){ toast(e.message||'Failed'); }
+    });
+  })();
 
   function edSpan(row,field,cls){var v=row[field]||'';var inner=v?esc(v):'<span class="empty">— add —</span>';return '<span class="ed '+(cls||'')+'" data-id="'+row.id+'" data-field="'+field+'">'+inner+'<span class="pen">✎</span></span>';}
   function subControls(qn,id){return '<div class="subctl"><button class="sbtn" data-act="up" data-qn="'+qn+'" data-id="'+id+'">▲ up</button><button class="sbtn" data-act="down" data-qn="'+qn+'" data-id="'+id+'">▼ down</button><button class="sbtn del" data-act="del-sub" data-id="'+id+'">✕ remove part</button></div>';}
