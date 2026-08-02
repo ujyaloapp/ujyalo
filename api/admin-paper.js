@@ -404,11 +404,11 @@ export default async function handler(req, res) {
 
       // resolve the subject code → id, SCOPED to the chosen exam so two exams
       // that share a subject code (e.g. both have "maths") never get mixed up.
-      let examId = null;
+      let examId = null, examName = '';
       if (examCode) {
         const ex = await sbGet(`/exams?code=eq.${encodeURIComponent(examCode)}&select=id,name`);
         if (!ex[0]) return res.status(400).json({ error: `Unknown exam "${examCode}".` });
-        examId = ex[0].id;
+        examId = ex[0].id; examName = ex[0].name || '';
       }
       const subQuery = examId
         ? `/exam_subjects?code=eq.${encodeURIComponent(subjectCode)}&exam_id=eq.${encodeURIComponent(examId)}&select=id,code,name`
@@ -419,7 +419,7 @@ export default async function handler(req, res) {
 
       // don't create a second paper for the same year · province · subject
       const dupe = await sbGet(`/past_papers?year=eq.${year}&province=eq.${encodeURIComponent(province)}&subject_id=eq.${subject.id}&select=id`);
-      if (dupe.length) return res.status(409).json({ error: `A ${subject.name} paper for SEE ${year} · ${province} already exists — open it from the list to edit.` });
+      if (dupe.length) return res.status(409).json({ error: `A ${subject.name} paper for ${examName || 'this exam'} ${year} · ${province} already exists — nothing was saved. Open it from the verify desk (Pending / In review) to add questions, or pick a different year, province or subject.` });
 
       // build the question/part rows and total the marks
       const clean = (s) => (s == null ? '' : String(s));
