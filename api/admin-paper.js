@@ -395,16 +395,27 @@ export default async function handler(req, res) {
       const year = parseInt(body.year, 10);
       const province = (body.province || '').trim();
       const subjectCode = (body.subject_code || '').trim().toLowerCase();
+      const examCode = (body.exam_code || '').trim().toLowerCase();
       const questions = Array.isArray(body.questions) ? body.questions : [];
       if (!year || year < 2000 || year > 2200) return res.status(400).json({ error: 'Enter a valid year in B.S., e.g. 2081.' });
       if (!province) return res.status(400).json({ error: 'Choose a province.' });
       if (!subjectCode) return res.status(400).json({ error: 'Choose a subject.' });
       if (!questions.length) return res.status(400).json({ error: 'Add at least one question.' });
 
-      // resolve the subject code → id
-      const subs = await sbGet(`/exam_subjects?code=eq.${encodeURIComponent(subjectCode)}&select=id,code,name`);
+      // resolve the subject code → id, SCOPED to the chosen exam so two exams
+      // that share a subject code (e.g. both have "maths") never get mixed up.
+      let examId = null;
+      if (examCode) {
+        const ex = await sbGet(`/exams?code=eq.${encodeURIComponent(examCode)}&select=id,name`);
+        if (!ex[0]) return res.status(400).json({ error: `Unknown exam "${examCode}".` });
+        examId = ex[0].id;
+      }
+      const subQuery = examId
+        ? `/exam_subjects?code=eq.${encodeURIComponent(subjectCode)}&exam_id=eq.${encodeURIComponent(examId)}&select=id,code,name`
+        : `/exam_subjects?code=eq.${encodeURIComponent(subjectCode)}&select=id,code,name`;
+      const subs = await sbGet(subQuery);
       const subject = subs[0];
-      if (!subject) return res.status(400).json({ error: `Unknown subject "${subjectCode}".` });
+      if (!subject) return res.status(400).json({ error: `Unknown subject "${subjectCode}"${examCode ? ` in exam "${examCode}"` : ''}.` });
 
       // don't create a second paper for the same year · province · subject
       const dupe = await sbGet(`/past_papers?year=eq.${year}&province=eq.${encodeURIComponent(province)}&subject_id=eq.${subject.id}&select=id`);

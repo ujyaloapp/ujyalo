@@ -488,6 +488,7 @@
 
   var SUBJ_CFG={maths:{ic:'∫',np:'गणित',name:'Maths',order:1},science:{ic:'⚗',np:'विज्ञान',name:'Science',order:2},english:{ic:'Aa',np:'अंग्रेजी',name:'English',order:3},social:{ic:'◉',np:'सामाजिक',name:'Social',order:4},nepali:{ic:'क',np:'नेपाली',name:'Nepali',order:5},hpe:{ic:'♡',np:'स्वास्थ्य',name:'HPE',order:6}};
   var PROV_CFG={Koshi:{n:1},Madhesh:{n:2},Bagmati:{n:3},Gandaki:{n:4},Lumbini:{n:5},Karnali:{n:6},Sudurpashchim:{n:7}};
+  var CATALOG=null;   // full catalog (exams+subjects+chapters) from the API, for the Add-a-paper wizard
 
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
   function $(id){return document.getElementById(id);}
@@ -521,6 +522,7 @@
     // fetch fails for any reason, the hardcoded SUBJ_CFG above stays as the fallback.
     try{
       var cat=await apiGet('catalog');
+      CATALOG=cat;
       if(cat && Array.isArray(cat.subjects)){
         cat.subjects.forEach(function(s){
           if(!s || !s.code) return;
@@ -1219,7 +1221,7 @@
     ov.innerHTML='<div class="apw-sheet"><div class="apw-h"><span class="apw-ttl" id="apw-ttl">Add a paper</span><button class="apw-x" id="apw-x" type="button">×</button></div><div class="apw-b" id="apw-b"></div><div class="apw-f" id="apw-f"></div></div>';
     document.body.appendChild(ov);
     var body=$('apw-b'), foot=$('apw-f'), ttl=$('apw-ttl');
-    var sel={year:'',province:'Bagmati',subject:'maths'};
+    var sel={year:'',province:'Bagmati',subject:'maths',exam:'',exam_id:null};
 
     function openW(){ ov.classList.add('show'); screenChoose(); }
     function closeW(){ ov.classList.remove('show'); body.innerHTML=''; foot.innerHTML=''; }
@@ -1260,22 +1262,49 @@
     /* ---- manual step 1: details ---- */
     function manualDetails(){
       ttl.textContent='Add a paper · by hand';
+      function byOrder(a,b){ return (a.display_order||0)-(b.display_order||0); }
       var provs=Object.keys(PROV_CFG).map(function(p){ return '<option'+(p===sel.province?' selected':'')+'>'+p+'</option>'; }).join('');
-      var subs=Object.keys(SUBJ_CFG).sort(function(a,b){return SUBJ_CFG[a].order-SUBJ_CFG[b].order;})
-        .map(function(k){ return '<span class="apw-chip'+(k===sel.subject?' on':'')+'" data-subj="'+k+'">'+SUBJ_CFG[k].name+'</span>'; }).join('');
+      // Exams come from the Catalog (fallback: SEE only). Subjects are scoped to the chosen exam.
+      var exams=(CATALOG && Array.isArray(CATALOG.exams)) ? CATALOG.exams.filter(function(e){return e.status!=='archived';}).slice().sort(byOrder) : [];
+      if(exams.length && !sel.exam){ var d=exams.filter(function(e){return e.code==='see';})[0]||exams[0]; sel.exam=d.code; sel.exam_id=d.id; }
+      function subjectsForExam(){
+        if(CATALOG && Array.isArray(CATALOG.subjects) && sel.exam_id){
+          return CATALOG.subjects.filter(function(s){return s.exam_id===sel.exam_id && s.status!=='archived';}).slice().sort(byOrder)
+            .map(function(s){ return {code:s.code, name:s.name}; });
+        }
+        return Object.keys(SUBJ_CFG).sort(function(a,b){return SUBJ_CFG[a].order-SUBJ_CFG[b].order;}).map(function(k){ return {code:k, name:SUBJ_CFG[k].name}; });
+      }
+      function chipsHtml(){
+        var list=subjectsForExam();
+        if(list.length && !list.some(function(s){return s.code===sel.subject;})) sel.subject=list[0].code;
+        return list.length ? list.map(function(s){ return '<span class="apw-chip'+(s.code===sel.subject?' on':'')+'" data-subj="'+s.code+'">'+esc(s.name)+'</span>'; }).join('')
+                           : '<span class="apw-note" style="margin:0;">No subjects in this exam yet — add one in admin → Catalog.</span>';
+      }
+      var examField = exams.length
+        ? '<div class="apw-fld"><label class="apw-lbl">Exam</label><select class="apw-in" id="apw-exam">'+exams.map(function(e){ return '<option value="'+esc(e.code)+'"'+(e.code===sel.exam?' selected':'')+'>'+esc(e.name)+'</option>'; }).join('')+'</select></div>'
+        : '<div class="apw-fld"><label class="apw-lbl">Exam</label><input class="apw-in" value="SEE (Grade 10)" disabled></div>';
       body.innerHTML = steps(0,['Details','Questions','Save'])+
-        '<div class="apw-fld"><label class="apw-lbl">Exam</label><input class="apw-in" value="SEE (Grade 10)" disabled></div>'+
+        examField+
         '<div class="apw-row2">'+
           '<div class="apw-fld"><label class="apw-lbl">Year (B.S.)</label><input class="apw-in" id="apw-year" inputmode="numeric" placeholder="e.g. 2081" value="'+esc(sel.year)+'"></div>'+
           '<div class="apw-fld"><label class="apw-lbl">Province</label><select class="apw-in" id="apw-prov">'+provs+'</select></div>'+
         '</div>'+
-        '<div class="apw-fld"><label class="apw-lbl">Subject</label><div class="apw-chips" id="apw-subs">'+subs+'</div></div>';
-      $('apw-subs').addEventListener('click',function(e){ var c=e.target.closest('[data-subj]'); if(!c)return; sel.subject=c.getAttribute('data-subj'); Array.prototype.forEach.call(body.querySelectorAll('#apw-subs .apw-chip'),function(x){x.classList.toggle('on',x===c);}); });
+        '<div class="apw-fld"><label class="apw-lbl">Subject</label><div class="apw-chips" id="apw-subs">'+chipsHtml()+'</div></div>';
+      function bindSubs(){ $('apw-subs').addEventListener('click',function(e){ var c=e.target.closest('[data-subj]'); if(!c)return; sel.subject=c.getAttribute('data-subj'); Array.prototype.forEach.call(body.querySelectorAll('#apw-subs .apw-chip'),function(x){x.classList.toggle('on',x===c);}); }); }
+      bindSubs();
+      var examSel=$('apw-exam');
+      if(examSel) examSel.addEventListener('change',function(){
+        sel.exam=examSel.value;
+        var e=exams.filter(function(x){return x.code===sel.exam;})[0];
+        sel.exam_id=e?e.id:null; sel.subject='';
+        $('apw-subs').innerHTML=chipsHtml(); bindSubs();
+      });
       setFoot('<button class="apw-ghost" id="apw-back" type="button">← Back</button><button class="apw-go" id="apw-next" type="button">Next: add questions →</button>');
       $('apw-back').addEventListener('click',screenChoose);
       $('apw-next').addEventListener('click',function(){
         var y=($('apw-year').value||'').trim();
         if(!/^\d{4}$/.test(y)){ toast('Enter the year in B.S., e.g. 2081'); return; }
+        if(!sel.subject){ toast('Pick a subject (add one in the Catalog if none)'); return; }
         sel.year=y; sel.province=$('apw-prov').value;
         manualQuestions();
       });
@@ -1355,7 +1384,7 @@
       if(!questions.length){ toast('Add at least one question'); return; }
       var saveBtn=$('apw-save'); saveBtn.disabled=true; var was=saveBtn.textContent; saveBtn.textContent='Saving…';
       try{
-        var res=await apiPost('create-paper',{ year:sel.year, province:sel.province, subject_code:sel.subject, questions:questions });
+        var res=await apiPost('create-paper',{ exam_code:sel.exam, year:sel.year, province:sel.province, subject_code:sel.subject, questions:questions });
         savedScreen(res);
         try{ var d=await apiGet('overview'); OVERVIEW=d.papers||[]; TEAM=d.team||[]; }catch(e){}
         renderPicker();
@@ -1366,7 +1395,7 @@
     }
     function savedScreen(res){
       ttl.textContent='Added to Pending';
-      var nm=(res&&res.subjectName)||SUBJ_CFG[sel.subject].name;
+      var nm=(res&&res.subjectName)||(SUBJ_CFG[sel.subject]&&SUBJ_CFG[sel.subject].name)||sel.subject;
       body.innerHTML='<div class="apw-done"><div class="apw-tick">✓</div><h3>'+((res&&res.questions)||0)+' question'+(((res&&res.questions)||0)===1?'':'s')+' saved to Pending</h3>'+
         '<p><b>'+esc(nm)+' · SEE '+esc(sel.year)+' · '+esc(sel.province)+'</b> is now in the pipeline as a draft — hidden from students until it’s checked and an admin publishes it. Open it from the <b>Pending</b> section to start verifying.</p></div>';
       setFoot('<button class="apw-go" id="apw-done" type="button" style="margin-left:auto">Done</button>');
