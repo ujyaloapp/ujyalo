@@ -147,6 +147,37 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, row: (rows && rows[0]) || null });
     }
 
+    // ── Catalog: permanently DELETE — but only when empty. Anything that still
+    //    holds content must be Hidden instead, so a click can't destroy papers
+    //    or questions. Guarded server-side (never trust the browser).
+    if (action === 'catalog-delete') {
+      const TABLE = { exam: 'exams', subject: 'exam_subjects', chapter: 'chapters' };
+      const kind = body.kind, id = body.id, table = TABLE[kind];
+      if (!table) return res.status(400).json({ error: 'Unknown catalog type.' });
+      if (!id) return res.status(400).json({ error: 'Missing id' });
+      const svc = (p) => fetch(`${process.env.SUPABASE_URL}/rest/v1/${p}`, {
+        headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}` },
+      }).then(r => r.ok ? r.json() : []);
+      // refuse if it still has children/content
+      let n = 0, what = '';
+      if (kind === 'exam') {
+        n = (await svc(`exam_subjects?exam_id=eq.${encodeURIComponent(id)}&select=id`)).length; what = 'subject(s)';
+      } else if (kind === 'subject') {
+        const c = (await svc(`chapters?exam_subject_id=eq.${encodeURIComponent(id)}&select=id`)).length;
+        const p = (await svc(`past_papers?subject_id=eq.${encodeURIComponent(id)}&select=id`)).length;
+        n = c + p; what = 'chapter(s)/paper(s)';
+      } else {
+        n = (await svc(`chapter_questions?chapter_id=eq.${encodeURIComponent(id)}&select=id`)).length; what = 'question(s)';
+      }
+      if (n > 0) return res.status(409).json({ error: `Can’t delete — it still has ${n} ${what}. Hide it instead, or remove those first.` });
+      const r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`, 'Prefer': 'return=minimal' },
+      });
+      if (!r.ok) return res.status(500).json({ error: 'Delete failed: ' + (await r.text()) });
+      return res.status(200).json({ ok: true });
+    }
+
     return res.status(400).json({ error: 'Unknown action' });
   }
 

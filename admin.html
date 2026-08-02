@@ -1292,6 +1292,7 @@ var CAT={exams:[],subjects:[],chapters:[],qByChapter:{}}, CATTAB='exams', CATSUB
     if(act==='add') catOpen(kind,null);
     else if(act==='edit') catOpen(kind,id);
     else if(act==='archive') catArchive(kind,id,b.getAttribute('data-status'));
+    else if(act==='delete') catDelete(kind,id);
     else if(act==='chapters'){ CATSUB=id; CATTAB='chapters'; $('cat-tabs').querySelectorAll('.subtab').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-cat')==='chapters');}); renderCat(); }
     else if(act==='pick'){ CATSUB=id; renderCat(); }
   });
@@ -1309,7 +1310,8 @@ function catPill(s){ var k=(s==='live')?'live':(s==='soon'?'soon':'arch'); var l
 function catActs(kind,x){
   var archived = x.status==='archived';
   return '<button class="cat-lnk" data-act="edit" data-kind="'+kind+'" data-id="'+x.id+'">Edit</button>'+
-    '<button class="cat-lnk dz" data-act="archive" data-kind="'+kind+'" data-id="'+x.id+'" data-status="'+(archived?'live':'archived')+'">'+(archived?'Show':'Hide')+'</button>';
+    '<button class="cat-lnk" data-act="archive" data-kind="'+kind+'" data-id="'+x.id+'" data-status="'+(archived?'live':'archived')+'">'+(archived?'Show':'Hide')+'</button>'+
+    '<button class="cat-lnk dz" data-act="delete" data-kind="'+kind+'" data-id="'+x.id+'">Delete</button>';
 }
 function renderCat(){
   var v=$('cat-view'); if(!v) return;
@@ -1406,6 +1408,14 @@ async function catSave(){
     if(!r.ok){ var er=await r.json().catch(function(){return{};}); throw new Error(er.error||'Save failed'); }
     catClose(); LOADED.catalog=false; await loadCatalog(); toast(catId?'Saved':'Added — live in the catalog');
   }catch(e){ btn.disabled=false; btn.textContent=was; toast(e.message||'Save failed'); }
+}
+async function catDelete(kind,id){
+  if(!confirm('Permanently delete this? This cannot be undone.\n\nIf it still has content, hide it instead — delete only works when it’s empty.')) return;
+  try{
+    var r=await authFetch('/api/admin-users?action=catalog-delete',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({kind:kind,id:id})});
+    if(!r.ok){ var er=await r.json().catch(function(){return{};}); throw new Error(er.error||'Delete failed'); }
+    LOADED.catalog=false; await loadCatalog(); toast('Deleted');
+  }catch(e){ toast(e.message||'Delete failed'); }
 }
 async function catArchive(kind,id,status){
   if(status==='archived' && !confirm('Hide this from students? It’s hidden but recoverable — nothing is deleted.')) return;
