@@ -1367,14 +1367,14 @@ function catOpen(kind,id){
   var ordDefault=function(arr){ var m=0; (arr||[]).forEach(function(x){ if((x.display_order||0)>m)m=x.display_order||0; }); return m+1; };
   if(kind==='exam'){
     mb.innerHTML='<div class="cat-r2"><div class="cat-fld"><label class="cat-lbl">Name</label><input class="cat-in" id="cat-f-name" value="'+esc(it.name||'')+'" placeholder="SEE Grade 10"></div>'+
-      '<div class="cat-fld"><label class="cat-lbl">Code</label><input class="cat-in" id="cat-f-code" value="'+esc(it.code||'')+'" placeholder="see"></div></div>'+
+      '<div class="cat-fld"><label class="cat-lbl">Code'+(id?' <span style="color:var(--faint);text-transform:none;letter-spacing:0;font-weight:500;">· can’t change</span>':'')+'</label><input class="cat-in" id="cat-f-code" value="'+esc(it.code||'')+'" placeholder="see"'+(id?' disabled':'')+'></div></div>'+
       '<div class="cat-fld"><label class="cat-lbl">Description</label><input class="cat-in" id="cat-f-desc" value="'+esc(it.description||'')+'"></div>'+
       '<div class="cat-r2"><div class="cat-fld"><label class="cat-lbl">Status</label>'+statusSel(it.status)+'</div>'+
       '<div class="cat-fld"><label class="cat-lbl">Order</label><input class="cat-in" id="cat-f-order" value="'+esc(id?(it.display_order||''):ordDefault(CAT.exams))+'"></div></div>';
   } else if(kind==='subject'){
     var examOpts=(CAT.exams||[]).map(function(e){return '<option value="'+e.id+'"'+((id?it.exam_id:CATexamGuess())===e.id?' selected':'')+'>'+esc(e.name)+'</option>';}).join('');
     mb.innerHTML='<div class="cat-r2"><div class="cat-fld"><label class="cat-lbl">Name</label><input class="cat-in" id="cat-f-name" value="'+esc(it.name||'')+'" placeholder="Mathematics"></div>'+
-      '<div class="cat-fld"><label class="cat-lbl">Code</label><input class="cat-in" id="cat-f-code" value="'+esc(it.code||'')+'" placeholder="maths"></div></div>'+
+      '<div class="cat-fld"><label class="cat-lbl">Code'+(id?' <span style="color:var(--faint);text-transform:none;letter-spacing:0;font-weight:500;">· can’t change</span>':'')+'</label><input class="cat-in" id="cat-f-code" value="'+esc(it.code||'')+'" placeholder="maths"'+(id?' disabled':'')+'></div></div>'+
       '<div class="cat-r2"><div class="cat-fld"><label class="cat-lbl">Exam</label><select class="cat-in" id="cat-f-exam">'+examOpts+'</select></div>'+
       '<div class="cat-fld"><label class="cat-lbl">Icon (Tabler)</label><input class="cat-in" id="cat-f-icon" value="'+esc(it.icon||'')+'" placeholder="ti-math-function"></div></div>'+
       '<div class="cat-r2"><div class="cat-fld"><label class="cat-lbl">Status</label>'+statusSel(it.status)+'</div>'+

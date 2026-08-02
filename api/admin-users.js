@@ -129,6 +129,7 @@ export default async function handler(req, res) {
       const inF = body.fields || {};
       const patch = {};
       FIELDS[kind].forEach(f => { if (f in inF) patch[f] = inF[f]; });
+      if (body.id) delete patch.code;   // code is the stable internal key — never change it after creation
       if (!body.id) {
         if (kind === 'exam' && !patch.code) return res.status(400).json({ error: 'An exam needs a code (e.g. see).' });
         if ((kind === 'subject' || kind === 'chapter') && !patch.name) return res.status(400).json({ error: 'Name is required.' });
