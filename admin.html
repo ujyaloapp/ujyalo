@@ -1268,6 +1268,10 @@ var CAT={exams:[],subjects:[],chapters:[],qByChapter:{}}, CATTAB='exams', CATSUB
     '.cat-lnk{border:none;background:none;color:var(--muted);cursor:pointer;font-size:12.5px;font-weight:600;padding:5px 8px;border-radius:7px;font-family:Outfit;}'+
     '.cat-lnk:hover{background:var(--parch-2);color:var(--forest);}.cat-lnk.dz:hover{color:#e11d48;}'+
     '.cat-empty{padding:26px;text-align:center;color:var(--faint);}'+
+    '.cat-grp{margin-bottom:20px;}'+
+    '.cat-grp-h{font-family:Fraunces,serif;font-weight:600;font-size:15px;color:var(--forest);margin:0 0 9px;display:flex;align-items:center;gap:9px;}'+
+    '.cat-grp-c{font-size:11px;font-weight:700;color:var(--brass-deep);background:var(--parch-2);border-radius:99px;padding:2px 9px;}'+
+    '.cat-grp-empty{padding:15px 16px;color:var(--faint);font-size:13px;font-style:italic;}'+
     '.cat-ov{position:fixed;inset:0;background:#1f293399;z-index:120;display:none;align-items:center;justify-content:center;padding:20px;}'+
     '.cat-ov.show{display:flex;}'+
     '.cat-modal{background:var(--card);width:100%;max-width:460px;border-radius:16px;box-shadow:0 30px 80px #0006;overflow:hidden;}'+
@@ -1328,16 +1332,29 @@ function catExams(){
   }).join('') || '<div class="cat-empty">No exams yet.</div>';
   return '<div class="cat-bar"><div><div class="t">Exams</div><div class="s">Each exam holds its own subjects and papers.</div></div><button class="cat-add" data-act="add" data-kind="exam">＋ Add exam</button></div><div class="cat-card">'+rows+'</div>';
 }
+function subjRow(x){
+  var chs=(CAT.chapters||[]).filter(function(c){return c.exam_subject_id===x.id;}).length;
+  return '<div class="cat-row'+(x.status==='archived'?' off':'')+'"><div class="cat-ic"><i class="ti '+esc(x.icon||'ti-book')+'"></i></div>'+
+    '<div><span class="cat-nm">'+esc(x.name)+'</span><div class="cat-meta">'+chs+' chapters · code “'+esc(x.code||'')+'”</div></div>'+
+    '<div class="cat-sp"></div>'+catPill(x.status)+
+    '<button class="cat-lnk" data-act="chapters" data-id="'+x.id+'">Chapters →</button>'+catActs('subject',x)+'</div>';
+}
 function catSubjects(){
-  var rows=(CAT.subjects||[]).map(function(x){
-    var chs=(CAT.chapters||[]).filter(function(c){return c.exam_subject_id===x.id;}).length;
-    var exam=(CAT.exams||[]).filter(function(e){return e.id===x.exam_id;})[0];
-    return '<div class="cat-row'+(x.status==='archived'?' off':'')+'"><div class="cat-ic"><i class="ti '+esc(x.icon||'ti-book')+'"></i></div>'+
-      '<div><span class="cat-nm">'+esc(x.name)+'</span><div class="cat-meta">'+esc((exam&&exam.name)||'')+' · '+chs+' chapters · code “'+esc(x.code||'')+'”</div></div>'+
-      '<div class="cat-sp"></div>'+catPill(x.status)+
-      '<button class="cat-lnk" data-act="chapters" data-id="'+x.id+'">Chapters →</button>'+catActs('subject',x)+'</div>';
-  }).join('') || '<div class="cat-empty">No subjects yet.</div>';
-  return '<div class="cat-crumb">Subjects across all exams</div><div class="cat-bar"><div><div class="t">Subjects</div><div class="s">Name, code, icon and which exam they belong to.</div></div><button class="cat-add" data-act="add" data-kind="subject">＋ Add subject</button></div><div class="cat-card">'+rows+'</div>';
+  // Grouped by exam — each exam is its own section, so it stays clean as exams grow.
+  var exams=(CAT.exams||[]).filter(function(e){return e.status!=='archived';})
+    .sort(function(a,b){return (a.display_order||0)-(b.display_order||0);});
+  var html=exams.map(function(e){
+    var subs=(CAT.subjects||[]).filter(function(s){return s.exam_id===e.id;})
+      .sort(function(a,b){return (a.display_order||0)-(b.display_order||0);});
+    var body=subs.length ? subs.map(subjRow).join('')
+                         : '<div class="cat-grp-empty">No subjects yet in '+esc(e.name)+'. Use “＋ Add subject”.</div>';
+    return '<div class="cat-grp"><div class="cat-grp-h">'+esc(e.name)+' <span class="cat-grp-c">'+subs.length+'</span></div><div class="cat-card">'+body+'</div></div>';
+  }).join('');
+  // safety: subjects not attached to any live exam
+  var orphans=(CAT.subjects||[]).filter(function(s){ return !exams.some(function(e){return e.id===s.exam_id;}); });
+  if(orphans.length){ html+='<div class="cat-grp"><div class="cat-grp-h">Unassigned <span class="cat-grp-c">'+orphans.length+'</span></div><div class="cat-card">'+orphans.map(subjRow).join('')+'</div></div>'; }
+  var bar='<div class="cat-bar"><div><div class="t">Subjects</div><div class="s">Grouped by exam — every subject belongs to one exam.</div></div><button class="cat-add" data-act="add" data-kind="subject">＋ Add subject</button></div>';
+  return bar + (html || '<div class="cat-empty">No exams yet — add an exam first.</div>');
 }
 function catChapters(){
   var chips=(CAT.subjects||[]).map(function(s){ return '<button class="cat-chip'+(s.id===CATSUB?' on':'')+'" data-act="pick" data-id="'+s.id+'">'+esc(s.name)+'</button>'; }).join('');
