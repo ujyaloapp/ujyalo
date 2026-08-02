@@ -1245,7 +1245,8 @@ function logout(){ localStorage.removeItem('ujyalo_token'); localStorage.removeI
    Reads/writes the existing (already-populated) exams, exam_subjects and
    chapters tables via admin-users.js. Archive = a status flip (soft delete),
    never a real delete. Self-contained; uses authFetch/token/toast/esc. */
-var CAT={exams:[],subjects:[],chapters:[],qByChapter:{}}, CATTAB='exams', CATSUB=null, catKind=null, catId=null;
+var CAT={exams:[],subjects:[],chapters:[],qByChapter:{}}, CATTAB='exams', CATSUB=null, CUREXAM=null, catKind=null, catId=null;
+function catByOrder(a,b){ return (a.display_order||0)-(b.display_order||0); }
 (function initCatalog(){
   var css =
     '.cat-bar{display:flex;align-items:center;gap:12px;margin-bottom:14px;}'+
@@ -1297,8 +1298,9 @@ var CAT={exams:[],subjects:[],chapters:[],qByChapter:{}}, CATTAB='exams', CATSUB
     else if(act==='edit') catOpen(kind,id);
     else if(act==='archive') catArchive(kind,id,b.getAttribute('data-status'));
     else if(act==='delete') catDelete(kind,id);
-    else if(act==='chapters'){ CATSUB=id; CATTAB='chapters'; $('cat-tabs').querySelectorAll('.subtab').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-cat')==='chapters');}); renderCat(); }
+    else if(act==='chapters'){ CATSUB=id; var _s=(CAT.subjects||[]).filter(function(x){return x.id===id;})[0]; if(_s) CUREXAM=_s.exam_id; CATTAB='chapters'; $('cat-tabs').querySelectorAll('.subtab').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-cat')==='chapters');}); renderCat(); }
     else if(act==='pick'){ CATSUB=id; renderCat(); }
+    else if(act==='pickexam'){ CUREXAM=id; var _f=(CAT.subjects||[]).filter(function(s){return s.exam_id===id;})[0]; CATSUB=_f?_f.id:null; renderCat(); }
   });
 })();
 
@@ -1357,17 +1359,30 @@ function catSubjects(){
   return bar + (html || '<div class="cat-empty">No exams yet — add an exam first.</div>');
 }
 function catChapters(){
-  var chips=(CAT.subjects||[]).map(function(s){ return '<button class="cat-chip'+(s.id===CATSUB?' on':'')+'" data-act="pick" data-id="'+s.id+'">'+esc(s.name)+'</button>'; }).join('');
+  var exams=(CAT.exams||[]).filter(function(e){return e.status!=='archived';}).slice().sort(catByOrder);
+  // make sure we have a current exam (derive from the picked subject, else first exam)
+  if(!CUREXAM){ var cs=(CAT.subjects||[]).filter(function(s){return s.id===CATSUB;})[0]; CUREXAM = cs ? cs.exam_id : ((exams[0]||{}).id||null); }
+  var exSubs=(CAT.subjects||[]).filter(function(s){return s.exam_id===CUREXAM;}).slice().sort(catByOrder);
+  if(!exSubs.some(function(s){return s.id===CATSUB;})) CATSUB=(exSubs[0]||{}).id||null;   // keep subject inside the exam
+  var exam=(CAT.exams||[]).filter(function(e){return e.id===CUREXAM;})[0]||{};
   var sub=(CAT.subjects||[]).filter(function(s){return s.id===CATSUB;})[0]||{};
-  var list=(CAT.chapters||[]).filter(function(c){return c.exam_subject_id===CATSUB;});
+  var examChips=exams.map(function(e){ return '<button class="cat-chip'+(e.id===CUREXAM?' on':'')+'" data-act="pickexam" data-id="'+e.id+'">'+esc(e.name)+'</button>'; }).join('');
+  var subChips=exSubs.length ? exSubs.map(function(s){ return '<button class="cat-chip'+(s.id===CATSUB?' on':'')+'" data-act="pick" data-id="'+s.id+'">'+esc(s.name)+'</button>'; }).join('')
+                             : '<span class="cat-grp-empty" style="padding:2px 0;">No subjects in this exam yet.</span>';
+  var list=(CAT.chapters||[]).filter(function(c){return c.exam_subject_id===CATSUB;}).slice().sort(catByOrder);
   var rows=list.map(function(x){
     var q=(CAT.qByChapter||{})[x.id]||0;
     return '<div class="cat-row'+(x.status==='archived'?' off':'')+'"><div class="cat-ic">'+esc(x.display_order||'•')+'</div>'+
       '<div><span class="cat-nm">'+esc(x.name)+'</span><div class="cat-meta">'+q+' questions</div></div>'+
       '<div class="cat-sp"></div>'+catPill(x.status)+catActs('chapter',x)+'</div>';
   }).join('') || '<div class="cat-empty">No chapters in this subject yet.</div>';
-  return '<div class="cat-crumb"><b>'+esc(sub.name||'—')+'</b> › Chapters</div><div class="cat-chips">'+chips+'</div>'+
-    '<div class="cat-bar"><div><div class="t">Chapters in '+esc(sub.name||'')+'</div><div class="s">Order with the number field; students see them in that order.</div></div><button class="cat-add" data-act="add" data-kind="chapter">＋ Add chapter</button></div><div class="cat-card">'+rows+'</div>';
+  var lbl='font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);font-weight:700;';
+  var addBtn = sub.id ? '<button class="cat-add" data-act="add" data-kind="chapter">＋ Add chapter</button>' : '';
+  return '<div class="cat-crumb"><b>'+esc(exam.name||'—')+'</b> › <b>'+esc(sub.name||'—')+'</b> › Chapters</div>'+
+    '<div style="'+lbl+'margin:0 0 6px;">Exam</div><div class="cat-chips">'+examChips+'</div>'+
+    '<div style="'+lbl+'margin:12px 0 6px;">Subject</div><div class="cat-chips">'+subChips+'</div>'+
+    '<div class="cat-bar"><div><div class="t">Chapters in '+esc(sub.name||'—')+'</div><div class="s">Order with the number field; students see them in that order.</div></div>'+addBtn+'</div>'+
+    '<div class="cat-card">'+(sub.id?rows:'<div class="cat-empty">Pick a subject above (or add one first).</div>')+'</div>';
 }
 
 /* ---- add / edit modal ---- */
@@ -1397,7 +1412,7 @@ function catOpen(kind,id){
       '<div class="cat-r2"><div class="cat-fld"><label class="cat-lbl">Status</label>'+statusSel(it.status)+'</div>'+
       '<div class="cat-fld"><label class="cat-lbl">Order</label><input class="cat-in" id="cat-f-order" value="'+esc(id?(it.display_order||''):ordDefault(CAT.subjects))+'"></div></div>';
   } else {
-    var subOpts=(CAT.subjects||[]).map(function(s){return '<option value="'+s.id+'"'+((id?it.exam_subject_id:CATSUB)===s.id?' selected':'')+'>'+esc(s.name)+'</option>';}).join('');
+    var subOpts=(CAT.subjects||[]).map(function(s){var e=(CAT.exams||[]).filter(function(x){return x.id===s.exam_id;})[0]; var lbl=(e?e.name+' · ':'')+s.name; return '<option value="'+s.id+'"'+((id?it.exam_subject_id:CATSUB)===s.id?' selected':'')+'>'+esc(lbl)+'</option>';}).join('');
     mb.innerHTML='<div class="cat-fld"><label class="cat-lbl">Name</label><input class="cat-in" id="cat-f-name" value="'+esc(it.name||'')+'" placeholder="Algebra"></div>'+
       '<div class="cat-fld"><label class="cat-lbl">Subject</label><select class="cat-in" id="cat-f-sub">'+subOpts+'</select></div>'+
       '<div class="cat-r2"><div class="cat-fld"><label class="cat-lbl">Status</label>'+statusSel(it.status||'live')+'</div>'+
