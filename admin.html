@@ -520,8 +520,6 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
           <div class="p-sub">Papers by stage, across all years.</div>
           <div id="cover"><div class="loading">Loading…</div></div>
         </div>
-        <div class="yrtabs" id="cov-years"></div>
-        <div class="cov" id="cov-grid"><div class="loading">Loading coverage…</div></div>
       </div>
 
       <!-- MOCK TESTS -->
@@ -672,7 +670,6 @@ function roleCfg(k){ for(var i=0;i<ROLES.length;i++){ if(ROLES[i].key===k) retur
 
 let SUBJECTS = {};   // subject_id -> {code,name}
 let PAPERS = [];     // raw past_papers
-let COV_YEAR = null;
 const LOADED = {};
 
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -1049,35 +1046,8 @@ async function loadCoverage(){
     if($('plbar')){ $('plbar').innerHTML = pl.bar; $('pllegend').innerHTML = pl.legend; $('pl-total').textContent = pl.total+' paper'+(pl.total===1?'':'s'); }
     if($('cover')) $('cover').innerHTML = ovp.length ? coverHTML(ovp) : '<div class="empty">No papers yet.</div>';
     if($('years-wrap')) $('years-wrap').innerHTML = yearsHTML(ovp);
-    var years=[]; PAPERS.forEach(function(p){ if(years.indexOf(p.year)<0) years.push(p.year); }); years.sort(function(a,b){return b-a;});
-    if(!years.length){ $('cov-grid').innerHTML='<div class="empty">No papers yet.</div>'; $('cov-years').innerHTML=''; $('ready-list').innerHTML='<div class="empty">Nothing ready to publish.</div>'; return; }
-    if(COV_YEAR===null || years.indexOf(COV_YEAR)<0) COV_YEAR=years[0];
-    $('cov-years').innerHTML = years.map(function(y){ return '<span class="yrtab'+(y===COV_YEAR?' on':'')+'" data-y="'+y+'">'+y+'</span>'; }).join('');
-    renderGrid();
     renderReady();
-  }catch(e){ console.error('Coverage error',e); $('cov-grid').innerHTML='<div class="empty">Could not load coverage.</div>'; }
-}
-$('cov-years').addEventListener('click',function(e){ var t=e.target.closest('[data-y]'); if(!t) return; COV_YEAR=parseInt(t.getAttribute('data-y'),10); document.querySelectorAll('#cov-years .yrtab').forEach(function(x){x.classList.toggle('on', x.getAttribute('data-y')==String(COV_YEAR));}); renderGrid(); });
-
-function renderGrid(){
-  var codes=[]; PAPERS.forEach(function(p){ var c=(SUBJECTS[p.subject_id]||{}).code; if(c && codes.indexOf(c)<0) codes.push(c); });
-  codes.sort(function(a,b){ return ((SUBJ[a]||{}).order||9)-((SUBJ[b]||{}).order||9); });
-  if(!codes.length) codes = Object.keys(SUBJ);
-  var head='<table class="grid"><thead><tr><th class="cor">Subject</th>'+PROV.map(function(p){return '<th>'+(PROV_SHORT[p]||p)+'</th>';}).join('')+'</tr></thead><tbody>';
-  var body = codes.map(function(code){
-    var nm=(SUBJ[code]||{}).name||code;
-    var cells = PROV.map(function(prov){
-      var paper = PAPERS.filter(function(p){ return p.year===COV_YEAR && p.province===prov && (SUBJECTS[p.subject_id]||{}).code===code; })[0];
-      if(!paper) return '<td><div class="cell miss">—</div></td>';
-      var ver=isFullyVerified(paper.id), live=paper.status==='live';
-      if(ver) return '<td><div class="cell verok" title="Verified'+(live?' &amp; live':' · not live yet')+'"><i class="ti ti-checks"></i></div></td>';
-      if(live) return '<td><div class="cell live" title="Live · not verified"><i class="ti ti-check"></i></div></td>';
-      return '<td><div class="cell prog" title="In progress">•</div></td>';
-    }).join('');
-    return '<tr><td class="sub">'+esc(nm)+'</td>'+cells+'</tr>';
-  }).join('');
-  var legend='<div class="legend"><span><span class="sw verok"></span> Verified</span><span><span class="sw live"></span> Live · unverified</span><span><span class="sw prog"></span> In progress</span><span><span class="sw miss"></span> Missing</span></div>';
-  $('cov-grid').innerHTML = head+body+'</tbody></table>'+legend;
+  }catch(e){ console.error('Coverage error',e); }
 }
 function renderReady(){
   var all = (OV && OV.papers ? OV.papers : []);
@@ -1145,7 +1115,7 @@ async function setPaperLive(id, live, btn, busyText, failText){
     if(!r.ok){ var er=await r.json().catch(function(){return{};}); throw new Error(er.error||'failed'); }
     var p=PAPERS.filter(function(x){return x.id===id;})[0]; if(p)p.status=live?'live':'draft';
     var ov=OVMAP[id]; if(ov){ ov.status=live?'live':'draft'; ov.stage=live?'published':(ov.fully?'verified':((ov.verified>0||ov.flagged>0)?'review':'pending')); }
-    renderGrid(); renderReady(); loadHome();
+    renderReady(); loadHome();
   }catch(err){ alert(err.message||failText); btn.disabled=false; btn.textContent=was; }
 }
 $('ready-list').addEventListener('click', function(e){
