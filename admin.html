@@ -349,6 +349,14 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
 .inbox-chip.on{background:var(--forest);color:#fff;border-color:var(--forest);}
 .inbox-more{display:block;margin:6px auto 0;font-family:Outfit;font-size:13px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--forest);border-radius:9px;padding:9px 18px;cursor:pointer;}
 .inbox-more:hover{background:var(--parch-2);}
+.stu-metric{font-size:13.5px;color:var(--muted);margin:2px 0 14px;}
+.stu-metric b{color:var(--forest);font-weight:700;}
+.stu-track{height:7px;border-radius:99px;background:var(--parch-2);overflow:hidden;margin:8px 0 0;}
+.stu-track span{display:block;height:100%;background:#16a34a;border-radius:99px;}
+.stu-hint{font-size:12px;color:var(--faint);margin-top:6px;}
+.stu-resend{font-family:Outfit;font-size:12px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:8px;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
+.stu-resend:hover{border-color:var(--brass);color:var(--forest);}
+.stu-resend:disabled{opacity:.6;cursor:default;}
 @media(max-width:760px){
   .side{width:64px;padding:18px 8px;}
   .brand,.badge,.nav a span,.nav-soon,.side-foot .who{display:none;}
@@ -590,6 +598,13 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
       <div class="pg-sub">Everyone who's signed up to learn with Ujyalo.</div>
       <div class="card" style="padding-top:10px;">
         <div class="seg-h"><i class="ti ti-users"></i> Students <span class="n" id="students-n">—</span></div>
+        <div class="stu-metric" id="stu-metric"></div>
+        <div class="inbox-bar">
+          <input class="inbox-search" id="stu-search" type="search" placeholder="Search name or email…" autocomplete="off">
+          <button class="inbox-chip on" data-sfil="all" type="button">All</button>
+          <button class="inbox-chip" data-sfil="verified" type="button">Verified</button>
+          <button class="inbox-chip" data-sfil="unverified" type="button">Unverified</button>
+        </div>
         <div id="students-list"><div class="loading">Loading…</div></div>
       </div>
       <div class="card" style="padding-top:10px;">
@@ -1178,11 +1193,9 @@ async function loadPeople(){
     }
 
     // Students — everyone who isn't team
-    var students = allUsers.filter(function(u){ return !isTeam(u.role); });
-    $('students-n').textContent = students.length;
-    if(!students.length){ $('students-list').innerHTML='<div class="empty">No students yet.</div>'; }
-    else $('students-list').innerHTML='<table class="tbl"><thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Joined</th></tr></thead><tbody>'+
-      students.map(function(u){ return '<tr><td>'+esc(u.full_name||'—')+'</td><td>'+esc(u.email||'—')+'</td><td><span class="st-pill '+(u.confirmed?'yes':'no')+'">'+(u.confirmed?'Verified':'Unverified')+'</span></td><td>'+fmtDate(u.created_at)+'</td></tr>'; }).join('')+'</tbody></table>';
+    STU.all = allUsers.filter(function(u){ return !isTeam(u.role); });
+    $('students-n').textContent = STU.all.length;
+    renderStudents();
   }catch(e){ console.error('People error',e); $('team-list').innerHTML='<div class="empty">Could not load team.</div>'; $('students-list').innerHTML='<div class="empty">Could not load students.</div>'; }
 
   // Waitlist
@@ -1195,6 +1208,54 @@ async function loadPeople(){
       wl.map(function(w){ return '<tr><td>'+esc(w.full_name||'—')+'</td><td>'+esc(w.email||'—')+'</td><td>'+esc(w.role||'—')+'</td><td>'+fmtDate(w.created_at)+'</td></tr>'; }).join('')+'</tbody></table>';
   }catch(e){ $('waitlist-list').innerHTML='<div class="empty">Could not load waitlist.</div>'; }
 }
+
+/* Students — activation metric, search/filter, resend confirmation */
+var STU={all:[],filter:'all',q:''};
+function renderStudents(){
+  var wrap=$('students-list'); if(!wrap) return;
+  var all=STU.all||[];
+  // activation metric
+  var total=all.length, conf=all.filter(function(u){return u.confirmed;}).length, pct=total?Math.round(conf/total*100):0;
+  var mt=$('stu-metric');
+  if(mt) mt.innerHTML = total
+    ? '<b>'+total+'</b> signed up · <b>'+conf+'</b> confirmed · <b>'+pct+'%</b> activated'
+      +'<div class="stu-track"><span style="width:'+pct+'%"></span></div>'
+      +((total-conf)>0 ? '<div class="stu-hint">Unverified = signed up but never clicked the confirmation email (often spam). '+(total-conf)+' waiting — resend below, or fix email deliverability (DMARC).</div>' : '')
+    : '';
+  // filter + search
+  var q=(STU.q||'').trim().toLowerCase();
+  var list=all.filter(function(u){
+    var okF = STU.filter==='all' ? true : STU.filter==='verified' ? !!u.confirmed : !u.confirmed;
+    if(!okF) return false;
+    if(!q) return true;
+    return (((u.full_name||'')+' '+(u.email||'')).toLowerCase().indexOf(q)>=0);
+  });
+  if(!list.length){ wrap.innerHTML='<div class="empty">'+(all.length?'No students match.':'No students yet.')+'</div>'; return; }
+  wrap.innerHTML='<table class="tbl"><thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Joined</th><th></th></tr></thead><tbody>'+
+    list.map(function(u){
+      var act = u.confirmed ? '' : '<button class="stu-resend" data-resend="'+esc(u.email||'')+'"><i class="ti ti-mail-forward"></i> Resend</button>';
+      return '<tr><td>'+esc(u.full_name||'—')+'</td><td>'+esc(u.email||'—')+'</td><td><span class="st-pill '+(u.confirmed?'yes':'no')+'">'+(u.confirmed?'Verified':'Unverified')+'</span></td><td>'+fmtDate(u.created_at)+'</td><td style="text-align:right">'+act+'</td></tr>';
+    }).join('')+'</tbody></table>';
+}
+(function initStudentBar(){
+  var s=$('stu-search'); if(s) s.addEventListener('input',function(){ STU.q=s.value; renderStudents(); });
+  var bar=document.querySelector('#p-students .inbox-bar');
+  if(bar) bar.addEventListener('click',function(e){ var b=e.target.closest('[data-sfil]'); if(!b) return;
+    STU.filter=b.getAttribute('data-sfil');
+    bar.querySelectorAll('.inbox-chip').forEach(function(x){x.classList.toggle('on',x===b);});
+    renderStudents();
+  });
+  var listEl=$('students-list');
+  if(listEl) listEl.addEventListener('click',function(e){
+    var b=e.target.closest('[data-resend]'); if(!b) return;
+    var email=b.getAttribute('data-resend'); var was=b.innerHTML;
+    b.disabled=true; b.innerHTML='Sending…';
+    authFetch('/api/admin-users?action=resend-confirmation',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({email:email})})
+     .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error||'failed'); return j; }); })
+     .then(function(){ b.innerHTML='<i class="ti ti-check"></i> Sent'; toast('Confirmation email re-sent to '+email); })
+     .catch(function(err){ b.disabled=false; b.innerHTML=was; toast(err.message||'Could not resend'); });
+  });
+})();
 
 /* team row menus + role changes */
 function closeMenus(except){ document.querySelectorAll('.rowmenu').forEach(function(m){ if(m!==except) m.classList.add('hidden'); }); }

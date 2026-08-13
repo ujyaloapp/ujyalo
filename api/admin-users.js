@@ -196,6 +196,26 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
+    // ── Resend the signup confirmation email to a student who never confirmed.
+    //    Uses Supabase Auth's own resend endpoint (anon key), so the email goes
+    //    through the same template as the original signup. NOTE: deliverability
+    //    depends on DNS/DMARC being set — a resend can still land in spam.
+    if (action === 'resend-confirmation') {
+      const email = String(body.email || '').trim().toLowerCase();
+      if (!email || email.indexOf('@') < 0) return res.status(400).json({ error: 'Missing or invalid email' });
+      const r = await fetch(`${process.env.SUPABASE_URL}/auth/v1/resend`, {
+        method: 'POST',
+        headers: { 'apikey': process.env.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'signup', email }),
+      });
+      if (!r.ok) {
+        const t = await r.text();
+        // Already-confirmed users make GoTrue reject — surface that plainly.
+        return res.status(400).json({ error: 'Could not resend: ' + t.slice(0, 200) });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
     return res.status(400).json({ error: 'Unknown action' });
   }
 
