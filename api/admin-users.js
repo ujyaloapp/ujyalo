@@ -179,6 +179,23 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
+    // ── Inbox triage: move a contact message through new → done → archived.
+    //    Soft only — the message row is NEVER deleted, just re-labelled, so a
+    //    customer message can't be lost. Archived just drops it out of the list.
+    if (action === 'inbox-set-status') {
+      const id = body.id;
+      const status = String(body.status || '');
+      if (!id) return res.status(400).json({ error: 'Missing id' });
+      if (!['new', 'done', 'archived'].includes(status)) return res.status(400).json({ error: 'Bad status' });
+      const r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/contact_messages?id=eq.${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        headers: { 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      if (!r.ok) return res.status(500).json({ error: 'Update failed: ' + (await r.text()) });
+      return res.status(200).json({ ok: true });
+    }
+
     return res.status(400).json({ error: 'Unknown action' });
   }
 

@@ -335,6 +335,20 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
 .msg .role{font-size:10.5px;font-weight:700;border-radius:99px;padding:3px 9px;background:var(--parch-2);color:var(--muted);}
 .msg .date{margin-left:auto;font-size:11.5px;color:var(--faint);}
 .msg .snip{font-size:13.5px;color:var(--ink);margin-top:6px;line-height:1.55;white-space:pre-wrap;}
+.msg.done{opacity:.72;}
+.msg .stp{font-size:10px;font-weight:800;letter-spacing:.03em;border-radius:99px;padding:2px 8px;text-transform:uppercase;}
+.msg .stp.done{background:#dcfce7;color:#166534;}
+.msg .acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.msg .acts a,.msg .acts button{font-family:Outfit;font-size:12px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:8px;padding:5px 11px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+.msg .acts a:hover,.msg .acts button:hover{border-color:var(--brass);color:var(--forest);}
+.msg .acts .arch:hover{border-color:#e11d48;color:#e11d48;}
+.inbox-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.inbox-search{flex:1;min-width:180px;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-family:Outfit;font-size:13.5px;color:var(--ink);background:#fff;}
+.inbox-search:focus{outline:none;border-color:var(--brass);}
+.inbox-chip{font-family:Outfit;font-weight:600;font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 13px;cursor:pointer;color:var(--muted);}
+.inbox-chip.on{background:var(--forest);color:#fff;border-color:var(--forest);}
+.inbox-more{display:block;margin:6px auto 0;font-family:Outfit;font-size:13px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--forest);border-radius:9px;padding:9px 18px;cursor:pointer;}
+.inbox-more:hover{background:var(--parch-2);}
 @media(max-width:760px){
   .side{width:64px;padding:18px 8px;}
   .brand,.badge,.nav a span,.nav-soon,.side-foot .who{display:none;}
@@ -590,7 +604,14 @@ h1.pg{font-family:'Fraunces',serif;font-weight:500;font-size:32px;color:var(--fo
     <section class="panel" id="p-inbox">
       <div class="eyebrow">Messages</div>
       <h1 class="pg">Inbox</h1>
-      <div class="pg-sub">Contact-form messages. Replies are handled in your shared Gmail (hello@ujyalo.app).</div>
+      <div class="pg-sub">Contact-form messages. Replies open in your shared Gmail (hello@ujyalo.app); mark them Done or Archive to keep this list clean.</div>
+      <div class="inbox-bar">
+        <input class="inbox-search" id="inbox-search" type="search" placeholder="Search name, email or message…" autocomplete="off">
+        <button class="inbox-chip on" data-fil="open" type="button">Open</button>
+        <button class="inbox-chip" data-fil="done" type="button">Done</button>
+        <button class="inbox-chip" data-fil="archived" type="button">Archived</button>
+        <button class="inbox-chip" data-fil="all" type="button">All</button>
+      </div>
       <div id="inbox-list"><div class="loading">Loading…</div></div>
     </section>
 
@@ -1225,19 +1246,76 @@ $('team-list').addEventListener('click', async function(e){
 });
 
 /* ── INBOX ── */
+var INBOX={all:[],filter:'open',q:'',shown:25};
 async function loadInbox(){
   LOADED.inbox = true;
   try{
     var data = await authFetch('/api/admin-users?action=messages',{headers:{'Authorization':'Bearer '+token}}).then(function(r){return r.json();});
-    var msgs = (data && data.messages) || [];
-    if(!Array.isArray(msgs) || !msgs.length){ $('inbox-list').innerHTML='<div class="empty">No messages yet.</div>'; return; }
-    $('inbox-list').innerHTML = msgs.map(function(m){
-      return '<div class="msg"><div class="ini">'+esc(initials(m.full_name))+'</div><div class="body">'+
-        '<div class="top"><span class="nm">'+esc(m.full_name||'—')+'</span><span class="em">'+esc(m.email||'')+'</span><span class="role">'+esc(m.role||'—')+'</span><span class="date">'+fmtDate(m.created_at)+'</span></div>'+
-        '<div class="snip">'+esc(m.message||'')+'</div></div></div>';
-    }).join('');
+    INBOX.all = (data && Array.isArray(data.messages)) ? data.messages : [];
+    renderInbox();
   }catch(e){ $('inbox-list').innerHTML='<div class="empty">Could not load messages.</div>'; }
 }
+// Rows created before the status column exists read as 'new', so nothing hides unexpectedly.
+function inboxStatus(m){ return (m && m.status) ? m.status : 'new'; }
+function renderInbox(){
+  var wrap=$('inbox-list'); if(!wrap) return;
+  var q=(INBOX.q||'').trim().toLowerCase();
+  var list=INBOX.all.filter(function(m){
+    var st=inboxStatus(m);
+    var okF = INBOX.filter==='all'  ? true
+            : INBOX.filter==='open' ? (st!=='archived')   // "Open" = everything not archived (new + done)
+            :                         st===INBOX.filter;
+    if(!okF) return false;
+    if(!q) return true;
+    return (((m.full_name||'')+' '+(m.email||'')+' '+(m.message||'')).toLowerCase().indexOf(q)>=0);
+  });
+  if(!list.length){ wrap.innerHTML='<div class="empty">'+((q||INBOX.filter!=='open')?'No messages match.':'No messages yet.')+'</div>'; return; }
+  var slice=list.slice(0,INBOX.shown);
+  wrap.innerHTML = slice.map(function(m){
+    var st=inboxStatus(m);
+    var doneChip = st==='done' ? '<span class="stp done">Done</span>' : '';
+    var gmail='https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(m.email||'')+'&su='+encodeURIComponent('Re: your message to Ujyalo');
+    var reply = m.email ? '<a href="'+gmail+'" target="_blank" rel="noopener"><i class="ti ti-corner-up-left"></i> Reply in Gmail</a>' : '';
+    var doneBtn = st==='done'
+      ? '<button data-inbox="new" data-id="'+esc(m.id)+'"><i class="ti ti-arrow-back-up"></i> Reopen</button>'
+      : '<button data-inbox="done" data-id="'+esc(m.id)+'"><i class="ti ti-check"></i> Mark done</button>';
+    var archBtn = st==='archived'
+      ? '<button data-inbox="new" data-id="'+esc(m.id)+'"><i class="ti ti-archive-off"></i> Unarchive</button>'
+      : '<button class="arch" data-inbox="archived" data-id="'+esc(m.id)+'"><i class="ti ti-archive"></i> Archive</button>';
+    return '<div class="msg'+(st==='done'?' done':'')+'"><div class="ini">'+esc(initials(m.full_name))+'</div><div class="body">'+
+      '<div class="top"><span class="nm">'+esc(m.full_name||'—')+'</span><span class="em">'+esc(m.email||'')+'</span><span class="role">'+esc(m.role||'—')+'</span>'+doneChip+'<span class="date">'+fmtDate(m.created_at)+'</span></div>'+
+      '<div class="snip">'+esc(m.message||'')+'</div>'+
+      '<div class="acts">'+reply+doneBtn+archBtn+'</div>'+
+    '</div></div>';
+  }).join('');
+  if(list.length>INBOX.shown){
+    var more=document.createElement('button'); more.className='inbox-more';
+    more.textContent='Load more ('+(list.length-INBOX.shown)+' more)';
+    more.addEventListener('click',function(){ INBOX.shown+=25; renderInbox(); });
+    wrap.appendChild(more);
+  }
+}
+// Toolbar: live search + status filter chips.
+(function initInboxBar(){
+  var s=$('inbox-search'); if(s) s.addEventListener('input',function(){ INBOX.q=s.value; INBOX.shown=25; renderInbox(); });
+  var bar=document.querySelector('.inbox-bar');
+  if(bar) bar.addEventListener('click',function(e){ var b=e.target.closest('[data-fil]'); if(!b) return;
+    INBOX.filter=b.getAttribute('data-fil'); INBOX.shown=25;
+    bar.querySelectorAll('.inbox-chip').forEach(function(x){x.classList.toggle('on',x===b);});
+    renderInbox();
+  });
+  var listEl=$('inbox-list');
+  if(listEl) listEl.addEventListener('click',function(e){
+    var b=e.target.closest('[data-inbox]'); if(!b) return;
+    var id=b.getAttribute('data-id'), to=b.getAttribute('data-inbox');
+    b.disabled=true;
+    authFetch('/api/admin-users?action=inbox-set-status',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({id:id,status:to})})
+     .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error||'failed'); return j; }); })
+     .then(function(){ var m=INBOX.all.filter(function(x){return String(x.id)===String(id);})[0]; if(m) m.status=to; renderInbox();
+        toast(to==='archived'?'Archived':to==='done'?'Marked done':'Reopened'); })
+     .catch(function(err){ b.disabled=false; toast(err.message||'Could not update'); });
+  });
+})();
 
 function logout(){ localStorage.removeItem('ujyalo_token'); localStorage.removeItem('ujyalo_user'); window.location.href='/index.html'; }
 
