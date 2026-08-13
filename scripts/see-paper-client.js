@@ -70,6 +70,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function init() {
   document.getElementById('loading-state').style.display = 'none';
+  // Remove the server-rendered SEO block (present on real paper pages) now that
+  // the interactive app is ready, so its content doesn't show twice.
+  var _ssr = document.getElementById('ssr-paper');
+  if (_ssr) _ssr.remove();
   document.getElementById('app-body').style.display = 'flex';
   document.documentElement.style.setProperty('--accent', DATA.subject.accent || '#1a6fff');
 
