@@ -640,6 +640,12 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
 .mock-clock.low{color:#e11d48;background:rgba(225,29,72,.10)}
 .mock-timer-btn{display:inline-flex;align-items:center;gap:6px;background:var(--brand);color:#fff;border:none;border-radius:10px;padding:6px 14px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit}
 .mock-timer-btn:hover{background:var(--brand-deep)}
+.mock-ctrl{display:inline-flex;align-items:center;gap:5px;background:var(--card);color:var(--brand-deep);border:1.5px solid var(--line);border-radius:10px;padding:5px 12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.mock-ctrl:hover{border-color:var(--brand)}
+.mock-ctrl.mock-finish{color:#e11d48;border-color:rgba(225,29,72,.35)}
+.mock-ctrl.mock-finish:hover{border-color:#e11d48;background:rgba(225,29,72,.06)}
+.mock-done{background:#e7f6ec;border:1.5px solid #16a34a;border-radius:12px;padding:12px 16px;margin:0 0 20px;color:#166534;font-size:14px;text-align:center}
+.mock-done b{color:#14532d}
 .mock-start{padding:30px 20px;max-width:560px;margin:0 auto}
 .mock-start-card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:26px}
 .mock-start-h{font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--ink)}
@@ -952,6 +958,8 @@ body{background:var(--bg);color:var(--ink);display:flex;flex-direction:column;ov
             <div class="mock-bar-title" id="mock-run-title">Mock Test</div>
             <button class="mock-timer-btn" id="mock-timer-btn" onclick="mockStartTimer()" style="display:none">&#9654; Start timer</button>
             <div class="mock-clock" id="mock-clock" style="visibility:hidden">3:00:00</div>
+            <button class="mock-ctrl" id="mock-pause-btn" onclick="mockTogglePause()" style="display:none">&#9208; Pause</button>
+            <button class="mock-ctrl mock-finish" id="mock-finish-btn" onclick="mockFinish()" style="display:none">Finish</button>
           </div>
           <div class="mock-start" id="mock-start"></div>
           <div class="mock-paper" id="mock-paper" style="display:none"></div>
@@ -2173,7 +2181,10 @@ function loadMockList(){
 }
 function mockClose(){
   if(MOCK.timer){clearInterval(MOCK.timer);MOCK.timer=null;}
+  MOCK.paused=false;
   document.getElementById('mock-timer-btn').style.display='none';
+  document.getElementById('mock-pause-btn').style.display='none';
+  document.getElementById('mock-finish-btn').style.display='none';
   document.getElementById('mock-run').style.display='none';
   document.getElementById('mock-cards').style.display='';
 }
@@ -2185,6 +2196,8 @@ function openMock(slug){
   paper.style.display='none'; paper.innerHTML='';
   document.getElementById('mock-clock').style.visibility='hidden';
   document.getElementById('mock-timer-btn').style.display='none';
+  document.getElementById('mock-pause-btn').style.display='none';
+  document.getElementById('mock-finish-btn').style.display='none';
   var headers={}, tok=localStorage.getItem('ujyalo_token'); if(tok) headers.Authorization='Bearer '+tok;
   fetch('/api/mock?action=load&slug='+encodeURIComponent(slug),{headers:headers})
    .then(function(r){return r.json();}).then(function(d){
@@ -2227,10 +2240,16 @@ function mockBegin(){
   clk.textContent=h+':'+String(m).padStart(2,'0')+':00';
   clk.style.visibility='hidden';
   document.getElementById('mock-timer-btn').style.display='';
+  document.getElementById('mock-pause-btn').style.display='none';
+  document.getElementById('mock-pause-btn').innerHTML='&#9208; Pause';
+  document.getElementById('mock-finish-btn').style.display='none';
+  MOCK.paused=false;
 }
 function mockStartTimer(){
   document.getElementById('mock-timer-btn').style.display='none';
   document.getElementById('mock-clock').style.visibility='';
+  document.getElementById('mock-pause-btn').style.display='';
+  document.getElementById('mock-finish-btn').style.display='';
   mockTimer(MOCK.duration||180);
 }
 function mockQ(q){
@@ -2246,17 +2265,55 @@ function mockQ(q){
     '<div class="mkq-stem">'+stem+'</div>'+trailingFig+
     (parts?'<ul class="mkq-parts">'+parts+'</ul>':'')+'</div>';
 }
+function mockRenderClock(){
+  var clk=document.getElementById('mock-clock'), left=MOCK.left||0; if(left<0) left=0;
+  var h=Math.floor(left/3600),m=Math.floor((left%3600)/60),s=left%60;
+  clk.textContent=h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  clk.classList.toggle('low',left<=300);
+}
+function mockTick(){
+  MOCK.left--;
+  if(MOCK.left<0){ mockFinish(true); return; }
+  mockRenderClock();
+}
 function mockTimer(mins){
   if(MOCK.timer) clearInterval(MOCK.timer);
-  var left=mins*60, clk=document.getElementById('mock-clock');
-  function tick(){
-    if(left<0){clearInterval(MOCK.timer);MOCK.timer=null;clk.textContent="Time's up";clk.classList.add('low');return;}
-    var h=Math.floor(left/3600),m=Math.floor((left%3600)/60),s=left%60;
-    clk.textContent=h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-    clk.classList.toggle('low',left<=300);
-    left--;
+  MOCK.left=mins*60; MOCK.paused=false;
+  mockRenderClock();
+  MOCK.timer=setInterval(mockTick,1000);
+}
+function mockTogglePause(){
+  var btn=document.getElementById('mock-pause-btn');
+  if(MOCK.paused){
+    MOCK.paused=false; btn.innerHTML='&#9208; Pause';
+    MOCK.timer=setInterval(mockTick,1000);
+  } else {
+    MOCK.paused=true; btn.innerHTML='&#9654; Resume';
+    if(MOCK.timer){clearInterval(MOCK.timer);MOCK.timer=null;}
   }
-  tick(); MOCK.timer=setInterval(tick,1000);
+}
+function mockFinish(auto){
+  if(!auto && !confirm('Finish the test and stop the timer? You can still read the paper afterwards.')) return;
+  if(MOCK.timer){clearInterval(MOCK.timer);MOCK.timer=null;}
+  MOCK.paused=false;
+  document.getElementById('mock-pause-btn').style.display='none';
+  document.getElementById('mock-finish-btn').style.display='none';
+  var clk=document.getElementById('mock-clock');
+  clk.classList.toggle('low',!!auto);
+  clk.textContent=auto?"Time's up":'Finished';
+  var total=(MOCK.duration||180)*60, left=MOCK.left; if(left<0) left=0;
+  var used=total-left; if(used<0) used=0; if(used>total) used=total;
+  var uh=Math.floor(used/3600),um=Math.floor((used%3600)/60),us=used%60;
+  var usedStr=uh+':'+String(um).padStart(2,'0')+':'+String(us).padStart(2,'0');
+  var paper=document.getElementById('mock-paper');
+  if(paper && !document.getElementById('mock-done-banner')){
+    var b=document.createElement('div'); b.id='mock-done-banner'; b.className='mock-done';
+    b.innerHTML=auto
+      ? '<b>Time&rsquo;s up.</b> You used the full time. Check your answers against the model solutions when they&rsquo;re available.'
+      : '<b>Test finished.</b> Time used: '+usedStr+'.';
+    paper.insertBefore(b, paper.firstChild);
+    try{ paper.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
+  }
 }
 /* after login, come back and open the requested mock (?mock=slug) */
 window.addEventListener('load',function(){ try{ var mk=new URLSearchParams(location.search).get('mock'); if(mk){ showView('mock',document.getElementById('nav-mock')); openMock(mk); } }catch(e){} });
