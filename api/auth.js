@@ -128,6 +128,13 @@ export default async function handler(req, res) {
 
   // ── Signup ────────────────────────────────────────────────
   if (action === 'signup') {
+    // Ujyalo is closing and moving to Etayari — no new accounts are created here.
+    // Blocked server-side too, so bots/old cached pages can't slip past the UI.
+    return res.status(403).json({
+      error: "Ujyalo is closing. Please sign up at etayari.app instead.",
+      moved_to: 'https://etayari.app',
+    });
+
     const { full_name, email, password } = req.body;
 
     if (!full_name) return res.status(400).json({ error: 'Please enter your full name.' });

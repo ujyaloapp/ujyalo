@@ -20,6 +20,39 @@ function seeDaysLeft() {
   return days > 0 ? days : null;
 }
 
+// ── SITE MOVE / SHUTDOWN NOTICE ──
+// Ujyalo is closing and moving to Etayari. While MOVING.on is true this bar
+// replaces the usual announcement/countdown strip on EVERY page (logged in or
+// out) and the admin announcement setting is ignored, so nothing can overwrite
+// it. Set on:false to switch the whole notice off again.
+const MOVING = {
+  on: true,
+  name: 'Etayari',
+  url: 'https://etayari.app',
+  closesOn: '2026-09-15', // last day ujyalo.app stays online (AD, YYYY-MM-DD)
+};
+
+function movingDaysLeft() {
+  const d = new Date(MOVING.closesOn + 'T00:00:00');
+  if (isNaN(d.getTime())) return null;
+  const days = Math.ceil((d - new Date()) / 86400000);
+  return days > 0 ? days : null;
+}
+
+function buildMovingBanner() {
+  if (!MOVING.on) return '';
+  const days = movingDaysLeft();
+  const when = days
+    ? `closes in <b>${days} day${days !== 1 ? 's' : ''}</b>`
+    : 'has closed';
+  return `
+<div class="ujyalo-moving" data-kind="moving">
+  <span>Ujyalo ${when} — we've moved to <b>${MOVING.name}</b>.</span>
+  <a href="/moving.html">What this means for me</a>
+  <a href="${MOVING.url}" class="go" target="_blank" rel="noopener">Go to ${MOVING.name} &rarr;</a>
+</div>`;
+}
+
 function buildAnnounce() {
   const days = seeDaysLeft();
   const cd = days ? ` · <b>${days} day${days !== 1 ? 's' : ''}</b> to the SEE exam` : '';
@@ -54,7 +87,7 @@ function applySiteSettings() {
       var d = new Date(s.see_exam_date + 'T00:00:00');
       if (!isNaN(d.getTime())) { var dd = Math.ceil((d - new Date()) / 86400000); days = dd > 0 ? dd : null; }
     }
-    var band = document.querySelector('.ujyalo-announce');
+    var band = MOVING.on ? null : document.querySelector('.ujyalo-announce');
     if (band) {
       var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
       if (band.getAttribute('data-kind') === 'countdown') {
@@ -90,7 +123,9 @@ const NAV_PUBLIC = `
     </div>
     <div class="ujyalo-nav-actions" id="nav-actions">
       <a href="/login.html" class="ujyalo-btn-ghost">Log in</a>
-      <a href="/signup.html" class="ujyalo-btn-primary">Sign up free →</a>
+      ${MOVING.on
+        ? `<a href="${MOVING.url}" class="ujyalo-btn-primary" target="_blank" rel="noopener">Go to ${MOVING.name} →</a>`
+        : `<a href="/signup.html" class="ujyalo-btn-primary">Sign up free →</a>`}
     </div>
     <button class="ujyalo-hamburger" id="nav-hamburger" aria-label="Open menu" onclick="toggleMobileNav()">
       <span></span><span></span><span></span>
@@ -102,7 +137,9 @@ const NAV_PUBLIC = `
     <a href="/about.html">About</a>
     <div class="ujyalo-mobile-divider"></div>
     <a href="/login.html" class="ujyalo-mobile-login">Log in</a>
-    <a href="/signup.html" class="ujyalo-mobile-signup">Sign up free →</a>
+    ${MOVING.on
+      ? `<a href="${MOVING.url}" class="ujyalo-mobile-signup" target="_blank" rel="noopener">Go to ${MOVING.name} →</a>`
+      : `<a href="/signup.html" class="ujyalo-mobile-signup">Sign up free →</a>`}
   </div>
 </nav>`;
 
@@ -276,6 +313,39 @@ const GLOBAL_STYLES = `
   color: #2A2110;
   text-decoration: underline;
   margin-left: 4px;
+}
+/* Site move / shutdown bar — replaces .ujyalo-announce while MOVING.on */
+.ujyalo-moving {
+  background: var(--navy);
+  color: #fff;
+  padding: 9px 20px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+.ujyalo-moving b { font-weight: 700; }
+.ujyalo-moving a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+}
+.ujyalo-moving a.go {
+  background: var(--orange);
+  color: #2A2110;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+@media (max-width: 560px) {
+  .ujyalo-moving { font-size: 12px; padding: 10px 14px; }
 }
 
 /* ── LOGO ── */
@@ -669,9 +739,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (user && token) {
       const firstName = user.full_name ? user.full_name.split(' ')[0] : user.email.split('@')[0];
       const initials  = firstName.charAt(0).toUpperCase();
-      navEl.innerHTML = buildCountdownStrip() + buildAppNav(firstName, initials, user.full_name || firstName, user.email || '');
+      navEl.innerHTML = (MOVING.on ? buildMovingBanner() : buildCountdownStrip())
+                      + buildAppNav(firstName, initials, user.full_name || firstName, user.email || '');
     } else {
-      navEl.innerHTML = buildAnnounce() + NAV_PUBLIC;
+      navEl.innerHTML = (MOVING.on ? buildMovingBanner() : buildAnnounce()) + NAV_PUBLIC;
     }
   }
 
