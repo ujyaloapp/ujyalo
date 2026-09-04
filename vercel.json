@@ -12,6 +12,7 @@
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/exams", "destination": "/practice.html" },
+    { "source": "/moving", "destination": "/moving.html" },
     { "source": "/see", "destination": "/see.html" },
     { "source": "/see/past-papers/:year/:province/:subject", "destination": "/api/see-paper?year=:year&province=:province&subject=:subject&view=page" },
     { "source": "/see/past-papers", "destination": "/see.html" }
