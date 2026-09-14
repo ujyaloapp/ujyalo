@@ -1,237 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Ujyalo — Free SEE Exam Practice for Nepal Grade 10 Students</title>
-  <meta name="description" content="Free SEE exam practice for Nepal Grade 10 students. Practice Maths and Science chapter by chapter with instant model answers. Your personal SEE tutor — free forever." />
-  <meta name="keywords" content="SEE exam practice Nepal, SEE maths questions, SEE science questions, Grade 10 Nepal, NEB SEE preparation, free SEE practice, SEE 2082 2083" />
-  <meta name="author" content="Ujyalo" />
-  <meta name="robots" content="index, follow" />
-  <meta property="og:title" content="Ujyalo — Free SEE Exam Practice Nepal" />
-  <meta property="og:description" content="Free SEE exam practice for Nepal Grade 10 students. Practice Maths and Science chapter by chapter with instant model answers. Your personal SEE tutor — free forever." />
-  <meta property="og:url" content="https://ujyalo.app/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Ujyalo" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Ujyalo — Free SEE Exam Practice Nepal" />
-  <meta name="twitter:description" content="Free SEE exam practice for Nepal Grade 10 students. Practice Maths and Science chapter by chapter with instant model answers. Your personal SEE tutor — free forever." />
-  <link rel="canonical" href="https://ujyalo.app/" />
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
-  "name": "Ujyalo",
-  "url": "https://ujyalo.app",
-  "description": "Free SEE exam preparation platform for Nepal Grade 10 students. Practice Maths, Science and more chapter by chapter with instant model answers.",
-  "email": "hello@ujyalo.app",
-  "areaServed": "Nepal",
-  "audience": {"@type": "EducationalAudience", "educationalRole": "student"},
-  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "NPR", "description": "Free for students"}
-}
-</script>
-
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="/styles/main.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    /* ===== Ujyalo home — bright & encouraging =====
-       Warm off-white base, bold headlines, one marigold accent,
-       subject colours used only as small signals. Page-scoped (.es).
-       Nav + footer are injected by /scripts/components.js. */
-    :root{
-      --ink:#1f2933;--ink2:#1f2933;--muted:#52606d;--faint:#8b93a0;
-      --cream:#f0faf8;--paper:#f7faf8;--white:#ffffff;--line:#e6eae8;
-      --gold:#0f766e;--gold-ink:#ffffff;--gold-deep:#0b5c55;--gold-soft:#d3f0ec;
-      --green:#16a34a;--green-soft:#dcfce7;--blue:#2563eb;--blue-soft:#e7f0ff;
-      --amber:#d97706;--amber-soft:#fff1d6;--pink:#db2777;--pink-soft:#fce7f3;
-      --purple:#7c3aed;--purple-soft:#ede9fe;--red:#e11d48;--red-soft:#ffe4e6;
-    }
-    html{scroll-behavior:smooth;}
-    .es *{margin:0;padding:0;box-sizing:border-box;}
-    .es{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--white);line-height:1.6;}
-    .es a{text-decoration:none;color:inherit;}
-    .wrap{max-width:1120px;margin:0 auto;padding:0 clamp(28px,5vw,64px);}
-    .display{font-family:'Fraunces',serif;font-weight:800;letter-spacing:-1px;line-height:1.08;color:var(--ink);}
-
-    /* buttons */
-    .es .btn-gold{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#12a48f,#0c8074);color:#fff;font-size:15px;font-weight:700;padding:13px 24px;border-radius:12px;border:none;cursor:pointer;box-shadow:0 10px 24px -10px rgba(13,148,136,.55);transition:transform .15s,box-shadow .15s;}
-    .es .btn-gold:hover{transform:translateY(-1px);box-shadow:0 14px 30px -10px rgba(13,148,136,.6);}
-    .btn-ghost{display:inline-flex;align-items:center;gap:7px;background:var(--white);color:var(--ink);font-size:15px;font-weight:600;padding:13px 22px;border-radius:12px;border:1.5px solid var(--line);cursor:pointer;}
-
-    /* hero */
-    .hero{background:var(--cream);}
-    .hero-in{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;padding:62px 0 58px;}
-    .hero-in>div{min-width:0;}
-    .pill{display:inline-flex;align-items:center;gap:7px;background:var(--green-soft);color:#166534;font-size:12.5px;font-weight:700;padding:6px 13px;border-radius:99px;margin-bottom:18px;}
-    .hero h1{font-size:clamp(32px,4.6vw,50px);margin-bottom:16px;overflow-wrap:break-word;}
-    .hero h1 .u{border-bottom:5px solid var(--gold);}
-    .hero-lead{font-size:18px;color:var(--muted);max-width:440px;margin-bottom:26px;}
-    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
-    .hero-note{margin-top:22px;font-size:12.5px;font-weight:600;letter-spacing:.4px;color:var(--faint);}
-
-    /* hero art */
-    .hero-art{position:relative;display:flex;justify-content:center;}
-    .hero-art .chip{position:absolute;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:7px 11px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
-    .chip-a{top:26px;left:6px;color:#166534;}
-    .chip-b{bottom:78px;right:6px;color:var(--blue);}
-
-    /* section base */
-    .sec{padding:66px 0;}
-    .eyebrow{font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--gold-deep);margin-bottom:8px;}
-    .h2{font-family:'Fraunces',serif;font-weight:800;font-size:clamp(26px,3.6vw,38px);letter-spacing:-.7px;color:var(--ink);}
-    .lead{font-size:16px;color:var(--muted);margin-top:8px;max-width:520px;}
-    .center{text-align:center;} .center .lead{margin-left:auto;margin-right:auto;}
-
-    /* subject thumbnails */
-    .subj-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:26px;}
-    .subj{display:block;border:1px solid var(--line);border-radius:14px;padding:16px 12px;text-align:center;background:var(--white);transition:transform .15s,border-color .15s;}
-    .subj:hover{transform:translateY(-3px);border-color:var(--gold);}
-    .subj .ic{width:42px;height:42px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:9px;}
-    .subj .nm{font-size:13.5px;font-weight:700;color:var(--ink);}
-    .subj .mt{font-size:11px;color:var(--faint);margin-top:1px;}
-    .subj.soon{position:relative;opacity:.6;cursor:default;pointer-events:none;}
-    .subj.soon:hover{transform:none;border-color:var(--line);}
-    .subj .soon-badge{position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--paper);border:1px solid var(--line);padding:2px 7px;border-radius:99px;}
-
-    /* feature row */
-    .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px;}
-    .feat{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:24px;}
-    .feat .ic{width:46px;height:46px;border-radius:13px;display:inline-flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;}
-    .feat h3{font-family:'Fraunces',serif;font-weight:700;font-size:19px;margin-bottom:6px;color:var(--ink);}
-    .feat p{font-size:14px;color:var(--muted);}
-
-    /* steps */
-    .how{background:var(--paper);}
-    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:30px;}
-    .step{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:24px;}
-    .step .n{width:34px;height:34px;border-radius:10px;background:var(--gold-soft);color:var(--gold-deep);font-weight:800;display:inline-flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:12px;}
-    .step h4{font-family:'Fraunces',serif;font-weight:700;font-size:18px;margin-bottom:5px;}
-    .step p{font-size:14px;color:var(--muted);}
-
-    /* band */
-    .band{background:linear-gradient(135deg,#0f766e,#0b5c55);color:#fff;border-radius:22px;padding:48px;text-align:center;position:relative;overflow:hidden;}
-    .band .eyebrow{color:#8de0d3;}
-    .band h2{font-family:'Fraunces',serif;font-weight:800;font-size:clamp(24px,3.2vw,34px);letter-spacing:-.5px;color:#fff;margin-bottom:12px;}
-    .band p{font-size:16px;color:#d1faf3;max-width:520px;margin:0 auto 22px;}
-    .band .btn-gold{background:#fff;color:#0b5c55;}
-
-    /* final */
-    .final{text-align:center;padding:78px 0;background:var(--cream);}
-    .final h2{font-family:'Fraunces',serif;font-weight:800;font-size:clamp(28px,4.2vw,44px);letter-spacing:-1px;color:var(--ink);margin-bottom:14px;}
-    .final p{font-size:17px;color:var(--muted);margin-bottom:26px;}
-
-    @media (max-width:960px){
-      .hero-in{grid-template-columns:1fr;gap:18px;padding:48px 0 44px;}
-      .hero-art{order:-1;max-width:230px;margin:0 auto;}
-      .subj-grid{grid-template-columns:repeat(3,1fr);}
-      .feat-grid,.steps{grid-template-columns:1fr;}
-      .sec{padding:52px 0;}
-      .band{padding:36px 22px;}
-    }
-    @media (max-width:480px){
-      .wrap{padding:0 22px;}
-      .btn-gold,.btn-ghost{width:100%;justify-content:center;}
-      .subj-grid{grid-template-columns:repeat(2,1fr);}
-    }
-  </style>
-  <meta property="og:image" content="https://ujyalo.app/og-default.png" />
-  <meta name="twitter:image" content="https://ujyalo.app/og-default.png" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ujyalo has moved to Etayari</title>
+<meta name="description" content="Ujyalo has closed. Everything continues at etayari.app.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<meta property="og:title" content="Ujyalo has moved to Etayari">
+<meta property="og:description" content="Ujyalo has closed. Everything continues at etayari.app.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    padding:32px 22px;
+    font-family:'Outfit',system-ui,-apple-system,sans-serif;
+    color:#1f2933;
+    background:radial-gradient(at 50% 0%,rgba(15,118,110,.10) 0,transparent 60%),#f7faf8;
+  }
+  .wrap{max-width:440px;width:100%;text-align:center}
+  .logo{height:46px;width:auto;margin-bottom:30px;opacity:.9}
+  h1{
+    font-family:'Fraunces',Georgia,serif;font-weight:900;
+    font-size:clamp(30px,7vw,40px);line-height:1.15;letter-spacing:-.8px;
+    margin-bottom:14px;
+  }
+  h1 em{font-style:normal;color:#0f766e}
+  p{font-size:16.5px;line-height:1.65;color:#52606d;margin-bottom:30px}
+  .btn{
+    display:inline-block;background:#0f766e;color:#fff;text-decoration:none;
+    font-weight:600;font-size:16px;padding:15px 32px;border-radius:12px;
+    transition:background .15s;
+  }
+  .btn:hover{background:#0b5c55}
+  .foot{margin-top:34px;font-size:13.5px;color:#8b93a0}
+</style>
 </head>
 <body>
-<div id="site-nav"></div>
-
-<div class="es">
-
-  <!-- ══ HERO ══ -->
-  <section class="hero">
-    <div class="wrap hero-in">
-      <div>
-        <span class="pill">✦ Built for Nepal's SEE students</span>
-        <h1 class="display">SEE past papers &amp; model answers.<br><span class="u">Free to start.</span></h1>
-        <p class="hero-lead">Real exam papers, step-by-step answers in Nepali &amp; English, and practice that keeps you going — all in one bright place.</p>
-        <div class="hero-actions">
-          <a href="/see.html" class="btn-gold">Start practising →</a>
-          <a href="#how" class="btn-ghost">See how it works</a>
-        </div>
-        <div class="hero-note">FREE TO START&nbsp;&nbsp;·&nbsp;&nbsp;NO ADS&nbsp;&nbsp;·&nbsp;&nbsp;ENGLISH &amp; नेपाली</div>
-      </div>
-      <div class="hero-art">
-        <svg viewBox="0 0 220 220" width="220" height="220" role="img" aria-label="Ujyalo sun — bright and encouraging">
-          <g stroke="#f0523c" stroke-width="8" stroke-linecap="round">
-            <line x1="110" y1="20" x2="110" y2="40"/><line x1="110" y1="180" x2="110" y2="200"/>
-            <line x1="20" y1="110" x2="40" y2="110"/><line x1="180" y1="110" x2="200" y2="110"/>
-            <line x1="48" y1="48" x2="62" y2="62"/><line x1="158" y1="158" x2="172" y2="172"/>
-            <line x1="172" y1="48" x2="158" y2="62"/><line x1="62" y1="158" x2="48" y2="172"/>
-          </g>
-          <circle cx="110" cy="110" r="46" fill="#fb6f5c"/>
-        </svg>
-        <span class="chip chip-a"><i class="ti ti-flame" style="color:#f97316;" aria-hidden="true"></i> Daily streaks</span>
-        <span class="chip chip-b"><i class="ti ti-list-check" aria-hidden="true"></i> Model answers</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ SUBJECTS ══ -->
-  <section class="sec wrap">
-    <div class="center">
-      <div class="eyebrow">Every subject</div>
-      <div class="h2">Browse the SEE, subject by subject</div>
-      <div class="lead">Pick a subject and open real past papers — colour-coded so it's easy to find your way.</div>
-    </div>
-    <div class="subj-grid">
-      <a class="subj" href="/see.html?subject=maths"><span class="ic" style="background:var(--blue-soft);color:var(--blue);"><i class="ti ti-calculator" aria-hidden="true"></i></span><div class="nm">Maths</div><div class="mt">Past papers</div></a>
-      <a class="subj" href="/see.html?subject=science"><span class="ic" style="background:var(--green-soft);color:var(--green);"><i class="ti ti-flask" aria-hidden="true"></i></span><div class="nm">Science</div><div class="mt">Past papers</div></a>
-      <a class="subj" href="/see.html?subject=english"><span class="ic" style="background:var(--amber-soft);color:var(--amber);"><i class="ti ti-abc" aria-hidden="true"></i></span><div class="nm">English</div><div class="mt">Past papers</div></a>
-      <div class="subj soon"><span class="soon-badge">Coming soon</span><span class="ic" style="background:var(--pink-soft);color:var(--pink);"><i class="ti ti-book" aria-hidden="true"></i></span><div class="nm">Nepali</div><div class="mt">Coming soon</div></div>
-      <div class="subj soon"><span class="soon-badge">Coming soon</span><span class="ic" style="background:var(--red-soft);color:var(--red);"><i class="ti ti-heart" aria-hidden="true"></i></span><div class="nm">Health</div><div class="mt">Coming soon</div></div>
-    </div>
-  </section>
-
-  <!-- ══ WHAT YOU GET ══ -->
-  <section class="sec wrap">
-    <div class="center">
-      <div class="eyebrow">What you get</div>
-      <div class="h2">Everything you need to ace the SEE</div>
-    </div>
-    <div class="feat-grid">
-      <div class="feat"><span class="ic" style="background:var(--gold-soft);color:var(--gold-deep);"><i class="ti ti-file-description" aria-hidden="true"></i></span><h3>Past papers</h3><p>Real SEE papers with model answers written to help you understand, not just memorise — first 3 questions free, a free account opens the full paper.</p></div>
-      <div class="feat"><span class="ic" style="background:var(--green-soft);color:var(--green);"><i class="ti ti-list-check" aria-hidden="true"></i></span><h3>Model answers</h3><p>Step-by-step answers in Nepali &amp; English, so you study in the language you think in.</p></div>
-      <div class="feat"><span class="ic" style="background:var(--blue-soft);color:var(--blue);"><i class="ti ti-flame" aria-hidden="true"></i></span><h3>Daily practice</h3><p>Solve real questions chapter by chapter, build a streak, and watch your confidence grow.</p></div>
-    </div>
-  </section>
-
-  <!-- ══ HOW IT WORKS ══ -->
-  <section class="sec how" id="how">
-    <div class="wrap">
-      <div class="center">
-        <div class="eyebrow">How it works</div>
-        <div class="h2">Start in seconds</div>
-        <div class="lead">No account needed to begin. Just open and study.</div>
-      </div>
-      <div class="steps">
-        <div class="step"><span class="n">1</span><h4>Pick a paper</h4><p>Choose your subject and paper from the SEE collection.</p></div>
-        <div class="step"><span class="n">2</span><h4>Read &amp; understand</h4><p>Work through questions with clear model answers, in English or Nepali.</p></div>
-        <div class="step"><span class="n">3</span><h4>Practise &amp; improve</h4><p>Test yourself chapter by chapter and keep your streak going.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ FINAL — for parents & teachers (light) ══ -->
-  <section class="final">
-    <div class="wrap">
-      <div class="eyebrow">For parents &amp; teachers</div>
-      <h2 class="display">A study tool you can trust</h2>
-      <p>Ujyalo gives students real exam papers and honest model answers in a safe, ad-free, distraction-free space — made with care for every learner.</p>
-      <a href="/for-schools.html" class="btn-gold">Learn more for schools →</a>
-    </div>
-  </section>
-
-</div>
-
-<div id="site-footer"></div>
-<script src="/scripts/components.js"></script>
+  <main class="wrap">
+    <img class="logo" src="/ujyalo-logo-transparent.png" alt="Ujyalo">
+    <h1>Ujyalo has moved to <em>Etayari</em>.</h1>
+    <p>Ujyalo is closed. Everything continues at Etayari.</p>
+    <a class="btn" href="https://etayari.app">Go to etayari.app</a>
+    <p class="foot">Thank you to everyone who used Ujyalo.</p>
+  </main>
 </body>
 </html>

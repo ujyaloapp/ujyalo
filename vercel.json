@@ -1,21 +1,6 @@
 {
-  "redirects": [
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "ujyalo.vercel.app" }],
-      "destination": "https://ujyalo.app/:path*",
-      "permanent": true
-    },
-    { "source": "/privacy-policy", "destination": "/privacy.html", "permanent": true },
-    { "source": "/terms-of-service", "destination": "/terms.html", "permanent": true }
-  ],
   "rewrites": [
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/exams", "destination": "/practice.html" },
-    { "source": "/moving", "destination": "/moving.html" },
-    { "source": "/see", "destination": "/see.html" },
-    { "source": "/see/past-papers/:year/:province/:subject", "destination": "/api/see-paper?year=:year&province=:province&subject=:subject&view=page" },
-    { "source": "/see/past-papers", "destination": "/see.html" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
@@ -23,9 +8,7 @@
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()" }
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]
     }
   ]
